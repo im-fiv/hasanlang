@@ -1,0 +1,15 @@
+[package]
+name = "hasan"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.71"
+cfg-if = "1.0.0"
+inkwell = { git = "https://github.com/TheDan64/inkwell", branch = "master", features = ["llvm15-0"] }
+llvm-sys = "150.1.0"
+pest = "2.6.0"
+pest_derive = "2.6.0"
+rustyline = "11.0.0"
