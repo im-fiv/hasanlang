@@ -38,7 +38,10 @@ type = { array_type | base_type }
 type_definition = { "type" ~ identifier ~ generics? ~ "=" ~ type }
 
 array_expression = { "[" ~ (expression ~ ("," ~ expression)* )? ~ "]" }
-base_expression = _{ binary_op | unary_op | literal | identifier | array_expression }
+array_access = { identifier ~ "[" ~ expression ~ "]" }
+dot_access = _{ (array_access | identifier) ~ ("." ~ function_call)* }
+
+base_expression = _{ binary_op | unary_op | non_operator_expression }
 expression = _{ function_call | nested_function_call | chained_call | base_expression }
 
 call_chain_segment = _{ ("." | "->") ~ identifier ~ ("(" ~ function_call_arguments? ~ ")")? }
@@ -46,7 +49,9 @@ chained_call = _{ base_expression ~ call_chain_segment+ }
 
 binary_op = { non_operator_expression ~ ("+" ~ non_operator_expression | "-" ~ non_operator_expression | "*" ~ non_operator_expression | "/" ~ non_operator_expression | "==" ~ non_operator_expression)* }
 unary_op = { ("-" | "!") ~ base_expression }
-non_operator_expression = _{ literal | identifier | array_expression }
+
+paren_expression = _{ "(" ~ expression ~ ")" }
+non_operator_expression = _{ paren_expression | dot_access | function_call | literal | identifier | array_expression }
 
 literal = { string_literal | number_literal }
 string_literal = { "\"" ~ (!("\"") ~ ANY)* ~ "\"" }
