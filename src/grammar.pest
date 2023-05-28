@@ -1,5 +1,5 @@
 program = { SOI ~ statement+ ~ EOI }
-statement = { function | type_definition | class_definition | class_declaration | variable_definition | return_statement }
+statement = { function | type_definition | class_definition | class_declaration | variable_definition | return_stmt | function_call_stmt }
 
 function_header = { "function" ~ identifier ~ generics? ~ "(" ~ function_definition_arguments? ~ ")" ~ ("->" ~ type)? }
 function = { function_header ~ block }
@@ -53,8 +53,11 @@ number_literal = { ("-"? ~ ASCII_NONZERO_DIGIT ~ ASCII_DIGIT* ~ ("." ~ ASCII_DIG
 
 identifier = { (ASCII_ALPHA | "_") ~ (ASCII_ALPHA | ASCII_DIGIT | "_")* }
 
-return_statement = { "return" ~ expression? ~ stmt_sep }
+//* other statements *//
+return_stmt = { "return" ~ expression? ~ stmt_sep }
+function_call_stmt = { function_call ~ stmt_sep }
 
+//* to be ignored *//
 line_comment = _{ "//" ~ (!"\n" ~ ANY)* ~ "\n" }
 block_comment = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" }
 
