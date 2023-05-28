@@ -38,8 +38,11 @@ type = { array_type | base_type }
 type_definition = { "type" ~ identifier ~ generics? ~ "=" ~ type }
 
 array_expression = { "[" ~ (expression ~ ("," ~ expression)* )? ~ "]" }
-array_access = { identifier ~ "[" ~ expression ~ "]" }
-dot_access = _{ (array_access | identifier) ~ ("." ~ function_call)* }
+array_index = { "[" ~ expression ~ "]" }
+array_access = { identifier ~ array_index* }
+base_access = _{ identifier }
+dot_access = _{ base_access ~ dot_access_tail* }
+dot_access_tail = _{ ("." ~ function_call | "." ~ identifier | "[" ~ expression ~ "]") }
 
 base_expression = _{ binary_op | unary_op | non_operator_expression }
 expression = _{ function_call | nested_function_call | chained_call | base_expression }
