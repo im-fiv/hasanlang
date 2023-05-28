@@ -51,7 +51,7 @@ literal = { string_literal | number_literal }
 string_literal = { "\"" ~ (!("\"") ~ ANY)* ~ "\"" }
 number_literal = { ("-"? ~ ASCII_NONZERO_DIGIT ~ ASCII_DIGIT* ~ ("." ~ ASCII_DIGIT+)?) | "0" }
 
-identifier = { (ASCII_ALPHA | "_") ~ (ASCII_ALPHA | ASCII_DIGIT | "_")* }
+identifier = @{ (ASCII_ALPHA | "_") ~ (ASCII_ALPHANUMERIC | "_")* }
 
 //* other statements *//
 return_stmt = { "return" ~ expression? ~ stmt_sep }
