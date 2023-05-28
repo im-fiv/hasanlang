@@ -31,6 +31,8 @@ declare class ClassDeclaraction {
 
 	#[static, constructor]
 	function some_function() -> bool;
+
+	function other_function() -> int;
 }
 
 declare class Array<T> {
@@ -44,5 +46,13 @@ declare class Array<T> {
 function hello() -> SomeType<int> {
 	world(123);
 
-	return [1, 2, 3];
+	var arr = Array();
+
+	var var1 = asdasd_asdfhnsdfhsd_asdasd;
+
+	// TODO: fix this
+	var var2 = 2 + 5;
+	var var3 = (var2 * 1.5) / 3 + a[0].hello(1, 2, 3, "hello", []) * a[0][1]->bye->a.asd(123123123 * 2, []);
+
+	return [var3, var2];
 };
