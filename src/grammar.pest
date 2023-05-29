@@ -35,7 +35,7 @@
 // array_type = { base_type ~ ("[" ~ "]")+ }
 
 // type = { array_type | base_type }
-// type_definition = { "type" ~ identifier ~ generics? ~ "=" ~ type }
+// type_definition = { "type" ~ identifier ~ generics? ~ "=" ~ type ~ stmt_sep }
 
 // array_expression = { "[" ~ (expression ~ ("," ~ expression)* )? ~ "]" }
 // array_index = { "[" ~ expression ~ "]" }
@@ -117,7 +117,7 @@ base_type = { identifier ~ generics? }
 array_type = { base_type ~ ("[" ~ "]")+ }
 
 type = { array_type | base_type }
-type_definition = { "type" ~ identifier ~ generics? ~ "=" ~ type }
+type_definition = { "type" ~ identifier ~ generics? ~ "=" ~ type ~ stmt_sep }
 
 array_expression = { "[" ~ (expression ~ ("," ~ expression)* )? ~ "]" }
 array_index = { "[" ~ expression ~ "]" }
