@@ -52,7 +52,7 @@ function hello() -> SomeType<int> {
 
 	// TODO: fix this
 	var var2 = 2 + 5;
-	var var3 = (var2 * 1.5) / 3 + a[0].hello(1, 2, 3, "hello", []) * a[0][1]->bye->a.asd(123123123 * 2, []);
+	var var3 = (var2 * 1.5) / 3 + a[0].hello(1, 2, 3, "hello", []) * a[0][1]->bye->a.asd(123123123 * 2, []) + 2;
 
 	return [var3, var2];
 };
