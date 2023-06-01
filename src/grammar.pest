@@ -1,166 +1,87 @@
-// program = { SOI ~ statement+ ~ EOI }
-// statement = { function | type_definition | class_definition | class_declaration | variable_definition | return_stmt | function_call_stmt }
-
-// function_header = { "function" ~ identifier ~ generics? ~ "(" ~ function_definition_arguments? ~ ")" ~ ("->" ~ type)? }
-// function = { function_header ~ block }
-
-// function_call = { identifier ~ "(" ~ function_call_arguments? ~ ")" }
-// nested_function_call = { function_call ~ "(" ~ function_call_arguments? ~ ")" }
-
-// function_definition_arguments = { identifier ~ ":" ~ type ~ ("," ~ identifier ~ ":" ~ type)* }
-// function_call_arguments = { expression ~ ("," ~ expression)* }
-
-// stmt_sep = _{ ";" }
-
-// class_declaration = { "declare"? ~ "class" ~ identifier ~ generics? ~ "{" ~ class_declaration_member* ~ "}" ~ stmt_sep? }
-// class_declaration_member = { class_declaration_function | class_declaration_variable }
-
-// class_declaration_function = { attributes? ~ function_header ~ stmt_sep }
-// class_declaration_variable = { identifier ~ ":" ~ type ~ stmt_sep }
-
-// class_definition = { "class" ~ identifier ~ generics? ~ "{" ~ class_definition_member* ~ "}" ~ stmt_sep? }
-// class_definition_member = { class_definition_function | class_definition_variable }
-
-// class_definition_function = { attributes? ~ function ~ stmt_sep? }
-// class_definition_variable = { identifier ~ ":" ~ type ~ ("=" ~ expression)? ~ stmt_sep }
-
-// variable_definition = { "var" ~ identifier ~ (":" ~ type)? ~ "=" ~ expression ~ stmt_sep }
-// attributes = { "#[" ~ attribute_identifier ~ ("," ~ attribute_identifier)* ~ "]" }
-// attribute_identifier = { "constructor" | "private" | "public" | "get" | "set" | "static" }
-// block = { "{" ~ statement* ~ "}" ~ stmt_sep? }
-
-// generics = { "<" ~ identifier ~ ("," ~ identifier)* ~ ">" }
-
-// base_type = { identifier ~ generics? }
-// array_type = { base_type ~ ("[" ~ "]")+ }
-
-// type = { array_type | base_type }
-// type_definition = { "type" ~ identifier ~ generics? ~ "=" ~ type ~ stmt_sep }
-
-// array_expression = { "[" ~ (expression ~ ("," ~ expression)* )? ~ "]" }
-// array_index = { "[" ~ expression ~ "]" }
-// array_access = { identifier ~ array_index* }
-// base_access = _{ identifier }
-// dot_access = _{ base_access ~ dot_access_tail* }
-// dot_access_tail = _{ ("." ~ function_call | "." ~ identifier | "[" ~ expression ~ "]") }
-
-// base_expression = _{ binary_op | unary_op | non_operator_expression }
-// expression = { equality_expression }
-
-// equality_expression = { add_sub_expression ~ ( ("==" | "!=") ~ add_sub_expression )* }
-// add_sub_expression = { mul_div_expression ~ ( ("+" | "-") ~ mul_div_expression )* }
-// mul_div_expression = { factor ~ ( ("*" | "/") ~ factor )* }
-// factor = _{ unary_expression | "(" ~ expression ~ ")" | non_operator_expression }
-
-// unary_expression = { ("-" | "!") ~ factor }
-
-// call_chain_segment = _{ ("." | "->") ~ identifier ~ ("(" ~ function_call_arguments? ~ ")")? }
-// chained_call = _{ base_expression ~ call_chain_segment+ }
-
-// binary_op = { non_operator_expression ~ ("+" ~ non_operator_expression | "-" ~ non_operator_expression | "*" ~ non_operator_expression | "/" ~ non_operator_expression | "==" ~ non_operator_expression)* }
-// unary_op = { ("-" | "!") ~ base_expression }
-
-// paren_expression = _{ "(" ~ expression ~ ")" }
-// non_operator_expression = _{ paren_expression | dot_access | function_call | literal | identifier | array_expression }
-
-// literal = { string_literal | number_literal }
-// string_literal = { "\"" ~ (!("\"") ~ ANY)* ~ "\"" }
-// number_literal = { ("-"? ~ ASCII_NONZERO_DIGIT ~ ASCII_DIGIT* ~ ("." ~ ASCII_DIGIT+)?) | "0" }
-
-// identifier = @{ (ASCII_ALPHA | "_") ~ (ASCII_ALPHANUMERIC | "_")* }
-
-// //* other statements *//
-// return_stmt = { "return" ~ expression? ~ stmt_sep }
-// function_call_stmt = { function_call ~ stmt_sep }
-
-// //* to be ignored *//
-// line_comment = _{ "//" ~ (!"\n" ~ ANY)* ~ "\n" }
-// block_comment = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" }
-
-// COMMENT = _{ line_comment | block_comment }
-// WHITESPACE = _{ " " | "\t" | "\r" | "\n" }
-
 program = { SOI ~ statement+ ~ EOI }
-statement = { function | type_definition | class_definition | class_declaration | variable_definition | return_stmt | function_call_stmt }
+statement = _{ function_definition_stmt | type_definition_stmt | class_definition | class_declaration | variable_definition_stmt | function_call_stmt | return_stmt }
 
+stmt_sep = _{ ";" }
+
+//* functions *//
 function_header = { "function" ~ identifier ~ generics? ~ "(" ~ function_definition_arguments? ~ ")" ~ ("->" ~ type)? }
-function = { function_header ~ block }
-
-function_call = { identifier ~ "(" ~ function_call_arguments? ~ ")" }
-nested_function_call = { function_call ~ "(" ~ function_call_arguments? ~ ")" }
 
 function_definition_arguments = { identifier ~ ":" ~ type ~ ("," ~ identifier ~ ":" ~ type)* }
 function_call_arguments = { expression ~ ("," ~ expression)* ~ ","? }
 
-stmt_sep = _{ ";" }
+block = { "{" ~ statement* ~ "}" ~ stmt_sep? }
 
+//* class declaration *//
 class_declaration = { "declare"? ~ "class" ~ identifier ~ generics? ~ "{" ~ class_declaration_member* ~ "}" ~ stmt_sep? }
 class_declaration_member = { class_declaration_function | class_declaration_variable }
 
 class_declaration_function = { attributes? ~ function_header ~ stmt_sep }
 class_declaration_variable = { identifier ~ ":" ~ type ~ stmt_sep }
 
+//* class definition *//
 class_definition = { "class" ~ identifier ~ generics? ~ "{" ~ class_definition_member* ~ "}" ~ stmt_sep? }
 class_definition_member = { class_definition_function | class_definition_variable }
 
-class_definition_function = { attributes? ~ function ~ stmt_sep? }
+class_definition_function = { attributes? ~ function_definition_stmt ~ stmt_sep? }
 class_definition_variable = { identifier ~ ":" ~ type ~ ("=" ~ expression)? ~ stmt_sep }
 
-variable_definition = { "var" ~ identifier ~ (":" ~ type)? ~ "=" ~ expression ~ stmt_sep }
+// general class stuff //
 attributes = { "#[" ~ attribute_identifier ~ ("," ~ attribute_identifier)* ~ "]" }
 attribute_identifier = { "constructor" | "private" | "public" | "get" | "set" | "static" }
-block = { "{" ~ statement* ~ "}" ~ stmt_sep? }
 
-generics = { "<" ~ identifier ~ ("," ~ identifier)* ~ ">" }
+//* types *//
+type = { array_type | base_type }
 
 base_type = { identifier ~ generics? }
 array_type = { base_type ~ ("[" ~ "]")+ }
 
-type = { array_type | base_type }
-type_definition = { "type" ~ identifier ~ generics? ~ "=" ~ type ~ stmt_sep }
+generics = { "<" ~ identifier ~ ("," ~ identifier)* ~ ">" }
 
-array_expression = { "[" ~ (expression ~ ("," ~ expression)* )? ~ "]" }
-array_index = { "[" ~ expression ~ "]" }
-array_access = { identifier ~ array_index* }
-base_access = _{ identifier }
-dot_access = _{ base_access ~ dot_access_tail* }
-dot_access_tail = _{ ("." ~ function_call | "." ~ identifier | "[" ~ expression ~ "]") }
+//* expressions *//
+expression = { unary_expression | binary_expression | term }
 
-base_expression = _{ binary_op | unary_op | non_operator_expression }
-expression = { equality_expression }
+// general expression stuff //
+unary_expression = { "-" ~ term }
+binary_expression = { term ~ (operator ~ term)+ }
+operator = { "+" | "-" | "/" | "*" }
 
-equality_expression = { add_sub_expression ~ ( ("==" | "!=") ~ add_sub_expression )* }
-add_sub_expression = { mul_div_expression ~ ( ("+" | "-") ~ mul_div_expression )* }
-mul_div_expression = { factor ~ ( ("*" | "/") ~ factor )* }
+// terms //
+term = _{ function_call_expression | array_access_expression | array_expression | term_without_recursion }
+term_without_recursion = _{ literal | identifier | "(" ~ expression ~ ")" }
 
-factor = _{ unary_expression | function_call | "(" ~ expression ~ ")" | non_operator_expression }
-factor_no_call = _{ "(" ~ expression ~ ")" | non_operator_expression_no_call }
+// basic expressions //
+array_expression = { "[" ~ (term_without_recursion ~ ("," ~ term_without_recursion)*)? ~ "]" }
 
-non_operator_expression = _{ paren_expression | dot_access | function_call | literal | identifier | array_expression }
+// recursive expressions //
+function_call_expression = { term_without_recursion ~ EXPRESSION_access }
+array_access_expression = { term_without_recursion ~ EXPRESSION_access }
+dot_access_expression = { term_without_recursion ~ EXPRESSION_access }
+arrow_access_expression = { term_without_recursion ~ EXPRESSION_access }
 
-unary_expression = { ("-" | "!") ~ factor_no_call }
+// recursive expression helpers //
+EXPRESSION_access = _{ EXPRESSION_array_access | EXPRESSION_function_call | EXPRESSION_dot_access | EXPRESSION_arrow_access }
 
-call_chain_segment = _{ ("." | "->") ~ identifier ~ ("(" ~ function_call_arguments? ~ ")")? }
-chained_call = _{ base_expression ~ call_chain_segment+ }
+EXPRESSION_array_access = _{ "[" ~ expression ~ "]" ~ EXPRESSION_access?}
+EXPRESSION_function_call = _{ "(" ~ function_call_arguments? ~ ")" ~ EXPRESSION_access? }
+EXPRESSION_dot_access = _{ "." ~ expression ~ EXPRESSION_access? }
+EXPRESSION_arrow_access = _{ "->" ~ expression ~ EXPRESSION_access? }
 
-binary_op = { non_operator_expression ~ ("+" ~ non_operator_expression | "-" ~ non_operator_expression | "*" ~ non_operator_expression | "/" ~ non_operator_expression | "==" ~ non_operator_expression)* }
-unary_op = { ("-" | "!") ~ base_expression }
-
-paren_expression = _{ "(" ~ expression ~ ")" }
-non_operator_expression_no_call = _{ paren_expression | dot_access | literal | identifier | array_expression }
-
-literal = { string_literal | number_literal }
-string_literal = { "\"" ~ (!("\"") ~ ANY)* ~ "\"" }
-number_literal = { ("-"? ~ ASCII_NONZERO_DIGIT ~ ASCII_DIGIT* ~ ("." ~ ASCII_DIGIT+)?) | "0" }
+//* literals and identifiers *//
+literal = _{ string_literal | number_literal }
+string_literal = @{ "\"" ~ (!("\"") ~ ANY)* ~ "\"" }
+number_literal = @{ ("-"? ~ ASCII_NONZERO_DIGIT ~ ASCII_DIGIT* ~ ("." ~ ASCII_DIGIT+)?) | "0" }
 
 identifier = @{ (ASCII_ALPHA | "_") ~ (ASCII_ALPHANUMERIC | "_")* }
 
-//* other statements *//
+//* statements *//
+variable_definition_stmt = { "var" ~ identifier ~ (":" ~ type)? ~ "=" ~ expression ~ stmt_sep }
+function_definition_stmt = { function_header ~ block }
+type_definition_stmt = { "type" ~ identifier ~ generics? ~ "=" ~ type ~ stmt_sep }
+function_call_stmt = { function_call_expression ~ stmt_sep }
 return_stmt = { "return" ~ expression? ~ stmt_sep }
-function_call_stmt = { function_call ~ stmt_sep }
 
 //* to be ignored *//
-line_comment = _{ "//" ~ (!"\n" ~ ANY)* ~ "\n" }
+line_comment = _{ "//" ~ (!"\n" ~ ANY)* ~ ("\n" | EOI) }
 block_comment = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" }
 
 COMMENT = _{ line_comment | block_comment }

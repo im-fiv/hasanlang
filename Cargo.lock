@@ -193,6 +193,7 @@ dependencies = [
  "anyhow",
  "cfg-if",
  "inkwell",
+ "lazy_static",
  "llvm-sys",
  "pest",
  "pest_derive",
