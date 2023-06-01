@@ -15,7 +15,7 @@ pub enum Statement {
 	ClassDefinition,
 	ClassDeclaration,
 	VariableDefinition(String, Expression),
-	FunctionCall,
+	FunctionCall(String, Vec<Expression>),
 	Return,
 
 	// special statements that are not intended to be used traditionally
@@ -31,10 +31,12 @@ pub enum Expression {
 	Unary(Operator, Box<Expression>),
 	Binary(Box<Expression>, Operator, Box<Expression>),
 
-	FunctionCall,
-	ArrayAccess,
+	FunctionCall(Box<Expression>, Vec<Expression>),
+	ArrayAccess(Box<Expression>, Box<Expression>),
+	DotAccess(Box<Expression>, Box<Expression>),
+	ArrowAccess(Box<Expression>, Box<Expression>),
 	Array,
-	Identifier,
+	Identifier(String),
 
 	Unimplemented
 }
@@ -45,7 +47,8 @@ pub enum Operator {
 	Plus,
 	Minus,
 	Divide,
-	Multiply
+	Multiply,
+	Modulo
 }
 
 #[allow(unused_variables)] // ! MUST REMOVE LATER
@@ -112,6 +115,7 @@ impl<'p> ASTParser<'p> {
 			"-" => Operator::Minus,
 			"/" => Operator::Divide,
 			"*" => Operator::Multiply,
+			"%" => Operator::Modulo,
 
 			string => panic!("Unexpected operator \"{}\"", string)
 		}
@@ -119,15 +123,25 @@ impl<'p> ASTParser<'p> {
 
 	fn parse_expression(&self, pairs: Pairs<'p, Rule>) -> Expression {
 		let mut pairs = pairs.peekable();
-		let mut left = self.parse_term(&mut pairs);
+		self.parse_expression_with_precedence(&mut pairs, 0)
+	}
+
+	fn parse_expression_with_precedence(&self, pairs: &mut Peekable<Pairs<'p, Rule>>, precedence: u8) -> Expression {
+		let mut left = self.parse_term(pairs);
 	
 		while let Some(pair) = pairs.peek() {
 			if pair.as_rule() == Rule::operator {
+				let operator_precedence = self.get_operator_precedence(pair);
+				
+				if operator_precedence < precedence {
+					break;
+				}
+	
 				let operator = self.parse_operator(pair);
 				pairs.next(); // Consume the operator
 				
-				let right = self.parse_term(&mut pairs);
-
+				let right = self.parse_expression_with_precedence(pairs, operator_precedence + 1);
+	
 				left = Expression::Binary(
 					Box::new(left),
 					operator,
@@ -141,6 +155,15 @@ impl<'p> ASTParser<'p> {
 		left
 	}
 
+	fn get_operator_precedence(&self, pair: &Pair<'p, Rule>) -> u8 {
+		match pair.as_str() {
+			"+" | "-" => 1,
+			"*" | "/" | "%" => 2,
+			
+			_ => panic!("Unexpected operator \"{}\"", pair.as_str()),
+		}
+	}
+
 	fn parse_term(&self, pairs: &mut Peekable<Pairs<'p, Rule>>) -> Expression {
 		if let Some(pair) = pairs.next() {
 			match pair.as_rule() {
@@ -151,7 +174,7 @@ impl<'p> ASTParser<'p> {
 					Expression::Unary(operator, Box::new(operand))
 				}
 
-				Rule::binary_expression => self.parse_expression(pair.into_inner()),
+				Rule::binary_expression | Rule::expression => self.parse_expression(pair.into_inner()),
 
 				Rule::number_literal => {
 					let string = pair.as_str().to_owned();
