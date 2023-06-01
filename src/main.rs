@@ -1,12 +1,9 @@
 use std::fs;
 use pest::Parser;
 
-mod hasan_parser;
-use hasan_parser::ASTParser;
-
-#[derive(pest_derive::Parser)]
-#[grammar = "grammar.pest"]
-struct HasanPestParser;
+use hasan::{tokenizer, parser};
+use tokenizer::{HasanPestParser, Rule};
+use parser::ASTParser;
 
 const FILE_PATH: &str = "./input.adl";
 

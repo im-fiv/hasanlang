@@ -1,5 +1,7 @@
 use pest::iterators::{Pair, Pairs};
-use crate::Rule;
+use crate::tokenizer::Rule;
+
+use std::iter::Peekable;
 
 pub struct ASTParser<'p> {
 	pairs: Pairs<'p, Rule>
@@ -116,46 +118,59 @@ impl<'p> ASTParser<'p> {
 	}
 
 	fn parse_expression(&self, pairs: Pairs<'p, Rule>) -> Expression {
-		for pair in pairs {
+		let mut pairs = pairs.peekable();
+		let mut left = self.parse_term(&mut pairs);
+	
+		while let Some(pair) = pairs.peek() {
+			if pair.as_rule() == Rule::operator {
+				let operator = self.parse_operator(pair);
+				pairs.next(); // Consume the operator
+				
+				let right = self.parse_term(&mut pairs);
+
+				left = Expression::Binary(
+					Box::new(left),
+					operator,
+					Box::new(right)
+				);
+			} else {
+				break;
+			}
+		}
+	
+		left
+	}
+
+	fn parse_term(&self, pairs: &mut Peekable<Pairs<'p, Rule>>) -> Expression {
+		if let Some(pair) = pairs.next() {
 			match pair.as_rule() {
 				Rule::unary_expression => {
-					self.parse_expression(pair.into_inner());
-					()
+					let operator = self.parse_operator(&pair);
+					let operand = self.parse_term(pairs);
+
+					Expression::Unary(operator, Box::new(operand))
 				}
 
-				Rule::binary_expression => {
-					self.parse_expression(pair.into_inner());
-					()
-				},
+				Rule::binary_expression => self.parse_expression(pair.into_inner()),
 
 				Rule::number_literal => {
 					let string = pair.as_str().to_owned();
 					let literal = string.parse::<i32>()
 						.expect(format!("Failed to parse number \"{}\"", string).as_str());
-
-					println!("{}", literal);
-					()
+	
+					Expression::Number(literal)
 				},
 
 				Rule::string_literal => {
-					let literal = pair.as_str();
-
-					println!("{}", literal);
-					()
+					let literal = pair.as_str().to_owned();
+					Expression::String(literal)
 				},
 
-				Rule::operator => {
-					let operator = self.parse_operator(&pair);
-
-					println!("{:?} {}", operator, pair.as_str());
-					()
-				}
-
-				rule => panic!("Got invalid expression rule: \"{:?}\"", rule)
+				rule => panic!("Got invalid expression rule: \"{:?}\"", rule),
 			}
+		} else {
+			panic!("Unexpected end of input");
 		}
-
-		Expression::Unimplemented
 	}
 
 	fn parse_function_definition(&self, pairs: Pairs<'p, Rule>) -> Statement {
