@@ -43,7 +43,7 @@ expression = { unary_expression | binary_expression | term }
 // general expression stuff //
 unary_expression = { "-" ~ term }
 binary_expression = { term ~ (operator ~ term)+ }
-operator = { "+" | "-" | "/" | "*" }
+operator = { "+" | "-" | "/" | "*" | "%" }
 
 // terms //
 term = _{ function_call_expression | array_access_expression | array_expression | term_without_recursion }
