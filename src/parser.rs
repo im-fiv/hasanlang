@@ -1,7 +1,9 @@
 use pest::iterators::{Pair, Pairs};
 use crate::tokenizer::Rule;
 
-use std::iter::Peekable;
+use std::{iter::Peekable, fmt::Display};
+
+pub type NumberType = i32;
 
 pub struct ASTParser<'p> {
 	pairs: Pairs<'p, Rule>
@@ -19,7 +21,7 @@ pub enum Statement {
 	Return,
 
 	// special statements that are not intended to be used traditionally
-	Unimplemented
+	Unimplemented(Option<Rule>)
 }
 
 #[allow(dead_code)] // ! MUST REMOVE LATER
@@ -35,7 +37,7 @@ pub enum Expression {
 	ArrayAccess(Box<Expression>, Box<Expression>),
 	DotAccess(Box<Expression>, Box<Expression>),
 	ArrowAccess(Box<Expression>, Box<Expression>),
-	Array,
+	Array(Vec<Box<Expression>>),
 	Identifier(String),
 
 	Unimplemented
@@ -47,8 +49,20 @@ pub enum Operator {
 	Plus,
 	Minus,
 	Divide,
-	Multiply,
+	Times,
 	Modulo
+}
+
+impl Display for Operator {
+	fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+		match self {
+            Operator::Plus => write!(f, "+"),
+            Operator::Minus => write!(f, "-"),
+            Operator::Divide => write!(f, "/"),
+            Operator::Times => write!(f, "*"),
+            Operator::Modulo => write!(f, "%"),
+        }
+	}
 }
 
 #[allow(unused_variables)] // ! MUST REMOVE LATER
@@ -114,7 +128,7 @@ impl<'p> ASTParser<'p> {
 			"+" => Operator::Plus,
 			"-" => Operator::Minus,
 			"/" => Operator::Divide,
-			"*" => Operator::Multiply,
+			"*" => Operator::Times,
 			"%" => Operator::Modulo,
 
 			string => panic!("Unexpected operator \"{}\"", string)
@@ -164,6 +178,21 @@ impl<'p> ASTParser<'p> {
 		}
 	}
 
+	fn parse_number_literal(&self, pair: Pair<'p, Rule>) -> Expression {
+		let string = pair.as_str().to_owned();
+		let literal = string.parse::<NumberType>()
+			.expect(format!("Failed to parse number \"{}\"", string).as_str());
+
+		Expression::Number(literal)
+	}
+
+	fn parse_string_literal(&self, pair: Pair<'p, Rule>) -> Expression {
+		let literal = pair.as_str().to_owned();
+		let clean_literal = literal.trim_start_matches(&['\'', '\"'][..]).trim_end_matches(&['\'', '\"'][..]);
+
+		Expression::String(clean_literal.to_owned())
+	}
+
 	fn parse_term(&self, pairs: &mut Peekable<Pairs<'p, Rule>>) -> Expression {
 		if let Some(pair) = pairs.next() {
 			match pair.as_rule() {
@@ -175,19 +204,12 @@ impl<'p> ASTParser<'p> {
 				}
 
 				Rule::binary_expression | Rule::expression => self.parse_expression(pair.into_inner()),
+				Rule::function_call_expression => self.parse_function_call_expression(pair.into_inner()),
 
-				Rule::number_literal => {
-					let string = pair.as_str().to_owned();
-					let literal = string.parse::<i32>()
-						.expect(format!("Failed to parse number \"{}\"", string).as_str());
-	
-					Expression::Number(literal)
-				},
+				Rule::number_literal => self.parse_number_literal(pair),
+				Rule::string_literal => self.parse_string_literal(pair),
 
-				Rule::string_literal => {
-					let literal = pair.as_str().to_owned();
-					Expression::String(literal)
-				},
+				Rule::identifier => Expression::Identifier(pair.as_str().to_owned()),
 
 				rule => panic!("Got invalid expression rule: \"{:?}\"", rule),
 			}
@@ -196,20 +218,54 @@ impl<'p> ASTParser<'p> {
 		}
 	}
 
+	fn parse_function_call_expression(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
+		let mut pairs = pairs_borrowed.clone();
+		
+		// extract callee
+		let callee_pair = pairs.next().expect("Identifier or expression expected in function call expression, got nothing");
+
+		match callee_pair.as_rule() {
+			Rule::number_literal | Rule::string_literal => panic!("Number and string literals are not valid function names"),
+			_ => ()
+		}
+
+		let callee = self.parse_expression(pairs_borrowed);
+
+		// extract arguments
+		let args_option_pair = pairs.next();
+		
+		// if there's no arguments, return early
+		if args_option_pair.is_none() {
+			return Expression::FunctionCall(Box::new(callee), Vec::new())
+		}
+
+		let args_pair = args_option_pair.unwrap();
+		let mut args: Vec<Expression> = Vec::new();
+
+		for arg_pair in args_pair.into_inner() {
+			// arg_pair is always wrapped in an expression in this case
+			let parsed = self.parse_expression(arg_pair.into_inner());
+			args.push(parsed);
+		}
+
+		// return
+		Expression::FunctionCall(Box::new(callee), args)
+	}
+
 	fn parse_function_definition(&self, pairs: Pairs<'p, Rule>) -> Statement {
-		Statement::Unimplemented
+		Statement::Unimplemented(Some(Rule::function_definition_stmt))
 	}
 
 	fn parse_type_definition(&self, pairs: Pairs<'p, Rule>) -> Statement {
-		Statement::Unimplemented
+		Statement::Unimplemented(Some(Rule::type_definition_stmt))
 	}
 
 	fn parse_class_definition(&self, pairs: Pairs<'p, Rule>) -> Statement {
-		Statement::Unimplemented
+		Statement::Unimplemented(Some(Rule::class_definition))
 	}
 
 	fn parse_class_declaration(&self, pairs: Pairs<'p, Rule>) -> Statement {
-		Statement::Unimplemented
+		Statement::Unimplemented(Some(Rule::class_declaration))
 	}
 
 	fn parse_variable_definition(&self, pairs: Pairs<'p, Rule>) -> Statement {
@@ -232,10 +288,10 @@ impl<'p> ASTParser<'p> {
 	}
 
 	fn parse_function_call(&self, pairs: Pairs<'p, Rule>) -> Statement {
-		Statement::Unimplemented
+		Statement::Unimplemented(Some(Rule::function_call_stmt))
 	}
 
 	fn parse_return(&self, pairs: Pairs<'p, Rule>) -> Statement {
-		Statement::Unimplemented
+		Statement::Unimplemented(Some(Rule::return_stmt))
 	}
 }

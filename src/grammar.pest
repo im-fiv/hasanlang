@@ -68,7 +68,7 @@ EXPRESSION_arrow_access = _{ "->" ~ expression ~ EXPRESSION_access? }
 
 //* literals and identifiers *//
 literal = _{ string_literal | number_literal }
-string_literal = @{ "\"" ~ (!("\"") ~ ANY)* ~ "\"" }
+string_literal = { "\"" ~ (!("\"") ~ ANY)* ~ "\"" }
 number_literal = @{ ("-"? ~ ASCII_NONZERO_DIGIT ~ ASCII_DIGIT* ~ ("." ~ ASCII_DIGIT+)?) | "0" }
 
 identifier = @{ (ASCII_ALPHA | "_") ~ (ASCII_ALPHANUMERIC | "_")* }
