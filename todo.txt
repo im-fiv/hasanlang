@@ -7,6 +7,6 @@
 
 	this does:
 	var a = (hello())();
-	(types don't support parenthesis so no working solution exists)
+	(types don't support parenthesis so no working solution exists yet)
 
 2. implement generics checking for function definition and calls
