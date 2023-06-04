@@ -1,3 +1,1 @@
-var variable = func(2 + 2, "hello", "world!")(asdasd);
-
-// TODO: allow for recursive function calls, this does not seem to work if not surrounded by parenthesis beforehand
+function sum() -> lol<A, B>[] { }
