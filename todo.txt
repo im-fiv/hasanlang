@@ -1,12 +1,1 @@
-1. 	fix recursive (function calls/any other recursive access) not being properly tokenized if not surrounded by parenthesis
-	the issue lies in the grammar itself
-
-	this does not work:
-	var a = hello()();
-	type b<T> = T[][];
-
-	this does:
-	var a = (hello())();
-	(types don't support parenthesis so no working solution exists yet)
-
-2. implement generics checking for function definition and calls
+1. 	DELETE
