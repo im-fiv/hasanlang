@@ -5,7 +5,7 @@ use hasan::{tokenizer, parser};
 use tokenizer::{HasanPestParser, Rule};
 use parser::ASTParser;
 
-const FILE_PATH: &str = "./input.adl";
+const FILE_PATH: &str = "./input.hs";
 
 fn safe_file_read(path: &str) -> String {
     fs::read_to_string(path).unwrap_or("".to_owned())
