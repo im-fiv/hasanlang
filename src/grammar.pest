@@ -6,7 +6,8 @@ stmt_sep = _{ ";" }
 //* functions *//
 function_header = { "function" ~ identifier ~ generics? ~ "(" ~ function_definition_arguments? ~ ")" ~ ("->" ~ type)? }
 
-function_definition_arguments = { identifier ~ ":" ~ type ~ ("," ~ identifier ~ ":" ~ type)* }
+function_definition_argument = { identifier ~ ":" ~ type }
+function_definition_arguments = { function_definition_argument ~ ("," ~ function_definition_argument)* }
 function_call_arguments = { expression ~ ("," ~ expression)* ~ ","? }
 
 block = { "{" ~ statement* ~ "}" ~ stmt_sep? }
@@ -32,7 +33,7 @@ attribute_identifier = { "constructor" | "private" | "public" | "get" | "set" | 
 //* types *//
 type = { array_type | base_type }
 
-base_type = { identifier ~ generics? }
+base_type = _{ identifier ~ generics? }
 array_type = { base_type ~ ("[" ~ "]")+ }
 
 generics = { "<" ~ identifier ~ ("," ~ identifier)* ~ ">" }
