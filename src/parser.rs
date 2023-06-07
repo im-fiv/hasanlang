@@ -79,6 +79,11 @@ pub enum Expression {
 		array_type: bool
 	},
 
+	TypeCast {
+		value: Box<Expression>,
+		to_type: Box<Expression> //* */ Expression::Type
+	},
+
 	Empty,
 	Unimplemented
 }
@@ -249,18 +254,36 @@ impl<'p> ASTParser<'p> {
 
 				Rule::binary_expression | Rule::expression => self.parse_expression(pair.into_inner()),
 				Rule::function_call_expression => self.parse_function_call_expression(pair.into_inner()),
+				Rule::type_cast_expression => self.parse_type_cast_expression(pair.into_inner()),
 
 				Rule::number_literal => self.parse_number_literal(pair),
 				Rule::string_literal => self.parse_string_literal(pair),
 
 				Rule::identifier => Expression::Identifier(pair.as_str().to_owned()),
-
 				Rule::r#type => self.parse_type(pair),
 
 				rule => panic!("Got invalid expression rule: \"{:?}\"", rule),
 			}
 		} else {
 			panic!("Unexpected end of input");
+		}
+	}
+
+	fn parse_type_cast_expression(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
+		let mut pairs = pairs_borrowed.clone();
+
+		// verify but skip value pair to let parse_expression handle it
+		pairs
+			.next()
+			.expect("Failed to parse value of a type cast");
+
+		let type_pair = pairs
+			.next()
+			.expect("Failed to parse type of a type cast");
+
+		Expression::TypeCast {
+			value: Box::new(self.parse_expression(pairs_borrowed)),
+			to_type: Box::new(self.parse_type(type_pair))
 		}
 	}
 
