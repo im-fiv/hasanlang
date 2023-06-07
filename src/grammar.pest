@@ -40,11 +40,12 @@ definition_generics = { "<" ~ identifier ~ ("," ~ identifier)* ~ ">" }
 call_generics = { "<" ~ type ~ ("," ~ type)* ~ ">" }
 
 //* expressions *//
-expression = { unary_expression | binary_expression | term }
+expression = { unary_expression | binary_expression | type_cast_expression | term }
 
 // general expression stuff //
 unary_expression = { "-" ~ term }
 binary_expression = { term ~ (operator ~ term)+ }
+type_cast_expression = { term ~ "as" ~ type }
 operator = { "+" | "-" | "/" | "*" | "%" }
 
 // terms //

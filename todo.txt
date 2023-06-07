@@ -9,4 +9,4 @@
 	var a = (hello())();
 	(types don't support parenthesis so no working solution exists yet)
 
-2. implement generics checking for function definition and calls
+2. probably add precedence to type cast expression

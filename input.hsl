@@ -1,5 +1,5 @@
-function convert<A, B>(input: A) -> B {
-	return B(one);
+function add_and_convert<A, B>(left: A, right: B) -> B {
+	return input as B;
 }
 
-convert<int, float>(1);
+add_and_convert<int, float>(1, 5);
