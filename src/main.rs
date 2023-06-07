@@ -21,5 +21,5 @@ fn main() {
     let ast_parser = ASTParser::new(pairs);
     let ast = ast_parser.parse();
 
-    println!("parsed ast ({}): {:?}", ast.len(), ast);
+    println!("parsed ast ({}): {:#?}", ast.len(), ast);
 }
