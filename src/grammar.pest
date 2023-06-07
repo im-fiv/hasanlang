@@ -4,7 +4,7 @@ statement = _{ function_definition_stmt | type_definition_stmt | class_definitio
 stmt_sep = _{ ";" }
 
 //* functions *//
-function_header = { "function" ~ identifier ~ generics? ~ "(" ~ function_definition_arguments? ~ ")" ~ ("->" ~ type)? }
+function_header = { "function" ~ identifier ~ definition_generics? ~ "(" ~ function_definition_arguments? ~ ")" ~ ("->" ~ type)? }
 
 function_definition_argument = { identifier ~ ":" ~ type }
 function_definition_arguments = { function_definition_argument ~ ("," ~ function_definition_argument)* }
@@ -13,14 +13,14 @@ function_call_arguments = { expression ~ ("," ~ expression)* ~ ","? }
 block = { "{" ~ statement* ~ "}" ~ stmt_sep? }
 
 //* class declaration *//
-class_declaration = { "declare"? ~ "class" ~ identifier ~ generics? ~ "{" ~ class_declaration_member* ~ "}" ~ stmt_sep? }
+class_declaration = { "declare"? ~ "class" ~ identifier ~ definition_generics? ~ "{" ~ class_declaration_member* ~ "}" ~ stmt_sep? }
 class_declaration_member = { class_declaration_function | class_declaration_variable }
 
 class_declaration_function = { attributes? ~ function_header ~ stmt_sep }
 class_declaration_variable = { identifier ~ ":" ~ type ~ stmt_sep }
 
 //* class definition *//
-class_definition = { "class" ~ identifier ~ generics? ~ "{" ~ class_definition_member* ~ "}" ~ stmt_sep? }
+class_definition = { "class" ~ identifier ~ definition_generics? ~ "{" ~ class_definition_member* ~ "}" ~ stmt_sep? }
 class_definition_member = { class_definition_function | class_definition_variable }
 
 class_definition_function = { attributes? ~ function_definition_stmt ~ stmt_sep? }
@@ -33,10 +33,11 @@ attribute_identifier = { "constructor" | "private" | "public" | "get" | "set" | 
 //* types *//
 type = { array_type | base_type }
 
-base_type = _{ identifier ~ generics? }
+base_type = _{ identifier ~ definition_generics? }
 array_type = { base_type ~ ("[" ~ "]")+ }
 
-generics = { "<" ~ identifier ~ ("," ~ identifier)* ~ ">" }
+definition_generics = { "<" ~ identifier ~ ("," ~ identifier)* ~ ">" }
+call_generics = { "<" ~ type ~ ("," ~ type)* ~ ">" }
 
 //* expressions *//
 expression = { unary_expression | binary_expression | term }
@@ -63,7 +64,7 @@ arrow_access_expression = { term_without_recursion ~ EXPRESSION_access }
 EXPRESSION_access = _{ EXPRESSION_array_access | EXPRESSION_function_call | EXPRESSION_dot_access | EXPRESSION_arrow_access }
 
 EXPRESSION_array_access = _{ "[" ~ expression ~ "]" ~ EXPRESSION_access?}
-EXPRESSION_function_call = _{ "(" ~ function_call_arguments? ~ ")" ~ EXPRESSION_access? }
+EXPRESSION_function_call = _{ call_generics? ~ "(" ~ function_call_arguments? ~ ")" ~ EXPRESSION_access? }
 EXPRESSION_dot_access = _{ "." ~ expression ~ EXPRESSION_access? }
 EXPRESSION_arrow_access = _{ "->" ~ expression ~ EXPRESSION_access? }
 
@@ -77,7 +78,7 @@ identifier = @{ (ASCII_ALPHA | "_") ~ (ASCII_ALPHANUMERIC | "_")* }
 //* statements *//
 variable_definition_stmt = { "var" ~ identifier ~ (":" ~ type)? ~ "=" ~ expression ~ stmt_sep }
 function_definition_stmt = { function_header ~ block }
-type_definition_stmt = { "type" ~ identifier ~ generics? ~ "=" ~ type ~ stmt_sep }
+type_definition_stmt = { "type" ~ identifier ~ definition_generics? ~ "=" ~ type ~ stmt_sep }
 function_call_stmt = { function_call_expression ~ stmt_sep }
 return_stmt = { "return" ~ expression? ~ stmt_sep }
 

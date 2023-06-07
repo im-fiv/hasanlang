@@ -8,7 +8,7 @@ pub enum Type {
 }
 
 impl Type {
-	pub fn as_str_llvm(&self) -> String {
+	pub fn as_llvm_type_str(&self) -> String {
 		match self {
 			Type::Int => "i32".to_owned(),
 			Type::String => "internal_str".to_owned(),
@@ -19,7 +19,7 @@ impl Type {
 		}
 	}
 
-	pub fn as_str_parser(&self) -> String {
+	pub fn as_parser_type_str(&self) -> String {
 		match self {
 			Type::Int => "int".to_owned(),
 			Type::String => "str".to_owned(),
@@ -30,7 +30,7 @@ impl Type {
 		}
 	}
 
-	pub fn from_parser_type(name: &str) -> Type {
+	pub fn from_parser_type_str(name: &str) -> Type {
 		match name {
 			"int" => Type::Int,
 			"str" => Type::String,

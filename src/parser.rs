@@ -14,6 +14,7 @@ pub struct ASTParser<'p> {
 pub enum Statement {
 	FunctionDefinition {
 		name: String,
+		generics: Vec<Expression>,
 		arguments: Vec<FunctionArgument>,
 		return_type: Expression, //* Expression::Type
 		statements: Vec<Statement>
@@ -22,14 +23,21 @@ pub enum Statement {
 	TypeDefinition,
 	ClassDefinition,
 	ClassDeclaration,
-	VariableDefinition(String, Expression),
-	FunctionCall(Box<Expression>, Vec<Expression>),
-	Return(Box<Expression>),
+	VariableDefinition(String, Box<Expression>),
+
+	FunctionCall {
+		callee: Expression,
+		generics: Vec<Expression>,
+		arguments: Vec<Expression>
+	},
+
+	Return(Expression),
 
 	// special statements that are not intended to be used traditionally
 	Unimplemented(Option<Rule>)
 }
 
+#[allow(dead_code)]
 #[derive(Debug)]
 pub struct FunctionArgument {
 	name: Expression, //* Expression::Identifier
@@ -53,16 +61,21 @@ pub enum Expression {
 	Unary(Operator, Box<Expression>),
 	Binary(Box<Expression>, Operator, Box<Expression>),
 
-	FunctionCall(Box<Expression>, Vec<Expression>),
+	FunctionCall {
+		callee: Box<Expression>,
+		generics: Vec<Expression>,
+		arguments: Vec<Expression>
+	},
+
 	ArrayAccess(Box<Expression>, Box<Expression>),
 	DotAccess(Box<Expression>, Box<Expression>),
 	ArrowAccess(Box<Expression>, Box<Expression>),
-	Array(Vec<Box<Expression>>),
+	Array(Vec<Expression>),
 	Identifier(String),
 
 	Type {
-		base: ParserTypeUtility,
-		generics: Box<Vec<Expression>>,
+		base: Box<Expression>,
+		generics: Vec<Expression>,
 		array_type: bool
 	},
 
@@ -70,33 +83,21 @@ pub enum Expression {
 	Unimplemented
 }
 
-// NOTE: this is just a utility type
-#[derive(Debug, Clone)]
-pub enum ParserTypeUtility {
-	Expression(Box<Expression>)
-}
+pub struct ParserTypeUtility;
 
 impl ParserTypeUtility {
-	pub fn void_type() -> ParserTypeUtility {
+	pub fn void_type() -> Box<Expression> {
 		ParserTypeUtility::from_parser_type(Type::Void)
 	}
 
-	pub fn from_parser_type(parser_type: Type) -> ParserTypeUtility {
-		ParserTypeUtility::Expression(
-			Box::new(
-				Expression::Identifier(
-					parser_type.as_str_parser().to_owned()
-				)
-			)
-		)
+	pub fn from_parser_type(parser_type: Type) -> Box<Expression> {
+		Box::new(Expression::Identifier(
+			parser_type.as_parser_type_str().to_owned()
+		))
 	}
 
-	pub fn from_string(name: String) -> ParserTypeUtility {
-		ParserTypeUtility::Expression(
-			Box::new(
-				Expression::Identifier(name)
-			)
-		)
+	pub fn from_string(name: String) -> Box<Expression> {
+		Box::new(Expression::Identifier(name))
 	}
 }
 
@@ -254,10 +255,7 @@ impl<'p> ASTParser<'p> {
 
 				Rule::identifier => Expression::Identifier(pair.as_str().to_owned()),
 
-				Rule::r#type => {
-					println!("parse_term(pair) = {:?}", pair);
-					self.parse_type(pair.into_inner())
-				},
+				Rule::r#type => self.parse_type(pair),
 
 				rule => panic!("Got invalid expression rule: \"{:?}\"", rule),
 			}
@@ -266,9 +264,14 @@ impl<'p> ASTParser<'p> {
 		}
 	}
 
-	fn parse_generics(&self, pair: Pair<'p, Rule>) -> Vec<Expression> {
-		if pair.as_rule() != Rule::generics {
-			panic!("Got an unexpected rule. Expected \"generics\", got \"{:?}\"", pair.as_rule());
+	/// Used for function **definition** statements. Parses generics **as identifiers** to later be substituted with proper types
+	/// 
+	/// # Arguments
+	/// 
+	/// * `pair` - A Pest.rs parser pair with type Rule::definition_generics
+	fn parse_generics_as_identifiers(&self, pair: Pair<'p, Rule>) -> Vec<Expression> {
+		if pair.as_rule() != Rule::definition_generics {
+			panic!("Got an unexpected rule. Expected \"definition_generics\", got \"{:?}\"", pair.as_rule());
 		}
 
 		let insides = pair.into_inner();
@@ -285,12 +288,31 @@ impl<'p> ASTParser<'p> {
 		generics
 	}
 
-	fn parse_type(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
-		let mut pairs = pairs_borrowed.clone();
-		let pair = pairs
-			.next()
-			.expect("Failed to parse type");
+	/// Used for function **call** statements. Parses generics **as parser expression types** to later be substituted with proper types
+	/// 
+	/// # Arguments
+	/// 
+	/// * `pair` - A Pest.rs parser pair with type Rule::call_generics
+	fn parse_generics_as_types(&self, pair: Pair<'p, Rule>) -> Vec<Expression> {
+		if pair.as_rule() != Rule::call_generics {
+			panic!("Got an unexpected rule. Expected \"call_generics\", got \"{:?}\"", pair.as_rule());
+		}
 
+		let insides = pair.into_inner();
+		let mut generics: Vec<Expression> = Vec::new(); //* Expression::Identifier only
+
+		for arg in insides {
+			if arg.as_rule() != Rule::r#type {
+				panic!("Got an unexpected rule as a generics argument. Expected \"type\", got \"{:?}\"", arg.as_rule());
+			}
+
+			generics.push(self.parse_type(arg));
+		}
+
+		generics
+	}
+
+	fn parse_type(&self, pair: Pair<'p, Rule>) -> Expression {
 		if pair.as_rule() != Rule::r#type {
 			panic!("Got an unexpected rule. Expected \"type\", got \"{:?}\"", pair.as_rule());
 		}
@@ -312,12 +334,12 @@ impl<'p> ASTParser<'p> {
 		// check if there are generics present
 		if insides.len() > 0 {
 			let generics_pair = insides.next().expect("Failed to parse type generics");
-			generics = self.parse_generics(generics_pair);
+			generics = self.parse_generics_as_identifiers(generics_pair);
 		}
 
 		Expression::Type {
 			base: ParserTypeUtility::from_string(name_pair.as_str().to_owned()),
-			generics: Box::new(generics),
+			generics,
 			array_type: is_array_type
 		}
 	}
@@ -326,7 +348,9 @@ impl<'p> ASTParser<'p> {
 		let mut pairs = pairs_borrowed.clone();
 		
 		// extract callee
-		let callee_pair = pairs.next().expect("Identifier or expression expected in function call expression, got nothing");
+		let callee_pair = pairs
+			.next()
+			.expect("Identifier or expression expected in function call expression, got nothing");
 
 		match callee_pair.as_rule() {
 			Rule::number_literal | Rule::string_literal => panic!("Number and string literals are not valid function names"),
@@ -335,15 +359,44 @@ impl<'p> ASTParser<'p> {
 
 		let callee = self.parse_expression(pairs_borrowed);
 
-		// extract arguments
-		let args_option_pair = pairs.next();
-		
-		// if there's no arguments, return early
-		if args_option_pair.is_none() {
-			return Expression::FunctionCall(Box::new(callee), Vec::new())
+		// extract arguments and/or generics
+		let mut next_pair = pairs.next();
+
+		// if there's no arguments or generics, return early
+		if next_pair.is_none() {
+			// return Expression::FunctionCall(Box::new(callee), Vec::new());
+			return Expression::FunctionCall {
+				callee: Box::new(callee),
+				generics: Vec::new(),
+				arguments: Vec::new()
+			};
 		}
 
-		let args_pair = args_option_pair.unwrap();
+		let next_pair_unwrapped = next_pair
+			.clone()
+			.unwrap();
+
+		let mut generics: Vec<Expression> = Vec::new();
+
+		// if the next pair is generics, parse them
+		if next_pair_unwrapped.as_rule() == Rule::call_generics {
+			generics = self.parse_generics_as_types(next_pair_unwrapped);
+
+			// go to the next pair, which can be the arguments
+			next_pair = pairs.next();
+		}
+		
+		// if the next pair is not arguments then return early
+		if next_pair.is_none() {
+			return Expression::FunctionCall {
+				callee: Box::new(callee),
+				generics: generics,
+				arguments: Vec::new()
+			};
+		}
+
+		// otherwise, parse the arguments
+		let args_pair = next_pair.unwrap();
 		let mut args: Vec<Expression> = Vec::new();
 
 		for arg_pair in args_pair.into_inner() {
@@ -353,66 +406,94 @@ impl<'p> ASTParser<'p> {
 		}
 
 		// return
-		Expression::FunctionCall(Box::new(callee), args)
+		Expression::FunctionCall {
+			callee: Box::new(callee),
+			generics,
+			arguments: args
+		}
 	}
 
 	fn parse_function_definition(&self, pairs_borrowed: Pairs<'p, Rule>) -> Statement {
-		// TODO: implement parsing function generics
-
 		let mut pairs = pairs_borrowed.clone();
 		let mut header_pairs = pairs.next().expect("Failed to parse function header").into_inner();
 
 		// parsing header
 		let name = header_pairs.next().expect("Failed to parse function name");
-		let mut args: Vec<FunctionArgument> = Vec::new();
 
-		// check if arguments exist
+		let mut generics: Vec<Expression> = Vec::new();
+		let mut arguments: Vec<FunctionArgument> = Vec::new();
+
+		// check if arguments or generics exist
 		if header_pairs.len() > 0 {
-			// must clone to prevent argument_pairs from eating the return type
-			let argument_pairs = header_pairs
+			let next_pair = header_pairs
 				.clone()
 				.next()
-				.expect("Failed to parse function arguments")
-				.into_inner();
+				.unwrap(); // header_pairs is guaranteed to have at least one pair left
 
-			let filtered_arguments: Vec<Pair<'p, Rule>> = argument_pairs
-				.clone()
-				.filter(|pair| pair.as_rule() == Rule::function_definition_argument)
-				.collect();
-
-			for arg_pair in filtered_arguments {
-				// arg_pair is here expected to be function_definition_argument
-				let mut arg = arg_pair.into_inner();
-
-				let arg_name = self.parse_expression(arg.clone());
-				arg.next().expect("Failed to parse function argument type");
-
-				let arg_type = self.parse_type(arg);
-				args.push(FunctionArgument::new(arg_name, arg_type));
-			}
-		}
-
-		let body_pairs = pairs.next().expect("Failed to parse function body").into_inner();
-
-		// now can safely skip function_definition_arguments node
-		// check if arguments exist
-		let return_type = if header_pairs.len() >= 1 {
-			if header_pairs.len() > 1 {
+			if next_pair.as_rule() == Rule::definition_generics {
+				generics = self.parse_generics_as_identifiers(next_pair);
 				header_pairs.next();
 			}
 
-			self.parse_type(header_pairs)
+			// now check for arguments
+			if header_pairs.len() > 0 {
+				// must clone to prevent argument_pairs from eating the return type
+				let argument_pairs = header_pairs
+					.clone()
+					.next()
+					.expect("Failed to parse function arguments")
+					.into_inner();
+
+				let filtered_arguments: Vec<Pair<'p, Rule>> = argument_pairs
+					.clone()
+					.filter(|pair| pair.as_rule() == Rule::function_definition_argument)
+					.collect();
+
+				for arg_pair in filtered_arguments {
+					// arg_pair is here expected to be function_definition_argument
+					let mut arg = arg_pair.into_inner();
+
+					// we have to save "arg" for parsing the type next, so we must clone it beforehand
+					let arg_name = self.parse_expression(arg.clone());
+
+					// now assume that the pair has been consumed, can move to the next one
+					// it is expected that this will be of type Rule::type
+					arg.next();
+
+					let arg_type = arg
+						.next()
+						.expect("Failed to parse function argument type");
+
+					let arg_type = self.parse_type(arg_type);
+					arguments.push(FunctionArgument::new(arg_name, arg_type));
+				}
+			}
+		}
+
+		let body_pairs = pairs
+			.next()
+			.expect("Failed to parse function body")
+			.into_inner();
+
+		// now can safely skip function_definition_arguments node
+		header_pairs.next();
+
+		// check if return type exists
+		let return_type = if header_pairs.len() > 0 {
+			let return_type_pair = header_pairs.next().unwrap();
+			self.parse_type(return_type_pair)
 		} else {
 			Expression::Type {
 				base: ParserTypeUtility::void_type(),
-				generics: Box::new(Vec::new()),
+				generics: Vec::new(),
 				array_type: false
 			}
 		};
 
 		Statement::FunctionDefinition {
 			name: name.as_str().to_owned(),
-			arguments: args,
+			generics,
+			arguments,
 			return_type,
 			statements: self.parse_program(body_pairs)
 		}
@@ -445,15 +526,19 @@ impl<'p> ASTParser<'p> {
 
 		Statement::VariableDefinition(
 			name.expect("Identifier has not been provided in variable definition"),
-			expression.expect("Expression has not been provided in variable definition")
+			Box::new(expression.expect("Expression has not been provided in variable definition"))
 		)
 	}
 
 	fn parse_function_call(&self, pairs: Pairs<'p, Rule>) -> Statement {
 		let parsed = self.parse_expression(pairs);
 
-		if let Expression::FunctionCall(callee, args) = parsed {
-			return Statement::FunctionCall(callee, args);
+		if let Expression::FunctionCall { callee, generics, arguments } = parsed {
+			return Statement::FunctionCall {
+				callee: *callee,
+				generics,
+				arguments
+			};
 		}
 
 		panic!("Unable to parse function call statement: callee or arguments parameters are invalid");
@@ -461,9 +546,9 @@ impl<'p> ASTParser<'p> {
 
 	fn parse_return(&self, pairs: Pairs<'p, Rule>) -> Statement {
 		if pairs.len() > 0 {
-			return Statement::Return(Box::new(self.parse_expression(pairs)));
+			return Statement::Return(self.parse_expression(pairs));
 		}
 
-		Statement::Return(Box::new(Expression::Empty))
+		Statement::Return(Expression::Empty)
 	}
 }
