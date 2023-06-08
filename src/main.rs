@@ -9,6 +9,7 @@ use tokenizer::{HasanPestParser, Rule};
 use parser::ASTParser;
 
 const FILE_PATH: &str = "./input.hsl";
+const DEBUG: bool = true;
 
 fn read_file(path: &str) -> String {
     let file = File::open(path).expect(&format!("Failed to open file \"{}\" (read)", path));
@@ -31,12 +32,22 @@ fn main() {
     let contents = read_file(FILE_PATH);
     let pairs = HasanPestParser::parse(Rule::program, &contents).expect("Failed to parse input");
 
+    if DEBUG {
+        println!("Parsed pairs ({}): {}", pairs.len(), pairs);
+        println!();
+    }
+
     write_file("./compiled/1_raw_ast.txt", format!("{:#?}", pairs));
 
     println!("AST parsing...");
 
     let ast_parser = ASTParser::new(pairs);
     let ast = ast_parser.parse();
+
+    if DEBUG {
+        println!("Parsed AST ({}): {:?}", ast.len(), ast);
+        println!();
+    }
 
     write_file("./compiled/2_hasan_ast.txt", format!("{:#?}", ast));
 
