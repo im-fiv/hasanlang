@@ -13,3 +13,5 @@
 3. add enums
 4. implement classes
 5. add positions to each member of AST for better errors
+6. implement array expressions (e.g. [1, 2, 3] or [])
+7. fix array expressions ^ being interpreted as function calls
