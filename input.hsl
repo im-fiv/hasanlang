@@ -1,5 +1,8 @@
-/*function asd() {
-	return 2 + 2;
-}*/
+class Hello {
+	a: int;
 
-var a = 2 + 2;
+	#[constructor, public, private, static, get, set]
+	function hello<T, U, V, W>(one: T, two: U, three: V, four: W) -> W[] {
+		return (one + two + three + four) as W[];
+	}
+}

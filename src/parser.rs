@@ -238,31 +238,17 @@ impl<'p> ASTParser<'p> {
 		}
 	}
 
-	fn parse_expression_pairs(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
-		let pairs = pairs_borrowed.clone();
-
-		println!("pairs_borrowed = {}", pairs_borrowed);
-
-		let pair = pairs
-			.peek()
-			.expect("Unexpected end of input while parsing an expression");
-
-		if pair.as_rule() != Rule::expression {
-			println!("pair is not an expression ({:?}) = {}", pair.as_rule(), pair);
-			return self.parse_term(&mut pairs.clone().peekable());
-		}
-
-		println!("pair = {}", pair);
-
-		self.parse_expression(pair)
-	}
-
 	fn parse_expression(&self, expression_pair: Pair<'p, Rule>) -> Expression {
-		if expression_pair.as_rule() != Rule::expression {
-			panic!("Got an unexpected rule in parse_expression. Expected \"{:?}\", got \"{:?}\"", Rule::expression, expression_pair.as_rule());
+		let mut pairs = expression_pair
+			.clone()
+			.into_inner()
+			.peekable();
+
+		// check if an iterator is empty
+		if pairs.len() < 1 {
+			panic!("Iterator of inner pairs of pair \"{}\" ({:?}) is empty", expression_pair, expression_pair.as_rule());
 		}
 
-		let mut pairs = expression_pair.into_inner().peekable();
 		self.parse_expression_with_precedence(&mut pairs, 0)
 	}
 
@@ -337,7 +323,7 @@ impl<'p> ASTParser<'p> {
 					Expression::Unary(operator, Box::new(operand))
 				}
 
-				Rule::binary_expression | Rule::expression => self.parse_expression_pairs(pair.into_inner()),
+				Rule::binary_expression | Rule::expression => self.parse_expression(pair),
 				Rule::function_call_expression => self.parse_function_call_expression(pair.into_inner()),
 				Rule::type_cast_expression => self.parse_type_cast_expression(pair.into_inner()),
 
@@ -460,12 +446,13 @@ impl<'p> ASTParser<'p> {
 			.next()
 			.expect("Identifier or expression expected in function call expression, got nothing");
 
+		// check for invalid function name
 		match callee_pair.as_rule() {
 			Rule::number_literal | Rule::string_literal => panic!("Number and string literals are not valid function names"),
 			_ => ()
 		}
 
-		let callee = self.parse_expression_pairs(pairs_borrowed);
+		let callee = self.parse_expression(callee_pair);
 
 		// extract arguments and/or generics
 		let mut next_pair = pairs.next();
@@ -509,7 +496,14 @@ impl<'p> ASTParser<'p> {
 
 		for arg_pair in args_pair.into_inner() {
 			// arg_pair is always wrapped in an expression in this case
-			let parsed = self.parse_expression_pairs(arg_pair.into_inner());
+			let expression_pair = arg_pair
+				.into_inner()
+				.next()
+				.expect("Failed to parse function call argument");
+
+			println!("expression_pair (function_call) = {}", expression_pair);
+
+			let parsed = self.parse_expression(expression_pair);
 			args.push(parsed);
 		}
 
@@ -830,7 +824,13 @@ impl<'p> ASTParser<'p> {
 	}
 
 	fn parse_function_call(&self, pairs: Pairs<'p, Rule>) -> Statement {
-		let parsed = self.parse_expression_pairs(pairs);
+		let expression_pair = pairs
+			.peek()
+			.expect("Failed to parse function call expression as a statement");
+
+		println!("expression_pair (function_call) = {}", expression_pair);
+
+		let parsed = self.parse_expression(expression_pair);
 
 		if let Expression::FunctionCall { callee, generics, arguments } = parsed {
 			return Statement::FunctionCall {
@@ -844,10 +844,14 @@ impl<'p> ASTParser<'p> {
 	}
 
 	fn parse_return(&self, pairs: Pairs<'p, Rule>) -> Statement {
-		println!("parse_return pairs = {}", pairs);
-
 		if pairs.len() > 0 {
-			return Statement::Return(self.parse_expression_pairs(pairs));
+			let expression_pair = pairs
+				.peek()
+				.expect("Failed to parse function call expression as a statement");
+
+			println!("expression_pair (return) = {}", expression_pair);
+
+			return Statement::Return(self.parse_expression(expression_pair));
 		}
 
 		Statement::Return(Expression::Empty)
