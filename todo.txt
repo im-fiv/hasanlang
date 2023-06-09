@@ -10,4 +10,6 @@
 	(types don't support parenthesis so no working solution exists yet)
 
 2. probably add precedence to type cast expression
-3. convert parse_expession to accept a single Pair instead of Pairs
+3. add enums
+4. implement classes
+5. add positions to each member of AST for better errors
