@@ -1,2 +1,5 @@
-var a = "hello";
-var b: str = "world";
+/*function asd() {
+	return 2 + 2;
+}*/
+
+var a = 2 + 2;
