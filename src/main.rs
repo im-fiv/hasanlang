@@ -1,3 +1,4 @@
+use std::fs;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::prelude::*;
@@ -27,6 +28,8 @@ fn write_file(path: &str, contents: String) {
 }
 
 fn main() {
+    fs::create_dir_all("./compiled").expect("Failed to create \"compiled\" directory");
+
     println!("Pest parsing...");
 
     let contents = read_file(FILE_PATH);
