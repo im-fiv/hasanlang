@@ -830,7 +830,9 @@ impl<'p> ASTParser<'p> {
 
 		println!("expression_pair (function_call) = {}", expression_pair);
 
-		let parsed = self.parse_expression(expression_pair);
+		let parsed = self.parse_function_call_expression(expression_pair.into_inner());
+
+		println!("parsed = {:?}", parsed);
 
 		if let Expression::FunctionCall { callee, generics, arguments } = parsed {
 			return Statement::FunctionCall {
