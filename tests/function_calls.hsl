@@ -1,0 +1,14 @@
+function print_hello_world() -> void {
+	print("hello, world!");
+}
+
+print_hello_world();
+
+function random_number<Type>() -> Type {
+	return 5;
+}
+
+function main() {
+	var add = 2;
+	return random_number<int>() + add;
+}

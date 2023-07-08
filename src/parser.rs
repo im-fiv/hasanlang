@@ -246,14 +246,18 @@ impl<'p> ASTParser<'p> {
 
 		// check if an iterator is empty
 		if pairs.len() < 1 {
-			panic!("Iterator of inner pairs of pair \"{}\" ({:?}) is empty", expression_pair, expression_pair.as_rule());
+			return self.parse_term(expression_pair);
 		}
 
 		self.parse_expression_with_precedence(&mut pairs, 0)
 	}
 
 	fn parse_expression_with_precedence(&self, pairs: &mut Peekable<Pairs<'p, Rule>>, precedence: u8) -> Expression {
-		let mut left = self.parse_term(pairs);
+		if pairs.len() < 1 {
+			unreachable!("Iterator of pairs is empty");
+		}
+
+		let mut left = self.parse_term(pairs.next().unwrap());
 	
 		while let Some(pair) = pairs.peek() {
 			if pair.as_rule() == Rule::operator {
@@ -313,30 +317,26 @@ impl<'p> ASTParser<'p> {
 		Expression::String(clean_literal.to_owned())
 	}
 
-	fn parse_term(&self, pairs: &mut Peekable<Pairs<'p, Rule>>) -> Expression {
-		if let Some(pair) = pairs.next() {
-			match pair.as_rule() {
-				Rule::unary_expression => {
-					let operator = self.parse_operator(&pair);
-					let operand = self.parse_term(pairs);
+	fn parse_term(&self, pair: Pair<'p, Rule>) -> Expression {
+		match pair.as_rule() {
+			Rule::unary_expression => {
+				let operator = self.parse_operator(&pair);
+				let operand = self.parse_term(pair);
 
-					Expression::Unary(operator, Box::new(operand))
-				}
-
-				Rule::binary_expression | Rule::expression => self.parse_expression(pair),
-				Rule::function_call_expression => self.parse_function_call_expression(pair.into_inner()),
-				Rule::type_cast_expression => self.parse_type_cast_expression(pair.into_inner()),
-
-				Rule::number_literal => self.parse_number_literal(pair),
-				Rule::string_literal => self.parse_string_literal(pair),
-
-				Rule::identifier => self.parse_identifier(pair),
-				Rule::r#type => self.parse_type(pair),
-
-				rule => panic!("Got invalid expression rule: \"{:?}\"", rule),
+				Expression::Unary(operator, Box::new(operand))
 			}
-		} else {
-			panic!("Unexpected end of input while parsing an expression term");
+
+			Rule::binary_expression | Rule::expression => self.parse_expression(pair),
+			Rule::function_call_expression => self.parse_function_call_expression(pair.into_inner()),
+			Rule::type_cast_expression => self.parse_type_cast_expression(pair.into_inner()),
+
+			Rule::number_literal => self.parse_number_literal(pair),
+			Rule::string_literal => self.parse_string_literal(pair),
+
+			Rule::identifier => self.parse_identifier(pair),
+			Rule::r#type => self.parse_type(pair),
+
+			rule => panic!("Got invalid expression rule: \"{:?}\"", rule),
 		}
 	}
 

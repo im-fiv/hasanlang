@@ -1,0 +1,32 @@
+class ClassDefinition {
+	a: int[][] = "default value";
+	b: SomeType<int>[];
+
+	#[static, constructor]
+	function some_function() -> bool {
+
+	};
+
+	c: bool;
+
+	function another_function() -> int {
+
+	}
+};
+
+declare class ClassDeclaraction {
+	a: int;
+
+	#[static, constructor]
+	function some_function() -> bool;
+
+	function other_function() -> int;
+}
+
+declare class Array<T> {
+	#[get]
+	function length() -> int;
+
+	function append(_elem: T) -> void;
+	function copy() -> this;
+}
