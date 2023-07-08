@@ -46,7 +46,7 @@ pub enum Statement {
 	Return(Expression),
 
 	// special statements that are not intended to be used traditionally
-	Unimplemented(Option<Rule>)
+	Unimplemented
 }
 
 #[allow(dead_code)]
@@ -183,12 +183,7 @@ impl<'p> ASTParser<'p> {
 				Rule::line_comment |
 				Rule::block_comment |
 				Rule::number_literal |
-				Rule::string_literal |
-				Rule::EXPRESSION_access |
-				Rule::EXPRESSION_array_access |
-				Rule::EXPRESSION_arrow_access |
-				Rule::EXPRESSION_dot_access |
-				Rule::EXPRESSION_function_call => (),
+				Rule::string_literal => (),
 
 				Rule::program => statements = Some(self.parse_program(pair.into_inner())),
 
@@ -327,8 +322,11 @@ impl<'p> ASTParser<'p> {
 			}
 
 			Rule::binary_expression | Rule::expression => self.parse_expression(pair),
+
 			Rule::function_call_expression => self.parse_function_call_expression(pair.into_inner()),
 			Rule::type_cast_expression => self.parse_type_cast_expression(pair.into_inner()),
+			Rule::array_expression => self.parse_array_expression(pair.into_inner()),
+			Rule::array_access_expression => self.parse_array_access_expression(pair.into_inner()),
 
 			Rule::number_literal => self.parse_number_literal(pair),
 			Rule::string_literal => self.parse_string_literal(pair),
@@ -338,6 +336,35 @@ impl<'p> ASTParser<'p> {
 
 			rule => panic!("Got invalid expression rule: \"{:?}\"", rule),
 		}
+	}
+
+	fn parse_array_expression(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
+		let mut pairs = pairs_borrowed.clone();
+		let mut items: Vec<Expression> = Vec::new();
+
+		while let Some(pair) = pairs.next() {
+			let parsed_pair = self.parse_expression(pair);
+			items.push(parsed_pair);
+		}
+
+		Expression::Array(items)
+	}
+
+	fn parse_array_access_expression(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
+		let mut pairs = pairs_borrowed.clone();
+
+		let array_pair = pairs
+			.next()
+			.expect("Failed to parse array of array access expression");
+
+		let index_pair = pairs
+			.next()
+			.expect("Failed to parse index of array access expression");
+
+		Expression::ArrayAccess(
+			Box::new(self.parse_expression(array_pair)),
+			Box::new(self.parse_expression(index_pair))
+		)
 	}
 
 	fn parse_type_cast_expression(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
@@ -501,8 +528,6 @@ impl<'p> ASTParser<'p> {
 				.next()
 				.expect("Failed to parse function call argument");
 
-			println!("expression_pair (function_call) = {}", expression_pair);
-
 			let parsed = self.parse_expression(expression_pair);
 			args.push(parsed);
 		}
@@ -642,8 +667,8 @@ impl<'p> ASTParser<'p> {
 		}
 	}
 
-	fn parse_type_definition(&self, pairs: Pairs<'p, Rule>) -> Statement {
-		Statement::Unimplemented(Some(Rule::type_definition_stmt))
+	fn parse_type_definition(&self, _pairs: Pairs<'p, Rule>) -> Statement {
+		Statement::Unimplemented
 	}
 
 	fn parse_class_definition_function(&self, pair: Pair<'p, Rule>) -> ClassDefinitionMember {
@@ -782,8 +807,8 @@ impl<'p> ASTParser<'p> {
 		}
 	}
 
-	fn parse_class_declaration(&self, pairs: Pairs<'p, Rule>) -> Statement {
-		Statement::Unimplemented(Some(Rule::class_declaration))
+	fn parse_class_declaration(&self, _pairs: Pairs<'p, Rule>) -> Statement {
+		Statement::Unimplemented
 	}
 
 	fn parse_variable_definition(&self, pairs_borrowed: Pairs<'p, Rule>) -> Statement {
@@ -828,11 +853,7 @@ impl<'p> ASTParser<'p> {
 			.peek()
 			.expect("Failed to parse function call expression as a statement");
 
-		println!("expression_pair (function_call) = {}", expression_pair);
-
 		let parsed = self.parse_function_call_expression(expression_pair.into_inner());
-
-		println!("parsed = {:?}", parsed);
 
 		if let Expression::FunctionCall { callee, generics, arguments } = parsed {
 			return Statement::FunctionCall {
@@ -850,8 +871,6 @@ impl<'p> ASTParser<'p> {
 			let expression_pair = pairs
 				.peek()
 				.expect("Failed to parse function call expression as a statement");
-
-			println!("expression_pair (return) = {}", expression_pair);
 
 			return Statement::Return(self.parse_expression(expression_pair));
 		}
