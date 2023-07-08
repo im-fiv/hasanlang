@@ -252,7 +252,11 @@ impl<'p> ASTParser<'p> {
 			unreachable!("Iterator of pairs is empty");
 		}
 
-		let mut left = self.parse_term(pairs.next().unwrap());
+		let left_pair = pairs
+			.next()
+			.unwrap_or_else(|| unreachable!("Iterator of pairs is empty"));
+		
+		let mut left = self.parse_term(left_pair);
 	
 		while let Some(pair) = pairs.peek() {
 			if pair.as_rule() == Rule::operator {
@@ -496,7 +500,7 @@ impl<'p> ASTParser<'p> {
 
 		let next_pair_unwrapped = next_pair
 			.clone()
-			.unwrap();
+			.unwrap_or_else(|| unreachable!("Next pair is none (expected generics or arguments)"));
 
 		let mut generics: Vec<Expression> = Vec::new();
 
@@ -518,7 +522,7 @@ impl<'p> ASTParser<'p> {
 		}
 
 		// otherwise, parse the arguments
-		let args_pair = next_pair.unwrap();
+		let args_pair = next_pair.unwrap_or_else(|| unreachable!("Next pair is none (expected arguments)"));
 		let mut args: Vec<Expression> = Vec::new();
 
 		for arg_pair in args_pair.into_inner() {
@@ -595,7 +599,7 @@ impl<'p> ASTParser<'p> {
 		if header_pairs.len() > 0 {
 			let next_pair = header_pairs
 				.peek()
-				.unwrap(); // header_pairs is guaranteed to have at least one pair left
+				.unwrap_or_else(|| unreachable!("Next pair is none (expected arguments or generics)")); // header_pairs is guaranteed to have at least one pair left
 
 			if next_pair.as_rule() == Rule::definition_generics {
 				generics = self.parse_generics_as_identifiers(next_pair);
@@ -648,7 +652,7 @@ impl<'p> ASTParser<'p> {
 
 		// check if return type exists
 		let return_type = if header_pairs.len() > 0 {
-			let return_type_pair = header_pairs.next().unwrap();
+			let return_type_pair = header_pairs.next().unwrap_or_else(|| unreachable!("Next pair is none (expected return type)"));
 			self.parse_type(return_type_pair)
 		} else {
 			Expression::Type {
@@ -720,7 +724,7 @@ impl<'p> ASTParser<'p> {
 		let mut default_value = Expression::Empty;
 
 		if default_value_option.is_some() {
-			default_value = self.parse_expression(default_value_option.unwrap());
+			default_value = self.parse_expression(default_value_option.unwrap_or_else(|| unreachable!("Default value pair is none")));
 		}
 
 		ClassDefinitionMember::Variable {
@@ -777,7 +781,7 @@ impl<'p> ASTParser<'p> {
 		}
 
 		// unwrap the next pair
-		next_pair = next_pair_option.unwrap();
+		next_pair = next_pair_option.unwrap_or_else(|| unreachable!("Next pair is none (class members or generics expected)"));
 		let mut generics: Vec<Expression> = Vec::new();
 
 		// check if its definition_generics
@@ -792,6 +796,9 @@ impl<'p> ASTParser<'p> {
 					members: Vec::new()
 				};
 			}
+
+			// otherwise, skip the current pair
+			pairs.next();
 		}
 
 		let mut members: Vec<ClassDefinitionMember> = Vec::new();

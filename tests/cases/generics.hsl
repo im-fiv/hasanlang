@@ -1,0 +1,18 @@
+function generic_function<T>(input: T) -> T[] {
+	// wraps input into an array
+	return [input];
+}
+
+class generic_class<T> {
+	inner_value: T;
+
+	#[get]
+	function value() -> T {
+		// TODO: fix dot access
+		return this["inner_value"];
+	}
+}
+
+function main() {
+	var wrapped = generic_function<int>(5);
+}

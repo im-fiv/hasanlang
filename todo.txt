@@ -7,13 +7,11 @@
 
 	this does:
 	var a = (hello())();
-	(types don't support parenthesis so no working solution exists yet)
+	(types don't support parenthesis so no working solution for types exists yet)
 
 2. fix all recursive expressions being treated as function calls
-
 3. probably add precedence to type cast expression
 4. add enums
-5. implement classes
-6. add positions to each member of AST for better errors
-7. implement array expressions (e.g. [1, 2, 3] or [])
-8. fix array expressions ^ being interpreted as function calls
+5. add positions to each member of AST for better errors
+6. fix array expressions ^ being interpreted as function calls
+7. make sure to check all TODO comments
