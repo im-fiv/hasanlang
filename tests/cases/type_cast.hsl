@@ -1,0 +1,5 @@
+function cast<From, To>(input: From) -> To {
+	return input as To;
+}
+
+return cast<int, float>(5);

@@ -1,4 +1,4 @@
-program = { SOI ~ statement+ ~ EOI }
+program = { SOI ~ statement* ~ EOI }
 statement = _{ function_definition_stmt | type_definition_stmt | class_definition | class_declaration | variable_definition_stmt | function_call_stmt | return_stmt }
 
 stmt_sep = _{ ";" }
