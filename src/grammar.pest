@@ -56,18 +56,10 @@ term_without_recursion = _{ literal | identifier | "(" ~ expression ~ ")" }
 array_expression = { "[" ~ (term_without_recursion ~ ("," ~ term_without_recursion)*)? ~ "]" }
 
 // recursive expressions //
-function_call_expression = { term_without_recursion ~ EXPRESSION_access }
-array_access_expression = { term_without_recursion ~ EXPRESSION_access }
-dot_access_expression = { term_without_recursion ~ EXPRESSION_access }
-arrow_access_expression = { term_without_recursion ~ EXPRESSION_access }
-
-// recursive expression helpers //
-EXPRESSION_access = _{ EXPRESSION_array_access | EXPRESSION_function_call | EXPRESSION_dot_access | EXPRESSION_arrow_access }
-
-EXPRESSION_array_access = _{ "[" ~ expression ~ "]" ~ EXPRESSION_access?}
-EXPRESSION_function_call = _{ call_generics? ~ "(" ~ function_call_arguments? ~ ")" ~ EXPRESSION_access? }
-EXPRESSION_dot_access = _{ "." ~ expression ~ EXPRESSION_access? }
-EXPRESSION_arrow_access = _{ "->" ~ expression ~ EXPRESSION_access? }
+function_call_expression = { term_without_recursion ~ call_generics? ~ "(" ~ function_call_arguments? ~ ")" }
+array_access_expression = { term_without_recursion ~ "[" ~ expression ~ "]" }
+dot_access_expression = { term_without_recursion ~ "." ~ expression }
+arrow_access_expression = { term_without_recursion ~ "->" ~ expression }
 
 //* literals and identifiers *//
 literal = _{ string_literal | number_literal }

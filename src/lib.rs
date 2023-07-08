@@ -18,12 +18,15 @@ mod tests {
 		let path_clone = path.clone();
 		let display = path_clone.display();
 	
-		let file = File::open(path).expect(&format!("Failed to open file \"{}\" (read)", display));
+		let file = File::open(path)
+			.expect(&format!("Failed to open file \"{}\" (read)", display));
 	
 		let mut reader = BufReader::new(file);
 		let mut contents = String::new();
 	
-		reader.read_to_string(&mut contents).expect(&format!("Failed to read from file \"{}\"", display));
+		reader.read_to_string(&mut contents)
+			.expect(&format!("Failed to read from file \"{}\"", display));
+		
 		contents
 	}
 
@@ -32,8 +35,9 @@ mod tests {
 		let paths = std::fs::read_dir("./tests").unwrap();
 
 		for path in paths {
-			let path = path.unwrap().path();
-			println!("Parsing {}...", path.display());
+			let path = path
+				.unwrap()
+				.path();
 
 			let contents = read_file(path);
 			let pairs = HasanPestParser::parse(Rule::program, &contents).expect("Failed to parse input");
