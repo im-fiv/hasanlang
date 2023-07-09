@@ -15,3 +15,4 @@
 5. add positions to each member of AST for better errors
 6. fix array expressions ^ being interpreted as function calls
 7. make sure to check all TODO comments
+8. use specific parse_..._expression functions instead of one vague parse_expression to more represent the expected output

@@ -1,1 +1,2 @@
-return a[b];
+// im going insane
+return a.b.c;

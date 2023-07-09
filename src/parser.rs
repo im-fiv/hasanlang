@@ -21,7 +21,11 @@ pub enum Statement {
 		statements: Vec<Statement>
 	},
 
-	TypeDefinition,
+	TypeDefinition {
+		name: String,
+		generics: Vec<Expression>,
+		definition: Expression
+	},
 
 	ClassDefinition {
 		name: String,
@@ -331,6 +335,8 @@ impl<'p> ASTParser<'p> {
 			Rule::type_cast_expression => self.parse_type_cast_expression(pair.into_inner()),
 			Rule::array_expression => self.parse_array_expression(pair.into_inner()),
 			Rule::array_access_expression => self.parse_array_access_expression(pair.into_inner()),
+			Rule::dot_access_expression => self.parse_dot_access_expression(pair.into_inner()),
+			Rule::arrow_access_expression => self.parse_arrow_access_expression(pair.into_inner()),
 
 			Rule::number_literal => self.parse_number_literal(pair),
 			Rule::string_literal => self.parse_string_literal(pair),
@@ -340,6 +346,40 @@ impl<'p> ASTParser<'p> {
 
 			rule => panic!("Got invalid expression rule: \"{:?}\"", rule),
 		}
+	}
+
+	fn parse_arrow_access_expression(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
+		let mut pairs = pairs_borrowed.clone();
+
+		let left_pair = pairs
+			.next()
+			.expect("Expression/identifier expected in left side of an arrow expression, got nothing");
+
+		let right_pair = pairs
+			.next()
+			.expect("Expression/identifier expected in right side of an arrow expression, got nothing");
+
+		Expression::ArrowAccess(
+			Box::new(self.parse_expression(left_pair)),
+			Box::new(self.parse_expression(right_pair))
+		)
+	}
+
+	fn parse_dot_access_expression(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
+		let mut pairs = pairs_borrowed.clone();
+
+		let left_pair = pairs
+			.next()
+			.expect("Expression/identifier expected in left side of a dot expression, got nothing");
+
+		let right_pair = pairs
+			.next()
+			.expect("Expression/identifier expected in right side of a dot expression, got nothing");
+
+		Expression::DotAccess(
+			Box::new(self.parse_expression(left_pair)),
+			Box::new(self.parse_expression(right_pair))
+		)
 	}
 
 	fn parse_array_expression(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
@@ -671,8 +711,39 @@ impl<'p> ASTParser<'p> {
 		}
 	}
 
-	fn parse_type_definition(&self, _pairs: Pairs<'p, Rule>) -> Statement {
-		Statement::Unimplemented
+	fn parse_type_expression(&self, pair: Pair<'p, Rule>) -> Expression {
+		//* for now, only a placeholder *//
+		self.parse_type(pair)
+	}
+
+	fn parse_type_definition(&self, pairs_borrowed: Pairs<'p, Rule>) -> Statement {
+		let mut pairs = pairs_borrowed.clone();
+
+		let name_pair = pairs
+			.next()
+			.expect("Expected an identifier as a type name in a type definition, got nothing");
+
+		let mut next_pair = pairs
+			.next()
+			.expect("Expected generics/type in a type definition, got nothing");
+
+		let mut generics: Vec<Expression> = Vec::new();
+
+		if next_pair.as_rule() == Rule::definition_generics {
+			generics = self.parse_generics_as_identifiers(next_pair);
+
+			next_pair = pairs
+				.next()
+				.expect("Expected type in a type definition, got nothing");
+		}
+
+		let type_expression = self.parse_type_expression(next_pair);
+
+		Statement::TypeDefinition {
+			name: name_pair.as_str().to_owned(),
+			generics,
+			definition: type_expression
+		}
 	}
 
 	fn parse_class_definition_function(&self, pair: Pair<'p, Rule>) -> ClassDefinitionMember {
