@@ -1,0 +1,5 @@
+type AType<Generic1, Generic2> = Generic1<Generic2>[];
+
+function asd<Generic2>() -> AType<int, Generic2> {
+	
+}
