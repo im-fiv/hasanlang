@@ -23,24 +23,17 @@ jobs:
           cargo --version --verbose
           rustc --version
           cargo clippy --version
-          
-      - name: View directory
-        run: |
-          ls -la
 
       - name: Lint
         run: |
-          cd hasanlang
           cargo fmt -- --check
           cargo clippy -- -D warnings
 
       - name: Test
         run: |
-          cd hasanlang
           cargo check
           cargo test --all
 
       - name: Build
         run: |
-          cd hasanlang
           cargo build --release
