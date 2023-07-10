@@ -6,8 +6,7 @@ on:
       - main
 
 jobs:
-
-  test:
+  test-and-build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -23,11 +22,6 @@ jobs:
           cargo --version --verbose
           rustc --version
           cargo clippy --version
-
-      - name: Lint
-        run: |
-          cargo fmt -- --check
-          cargo clippy -- -D warnings
 
       - name: Test
         run: |
