@@ -10,6 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      
+      - name: Install LLVM and Clang
+        uses: KyleMayes/install-llvm-action@v1.8.3
+        with:
+          version: "15.0"
 
       - name: Update local toolchain
         run: |
