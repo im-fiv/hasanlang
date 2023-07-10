@@ -1,5 +1,6 @@
 type AType<Generic1, Generic2> = Generic1<Generic2>[];
 
+// don't judge, pseudocode doesn't have to make sense
 function asd<Generic2>() -> AType<int, Generic2> {
-	
+	return [5];
 }
