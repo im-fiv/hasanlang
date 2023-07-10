@@ -7,7 +7,7 @@ on:
 
 jobs:
 
-  test_phaser:
+  test:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -26,17 +26,17 @@ jobs:
 
       - name: Lint
         run: |
-          cd phaser
+          cd hasanlang
           cargo fmt -- --check
           cargo clippy -- -D warnings
 
       - name: Test
         run: |
-          cd phaser
+          cd hasanlang
           cargo check
           cargo test --all
 
       - name: Build
         run: |
-          cd phaser
+          cd hasanlang
           cargo build --release
