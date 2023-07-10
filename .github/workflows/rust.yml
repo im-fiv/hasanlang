@@ -23,6 +23,10 @@ jobs:
           cargo --version --verbose
           rustc --version
           cargo clippy --version
+          
+      - name: View directory
+        run: |
+          ls -la
 
       - name: Lint
         run: |
