@@ -53,7 +53,7 @@ term = _{ function_call_expression | array_access_expression | array_expression 
 term_without_recursion = _{ literal | identifier | "(" ~ expression ~ ")" }
 
 // basic expressions //
-array_expression = { "[" ~ (term_without_recursion ~ ("," ~ term_without_recursion)*)? ~ "]" }
+array_expression = { "[" ~ (expression ~ ("," ~ expression)*)? ~ "]" }
 
 // recursive expressions //
 function_call_expression = { term_without_recursion ~ call_generics? ~ "(" ~ function_call_arguments? ~ ")" }
