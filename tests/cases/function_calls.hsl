@@ -1,14 +1,14 @@
-func print_hello_world() -> void {
+func print_hello_world() -> void do
 	print("hello, world!");
-}
+end
 
 print_hello_world();
 
-func random_number<Type>() -> Type {
+func random_number<Type>() -> Type do
 	return 5;
-}
+end
 
-func main() {
+func main() do
 	var add = 2;
 	return random_number<int>() + add;
-}
+end

@@ -1,5 +1,5 @@
-func cast<From, To>(input: From) -> To {
+func cast<From, To>(input: From) -> To do
 	return input as To;
-}
+end
 
 return cast<int, float>(5);

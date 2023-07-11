@@ -6,6 +6,6 @@ this is a multiline comment
 print("hello"); // this should not run
 */
 
-func main() {
+func main() do
 	// things here //////
-}
+end
