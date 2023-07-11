@@ -6,44 +6,44 @@ type SomeType<T> = T[];
 multi-line ones work too
 */
 
-func world() -> str {
+func world() -> str do
 	return "hello";
-}
+end
 
-class ClassDefinition {
+class ClassDefinition
 	a: int[][] = "default value";
 	b: SomeType<int>[];
 
 	#[static, constructor]
-	func some_function() -> bool {
+	func some_function() -> bool do
 
-	};
+	end;
 
 	c: bool;
 
-	func another_function() -> int {
+	func another_function() -> int do
 
-	}
-};
+	end
+end;
 
-declare class ClassDeclaraction {
+declare class ClassDeclaraction
 	a: int;
 
 	#[static, constructor]
 	func some_function() -> bool;
 
 	func other_function() -> int;
-}
+end
 
-declare class Array<T> {
+declare class Array<T>
 	#[get]
 	func length() -> int;
 
 	func append(_elem: T) -> void;
 	func copy() -> this;
-}
+end
 
-func hello() -> SomeType<int> {
+func hello() -> SomeType<int> do
 	world(123);
 
 	var arr = Array();
@@ -54,4 +54,4 @@ func hello() -> SomeType<int> {
 	var var3 = (var2 * 1.5) / 3 + a[0].hello(1, 2, 3, "hello", []) * a[0][1]->bye->a.asd(123123123 * 2, []) + 2;
 
 	return [var3, var2];
-};
+end;

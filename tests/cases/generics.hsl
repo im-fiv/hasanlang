@@ -1,18 +1,18 @@
-func generic_function<T>(input: T) -> T[] {
+func generic_function<T>(input: T) -> T[] do
 	// wraps input into an array
 	return [input];
-}
+end
 
-class generic_class<T> {
+class generic_class<T>
 	inner_value: T;
 
 	#[get]
-	func value() -> T {
+	func value() -> T do
 		// TODO: fix dot access
 		return this["inner_value"];
-	}
-}
+	end
+end
 
-func main() {
+func main() do
 	var wrapped = generic_function<int>(5);
-}
+end
