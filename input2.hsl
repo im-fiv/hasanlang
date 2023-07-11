@@ -6,7 +6,7 @@ type SomeType<T> = T[];
 multi-line ones work too
 */
 
-function world() -> str {
+func world() -> str {
 	return "hello";
 }
 
@@ -15,13 +15,13 @@ class ClassDefinition {
 	b: SomeType<int>[];
 
 	#[static, constructor]
-	function some_function() -> bool {
+	func some_function() -> bool {
 
 	};
 
 	c: bool;
 
-	function another_function() -> int {
+	func another_function() -> int {
 
 	}
 };
@@ -30,20 +30,20 @@ declare class ClassDeclaraction {
 	a: int;
 
 	#[static, constructor]
-	function some_function() -> bool;
+	func some_function() -> bool;
 
-	function other_function() -> int;
+	func other_function() -> int;
 }
 
 declare class Array<T> {
 	#[get]
-	function length() -> int;
+	func length() -> int;
 
-	function append(_elem: T) -> void;
-	function copy() -> this;
+	func append(_elem: T) -> void;
+	func copy() -> this;
 }
 
-function hello() -> SomeType<int> {
+func hello() -> SomeType<int> {
 	world(123);
 
 	var arr = Array();

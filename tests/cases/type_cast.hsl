@@ -1,4 +1,4 @@
-function cast<From, To>(input: From) -> To {
+func cast<From, To>(input: From) -> To {
 	return input as To;
 }
 
