@@ -16,3 +16,5 @@
 6. fix array expressions ^ being interpreted as function calls
 7. make sure to check all TODO comments
 8. use specific parse_..._expression functions instead of one vague parse_expression to more represent the expected output
+9. move this into README.md
+10. update README.md to be more useful
