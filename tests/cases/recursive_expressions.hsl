@@ -1,0 +1,24 @@
+var a = 2 + 2 * 2;
+
+var b = some_func() + 2 / 2 * (12312312);
+
+var c = other_func()()()()()() + 1337 * 3232892 - 1;
+
+var d = array[0][1][2][3][4][5] - 1 + another_function();
+
+var e = array[0]("hello, world!" + "!")("asd")[4 - 2];
+
+var f = some_class->some_property + some_class->some_function();
+
+var e = something.something_else / something.something_more();
+
+world(123);
+
+var arr = Array();
+
+var var1 = random_variable_name;
+
+var var2 = 2 + 5;
+var complex_expression = (var2 * 15) / 3 + a[0].function(1, 2, 3, "random string", []) * a[0][1]->static_1->static_2.asd(123123123 * 2, []) + 2;
+
+return [complex_expression, var2];

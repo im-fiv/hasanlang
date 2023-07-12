@@ -64,7 +64,7 @@ impl FunctionArgument {
 	pub fn new(name: Expression, kind: Expression) -> FunctionArgument {
 		match kind {
 			Expression::Type { .. } => FunctionArgument { name, kind },
-			_ => panic!("Got an unexpected \"kind\" argument. Expected \"{:?}\", got \"{:?}\"", Rule::r#type, kind)
+			_ => panic!("Got an unexpected 'kind' argument. Expected '{:?}', got '{:?}'", Rule::r#type, kind)
 		}
 	}
 }
@@ -115,7 +115,7 @@ pub enum Expression {
 	Number(i32),
 	String(String),
 
-	Unary(Operator, Box<Expression>),
+	Unary(UnaryOperator, Box<Expression>),
 	Binary(Box<Expression>, Operator, Box<Expression>),
 
 	FunctionCall {
@@ -172,6 +172,11 @@ pub enum Operator {
 	Modulo
 }
 
+#[derive(Debug, Clone)]
+pub enum UnaryOperator {
+	Minus
+}
+
 impl<'p> ASTParser<'p> {
 	pub fn new(pairs: Pairs<'p, Rule>) -> ASTParser<'p> {
 		ASTParser { pairs }
@@ -191,8 +196,7 @@ impl<'p> ASTParser<'p> {
 
 				Rule::program => statements = Some(self.parse_program(pair.into_inner())),
 
-				rule => panic!("Got an unexpected first rule. Expected \"{:?}\", got \"{:?}\"", Rule::program, rule)
-				// rule => panic!("Expected \"{:?}\" as first rule, got \"{:?}\"", Rule::program, rule)
+				rule => panic!("Got an unexpected rule. Expected '{:?}', got '{:?}'", Rule::program, rule)
 			}
 		}
 
@@ -216,7 +220,7 @@ impl<'p> ASTParser<'p> {
 				Rule::function_call_stmt => self.parse_function_call(pair.into_inner()),
 				Rule::return_stmt => self.parse_return(pair.into_inner()),
 
-				rule => panic!("Got an unexpected statement rule \"{:?}\"", rule)
+				rule => panic!("Got an unexpected statement rule '{:?}'", rule)
 			};
 
 			statements.push(statement);
@@ -233,7 +237,15 @@ impl<'p> ASTParser<'p> {
 			"*" => Operator::Times,
 			"%" => Operator::Modulo,
 
-			operator => panic!("Got an unexpected operator. Expected \"+\", \"-\", \"/\", \"*\" or \"%\", got \"{}\"", operator)
+			operator => panic!("Got an unexpected operator. Expected '+', '-', '/', '*' or '%', got '{}'", operator)
+		}
+	}
+
+	fn parse_unary_operator(&self, pair: &Pair<'p, Rule>) -> UnaryOperator {
+		match pair.as_str() {
+			"-" => UnaryOperator::Minus,
+
+			operator => panic!("Got an unexpected unary operator. Expected '-', got '{}'", operator)
 		}
 	}
 
@@ -246,6 +258,10 @@ impl<'p> ASTParser<'p> {
 		// check if an iterator is empty
 		if pairs.len() < 1 {
 			return self.parse_term(expression_pair);
+		}
+
+		if expression_pair.as_rule() == Rule::recursive_expression {
+			return self.parse_recursive_expression(expression_pair.into_inner());
 		}
 
 		self.parse_expression_with_precedence(&mut pairs, 0)
@@ -293,13 +309,13 @@ impl<'p> ASTParser<'p> {
 			"+" | "-" => 1,
 			"*" | "/" | "%" => 2,
 			
-			operator => panic!("Got an unexpected operator. Expected \"+\", \"-\", \"/\", \"*\" or \"%\", got \"{}\"", operator)
+			operator => panic!("Got an unexpected operator. Expected '+', '-', '/', '*' or '%', got '{}'", operator)
 		}
 	}
 
 	fn parse_identifier(&self, pair: Pair<'p, Rule>) -> Expression {
 		if pair.as_rule() != Rule::identifier {
-			panic!("Got an unexpected rule. Expected \"{:?}\", got \"{:?}\"", Rule::identifier, pair.as_rule());
+			panic!("Got an unexpected rule. Expected '{:?}', got '{:?}'", Rule::identifier, pair.as_rule());
 		}
 
 		Expression::Identifier(pair.as_str().to_owned())
@@ -308,7 +324,7 @@ impl<'p> ASTParser<'p> {
 	fn parse_number_literal(&self, pair: Pair<'p, Rule>) -> Expression {
 		let string = pair.as_str().to_owned();
 		let literal = string.parse::<NumberType>()
-			.expect(format!("Failed to parse number \"{}\"", string).as_str());
+			.expect(format!("Failed to parse number '{}'", string).as_str());
 
 		Expression::Number(literal)
 	}
@@ -322,21 +338,12 @@ impl<'p> ASTParser<'p> {
 
 	fn parse_term(&self, pair: Pair<'p, Rule>) -> Expression {
 		match pair.as_rule() {
-			Rule::unary_expression => {
-				let operator = self.parse_operator(&pair);
-				let operand = self.parse_term(pair);
-
-				Expression::Unary(operator, Box::new(operand))
-			}
-
+			Rule::unary_expression => self.parse_unary_expression(pair.into_inner()),
 			Rule::binary_expression | Rule::expression => self.parse_expression(pair),
 
-			Rule::function_call_expression => self.parse_function_call_expression(pair.into_inner()),
 			Rule::type_cast_expression => self.parse_type_cast_expression(pair.into_inner()),
 			Rule::array_expression => self.parse_array_expression(pair.into_inner()),
-			Rule::array_access_expression => self.parse_array_access_expression(pair.into_inner()),
-			Rule::dot_access_expression => self.parse_dot_access_expression(pair.into_inner()),
-			Rule::arrow_access_expression => self.parse_arrow_access_expression(pair.into_inner()),
+			Rule::recursive_expression => self.parse_recursive_expression(pair.into_inner()),
 
 			Rule::number_literal => self.parse_number_literal(pair),
 			Rule::string_literal => self.parse_string_literal(pair),
@@ -344,42 +351,114 @@ impl<'p> ASTParser<'p> {
 			Rule::identifier => self.parse_identifier(pair),
 			Rule::r#type => self.parse_type(pair),
 
-			rule => panic!("Got invalid expression rule: \"{:?}\"", rule),
+			rule => panic!("Got invalid expression rule: '{:?}'", rule),
 		}
 	}
 
-	fn parse_arrow_access_expression(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
+	fn parse_unary_expression(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
 		let mut pairs = pairs_borrowed.clone();
 
-		let left_pair = pairs
-			.next()
-			.expect("Expression/identifier expected in left side of an arrow expression, got nothing");
+		let operator = self.parse_unary_operator(&pairs.next().expect("Failed to parse a unary expression: no operator is present"));
+		let operand = self.parse_expression(pairs.next().expect("Failed to parse a unary expression: no operand is present"));
 
-		let right_pair = pairs
-			.next()
-			.expect("Expression/identifier expected in right side of an arrow expression, got nothing");
-
-		Expression::ArrowAccess(
-			Box::new(self.parse_expression(left_pair)),
-			Box::new(self.parse_expression(right_pair))
-		)
+		Expression::Unary(operator, Box::new(operand))
 	}
 
-	fn parse_dot_access_expression(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
+	fn parse_recursive_expression(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
 		let mut pairs = pairs_borrowed.clone();
 
-		let left_pair = pairs
-			.next()
-			.expect("Expression/identifier expected in left side of a dot expression, got nothing");
+		if pairs.len() == 1 {
+			return self.parse_expression(pairs.next().unwrap_or_else(|| unreachable!("Pairs iterator is empty")));
+		}
 
-		let right_pair = pairs
-			.next()
-			.expect("Expression/identifier expected in right side of a dot expression, got nothing");
+		let mut current_expression = Expression::Empty;
 
-		Expression::DotAccess(
-			Box::new(self.parse_expression(left_pair)),
-			Box::new(self.parse_expression(right_pair))
-		)
+		while let Some(pair) = pairs.next() {
+			current_expression = match pair.as_rule() {
+				Rule::identifier => self.parse_identifier(pair),
+				Rule::expression => self.parse_expression(pair),
+
+				Rule::access_call => self.parse_function_call_expression(current_expression, pair),
+				Rule::access_array => self.parse_array_access_expression(current_expression, pair),
+				Rule::access_dot => self.parse_dot_access_expression(current_expression, pair),
+				Rule::access_arrow => self.parse_arrow_access_expression(current_expression, pair),
+
+				rule => unreachable!("Expected a recursive expression term, got '{:?}'", rule)
+			}
+		}
+
+		current_expression
+	}
+
+	fn parse_function_call_expression(&self, expression: Expression, pair: Pair<'p, Rule>) -> Expression {
+		let mut call_insides = pair.into_inner();
+
+		if call_insides.len() < 1 {
+			return Expression::FunctionCall {
+				callee: Box::new(expression),
+				generics: Vec::new(),
+				arguments: Vec::new()
+			};
+		}
+
+		let mut next_pair = call_insides
+			.next()
+			.unwrap_or_else(|| unreachable!("Expression call pairs iterator is empty"));
+
+		let mut generics: Vec<Expression> = Vec::new();
+		let mut arguments: Vec<Expression> = Vec::new();
+
+		// notify that incorrect generics are being passed to the function
+		if next_pair.as_rule() == Rule::definition_generics {
+			panic!("Incorrect usage of parse_function_call_expression. Definition generics were passed instead of call generics");
+		}
+
+		// if the next pair is of type call_generics, parse them, and exit if there are no arguments
+		if next_pair.as_rule() == Rule::call_generics {
+			generics = self.parse_generics_as_types(next_pair);
+
+			let pair = call_insides.next();
+			
+			if pair.is_none() {
+				return Expression::FunctionCall {
+					callee: Box::new(expression),
+					generics,
+					arguments
+				};
+			}
+
+			next_pair = pair.unwrap();
+		}
+
+		// parse arguments
+		for arg_pair in next_pair.into_inner() {
+			// arg_pair is always wrapped in an expression in this case
+			let expression_pair = arg_pair
+				.into_inner()
+				.next()
+				.expect("Failed to parse function call argument");
+
+			let parsed = self.parse_expression(expression_pair);
+			arguments.push(parsed);
+		}
+
+		Expression::FunctionCall {
+			callee: Box::new(expression),
+			generics,
+			arguments
+		}
+	}
+
+	fn parse_arrow_access_expression(&self, expression: Expression, pair: Pair<'p, Rule>) -> Expression {
+		Expression::ArrowAccess(Box::new(expression), Box::new(self.parse_expression(pair)))
+	}
+
+	fn parse_dot_access_expression(&self, expression: Expression, pair: Pair<'p, Rule>) -> Expression {
+		Expression::DotAccess(Box::new(expression), Box::new(self.parse_expression(pair)))
+	}
+
+	fn parse_array_access_expression(&self, expression: Expression, pair: Pair<'p, Rule>) -> Expression {
+		Expression::ArrayAccess(Box::new(expression), Box::new(self.parse_expression(pair)))
 	}
 
 	fn parse_array_expression(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
@@ -392,23 +471,6 @@ impl<'p> ASTParser<'p> {
 		}
 
 		Expression::Array(items)
-	}
-
-	fn parse_array_access_expression(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
-		let mut pairs = pairs_borrowed.clone();
-
-		let array_pair = pairs
-			.next()
-			.expect("Failed to parse array of array access expression");
-
-		let index_pair = pairs
-			.next()
-			.expect("Failed to parse index of array access expression");
-
-		Expression::ArrayAccess(
-			Box::new(self.parse_expression(array_pair)),
-			Box::new(self.parse_expression(index_pair))
-		)
 	}
 
 	fn parse_type_cast_expression(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
@@ -436,7 +498,7 @@ impl<'p> ASTParser<'p> {
 	/// * `pair` - A Pest.rs parser pair with type Rule::definition_generics
 	fn parse_generics_as_identifiers(&self, pair: Pair<'p, Rule>) -> Vec<Expression> {
 		if pair.as_rule() != Rule::definition_generics {
-			panic!("Got an unexpected rule. Expected \"{:?}\", got \"{:?}\"", Rule::definition_generics, pair.as_rule());
+			panic!("Got an unexpected rule. Expected '{:?}', got '{:?}'", Rule::definition_generics, pair.as_rule());
 		}
 
 		let inner_pairs = pair.into_inner();
@@ -444,7 +506,7 @@ impl<'p> ASTParser<'p> {
 
 		for arg in inner_pairs {
 			if arg.as_rule() != Rule::identifier {
-				panic!("Got an unexpected rule as a generics argument. Expected \"{:?}\", got \"{:?}\"", Rule::identifier, arg.as_rule());
+				panic!("Got an unexpected rule as a generics argument. Expected '{:?}', got '{:?}'", Rule::identifier, arg.as_rule());
 			}
 
 			generics.push(self.parse_identifier(arg));
@@ -460,7 +522,7 @@ impl<'p> ASTParser<'p> {
 	/// * `pair` - A Pest.rs parser pair with type Rule::call_generics
 	fn parse_generics_as_types(&self, pair: Pair<'p, Rule>) -> Vec<Expression> {
 		if pair.as_rule() != Rule::call_generics {
-			panic!("Got an unexpected rule. Expected \"{:?}\", got \"{:?}\"", Rule::call_generics, pair.as_rule());
+			panic!("Got an unexpected rule. Expected '{:?}', got '{:?}'", Rule::call_generics, pair.as_rule());
 		}
 
 		let inner_pairs = pair.into_inner();
@@ -468,7 +530,7 @@ impl<'p> ASTParser<'p> {
 
 		for arg in inner_pairs {
 			if arg.as_rule() != Rule::r#type {
-				panic!("Got an unexpected rule as a generics argument. Expected \"{:?}\", got \"{:?}\"", Rule::r#type, arg.as_rule());
+				panic!("Got an unexpected rule as a generics argument. Expected '{:?}', got '{:?}'", Rule::r#type, arg.as_rule());
 			}
 
 			generics.push(self.parse_type(arg));
@@ -479,7 +541,7 @@ impl<'p> ASTParser<'p> {
 
 	fn parse_type(&self, pair: Pair<'p, Rule>) -> Expression {
 		if pair.as_rule() != Rule::r#type {
-			panic!("Got an unexpected rule as a type. Expected \"{:?}\", got \"{:?}\"", Rule::r#type, pair.as_rule());
+			panic!("Got an unexpected rule as a type. Expected '{:?}', got '{:?}'", Rule::r#type, pair.as_rule());
 		}
 
 		let mut inner_pairs = pair.into_inner();
@@ -509,84 +571,9 @@ impl<'p> ASTParser<'p> {
 		}
 	}
 
-	fn parse_function_call_expression(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
-		let mut pairs = pairs_borrowed.clone();
-		
-		// extract callee
-		let callee_pair = pairs
-			.next()
-			.expect("Identifier or expression expected in function call expression, got nothing");
-
-		// check for invalid function name
-		match callee_pair.as_rule() {
-			Rule::number_literal | Rule::string_literal => panic!("Number and string literals are not valid function names"),
-			_ => ()
-		}
-
-		let callee = self.parse_expression(callee_pair);
-
-		// extract arguments and/or generics
-		let mut next_pair = pairs.next();
-
-		// if there's no arguments or generics, return early
-		if next_pair.is_none() {
-			// return Expression::FunctionCall(Box::new(callee), Vec::new());
-			return Expression::FunctionCall {
-				callee: Box::new(callee),
-				generics: Vec::new(),
-				arguments: Vec::new()
-			};
-		}
-
-		let next_pair_unwrapped = next_pair
-			.clone()
-			.unwrap_or_else(|| unreachable!("Next pair is none (expected generics or arguments)"));
-
-		let mut generics: Vec<Expression> = Vec::new();
-
-		// if the next pair is generics, parse them
-		if next_pair_unwrapped.as_rule() == Rule::call_generics {
-			generics = self.parse_generics_as_types(next_pair_unwrapped);
-
-			// go to the next pair, which can be the arguments
-			next_pair = pairs.next();
-		}
-		
-		// if the next pair is not arguments then return early
-		if next_pair.is_none() {
-			return Expression::FunctionCall {
-				callee: Box::new(callee),
-				generics: generics,
-				arguments: Vec::new()
-			};
-		}
-
-		// otherwise, parse the arguments
-		let args_pair = next_pair.unwrap_or_else(|| unreachable!("Next pair is none (expected arguments)"));
-		let mut args: Vec<Expression> = Vec::new();
-
-		for arg_pair in args_pair.into_inner() {
-			// arg_pair is always wrapped in an expression in this case
-			let expression_pair = arg_pair
-				.into_inner()
-				.next()
-				.expect("Failed to parse function call argument");
-
-			let parsed = self.parse_expression(expression_pair);
-			args.push(parsed);
-		}
-
-		// return
-		Expression::FunctionCall {
-			callee: Box::new(callee),
-			generics,
-			arguments: args
-		}
-	}
-
 	fn parse_class_function_attributes(&self, pair: Pair<'p, Rule>) -> ClassFunctionAttributes {
 		if pair.as_rule() != Rule::attributes {
-			panic!("Got an unexpected rule as function attributes. Expected \"{:?}\", got \"{:?}\"", Rule::attributes, pair.as_rule());
+			panic!("Got an unexpected rule as function attributes. Expected '{:?}', got '{:?}'", Rule::attributes, pair.as_rule());
 		}
 
 		let mut inner = pair.into_inner();
@@ -599,7 +586,7 @@ impl<'p> ASTParser<'p> {
 			let owned = as_str.clone().to_owned();
 
 			if met_attributes.contains(&owned) {
-				panic!("Found more than one \"{}\" attribute definition. Cannot define an attribute more than once for a single function", as_str);
+				panic!("Found more than one '{}' attribute definition. Cannot define an attribute more than once for any given function", as_str);
 			}
 
 			match as_str {
@@ -610,7 +597,7 @@ impl<'p> ASTParser<'p> {
 				"set" => attributes.set = true,
 				"static" => attributes.static_ = true,
 
-				_ => unreachable!("Failed to parse an unknown function attribute \"{}\"", as_str)
+				_ => unreachable!("Failed to parse an unknown function attribute '{}'", as_str)
 			};
 
 			// mark attribute as defined
@@ -667,7 +654,7 @@ impl<'p> ASTParser<'p> {
 					let arg_name = self.parse_identifier(
 						arg
 							.next()
-							.expect(&format!("Failed to parse a function argument name. Expected \"{:?}\", got nothing", Rule::identifier))
+							.expect(&format!("Failed to parse a function argument name. Expected '{:?}', got nothing", Rule::identifier))
 					);
 
 					let arg_type = arg
@@ -750,14 +737,14 @@ impl<'p> ASTParser<'p> {
 		// * NOTE: attributes are to be checked later by the optimization stage/compiler
 
 		if pair.as_rule() != Rule::class_definition_function {
-			panic!("Got an unexpected rule as a class definition member. Expected \"{:?}\", got \"{:?}\"", Rule::class_definition_function, pair.as_rule());
+			panic!("Got an unexpected rule as a class definition member. Expected '{:?}', got '{:?}'", Rule::class_definition_function, pair.as_rule());
 		}
 
 		let mut inner_pairs = pair.into_inner();
 
 		let next_pair = inner_pairs
 			.peek()
-			.expect(&format!("Failed to parse a class definition function. Expected \"{:?}\" or \"{:?}\", got nothing", Rule::function_definition_stmt, Rule::attributes));
+			.expect(&format!("Failed to parse a class definition function. Expected '{:?}' or '{:?}', got nothing", Rule::function_definition_stmt, Rule::attributes));
 		
 		let mut attributes: ClassFunctionAttributes = Default::default();
 
@@ -770,7 +757,7 @@ impl<'p> ASTParser<'p> {
 
 		let statement_pair = inner_pairs
 			.next()
-			.expect(&format!("Failed to parse a class definition function. Expected \"{:?}\", got nothing", Rule::function_definition_stmt));
+			.expect(&format!("Failed to parse a class definition function. Expected '{:?}', got nothing", Rule::function_definition_stmt));
 
 		let function_statement = self.parse_function_definition(statement_pair.into_inner());
 		ClassDefinitionMember::function_from_statement(function_statement, attributes)
@@ -778,18 +765,18 @@ impl<'p> ASTParser<'p> {
 
 	fn parse_class_definition_variable(&self, pair: Pair<'p, Rule>) -> ClassDefinitionMember {
 		if pair.as_rule() != Rule::class_definition_variable {
-			panic!("Got an unexpected rule as a class definition member. Expected \"{:?}\", got \"{:?}\"", Rule::class_definition_variable, pair.as_rule());
+			panic!("Got an unexpected rule as a class definition member. Expected '{:?}', got '{:?}'", Rule::class_definition_variable, pair.as_rule());
 		}
 
 		let mut inner_pairs = pair.into_inner();
 
 		let name = inner_pairs
 			.next()
-			.expect(&format!("Failed to parse class definition variable. Expected \"{:?}\", got nothing", Rule::identifier));
+			.expect(&format!("Failed to parse class definition variable. Expected '{:?}', got nothing", Rule::identifier));
 
 		let kind = inner_pairs
 			.next()
-			.expect(&format!("Failed to parse class definition variable. Expected \"{:?}\", got nothing", Rule::r#type));
+			.expect(&format!("Failed to parse class definition variable. Expected '{:?}', got nothing", Rule::r#type));
 
 		let default_value_option = inner_pairs.next();
 		let mut default_value = Expression::Empty;
@@ -807,7 +794,7 @@ impl<'p> ASTParser<'p> {
 
 	fn parse_class_definition_member(&self, pair: Pair<'p, Rule>) -> ClassDefinitionMember {
 		if pair.as_rule() != Rule::class_definition_member {
-			panic!("Got unexpected rule as a class definition member. Expected \"{:?}\", got \"{:?}\"", Rule::class_definition_member, pair.as_rule());
+			panic!("Got unexpected rule as a class definition member. Expected '{:?}', got '{:?}'", Rule::class_definition_member, pair.as_rule());
 		}
 
 		let inner = pair
@@ -820,7 +807,7 @@ impl<'p> ASTParser<'p> {
 			Rule::class_definition_function => self.parse_class_definition_function(inner),
 			
 			rule => panic!(
-				"Got unexpected rule as a class definition member. Expected \"{:?}\" or \"{:?}\", got \"{:?}\"",
+				"Got unexpected rule as a class definition member. Expected '{:?}' or '{:?}', got '{:?}'",
 				Rule::class_definition_variable,
 				Rule::class_definition_function,
 				rule
@@ -836,7 +823,7 @@ impl<'p> ASTParser<'p> {
 			.expect("Failed to parse class definition name");
 
 		if name.as_rule() != Rule::identifier {
-			panic!("Got unexpected rule \"{:?}\" as a name for class definition, expected \"{:?}\"", name.as_rule(), Rule::identifier);
+			panic!("Got unexpected rule '{:?}' as a name for class definition, expected '{:?}'", name.as_rule(), Rule::identifier);
 		}
 
 		let next_pair_option = pairs.peek();
@@ -916,7 +903,7 @@ impl<'p> ASTParser<'p> {
 		if next_pair.as_rule() == Rule::expression {
 			value = self.parse_expression(next_pair);
 		} else {
-			panic!("Got unexpected rule \"{:?}\" in variable definitition", next_pair.as_rule());
+			panic!("Got unexpected rule '{:?}' in variable definitition", next_pair.as_rule());
 		}
 
 		Statement::VariableDefinition {
@@ -927,11 +914,7 @@ impl<'p> ASTParser<'p> {
 	}
 
 	fn parse_function_call(&self, pairs: Pairs<'p, Rule>) -> Statement {
-		let expression_pair = pairs
-			.peek()
-			.expect("Failed to parse function call expression as a statement");
-
-		let parsed = self.parse_function_call_expression(expression_pair.into_inner());
+		let parsed = self.parse_recursive_expression(pairs);
 
 		if let Expression::FunctionCall { callee, generics, arguments } = parsed {
 			return Statement::FunctionCall {

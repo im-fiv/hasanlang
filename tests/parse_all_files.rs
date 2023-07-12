@@ -1,3 +1,4 @@
+use std::panic;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::prelude::*;
@@ -34,25 +35,27 @@ fn parse_all_files() {
 			.expect("Failed to resolve path")
 			.path();
 
+		let filename = path.file_name().unwrap_or_else(|| unreachable!("Failed to get file name"));
+
 		let contents = read_file(path.clone());
 		let parse_result = HasanPestParser::parse(Rule::program, &contents);
 
 		if parse_result.is_err() {
 			let err = parse_result.err().unwrap_or_else(|| unreachable!("Parse result is not an error variant"));
-			let filename = path.file_name().unwrap_or_else(|| unreachable!("Failed to get file name"));
 
-			panic!(
-				"Failed to parse file {:?}: {:?}",
-				filename,
-				err
-			);
+			eprintln!("Failed to parse file {:?}:", filename);
+			panic!("{}", err);
 		}
 
 		let pairs = parse_result.unwrap_or_else(|_| unreachable!());
 
 		let ast_parser = ASTParser::new(pairs);
-		let ast = ast_parser.parse();
+		let ast = panic::catch_unwind(|| ast_parser.parse());
 
-		assert_ne!(ast.len(), 0);
+		if ast.is_ok() {
+			assert_ne!(ast.unwrap().len(), 0);
+		} else {
+			panic!("Failed to parse file {:?}", filename);
+		}
 	}
 }

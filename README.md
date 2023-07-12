@@ -41,10 +41,14 @@ Here are ways you can contribute:
 Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 
 ## My current TODO list
-- [ ] Remove `inputX.hsl` code samples from root directory
 - [ ] Fix recursive expressions
 - [ ] Add precedence to type cast operator
 - [ ] Add enums
 - [ ] Store a span in every AST node for error reporting
 - [ ] Clarify `parse_..._expression` function calls *(call more specific functions instead)*
+- [ ] Add more unary operators
+- [ ] Add if, while and for statements
+- [ ] Add anonymous functions
+- [ ] Add support for floats
+- [x] Remove `inputX.hsl` code samples from root directory
 - [x] Move this into `README.md`
