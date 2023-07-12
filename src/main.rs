@@ -33,7 +33,14 @@ fn main() {
     println!("Pest parsing...");
 
     let contents = read_file(FILE_PATH);
-    let pairs = HasanPestParser::parse(Rule::program, &contents).expect("Failed to parse input");
+    let result = HasanPestParser::parse(Rule::program, &contents);
+
+    if let Err(e) = result {
+        println!("{}", e);
+        return;
+    }
+
+    let pairs = result.unwrap();
 
     if DEBUG {
         println!("Parsed pairs ({}): {}", pairs.len(), pairs);
