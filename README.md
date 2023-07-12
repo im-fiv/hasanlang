@@ -16,7 +16,7 @@ This project is in the early stages. The language specifications, parser, and ba
 - [ ] Self-hosting
 
 ## Getting Started
-To set up HasanLang, you will need to have [Rust](https://www.rust-lang.org/tools/install) and [LLVM 15.0](https://releases.llvm.org/download.html) on your system. Then you can clone this repository and build the project using `cargo`, the Rust package manager.
+To set up Hasanlang, you will need to have [Rust](https://www.rust-lang.org/tools/install) and [LLVM 15.0](https://releases.llvm.org/download.html) on your system. Then you can clone this repository and build the project using `cargo`, the Rust package manager.
 
 ```bash
 git clone https://github.com/greenbush5/hasanlang.git
