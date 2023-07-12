@@ -24,6 +24,8 @@ cd hasanlang
 cargo build
 ```
 
+Additionally, you can install [Hasanlang syntax highlighting extension](https://github.com/greenbush5/hasanlang-syntax-extension) for VS Code. This is my first time making a syntax highlighting extension, so feel free to contribute to it as well!
+
 ## Contributing
 I would love to have your help in making Hasanlang better. Contributions are very welcome.
 
