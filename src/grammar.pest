@@ -40,26 +40,28 @@ definition_generics = { "<" ~ identifier ~ ("," ~ identifier)* ~ ">" }
 call_generics = { "<" ~ type ~ ("," ~ type)* ~ ">" }
 
 //* expressions *//
-expression = { unary_expression | binary_expression | type_cast_expression | term }
+expression = { unary_expression | binary_expression | type_cast_expression | array_expression | recursive_expression | term }
+operator = { "+" | "-" | "/" | "*" | "%" }
+unary_operator = { "-" }
 
 // general expression stuff //
-unary_expression = { "-" ~ term }
+unary_expression = { unary_operator ~ term }
 binary_expression = { term ~ (operator ~ term)+ }
 type_cast_expression = { term ~ "as" ~ type }
-operator = { "+" | "-" | "/" | "*" | "%" }
-
-// terms //
-term = _{ function_call_expression | array_access_expression | array_expression | dot_access_expression | arrow_access_expression | term_without_recursion }
-term_without_recursion = _{ literal | identifier | "(" ~ expression ~ ")" }
-
-// basic expressions //
 array_expression = { "[" ~ (expression ~ ("," ~ expression)*)? ~ "]" }
 
+// terms //
+term = _{ unary_expression | array_expression | recursive_expression | term_without_recursion }
+term_without_recursion = _{ literal | identifier | "(" ~ expression ~ ")" }
+
 // recursive expressions //
-function_call_expression = { term_without_recursion ~ call_generics? ~ "(" ~ function_call_arguments? ~ ")" }
-array_access_expression = { term_without_recursion ~ "[" ~ expression ~ "]" }
-dot_access_expression = { term_without_recursion ~ "." ~ expression }
-arrow_access_expression = { term_without_recursion ~ "->" ~ expression }
+access_operator = _{ access_call | access_array | access_dot | access_arrow }
+	access_call = { call_generics? ~ "(" ~ function_call_arguments? ~ ")" }
+	access_array = { "[" ~ expression ~ "]" }
+	access_dot = { "." ~ identifier }
+	access_arrow = { "->" ~ identifier }
+
+recursive_expression = { term_without_recursion ~ access_operator+ }
 
 //* literals and identifiers *//
 literal = _{ string_literal | number_literal }
@@ -72,7 +74,7 @@ identifier = @{ (ASCII_ALPHA | "_") ~ (ASCII_ALPHANUMERIC | "_")* }
 variable_definition_stmt = { "var" ~ identifier ~ (":" ~ type)? ~ "=" ~ expression ~ stmt_sep }
 function_definition_stmt = { function_header ~ block }
 type_definition_stmt = { "type" ~ identifier ~ definition_generics? ~ "=" ~ type ~ stmt_sep }
-function_call_stmt = { function_call_expression ~ stmt_sep }
+function_call_stmt = { term_without_recursion ~ access_call ~ stmt_sep }
 return_stmt = { "return" ~ expression? ~ stmt_sep }
 
 //* to be ignored *//
