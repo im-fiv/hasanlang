@@ -1,5 +1,5 @@
 func generic_function<T>(input: T) -> T[] do
-	// wraps input into an array
+	// Wraps input into an array
 	return [input];
 end
 
@@ -8,8 +8,7 @@ class generic_class<T>
 
 	#[get]
 	func value() -> T do
-		// TODO: fix dot access
-		return this["inner_value"];
+		return this.inner_value;
 	end
 end
 

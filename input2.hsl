@@ -1,9 +1,9 @@
 type SomeType<T> = T[];
 
-// single-line comments work // asdasdasdasd
+// Single-line comments work // dfghjkdfghjksdf
 
 /*
-multi-line ones work too
+Multi-line comments work too
 */
 
 func world() -> str do
@@ -48,10 +48,10 @@ func hello() -> SomeType<int> do
 
 	var arr = Array();
 
-	var var1 = asdasd_asdfhnsdfhsd_asdasd;
+	var var1 = random_variable_name;
 
 	var var2 = 2 + 5;
-	var var3 = (var2 * 1.5) / 3 + a[0].hello(1, 2, 3, "hello", []) * a[0][1]->bye->a.asd(123123123 * 2, []) + 2;
+	var complex_expression = (var2 * 1.5) / 3 + a[0].function(1, 2, 3, "random string", []) * a[0][1]->static_1->static_2.asd(123123123 * 2, []) + 2;
 
-	return [var3, var2];
+	return [complex_expression, var2];
 end;
