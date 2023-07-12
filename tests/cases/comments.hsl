@@ -1,11 +1,11 @@
-// this is a single-line comment
+// This is a single-line comment
 
 /*
-this is a multiline comment
+This is a multiline comment
 
-print("hello"); // this should not run
+print("hello"); // This should not run
 */
 
 func main() do
-	// things here //////
+	// Code here //////
 end
