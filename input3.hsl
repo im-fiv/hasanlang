@@ -4,7 +4,7 @@ var b = some_func() + 2 / 2 * (12312312);
 
 var c = other_func()()()()()() + 1337 * 323289.2 - 1;
 
-var d = array[0][1][2][3][4][5] - 1 + idk_anymore();
+var d = array[0][1][2][3][4][5] - 1 + another_function();
 
 var e = array[0]("hello, world!" + "!")("asd")[4 - 2];
 
@@ -12,14 +12,14 @@ var f = some_class->some_property + some_class->some_function();
 
 var e = something.something_else / something.something_more();
 
-var f = asd->2(); // this should be handled later on i guess?
+var f = something->2(); // I'm not sure whether to allow this or not
 
 type SomeType<T> = T[];
 
-// single-line comments work // asdasdasdasd
+// Single-line comments work // dfgjhdfgjdfhgj
 
 /*
-multi-line ones work too
+Multi-line comments work too
 */
 
 func world() -> str do
@@ -60,15 +60,15 @@ declare class Array<T>
 end
 
 func hello() -> SomeType<int> do
-	world(123);
+	function_call_statement(123);
 	asdasd.world(123, ["hello", "world!"]);
 
 	var arr = Array();
 
-	var var1 = asdasd_asdfhnsdfhsd_asdasd;
+	var var1 = some_random_variable;
 
 	var var2 = 2 + 5;
-	var var3 = (var2 * 1.5) / 3 + a[0].hello(1, 2, 3, "hello", []) * a[0][1]->bye->a.asd(123123123 * 2, []) + 2;
+	var complex_expression = (var2 * 1.5) / 3 + a[0].function(1, 2, 3, "random string", []) * a[0][1]->static1->static1.func1(123123123 * 2, []) + 2;
 
-	return [var3, var2];
+	return [complex_expression, var2];
 end;

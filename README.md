@@ -47,4 +47,4 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 - [ ] Add enums
 - [ ] Store a span in every AST node for error reporting
 - [ ] Clarify `parse_..._expression` function calls *(call more specific functions instead)*
-- [X] Move this into `README.md`
+- [x] Move this into `README.md`
