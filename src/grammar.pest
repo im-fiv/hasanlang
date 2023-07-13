@@ -31,10 +31,11 @@ attributes = { "#[" ~ attribute_identifier ~ ("," ~ attribute_identifier)* ~ "]"
 attribute_identifier = { "constructor" | "private" | "public" | "get" | "set" | "static" }
 
 //* types *//
-type = { array_type | base_type }
+type = { raw_type | array_type | base_type }
 
 base_type = _{ identifier ~ definition_generics? }
 array_type = { base_type ~ ("[" ~ "]")+ }
+raw_type = { (array_type | base_type) ~ "!" }
 
 definition_generics = { "<" ~ identifier ~ ("," ~ identifier)* ~ ">" }
 call_generics = { "<" ~ type ~ ("," ~ type)* ~ ">" }

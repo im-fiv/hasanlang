@@ -49,6 +49,8 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 - [ ] Add if, while and for statements
 - [ ] Add anonymous functions
 - [ ] Add support for floats
+- [ ] Allow for recursive parsing of types
+- [x] Add raw types *(direct LLVM types, should not have any methods on them, intended for compiler usage only)* that can be denoted with an exclamation mark: `AType!`, `ArrayType[]!`, `GenericType<...>!`, `GenericArrType<...>[]!`
 - [x] Add type cast operator to *recursive* expressions
 - [x] Fix *recursive* expressions
 - [x] Remove `inputX.hsl` code samples from root directory

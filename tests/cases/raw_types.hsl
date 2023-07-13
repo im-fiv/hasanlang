@@ -1,0 +1,9 @@
+type Reg_T = int;
+type Reg_ArrayT = int[];
+type Reg_GenericT<A> = A<A>;
+type Reg_GenericArrayT<B> = B<B>[];
+
+type Raw_T = int!;
+type Raw_ArrayT = int[]!;
+type Raw_GenericT<A> = A<A>!;
+type Raw_GenericArrayT<B> = B<B>[]!;
