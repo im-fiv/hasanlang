@@ -3,10 +3,10 @@
 ![Language](https://img.shields.io/badge/Language-Rust-orange)
 ![Contributions](https://img.shields.io/badge/Contributions-Welcome-brightgreen)
 
-Hasanlang is a work-in-progress programming language that aims to be a self-hosted, made for fun programming language. The goal of this project is to extend my knowledge about compilers, programming languages, and how they are made. This is nothing more than a side project *(perhaps only for now?)*
+Hasanlang is a work-in-progress programming language, made for fun, that aims to be a self-hosted. The goal of this project is to extend my knowledge about compilers, programming languages, and how they are made. Currently, this is my primary project.
 
 ## Project Status
-This project is in the early stages. The language specifications, parser, and basic compiler are under active development. Plans to become self-hosted are underway. Please take into account that this project may not get finished at all.
+This project is in the early stages. The language specifications, parser, and basic compiler are under active development. Plans to become self-hosted are underway. I'm not certain whether I will have the will to finish this, but as it seeems, the likelihood of giving up is relatively low.
 
 ## Roadmap
 - [x] Pest Parser
@@ -25,10 +25,10 @@ cd hasanlang
 cargo build
 ```
 
-Additionally, you can install [Hasanlang syntax highlighting extension](https://github.com/greenbush5/hasanlang-syntax-extension) for VS Code. This is my first time making a syntax highlighting extension, so feel free to contribute to it as well!
+Additionally, you can install [Hasanlang syntax highlighting extension](https://github.com/greenbush5/hasanlang-syntax-extension) for VS Code. This is my first time making a syntax highlighting extension, so feel free to contribute to this extension as well!
 
 ## Contributing
-I would love to have your help in making Hasanlang better. Contributions are very welcome.
+I would love to have your help in making Hasanlang better, contributions are very welcome.
 
 Here are ways you can contribute:
 
@@ -38,16 +38,19 @@ Here are ways you can contribute:
 - by writing specifications
 - by writing code and submitting pull requests
 
+## Bugs
+As I said before, this is my first time making a project as complex as this, so my code is particularly prone to errors. Due to the complexity of this project, your help in finding and/or fixing bugs would significantly contribute to its advancement. With your help, this entire project may become possible to complete!
+
 ## License
 Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 
 ## My current TODO list
-- [ ] Add enums
+- [ ] Implement enums
 - [ ] Store a span in every AST node for error reporting
 - [ ] Clarify `parse_..._expression` function calls *(call more specific functions instead)*
 - [ ] Add more unary operators
-- [ ] Add if, while and for statements
-- [ ] Add anonymous functions
+- [ ] Implement if, while and for statements
+- [ ] Implement anonymous functions
 - [ ] Add support for floats
 - [ ] Allow for recursive parsing of types
 - [x] Add raw types *(direct LLVM types, should not have any methods on them, intended for compiler usage only)* that can be denoted with an exclamation mark: `AType!`, `ArrayType[]!`, `GenericType<...>!`, `GenericArrType<...>[]!`
