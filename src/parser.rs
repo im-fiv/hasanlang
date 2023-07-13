@@ -133,7 +133,10 @@ pub enum Expression {
 	Type {
 		base: Box<Expression>,
 		generics: Vec<Expression>,
-		array_type: bool
+
+		// attributes
+		array: bool,
+		raw: bool
 	},
 
 	TypeCast(Box<Expression>, Box<Expression>),
@@ -547,7 +550,15 @@ impl<'p> ASTParser<'p> {
 		let mut inner_pairs = pair.into_inner();
 
 		// check if the type is an array type
-		let next_pair = inner_pairs.peek().expect("Failed to parse type (got an empty type)");
+		let mut next_pair = inner_pairs.peek().expect("Failed to parse type (got an empty type)");
+
+		let is_raw_type = next_pair.as_rule() == Rule::raw_type;
+
+		if is_raw_type {
+			inner_pairs = next_pair.into_inner();
+			next_pair = inner_pairs.peek().expect("Failed to parse type. Expected '[]' or identifier got nothing");
+		}
+
 		let is_array_type = next_pair.as_rule() == Rule::array_type;
 
 		if is_array_type {
@@ -567,7 +578,8 @@ impl<'p> ASTParser<'p> {
 		Expression::Type {
 			base: ParserTypeUtility::from_string(name_pair.as_str().to_owned()),
 			generics,
-			array_type: is_array_type
+			array: is_array_type,
+			raw: is_raw_type
 		}
 	}
 
@@ -685,7 +697,9 @@ impl<'p> ASTParser<'p> {
 			Expression::Type {
 				base: ParserTypeUtility::void_type(),
 				generics: Vec::new(),
-				array_type: false
+
+				array: false,
+				raw: true
 			}
 		};
 
