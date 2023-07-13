@@ -12,9 +12,11 @@ var f = some_class->some_property + some_class->some_function();
 
 var e = something.something_else / something.something_more();
 
+var type_cast = 3 as a as b as c as d as e as f as g;
+
 world(123);
 
-var arr = Array();
+var arr = Array.new();
 
 var var1 = random_variable_name;
 

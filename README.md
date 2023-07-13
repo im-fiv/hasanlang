@@ -41,8 +41,6 @@ Here are ways you can contribute:
 Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 
 ## My current TODO list
-- [ ] Fix recursive expressions
-- [ ] Add precedence to type cast operator
 - [ ] Add enums
 - [ ] Store a span in every AST node for error reporting
 - [ ] Clarify `parse_..._expression` function calls *(call more specific functions instead)*
@@ -50,5 +48,7 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 - [ ] Add if, while and for statements
 - [ ] Add anonymous functions
 - [ ] Add support for floats
+- [x] Add type cast operator to *recursive* expressions
+- [x] Fix *recursive* expressions
 - [x] Remove `inputX.hsl` code samples from root directory
 - [x] Move this into `README.md`

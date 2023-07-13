@@ -136,10 +136,7 @@ pub enum Expression {
 		array_type: bool
 	},
 
-	TypeCast {
-		value: Box<Expression>,
-		to_type: Box<Expression> //* */ Expression::Type
-	},
+	TypeCast(Box<Expression>, Box<Expression>),
 
 	Empty,
 	Unimplemented
@@ -341,7 +338,6 @@ impl<'p> ASTParser<'p> {
 			Rule::unary_expression => self.parse_unary_expression(pair.into_inner()),
 			Rule::binary_expression | Rule::expression => self.parse_expression(pair),
 
-			Rule::type_cast_expression => self.parse_type_cast_expression(pair.into_inner()),
 			Rule::array_expression => self.parse_array_expression(pair.into_inner()),
 			Rule::recursive_expression => self.parse_recursive_expression(pair.into_inner()),
 
@@ -364,6 +360,15 @@ impl<'p> ASTParser<'p> {
 		Expression::Unary(operator, Box::new(operand))
 	}
 
+	fn parse_literal(&self, pair: Pair<'p, Rule>) -> Expression {
+		match pair.as_rule() {
+			Rule::number_literal => self.parse_number_literal(pair),
+			Rule::string_literal => self.parse_string_literal(pair),
+
+			rule => unreachable!("Got an unexpected rule as a literal. Expected number or string literal, got '{:?}'", rule)
+		}
+	}
+
 	fn parse_recursive_expression(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
 		let mut pairs = pairs_borrowed.clone();
 
@@ -376,12 +381,15 @@ impl<'p> ASTParser<'p> {
 		while let Some(pair) = pairs.next() {
 			current_expression = match pair.as_rule() {
 				Rule::identifier => self.parse_identifier(pair),
+				Rule::number_literal | Rule::string_literal => self.parse_literal(pair),
+
 				Rule::expression => self.parse_expression(pair),
 
-				Rule::access_call => self.parse_function_call_expression(current_expression, pair),
-				Rule::access_array => self.parse_array_access_expression(current_expression, pair),
-				Rule::access_dot => self.parse_dot_access_expression(current_expression, pair),
-				Rule::access_arrow => self.parse_arrow_access_expression(current_expression, pair),
+				Rule::recursive_call => self.parse_function_call_expression(current_expression, pair),
+				Rule::recursive_array => self.parse_array_access_expression(current_expression, pair),
+				Rule::recursive_dot => self.parse_dot_access_expression(current_expression, pair),
+				Rule::recursive_arrow => self.parse_arrow_access_expression(current_expression, pair),
+				Rule::recursive_as => self.parse_type_cast_expression(current_expression, pair),
 
 				rule => unreachable!("Expected a recursive expression term, got '{:?}'", rule)
 			}
@@ -461,6 +469,16 @@ impl<'p> ASTParser<'p> {
 		Expression::ArrayAccess(Box::new(expression), Box::new(self.parse_expression(pair)))
 	}
 
+	fn parse_type_cast_expression(&self, expression: Expression, pair: Pair<'p, Rule>) -> Expression {
+		let kind_pair = pair
+			.into_inner()
+			.next()
+			.unwrap_or_else(|| unreachable!("Type cast pairs iterator is empty"));
+
+		let kind_parsed = Box::new(self.parse_type(kind_pair));
+		Expression::TypeCast(Box::new(expression), kind_parsed)
+	}
+
 	fn parse_array_expression(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
 		let mut pairs = pairs_borrowed.clone();
 		let mut items: Vec<Expression> = Vec::new();
@@ -471,24 +489,6 @@ impl<'p> ASTParser<'p> {
 		}
 
 		Expression::Array(items)
-	}
-
-	fn parse_type_cast_expression(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
-		let mut pairs = pairs_borrowed.clone();
-
-		// verify but skip value pair to let parse_expression handle it
-		let value_pair = pairs
-			.next()
-			.expect("Failed to parse value of a type cast");
-
-		let type_pair = pairs
-			.next()
-			.expect("Failed to parse type of a type cast");
-
-		Expression::TypeCast {
-			value: Box::new(self.parse_expression(value_pair)),
-			to_type: Box::new(self.parse_type(type_pair))
-		}
 	}
 
 	/// Used for function **definition** statements. Parses generics **as identifiers** to later be substituted with proper types
