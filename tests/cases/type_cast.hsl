@@ -2,4 +2,6 @@ func cast<From, To>(input: From) -> To do
 	return input as To;
 end
 
+var long_cast = 3 as a as b as c as d as e as f as g;
+
 return cast<int, float>(5);
