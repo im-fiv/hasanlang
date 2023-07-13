@@ -9,10 +9,11 @@ Hasanlang is a work-in-progress programming language that aims to be a self-host
 This project is in the early stages. The language specifications, parser, and basic compiler are under active development. Plans to become self-hosted are underway. Please take into account that this project may not get finished at all.
 
 ## Roadmap
-- [x] Lexer
-- [ ] Basic Parser
+- [x] Pest Parser
+- [ ] Corrective Parser
 - [ ] Compiler
 - [ ] Standard Library
+- [ ] Language Server
 - [ ] Self-hosting
 
 ## Getting Started
