@@ -52,6 +52,8 @@ pub enum Statement {
 		value: Expression
 	},
 
+	VariableAssign(Expression, Expression),
+
 	FunctionCall {
 		callee: Expression,
 		generics: Vec<Expression>,
@@ -255,6 +257,7 @@ impl<'p> ASTParser<'p> {
 				Rule::class_definition => self.parse_class_definition(pair.into_inner()),
 				Rule::class_declaration => self.parse_class_declaration(pair.into_inner()),
 				Rule::variable_definition_stmt => self.parse_variable_definition(pair.into_inner()),
+				Rule::variable_assign_stmt => self.parse_variable_assign(pair.into_inner()),
 				Rule::function_call_stmt => self.parse_function_call(pair.into_inner()),
 				Rule::return_stmt => self.parse_return(pair.into_inner()),
 
@@ -392,8 +395,8 @@ impl<'p> ASTParser<'p> {
 		}
 	}
 
-	fn parse_unary_expression(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
-		let mut pairs = pairs_borrowed.clone();
+	fn parse_unary_expression(&self, pairs: Pairs<'p, Rule>) -> Expression {
+		let mut pairs = pairs.clone();
 
 		let operator = self.parse_unary_operator(&pairs.next().expect("Failed to parse a unary expression: no operator is present"));
 		let operand = self.parse_expression(pairs.next().expect("Failed to parse a unary expression: no operand is present"));
@@ -410,8 +413,8 @@ impl<'p> ASTParser<'p> {
 		}
 	}
 
-	fn parse_recursive_expression(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
-		let mut pairs = pairs_borrowed.clone();
+	fn parse_recursive_expression(&self, pairs: Pairs<'p, Rule>) -> Expression {
+		let mut pairs = pairs.clone();
 
 		if pairs.len() == 1 {
 			return self.parse_expression(pairs.next().unwrap_or_else(|| unreachable!("Pairs iterator is empty")));
@@ -520,8 +523,8 @@ impl<'p> ASTParser<'p> {
 		Expression::TypeCast(Box::new(expression), kind_parsed)
 	}
 
-	fn parse_array_expression(&self, pairs_borrowed: Pairs<'p, Rule>) -> Expression {
-		let mut pairs = pairs_borrowed.clone();
+	fn parse_array_expression(&self, pairs: Pairs<'p, Rule>) -> Expression {
+		let mut pairs = pairs.clone();
 		let mut items: Vec<Expression> = Vec::new();
 
 		while let Some(pair) = pairs.next() {
@@ -746,8 +749,8 @@ impl<'p> ASTParser<'p> {
 		Statement::FunctionDeclaration { name, generics, arguments, return_type }
 	}
 
-	fn parse_function_definition(&self, pairs_borrowed: Pairs<'p, Rule>) -> Statement {
-		let mut pairs = pairs_borrowed.clone();
+	fn parse_function_definition(&self, pairs: Pairs<'p, Rule>) -> Statement {
+		let mut pairs = pairs.clone();
 
 		let header_pair = pairs
 			.next()
@@ -775,8 +778,8 @@ impl<'p> ASTParser<'p> {
 		self.parse_type(pair)
 	}
 
-	fn parse_type_definition(&self, pairs_borrowed: Pairs<'p, Rule>) -> Statement {
-		let mut pairs = pairs_borrowed.clone();
+	fn parse_type_definition(&self, pairs: Pairs<'p, Rule>) -> Statement {
+		let mut pairs = pairs.clone();
 
 		let name_pair = pairs
 			.next()
@@ -887,8 +890,8 @@ impl<'p> ASTParser<'p> {
 		}
 	}
 
-	fn parse_class_definition(&self, pairs_borrowed: Pairs<'p, Rule>) -> Statement {
-		let mut pairs = pairs_borrowed.clone();
+	fn parse_class_definition(&self, pairs: Pairs<'p, Rule>) -> Statement {
+		let mut pairs = pairs.clone();
 
 		let name = pairs
 			.next()
@@ -1018,8 +1021,8 @@ impl<'p> ASTParser<'p> {
 		}
 	}
 
-	fn parse_class_declaration(&self, pairs_borrowed: Pairs<'p, Rule>) -> Statement {
-		let mut pairs = pairs_borrowed.clone();
+	fn parse_class_declaration(&self, pairs: Pairs<'p, Rule>) -> Statement {
+		let mut pairs = pairs.clone();
 
 		let name = pairs
 			.next()
@@ -1075,8 +1078,8 @@ impl<'p> ASTParser<'p> {
 		}
 	}
 
-	fn parse_variable_definition(&self, pairs_borrowed: Pairs<'p, Rule>) -> Statement {
-		let mut pairs = pairs_borrowed.clone();
+	fn parse_variable_definition(&self, pairs: Pairs<'p, Rule>) -> Statement {
+		let mut pairs = pairs.clone();
 
 		let name = pairs
 			.next()
@@ -1110,6 +1113,23 @@ impl<'p> ASTParser<'p> {
 			kind,
 			value
 		}
+	}
+
+	fn parse_variable_assign(&self, pairs: Pairs<'p, Rule>) -> Statement {
+		let mut pairs = pairs.clone();
+
+		let variable_pair = pairs
+			.next()
+			.expect("Failed to parse variable assign. Expected a variable name, got nothing");
+
+		let value_pair = pairs
+			.next()
+			.expect("Failed to parse variable assign. Expected an expression, got nothing");
+
+		Statement::VariableAssign(
+			self.parse_expression(variable_pair),
+			self.parse_expression(value_pair)
+		)
 	}
 
 	fn parse_function_call(&self, pairs: Pairs<'p, Rule>) -> Statement {
