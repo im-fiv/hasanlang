@@ -12,3 +12,5 @@ func main() do
 	var add = 2;
 	return random_number<int>() + add;
 end
+
+func function_declaration<A, B>(first: A, second: this) -> B!;

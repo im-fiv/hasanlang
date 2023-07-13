@@ -21,6 +21,13 @@ pub enum Statement {
 		statements: Vec<Statement>
 	},
 
+	FunctionDeclaration {
+		name: String,
+		generics: Vec<Expression>,
+		arguments: Vec<FunctionArgument>,
+		return_type: Expression //* Expression::Type
+	},
+
 	TypeDefinition {
 		name: String,
 		generics: Vec<Expression>,
@@ -33,7 +40,11 @@ pub enum Statement {
 		members: Vec<ClassDefinitionMember>
 	},
 
-	ClassDeclaration,
+	ClassDeclaration {
+		name: String,
+		generics: Vec<Expression>,
+		members: Vec<ClassDeclarationMember>
+	},
 
 	VariableDefinition {
 		name: String,
@@ -104,6 +115,32 @@ impl ClassDefinitionMember {
 	pub fn function_from_statement(statement: Statement, attributes: ClassFunctionAttributes) -> ClassDefinitionMember {
 		if let Statement::FunctionDefinition { name, generics, arguments, return_type, statements } = statement {
 			return ClassDefinitionMember::Function { name, attributes, generics, arguments, return_type, statements };
+		} else {
+			panic!("Failed to convert invalid statement into a ClassDefinitionMember::Function");
+		}
+	}
+}
+
+#[derive(Debug)]
+pub enum ClassDeclarationMember {
+	Variable {
+		name: String,
+		kind: Expression //* Expression::Type
+	},
+
+	Function {
+		name: String,
+		attributes: ClassFunctionAttributes,
+		generics: Vec<Expression>,
+		arguments: Vec<FunctionArgument>,
+		return_type: Expression //* Expression::Type
+	}
+}
+
+impl ClassDeclarationMember {
+	pub fn function_from_statement(statement: Statement, attributes: ClassFunctionAttributes) -> Self {
+		if let Statement::FunctionDeclaration { name, generics, arguments, return_type } = statement {
+			return ClassDeclarationMember::Function { name, attributes, generics, arguments, return_type };
 		} else {
 			panic!("Failed to convert invalid statement into a ClassDefinitionMember::Function");
 		}
@@ -213,6 +250,7 @@ impl<'p> ASTParser<'p> {
 
 			let statement = match pair.as_rule() {
 				Rule::function_definition_stmt => self.parse_function_definition(pair.into_inner()),
+				Rule::function_declaration_stmt => self.parse_function_declaration(pair),
 				Rule::type_definition_stmt => self.parse_type_definition(pair.into_inner()),
 				Rule::class_definition => self.parse_class_definition(pair.into_inner()),
 				Rule::class_declaration => self.parse_class_declaration(pair.into_inner()),
@@ -494,7 +532,7 @@ impl<'p> ASTParser<'p> {
 		Expression::Array(items)
 	}
 
-	/// Used for function **definition** statements. Parses generics **as identifiers** to later be substituted with proper types
+	/// Used for **definition** statements. Parses generics **as identifiers** to later be substituted with proper types
 	/// 
 	/// # Arguments
 	/// 
@@ -518,7 +556,7 @@ impl<'p> ASTParser<'p> {
 		generics
 	}
 
-	/// Used for function **call** statements. Parses generics **as parser expression types** to later be substituted with proper types
+	/// Used for **call** statements. Parses generics **as parser expression types** to later be substituted with proper types
 	/// 
 	/// # Arguments
 	/// 
@@ -619,14 +657,9 @@ impl<'p> ASTParser<'p> {
 		attributes
 	}
 
-	fn parse_function_definition(&self, pairs_borrowed: Pairs<'p, Rule>) -> Statement {
-		let mut pairs = pairs_borrowed.clone();
-		let mut header_pairs = pairs
-			.next()
-			.expect("Failed to parse function header")
-			.into_inner();
+	fn parse_function_header(&self, pair: Pair<'p, Rule>) -> (String, Vec<Expression>, Vec<FunctionArgument>, Expression) {
+		let mut header_pairs = pair.into_inner();
 
-		// parsing header
 		let name = header_pairs
 			.next()
 			.expect("Failed to parse function name");
@@ -679,17 +712,10 @@ impl<'p> ASTParser<'p> {
 			}
 		}
 
-		let body_pairs = pairs
-			.next()
-			.expect("Failed to parse function body")
-			.into_inner();
-
-		// now can safely skip function_definition_arguments node
 		while header_pairs.len() > 1 {
 			header_pairs.next();
 		}
 
-		// check if return type exists
 		let return_type = if header_pairs.len() > 0 {
 			let return_type_pair = header_pairs.next().unwrap_or_else(|| unreachable!("Next pair is none (expected return type)"));
 			self.parse_type(return_type_pair)
@@ -703,8 +729,40 @@ impl<'p> ASTParser<'p> {
 			}
 		};
 
+		(name.as_str().to_owned(), generics, arguments, return_type)
+	}
+
+	fn parse_function_declaration(&self, pair: Pair<'p, Rule>) -> Statement {
+		if pair.as_rule() != Rule::function_declaration_stmt {
+			panic!("Got an unexpected rule. Expected '{:?}', got '{:?}'", Rule::function_declaration_stmt, pair.as_rule());
+		}
+
+		let header_pair = pair
+			.into_inner()
+			.next()
+			.expect("Failed to parse function declaration: function header is missing");
+
+		let (name, generics, arguments, return_type) = self.parse_function_header(header_pair);
+		Statement::FunctionDeclaration { name, generics, arguments, return_type }
+	}
+
+	fn parse_function_definition(&self, pairs_borrowed: Pairs<'p, Rule>) -> Statement {
+		let mut pairs = pairs_borrowed.clone();
+
+		let header_pair = pairs
+			.next()
+			.expect("Failed to parse function header");
+
+		// parsing header
+		let (name, generics, arguments, return_type) = self.parse_function_header(header_pair);
+
+		let body_pairs = pairs
+			.next()
+			.expect("Failed to parse function body")
+			.into_inner();
+
 		Statement::FunctionDefinition {
-			name: name.as_str().to_owned(),
+			name,
 			generics,
 			arguments,
 			return_type,
@@ -853,7 +911,7 @@ impl<'p> ASTParser<'p> {
 		}
 
 		// unwrap the next pair
-		next_pair = next_pair_option.unwrap_or_else(|| unreachable!("Next pair is none (class members or generics expected)"));
+		next_pair = next_pair_option.unwrap_or_else(|| unreachable!("Unexpected end of pairs. Expected class members or generics, got nothing"));
 		let mut generics: Vec<Expression> = Vec::new();
 
 		// check if its definition_generics
@@ -886,8 +944,135 @@ impl<'p> ASTParser<'p> {
 		}
 	}
 
-	fn parse_class_declaration(&self, _pairs: Pairs<'p, Rule>) -> Statement {
-		Statement::Unimplemented
+	fn parse_class_declaration_function(&self, pair: Pair<'p, Rule>) -> ClassDeclarationMember {
+		// * NOTE: attributes are to be checked later by the optimization stage/compiler
+
+		if pair.as_rule() != Rule::class_declaration_function {
+			panic!("Got an unexpected rule as a class declaration member. Expected '{:?}', got '{:?}'", Rule::class_declaration_function, pair.as_rule());
+		}
+
+		let mut inner_pairs = pair.into_inner();
+
+		let next_pair = inner_pairs
+			.peek()
+			.expect(&format!("Failed to parse a class declaration function. Expected '{:?}' or '{:?}', got nothing", Rule::class_declaration_function, Rule::attributes));
+		
+		let mut attributes: ClassFunctionAttributes = Default::default();
+
+		if next_pair.as_rule() == Rule::attributes {
+			attributes = self.parse_class_function_attributes(next_pair);
+
+			// skip attributes if they exist
+			inner_pairs.next();
+		}
+
+		let function_pair = inner_pairs
+			.next()
+			.expect(&format!("Failed to parse a class declaration function. Expected '{:?}', got nothing", Rule::function_definition_stmt));
+
+		let function_statement = self.parse_function_declaration(function_pair);
+		ClassDeclarationMember::function_from_statement(function_statement, attributes)
+	}
+
+	fn parse_class_declaration_variable(&self, pair: Pair<'p, Rule>) -> ClassDeclarationMember {
+		if pair.as_rule() != Rule::class_declaration_variable {
+			panic!("Got an unexpected rule as a class declaration member. Expected '{:?}', got '{:?}'", Rule::class_declaration_variable, pair.as_rule());
+		}
+
+		let mut inner_pairs = pair.into_inner();
+
+		let name = inner_pairs
+			.next()
+			.expect(&format!("Failed to parse class declaration variable. Expected '{:?}', got nothing", Rule::identifier));
+
+		let kind = inner_pairs
+			.next()
+			.expect(&format!("Failed to parse class declaration variable. Expected '{:?}', got nothing", Rule::r#type));
+
+		ClassDeclarationMember::Variable {
+			name: name.as_str().to_owned(),
+			kind: self.parse_type(kind)
+		}
+	}
+
+	fn parse_class_declaration_member(&self, pair: Pair<'p, Rule>) -> ClassDeclarationMember {
+		if pair.as_rule() != Rule::class_declaration_member {
+			panic!("Got unexpected rule as a class declaration member. Expected '{:?}', got '{:?}'", Rule::class_declaration_member, pair.as_rule());
+		}
+
+		let inner = pair
+			.into_inner()
+			.next()
+			.expect("Failed to parse class declaration member");
+
+		match inner.as_rule() {
+			Rule::class_declaration_variable => self.parse_class_declaration_variable(inner),
+			Rule::class_declaration_function => self.parse_class_declaration_function(inner),
+			
+			rule => panic!(
+				"Got unexpected rule as a class declaration member. Expected '{:?}' or '{:?}', got '{:?}'",
+				Rule::class_declaration_variable,
+				Rule::class_declaration_function,
+				rule
+			)
+		}
+	}
+
+	fn parse_class_declaration(&self, pairs_borrowed: Pairs<'p, Rule>) -> Statement {
+		let mut pairs = pairs_borrowed.clone();
+
+		let name = pairs
+			.next()
+			.expect("Failed to parse class declaration name");
+
+		if name.as_rule() != Rule::identifier {
+			panic!("Got unexpected rule '{:?}' as a name for class declaration, expected '{:?}'", name.as_rule(), Rule::identifier);
+		}
+
+		let next_pair_option = pairs.peek();
+		let next_pair: Pair<Rule>;
+
+		// if the class is empty, return early
+		if next_pair_option.is_none() {
+			return Statement::ClassDeclaration {
+				name: name.as_str().to_owned(),
+				generics: Vec::new(),
+				members: Vec::new()
+			};
+		}
+
+		// unwrap the next pair
+		next_pair = next_pair_option.unwrap_or_else(|| unreachable!("Unexpected end of pairs. Expected class members or generics, got nothing"));
+		let mut generics: Vec<Expression> = Vec::new();
+
+		// check if its definition_generics
+		if next_pair.as_rule() == Rule::definition_generics {
+			generics = self.parse_generics_as_identifiers(next_pair);
+
+			// if no class members are provided, return early
+			if pairs.peek().is_none() {
+				return Statement::ClassDeclaration {
+					name: name.as_str().to_owned(),
+					generics,
+					members: Vec::new()
+				};
+			}
+
+			// otherwise, skip the current pair
+			pairs.next();
+		}
+
+		let mut members: Vec<ClassDeclarationMember> = Vec::new();
+
+		while let Some(pair) = pairs.next() {
+			members.push(self.parse_class_declaration_member(pair));
+		}
+
+		Statement::ClassDeclaration {
+			name: name.as_str().to_owned(),
+			generics,
+			members
+		}
 	}
 
 	fn parse_variable_definition(&self, pairs_borrowed: Pairs<'p, Rule>) -> Statement {
