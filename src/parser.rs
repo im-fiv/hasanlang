@@ -60,10 +60,21 @@ pub enum Statement {
 		arguments: Vec<Expression>
 	},
 
+	EnumDefinition {
+		name: String,
+		members: Vec<EnumMember>
+	},
+
 	Return(Expression),
 
 	// special statements that are not intended to be used traditionally
 	Unimplemented
+}
+
+#[allow(dead_code)]
+#[derive(Debug)]
+pub struct EnumMember {
+	name: String
 }
 
 #[allow(dead_code)]
@@ -260,6 +271,7 @@ impl<'p> ASTParser<'p> {
 				Rule::variable_assign_stmt => self.parse_variable_assign(pair.into_inner()),
 				Rule::function_call_stmt => self.parse_function_call(pair.into_inner()),
 				Rule::return_stmt => self.parse_return(pair.into_inner()),
+				Rule::enum_definition_stmt => self.parse_enum_definition(pair.into_inner()),
 
 				rule => panic!("Failed to parse program: got an unexpected statement rule '{:?}'", rule)
 			};
@@ -581,6 +593,40 @@ impl<'p> ASTParser<'p> {
 		}
 
 		generics
+	}
+
+	fn parse_enum_member(&self, pair: Pair<'p, Rule>) -> EnumMember {
+		let mut pairs = pair.into_inner();
+
+		let name = pairs
+			.next()
+			.expect("Failed to parse enum member: name is missing")
+			.as_str()
+			.to_owned();
+
+		EnumMember { name }
+	}
+
+	fn parse_enum_definition(&self, pairs: Pairs<'p, Rule>) -> Statement {
+		let mut pairs = pairs.clone();
+
+		let name = pairs
+			.next()
+			.expect("Failed to parse enum definition: enum name is missing")
+			.as_str()
+			.to_owned();
+
+		let mut members: Vec<EnumMember> = Vec::new();
+
+		while let Some(pair) = pairs.next() {
+			if pair.as_rule() != Rule::enum_member {
+				panic!("Failed to parse enum definition member: expected rule '{:?}', got '{:?}'", Rule::enum_member, pair.as_rule());
+			}
+
+			members.push(self.parse_enum_member(pair));
+		}
+
+		Statement::EnumDefinition { name, members }
 	}
 
 	fn parse_type(&self, pair: Pair<'p, Rule>) -> Expression {

@@ -1,0 +1,61 @@
+[
+    EnumDefinition {
+        name: "Light",
+        members: [
+            EnumMember {
+                name: "Green",
+            },
+            EnumMember {
+                name: "Yellow",
+            },
+            EnumMember {
+                name: "Red",
+            },
+        ],
+    },
+    VariableDefinition {
+        name: "current_light",
+        kind: Type {
+            base: Identifier(
+                "Light",
+            ),
+            generics: [],
+            array: false,
+            raw: false,
+        },
+        value: DotAccess(
+            Identifier(
+                "Light",
+            ),
+            Identifier(
+                "Green",
+            ),
+        ),
+    },
+    VariableAssign(
+        Identifier(
+            "current_light",
+        ),
+        DotAccess(
+            Identifier(
+                "Light",
+            ),
+            Identifier(
+                "Yellow",
+            ),
+        ),
+    ),
+    VariableAssign(
+        Identifier(
+            "current_light",
+        ),
+        DotAccess(
+            Identifier(
+                "Light",
+            ),
+            Identifier(
+                "Red",
+            ),
+        ),
+    ),
+]
