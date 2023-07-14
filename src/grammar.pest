@@ -1,5 +1,6 @@
 program = { SOI ~ statement* ~ EOI }
 statement = _{
+	return_stmt |
 	function_call_stmt |
 	function_definition_stmt |
 	function_declaration_stmt |
@@ -7,14 +8,32 @@ statement = _{
 	class_definition |
 	class_declaration |
 	variable_definition_stmt |
-	variable_assign_stmt |
-	return_stmt
+	variable_assign_stmt
+}
+
+keywords = {
+	"type" |
+	"var" |
+	"return" |
+	"func" |
+	"end" |
+	"do" |
+	"declare" |
+	"class" |
+	"constructor" |
+	"private" |
+	"public" |
+	"get" |
+	"set" |
+	"static" |
+	"as"
 }
 
 stmt_sep = _{ ";" }
 
 //* statements *//
-function_call_stmt = { term_without_recursion ~ recursive_call+ ~ stmt_sep }
+return_stmt = { "return" ~ expression? ~ stmt_sep }
+function_call_stmt = { term_without_recursion ~ recursive_operator+ ~ stmt_sep } // this is wrong, but it will be handled inside the parser //
 function_definition_stmt = { function_header ~ block }
 function_declaration_stmt = { function_header ~ stmt_sep }
 type_definition_stmt = { "type" ~ identifier ~ definition_generics? ~ "=" ~ type ~ stmt_sep }
@@ -22,7 +41,6 @@ type_definition_stmt = { "type" ~ identifier ~ definition_generics? ~ "=" ~ type
 // class declaration defined later //
 variable_definition_stmt = { "var" ~ identifier ~ (":" ~ type)? ~ "=" ~ expression ~ stmt_sep }
 variable_assign_stmt = { (recursive_expression | expression) ~ "=" ~ expression ~ stmt_sep }
-return_stmt = { "return" ~ expression? ~ stmt_sep }
 
 //* functions *//
 function_header = { "func" ~ identifier ~ definition_generics? ~ "(" ~ function_definition_arguments? ~ ")" ~ ("->" ~ type)? }
@@ -90,7 +108,7 @@ literal = _{ string_literal | number_literal }
 string_literal = { "\"" ~ (!("\"") ~ ANY)* ~ "\"" }
 number_literal = @{ ("-"? ~ ASCII_NONZERO_DIGIT ~ ASCII_DIGIT* ~ ("." ~ ASCII_DIGIT+)?) | "0" }
 
-identifier = @{ (ASCII_ALPHA | "_") ~ (ASCII_ALPHANUMERIC | "_")* }
+identifier = @{ (ASCII_ALPHA | "_") ~ (ASCII_ALPHANUMERIC | "_")* ~ !keywords }
 
 //* to be ignored *//
 line_comment = _{ "//" ~ (!"\n" ~ ANY)* ~ ("\n" | EOI) }

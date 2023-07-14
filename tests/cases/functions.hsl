@@ -8,6 +8,14 @@ func random_number<Type>() -> Type do
 	return 5;
 end
 
+func arguments(arg1: int, arg2: int, arg3: int) -> int do
+	return arg1 + arg2 + arg3;
+end
+
+func no_return_type(a: int) do
+	return a;
+end
+
 func main() do
 	var add = 2;
 	return random_number<int>() + add;
