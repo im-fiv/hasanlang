@@ -1,0 +1,54 @@
+class Connection
+	event: Event;
+	id: int;
+
+	#[constructor]
+	func new(event: Event, id: int) -> this do
+		this.event = event;
+		this.id = id;
+	end
+
+	func disconnect() do
+		this.event._disconnect(this.id);
+	end
+end
+
+class Event
+	name: string;
+	functions: unknown[];
+
+	#[constructor]
+	func new(name: string) -> this do
+		this.name = name;
+	end
+
+	func connect(function: unknown) -> Connection do
+		var connection = Connection.new(this);
+		this.functions[this.functions.length + 1] = function;
+
+		return connection;
+	end
+
+	func _disconnect(id: int) do
+		this.connections.remove(id);
+	end
+
+	func fire() do
+		func call(function: unknown) do
+			function();
+		end
+
+		this.connections.forEach(call);
+	end
+end
+
+var event = Event.new("Changed");
+var connection = event.connect(onChanged);
+
+func onChanged() do
+	print("event fired");
+	connection.disconnect();
+end
+
+event.fire();
+event.fire();

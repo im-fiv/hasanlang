@@ -1,0 +1,573 @@
+[
+    ClassDefinition {
+        name: "Connection",
+        generics: [],
+        members: [
+            Variable {
+                name: "event",
+                kind: Type {
+                    base: Identifier(
+                        "Event",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+                default_value: Empty,
+            },
+            Variable {
+                name: "id",
+                kind: Type {
+                    base: Identifier(
+                        "int",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+                default_value: Empty,
+            },
+            Function {
+                name: "new",
+                attributes: ClassFunctionAttributes {
+                    constructor: true,
+                    private: false,
+                    public: false,
+                    get: false,
+                    set: false,
+                    static_: false,
+                },
+                generics: [],
+                arguments: [
+                    FunctionArgument {
+                        name: Identifier(
+                            "event",
+                        ),
+                        kind: Type {
+                            base: Identifier(
+                                "Event",
+                            ),
+                            generics: [],
+                            array: false,
+                            raw: false,
+                        },
+                    },
+                    FunctionArgument {
+                        name: Identifier(
+                            "id",
+                        ),
+                        kind: Type {
+                            base: Identifier(
+                                "int",
+                            ),
+                            generics: [],
+                            array: false,
+                            raw: false,
+                        },
+                    },
+                ],
+                return_type: Type {
+                    base: Identifier(
+                        "this",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+                statements: [
+                    VariableAssign(
+                        DotAccess(
+                            Identifier(
+                                "this",
+                            ),
+                            Identifier(
+                                "event",
+                            ),
+                        ),
+                        Identifier(
+                            "event",
+                        ),
+                    ),
+                    VariableAssign(
+                        DotAccess(
+                            Identifier(
+                                "this",
+                            ),
+                            Identifier(
+                                "id",
+                            ),
+                        ),
+                        Identifier(
+                            "id",
+                        ),
+                    ),
+                ],
+            },
+            Function {
+                name: "disconnect",
+                attributes: ClassFunctionAttributes {
+                    constructor: false,
+                    private: false,
+                    public: false,
+                    get: false,
+                    set: false,
+                    static_: false,
+                },
+                generics: [],
+                arguments: [],
+                return_type: Type {
+                    base: Identifier(
+                        "void",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: true,
+                },
+                statements: [
+                    FunctionCall {
+                        callee: DotAccess(
+                            DotAccess(
+                                Identifier(
+                                    "this",
+                                ),
+                                Identifier(
+                                    "event",
+                                ),
+                            ),
+                            Identifier(
+                                "_disconnect",
+                            ),
+                        ),
+                        generics: [],
+                        arguments: [
+                            DotAccess(
+                                Identifier(
+                                    "this",
+                                ),
+                                Identifier(
+                                    "id",
+                                ),
+                            ),
+                        ],
+                    },
+                ],
+            },
+        ],
+    },
+    ClassDefinition {
+        name: "Event",
+        generics: [],
+        members: [
+            Variable {
+                name: "name",
+                kind: Type {
+                    base: Identifier(
+                        "string",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+                default_value: Empty,
+            },
+            Variable {
+                name: "functions",
+                kind: Type {
+                    base: Identifier(
+                        "unknown",
+                    ),
+                    generics: [],
+                    array: true,
+                    raw: false,
+                },
+                default_value: Empty,
+            },
+            Function {
+                name: "new",
+                attributes: ClassFunctionAttributes {
+                    constructor: true,
+                    private: false,
+                    public: false,
+                    get: false,
+                    set: false,
+                    static_: false,
+                },
+                generics: [],
+                arguments: [
+                    FunctionArgument {
+                        name: Identifier(
+                            "name",
+                        ),
+                        kind: Type {
+                            base: Identifier(
+                                "string",
+                            ),
+                            generics: [],
+                            array: false,
+                            raw: false,
+                        },
+                    },
+                ],
+                return_type: Type {
+                    base: Identifier(
+                        "this",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+                statements: [
+                    VariableAssign(
+                        DotAccess(
+                            Identifier(
+                                "this",
+                            ),
+                            Identifier(
+                                "name",
+                            ),
+                        ),
+                        Identifier(
+                            "name",
+                        ),
+                    ),
+                ],
+            },
+            Function {
+                name: "connect",
+                attributes: ClassFunctionAttributes {
+                    constructor: false,
+                    private: false,
+                    public: false,
+                    get: false,
+                    set: false,
+                    static_: false,
+                },
+                generics: [],
+                arguments: [
+                    FunctionArgument {
+                        name: Identifier(
+                            "function",
+                        ),
+                        kind: Type {
+                            base: Identifier(
+                                "unknown",
+                            ),
+                            generics: [],
+                            array: false,
+                            raw: false,
+                        },
+                    },
+                ],
+                return_type: Type {
+                    base: Identifier(
+                        "Connection",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+                statements: [
+                    VariableDefinition {
+                        name: "connection",
+                        kind: Empty,
+                        value: FunctionCall {
+                            callee: DotAccess(
+                                Identifier(
+                                    "Connection",
+                                ),
+                                Identifier(
+                                    "new",
+                                ),
+                            ),
+                            generics: [],
+                            arguments: [
+                                Identifier(
+                                    "this",
+                                ),
+                            ],
+                        },
+                    },
+                    VariableAssign(
+                        ArrayAccess(
+                            DotAccess(
+                                Identifier(
+                                    "this",
+                                ),
+                                Identifier(
+                                    "functions",
+                                ),
+                            ),
+                            Binary(
+                                DotAccess(
+                                    DotAccess(
+                                        Identifier(
+                                            "this",
+                                        ),
+                                        Identifier(
+                                            "functions",
+                                        ),
+                                    ),
+                                    Identifier(
+                                        "length",
+                                    ),
+                                ),
+                                Plus,
+                                Number(
+                                    1,
+                                ),
+                            ),
+                        ),
+                        Identifier(
+                            "function",
+                        ),
+                    ),
+                    Return(
+                        Identifier(
+                            "connection",
+                        ),
+                    ),
+                ],
+            },
+            Function {
+                name: "_disconnect",
+                attributes: ClassFunctionAttributes {
+                    constructor: false,
+                    private: false,
+                    public: false,
+                    get: false,
+                    set: false,
+                    static_: false,
+                },
+                generics: [],
+                arguments: [
+                    FunctionArgument {
+                        name: Identifier(
+                            "id",
+                        ),
+                        kind: Type {
+                            base: Identifier(
+                                "int",
+                            ),
+                            generics: [],
+                            array: false,
+                            raw: false,
+                        },
+                    },
+                ],
+                return_type: Type {
+                    base: Identifier(
+                        "void",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: true,
+                },
+                statements: [
+                    FunctionCall {
+                        callee: DotAccess(
+                            DotAccess(
+                                Identifier(
+                                    "this",
+                                ),
+                                Identifier(
+                                    "connections",
+                                ),
+                            ),
+                            Identifier(
+                                "remove",
+                            ),
+                        ),
+                        generics: [],
+                        arguments: [
+                            Identifier(
+                                "id",
+                            ),
+                        ],
+                    },
+                ],
+            },
+            Function {
+                name: "fire",
+                attributes: ClassFunctionAttributes {
+                    constructor: false,
+                    private: false,
+                    public: false,
+                    get: false,
+                    set: false,
+                    static_: false,
+                },
+                generics: [],
+                arguments: [],
+                return_type: Type {
+                    base: Identifier(
+                        "void",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: true,
+                },
+                statements: [
+                    FunctionDefinition {
+                        name: "call",
+                        generics: [],
+                        arguments: [
+                            FunctionArgument {
+                                name: Identifier(
+                                    "function",
+                                ),
+                                kind: Type {
+                                    base: Identifier(
+                                        "unknown",
+                                    ),
+                                    generics: [],
+                                    array: false,
+                                    raw: false,
+                                },
+                            },
+                        ],
+                        return_type: Type {
+                            base: Identifier(
+                                "void",
+                            ),
+                            generics: [],
+                            array: false,
+                            raw: true,
+                        },
+                        statements: [
+                            FunctionCall {
+                                callee: Identifier(
+                                    "function",
+                                ),
+                                generics: [],
+                                arguments: [],
+                            },
+                        ],
+                    },
+                    FunctionCall {
+                        callee: DotAccess(
+                            DotAccess(
+                                Identifier(
+                                    "this",
+                                ),
+                                Identifier(
+                                    "connections",
+                                ),
+                            ),
+                            Identifier(
+                                "forEach",
+                            ),
+                        ),
+                        generics: [],
+                        arguments: [
+                            Identifier(
+                                "call",
+                            ),
+                        ],
+                    },
+                ],
+            },
+        ],
+    },
+    VariableDefinition {
+        name: "event",
+        kind: Empty,
+        value: FunctionCall {
+            callee: DotAccess(
+                Identifier(
+                    "Event",
+                ),
+                Identifier(
+                    "new",
+                ),
+            ),
+            generics: [],
+            arguments: [
+                String(
+                    "Changed",
+                ),
+            ],
+        },
+    },
+    VariableDefinition {
+        name: "connection",
+        kind: Empty,
+        value: FunctionCall {
+            callee: DotAccess(
+                Identifier(
+                    "event",
+                ),
+                Identifier(
+                    "connect",
+                ),
+            ),
+            generics: [],
+            arguments: [
+                Identifier(
+                    "onChanged",
+                ),
+            ],
+        },
+    },
+    FunctionDefinition {
+        name: "onChanged",
+        generics: [],
+        arguments: [],
+        return_type: Type {
+            base: Identifier(
+                "void",
+            ),
+            generics: [],
+            array: false,
+            raw: true,
+        },
+        statements: [
+            FunctionCall {
+                callee: Identifier(
+                    "print",
+                ),
+                generics: [],
+                arguments: [
+                    String(
+                        "event fired",
+                    ),
+                ],
+            },
+            FunctionCall {
+                callee: DotAccess(
+                    Identifier(
+                        "connection",
+                    ),
+                    Identifier(
+                        "disconnect",
+                    ),
+                ),
+                generics: [],
+                arguments: [],
+            },
+        ],
+    },
+    FunctionCall {
+        callee: DotAccess(
+            Identifier(
+                "event",
+            ),
+            Identifier(
+                "fire",
+            ),
+        ),
+        generics: [],
+        arguments: [],
+    },
+    FunctionCall {
+        callee: DotAccess(
+            Identifier(
+                "event",
+            ),
+            Identifier(
+                "fire",
+            ),
+        ),
+        generics: [],
+        arguments: [],
+    },
+]

@@ -57,6 +57,112 @@
         ],
     },
     FunctionDefinition {
+        name: "arguments",
+        generics: [],
+        arguments: [
+            FunctionArgument {
+                name: Identifier(
+                    "arg1",
+                ),
+                kind: Type {
+                    base: Identifier(
+                        "int",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+            },
+            FunctionArgument {
+                name: Identifier(
+                    "arg2",
+                ),
+                kind: Type {
+                    base: Identifier(
+                        "int",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+            },
+            FunctionArgument {
+                name: Identifier(
+                    "arg3",
+                ),
+                kind: Type {
+                    base: Identifier(
+                        "int",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+            },
+        ],
+        return_type: Type {
+            base: Identifier(
+                "int",
+            ),
+            generics: [],
+            array: false,
+            raw: false,
+        },
+        statements: [
+            Return(
+                Binary(
+                    Binary(
+                        Identifier(
+                            "arg1",
+                        ),
+                        Plus,
+                        Identifier(
+                            "arg2",
+                        ),
+                    ),
+                    Plus,
+                    Identifier(
+                        "arg3",
+                    ),
+                ),
+            ),
+        ],
+    },
+    FunctionDefinition {
+        name: "no_return_type",
+        generics: [],
+        arguments: [
+            FunctionArgument {
+                name: Identifier(
+                    "a",
+                ),
+                kind: Type {
+                    base: Identifier(
+                        "int",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+            },
+        ],
+        return_type: Type {
+            base: Identifier(
+                "void",
+            ),
+            generics: [],
+            array: false,
+            raw: true,
+        },
+        statements: [
+            Return(
+                Identifier(
+                    "a",
+                ),
+            ),
+        ],
+    },
+    FunctionDefinition {
         name: "main",
         generics: [],
         arguments: [],
