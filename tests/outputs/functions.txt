@@ -1,0 +1,152 @@
+[
+    FunctionDefinition {
+        name: "print_hello_world",
+        generics: [],
+        arguments: [],
+        return_type: Type {
+            base: Identifier(
+                "void",
+            ),
+            generics: [],
+            array: false,
+            raw: false,
+        },
+        statements: [
+            FunctionCall {
+                callee: Identifier(
+                    "print",
+                ),
+                generics: [],
+                arguments: [
+                    String(
+                        "hello, world!",
+                    ),
+                ],
+            },
+        ],
+    },
+    FunctionCall {
+        callee: Identifier(
+            "print_hello_world",
+        ),
+        generics: [],
+        arguments: [],
+    },
+    FunctionDefinition {
+        name: "random_number",
+        generics: [
+            Identifier(
+                "Type",
+            ),
+        ],
+        arguments: [],
+        return_type: Type {
+            base: Identifier(
+                "Type",
+            ),
+            generics: [],
+            array: false,
+            raw: false,
+        },
+        statements: [
+            Return(
+                Number(
+                    5,
+                ),
+            ),
+        ],
+    },
+    FunctionDefinition {
+        name: "main",
+        generics: [],
+        arguments: [],
+        return_type: Type {
+            base: Identifier(
+                "void",
+            ),
+            generics: [],
+            array: false,
+            raw: true,
+        },
+        statements: [
+            VariableDefinition {
+                name: "add",
+                kind: Empty,
+                value: Number(
+                    2,
+                ),
+            },
+            Return(
+                Binary(
+                    FunctionCall {
+                        callee: Identifier(
+                            "random_number",
+                        ),
+                        generics: [
+                            Type {
+                                base: Identifier(
+                                    "int",
+                                ),
+                                generics: [],
+                                array: false,
+                                raw: false,
+                            },
+                        ],
+                        arguments: [],
+                    },
+                    Plus,
+                    Identifier(
+                        "add",
+                    ),
+                ),
+            ),
+        ],
+    },
+    FunctionDeclaration {
+        name: "function_declaration",
+        generics: [
+            Identifier(
+                "A",
+            ),
+            Identifier(
+                "B",
+            ),
+        ],
+        arguments: [
+            FunctionArgument {
+                name: Identifier(
+                    "first",
+                ),
+                kind: Type {
+                    base: Identifier(
+                        "A",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+            },
+            FunctionArgument {
+                name: Identifier(
+                    "second",
+                ),
+                kind: Type {
+                    base: Identifier(
+                        "this",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+            },
+        ],
+        return_type: Type {
+            base: Identifier(
+                "B",
+            ),
+            generics: [],
+            array: false,
+            raw: true,
+        },
+    },
+]

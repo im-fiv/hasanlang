@@ -1,0 +1,60 @@
+[
+    TypeDefinition {
+        name: "AType",
+        generics: [
+            Identifier(
+                "Generic1",
+            ),
+            Identifier(
+                "Generic2",
+            ),
+        ],
+        definition: Type {
+            base: Identifier(
+                "Generic1",
+            ),
+            generics: [
+                Identifier(
+                    "Generic2",
+                ),
+            ],
+            array: true,
+            raw: false,
+        },
+    },
+    FunctionDefinition {
+        name: "asd",
+        generics: [
+            Identifier(
+                "Generic2",
+            ),
+        ],
+        arguments: [],
+        return_type: Type {
+            base: Identifier(
+                "AType",
+            ),
+            generics: [
+                Identifier(
+                    "int",
+                ),
+                Identifier(
+                    "Generic2",
+                ),
+            ],
+            array: false,
+            raw: false,
+        },
+        statements: [
+            Return(
+                Array(
+                    [
+                        Number(
+                            5,
+                        ),
+                    ],
+                ),
+            ),
+        ],
+    },
+]

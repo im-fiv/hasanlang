@@ -1,0 +1,16 @@
+[
+    FunctionDefinition {
+        name: "main",
+        generics: [],
+        arguments: [],
+        return_type: Type {
+            base: Identifier(
+                "void",
+            ),
+            generics: [],
+            array: false,
+            raw: true,
+        },
+        statements: [],
+    },
+]

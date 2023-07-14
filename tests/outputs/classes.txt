@@ -1,0 +1,240 @@
+[
+    ClassDefinition {
+        name: "ClassDefinition",
+        generics: [],
+        members: [
+            Variable {
+                name: "a",
+                kind: Type {
+                    base: Identifier(
+                        "int",
+                    ),
+                    generics: [],
+                    array: true,
+                    raw: false,
+                },
+                default_value: String(
+                    "default value",
+                ),
+            },
+            Variable {
+                name: "b",
+                kind: Type {
+                    base: Identifier(
+                        "SomeType",
+                    ),
+                    generics: [
+                        Identifier(
+                            "int",
+                        ),
+                    ],
+                    array: true,
+                    raw: false,
+                },
+                default_value: Empty,
+            },
+            Function {
+                name: "some_function",
+                attributes: ClassFunctionAttributes {
+                    constructor: true,
+                    private: false,
+                    public: false,
+                    get: false,
+                    set: false,
+                    static_: true,
+                },
+                generics: [],
+                arguments: [],
+                return_type: Type {
+                    base: Identifier(
+                        "bool",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+                statements: [],
+            },
+            Variable {
+                name: "c",
+                kind: Type {
+                    base: Identifier(
+                        "bool",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+                default_value: Empty,
+            },
+            Function {
+                name: "another_function",
+                attributes: ClassFunctionAttributes {
+                    constructor: false,
+                    private: false,
+                    public: false,
+                    get: false,
+                    set: false,
+                    static_: false,
+                },
+                generics: [],
+                arguments: [],
+                return_type: Type {
+                    base: Identifier(
+                        "int",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+                statements: [],
+            },
+        ],
+    },
+    ClassDeclaration {
+        name: "ClassDeclaraction",
+        generics: [],
+        members: [
+            Variable {
+                name: "a",
+                kind: Type {
+                    base: Identifier(
+                        "int",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+            },
+            Function {
+                name: "some_function",
+                attributes: ClassFunctionAttributes {
+                    constructor: true,
+                    private: false,
+                    public: false,
+                    get: false,
+                    set: false,
+                    static_: true,
+                },
+                generics: [],
+                arguments: [],
+                return_type: Type {
+                    base: Identifier(
+                        "bool",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+            },
+            Function {
+                name: "other_function",
+                attributes: ClassFunctionAttributes {
+                    constructor: false,
+                    private: false,
+                    public: false,
+                    get: false,
+                    set: false,
+                    static_: false,
+                },
+                generics: [],
+                arguments: [],
+                return_type: Type {
+                    base: Identifier(
+                        "int",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+            },
+        ],
+    },
+    ClassDeclaration {
+        name: "Array",
+        generics: [
+            Identifier(
+                "T",
+            ),
+        ],
+        members: [
+            Function {
+                name: "length",
+                attributes: ClassFunctionAttributes {
+                    constructor: false,
+                    private: false,
+                    public: false,
+                    get: true,
+                    set: false,
+                    static_: false,
+                },
+                generics: [],
+                arguments: [],
+                return_type: Type {
+                    base: Identifier(
+                        "int",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+            },
+            Function {
+                name: "append",
+                attributes: ClassFunctionAttributes {
+                    constructor: false,
+                    private: false,
+                    public: false,
+                    get: false,
+                    set: false,
+                    static_: false,
+                },
+                generics: [],
+                arguments: [
+                    FunctionArgument {
+                        name: Identifier(
+                            "_elem",
+                        ),
+                        kind: Type {
+                            base: Identifier(
+                                "T",
+                            ),
+                            generics: [],
+                            array: false,
+                            raw: false,
+                        },
+                    },
+                ],
+                return_type: Type {
+                    base: Identifier(
+                        "void",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+            },
+            Function {
+                name: "copy",
+                attributes: ClassFunctionAttributes {
+                    constructor: false,
+                    private: false,
+                    public: false,
+                    get: false,
+                    set: false,
+                    static_: false,
+                },
+                generics: [],
+                arguments: [],
+                return_type: Type {
+                    base: Identifier(
+                        "this",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+            },
+        ],
+    },
+]
