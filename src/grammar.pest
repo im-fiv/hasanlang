@@ -69,7 +69,7 @@ unary_operator = { "-" }
 // general expression stuff //
 unary_expression = { unary_operator ~ term }
 binary_expression = { term ~ (operator ~ term)+ }
-array_expression = { "[" ~ (expression ~ ("," ~ expression)*)? ~ "]" }
+array_expression = { ("[" ~ "]") | ("[" ~ expression ~ ("," ~ expression)* ~ "]") }
 
 // terms //
 term = _{ unary_expression | array_expression | recursive_expression | term_without_recursion }
