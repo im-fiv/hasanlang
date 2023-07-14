@@ -1,0 +1,16 @@
+[
+    VariableDefinition {
+        name: "a",
+        kind: Empty,
+        value: Boolean(
+            true,
+        ),
+    },
+    VariableDefinition {
+        name: "b",
+        kind: Empty,
+        value: Boolean(
+            false,
+        ),
+    },
+]

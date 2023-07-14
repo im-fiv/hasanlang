@@ -1,6 +1,13 @@
 program = { SOI ~ statement* ~ EOI }
+
+/// used for encapsulating statements into a single pair for some cases
+statements = { statement* }
+
 statement = _{
 	return_stmt |
+	if_stmt |
+	while_stmt |
+	break_stmt |
 	function_call_stmt |
 	function_definition_stmt |
 	function_declaration_stmt |
@@ -13,22 +20,13 @@ statement = _{
 }
 
 keywords = {
-	"type" |
-	"var" |
-	"return" |
-	"func" |
-	"end" |
-	"do" |
-	"declare" |
-	"class" |
-	"constructor" |
-	"private" |
-	"public" |
-	"get" |
-	"set" |
-	"static" |
-	"as" |
-	"enum"
+	"type" | "var" | "return" | "func" |
+	"end" | "do" | "declare" | "class" |
+	"constructor" | "private" | "public" |
+	"get" | "set" | "static" | "as" |
+	"enum" | "and" | "or" | "not" | "if" |
+	"else" | "elseif" | "while" | "break" |
+	"true" | "false"
 }
 
 stmt_sep = _{ ";" }
@@ -36,7 +34,7 @@ stmt_sep = _{ ";" }
 //* statements *//
 return_stmt = { "return" ~ expression? ~ stmt_sep }
 function_call_stmt = { term_without_recursion ~ recursive_operator+ ~ stmt_sep } // this is wrong, but it will be handled inside the parser //
-function_definition_stmt = { function_header ~ block }
+function_definition_stmt = { function_header ~ do_block }
 function_declaration_stmt = { function_header ~ stmt_sep }
 type_definition_stmt = { "type" ~ identifier ~ definition_generics? ~ "=" ~ type ~ stmt_sep }
 // class definition defined later //
@@ -45,6 +43,14 @@ variable_definition_stmt = { "var" ~ identifier ~ (":" ~ type)? ~ "=" ~ expressi
 variable_assign_stmt = { (recursive_expression | expression) ~ "=" ~ expression ~ stmt_sep }
 enum_definition_stmt = { "enum" ~ identifier ~ (enum_member ~ ("," ~ enum_member)*)? ~ "end" }
 
+//* control flow *//
+if_stmt = { "if" ~ expression ~ "then" ~ statements ~ if_elseif* ~ if_else? ~ "end" }
+	if_elseif = { "elseif" ~ expression ~ "then" ~ statements }
+	if_else = { "else" ~ statements }
+
+while_stmt = { "while" ~ expression ~ do_block }
+break_stmt = { "break" ~ stmt_sep }
+
 //* functions *//
 function_header = { "func" ~ identifier ~ definition_generics? ~ "(" ~ function_definition_arguments? ~ ")" ~ ("->" ~ type)? }
 
@@ -52,7 +58,7 @@ function_definition_argument = { identifier ~ ":" ~ type }
 function_definition_arguments = { function_definition_argument ~ ("," ~ function_definition_argument)* }
 function_call_arguments = { expression ~ ("," ~ expression)* ~ ","? }
 
-block = { "do" ~ statement* ~ "end" ~ stmt_sep? }
+do_block = { "do" ~ statement* ~ "end" ~ stmt_sep? }
 
 //* class declaration *//
 class_declaration = { "declare"? ~ "class" ~ identifier ~ definition_generics? ~ class_declaration_member* ~ "end" ~ stmt_sep? }
@@ -72,7 +78,7 @@ class_definition_variable = { identifier ~ ":" ~ type ~ ("=" ~ expression)? ~ st
 attributes = { "#[" ~ attribute_identifier ~ ("," ~ attribute_identifier)* ~ "]" }
 attribute_identifier = { "constructor" | "private" | "public" | "get" | "set" | "static" }
 
-// enums //
+//* enums *//
 enum_member = { identifier }
 
 //* types *//
@@ -87,12 +93,12 @@ call_generics = { "<" ~ type ~ ("," ~ type)* ~ ">" }
 
 //* expressions *//
 expression = { unary_expression | binary_expression | array_expression | recursive_expression | term }
-operator = { "+" | "-" | "/" | "*" | "%" }
-unary_operator = { "-" }
+binary_operator = { "+" | "-" | "/" | "*" | "%" | "==" | "!=" | "and" | "or" | ">" | "<" | ">=" | "<=" }
+unary_operator = { "-" | "not" }
 
 // general expression stuff //
 unary_expression = { unary_operator ~ term }
-binary_expression = { term ~ (operator ~ term)+ }
+binary_expression = { term ~ (binary_operator ~ term)+ }
 array_expression = { ("[" ~ "]") | ("[" ~ expression ~ ("," ~ expression)* ~ "]") }
 
 // terms //
@@ -110,9 +116,11 @@ recursive_operator = _{ recursive_call | recursive_array | recursive_dot | recur
 recursive_expression = { term_without_recursion ~ recursive_operator+ }
 
 //* literals and identifiers *//
-literal = _{ string_literal | number_literal }
+literal = _{ boolean_literal | string_literal | number_literal }
+
 string_literal = { "\"" ~ (!("\"") ~ ANY)* ~ "\"" }
 number_literal = @{ ("-"? ~ ASCII_NONZERO_DIGIT ~ ASCII_DIGIT* ~ ("." ~ ASCII_DIGIT+)?) | "0" }
+boolean_literal = { "true" | "false" }
 
 identifier = @{ (ASCII_ALPHA | "_") ~ (ASCII_ALPHANUMERIC | "_")* ~ !keywords }
 

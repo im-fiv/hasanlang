@@ -1,0 +1,115 @@
+[
+    VariableDefinition {
+        name: "a",
+        kind: Empty,
+        value: Unary(
+            Not,
+            Boolean(
+                true,
+            ),
+        ),
+    },
+    VariableDefinition {
+        name: "b",
+        kind: Empty,
+        value: Binary(
+            Binary(
+                Number(
+                    2,
+                ),
+                Plus,
+                Binary(
+                    Number(
+                        2,
+                    ),
+                    Times,
+                    Number(
+                        5,
+                    ),
+                ),
+            ),
+            NotEquals,
+            Number(
+                5,
+            ),
+        ),
+    },
+    If {
+        condition: Binary(
+            Boolean(
+                true,
+            ),
+            Equals,
+            Boolean(
+                true,
+            ),
+        ),
+        statements: [
+            FunctionCall {
+                callee: Identifier(
+                    "print",
+                ),
+                generics: [],
+                arguments: [
+                    String(
+                        "asdasd",
+                    ),
+                ],
+            },
+            VariableAssign(
+                Identifier(
+                    "a",
+                ),
+                Boolean(
+                    false,
+                ),
+            ),
+        ],
+        elseif_branches: [
+            IfBranch {
+                condition: Binary(
+                    Boolean(
+                        false,
+                    ),
+                    NotEquals,
+                    Boolean(
+                        true,
+                    ),
+                ),
+                statements: [
+                    FunctionCall {
+                        callee: Identifier(
+                            "do_something",
+                        ),
+                        generics: [],
+                        arguments: [],
+                    },
+                ],
+            },
+            IfBranch {
+                condition: Binary(
+                    Boolean(
+                        false,
+                    ),
+                    Or,
+                    Boolean(
+                        true,
+                    ),
+                ),
+                statements: [
+                    Return(
+                        Number(
+                            5,
+                        ),
+                    ),
+                ],
+            },
+        ],
+        else_branch: Some(
+            IfBranch {
+                condition: Empty,
+                statements: [],
+            },
+        ),
+    },
+]

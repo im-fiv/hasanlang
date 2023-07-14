@@ -60,15 +60,36 @@ pub enum Statement {
 		arguments: Vec<Expression>
 	},
 
+	Return(Expression),
+
 	EnumDefinition {
 		name: String,
 		members: Vec<EnumMember>
 	},
 
-	Return(Expression),
+	If {
+		condition: Expression,
+		statements: Vec<Statement>,
+		elseif_branches: Vec<IfBranch>,
+		else_branch: Option<IfBranch>
+	},
+
+	While {
+		condition: Expression,
+		statements: Vec<Statement>
+	},
+	
+	Break,
 
 	// special statements that are not intended to be used traditionally
 	Unimplemented
+}
+
+#[allow(dead_code)]
+#[derive(Debug)]
+pub struct IfBranch {
+	condition: Expression,
+	statements: Vec<Statement>
 }
 
 #[allow(dead_code)]
@@ -164,9 +185,10 @@ impl ClassDeclarationMember {
 pub enum Expression {
 	Number(i32),
 	String(String),
+	Boolean(bool),
 
 	Unary(UnaryOperator, Box<Expression>),
-	Binary(Box<Expression>, Operator, Box<Expression>),
+	Binary(Box<Expression>, BinaryOperator, Box<Expression>),
 
 	FunctionCall {
 		callee: Box<Expression>,
@@ -214,17 +236,26 @@ impl ParserTypeUtility {
 }
 
 #[derive(Debug, Clone)]
-pub enum Operator {
+pub enum BinaryOperator {
 	Plus,
 	Minus,
 	Divide,
 	Times,
-	Modulo
+	Modulo,
+	Equals,
+	NotEquals,
+	And,
+	Or,
+	GreaterThan,
+	LessThan,
+	GreaterThanEqual,
+	LessThanEqual
 }
 
 #[derive(Debug, Clone)]
 pub enum UnaryOperator {
-	Minus
+	Minus,
+	Not
 }
 
 impl<'p> ASTParser<'p> {
@@ -273,6 +304,10 @@ impl<'p> ASTParser<'p> {
 				Rule::return_stmt => self.parse_return(pair.into_inner()),
 				Rule::enum_definition_stmt => self.parse_enum_definition(pair.into_inner()),
 
+				Rule::if_stmt => self.parse_if(pair.into_inner()),
+				Rule::while_stmt => self.parse_while(pair.into_inner()),
+				Rule::break_stmt => Statement::Break,
+
 				rule => panic!("Failed to parse program: got an unexpected statement rule '{:?}'", rule)
 			};
 
@@ -282,23 +317,32 @@ impl<'p> ASTParser<'p> {
 		statements
 	}
 
-	fn parse_operator(&self, pair: &Pair<'p, Rule>) -> Operator {
+	fn parse_operator(&self, pair: &Pair<'p, Rule>) -> BinaryOperator {
 		match pair.as_str() {
-			"+" => Operator::Plus,
-			"-" => Operator::Minus,
-			"/" => Operator::Divide,
-			"*" => Operator::Times,
-			"%" => Operator::Modulo,
+			"+" => BinaryOperator::Plus,
+			"-" => BinaryOperator::Minus,
+			"/" => BinaryOperator::Divide,
+			"*" => BinaryOperator::Times,
+			"%" => BinaryOperator::Modulo,
+			"==" => BinaryOperator::Equals,
+			"!=" => BinaryOperator::NotEquals,
+			"and" => BinaryOperator::And,
+			"or" => BinaryOperator::Or,
+			">" => BinaryOperator::GreaterThan,
+			"<" => BinaryOperator::LessThan,
+			">=" => BinaryOperator::GreaterThanEqual,
+			"<=" => BinaryOperator::LessThanEqual,
 
-			operator => panic!("Got an unexpected operator. Expected '+', '-', '/', '*' or '%', got '{}'", operator)
+			operator => panic!("Got an unexpected operator. Expected '+', '-', '/', '*', '%', '==', '!=', 'and', 'or', '>', '<', '>=', or '<=', got '{}'", operator)
 		}
 	}
 
 	fn parse_unary_operator(&self, pair: &Pair<'p, Rule>) -> UnaryOperator {
 		match pair.as_str() {
 			"-" => UnaryOperator::Minus,
+			"not" => UnaryOperator::Not,
 
-			operator => panic!("Got an unexpected unary operator. Expected '-', got '{}'", operator)
+			operator => panic!("Got an unexpected unary operator. Expected '-', or 'not', got '{}'", operator)
 		}
 	}
 
@@ -332,7 +376,7 @@ impl<'p> ASTParser<'p> {
 		let mut left = self.parse_term(left_pair);
 	
 		while let Some(pair) = pairs.peek() {
-			if pair.as_rule() == Rule::operator {
+			if pair.as_rule() == Rule::binary_operator {
 				let operator_precedence = self.get_operator_precedence(pair);
 				
 				if operator_precedence < precedence {
@@ -359,10 +403,11 @@ impl<'p> ASTParser<'p> {
 
 	fn get_operator_precedence(&self, pair: &Pair<'p, Rule>) -> u8 {
 		match pair.as_str() {
-			"+" | "-" => 1,
-			"*" | "/" | "%" => 2,
+			"==" | "!=" | "and" | "or" | ">" | "<" | ">=" | "<=" => 1,
+			"+" | "-" => 2,
+			"*" | "/" | "%" => 3,
 			
-			operator => panic!("Got an unexpected operator. Expected '+', '-', '/', '*' or '%', got '{}'", operator)
+			operator => panic!("Got an unexpected operator. Expected '+', '-', '/', '*', '%', '==', '!=', 'and', or 'or', got '{}'", operator)
 		}
 	}
 
@@ -389,6 +434,17 @@ impl<'p> ASTParser<'p> {
 		Expression::String(clean_literal.to_owned())
 	}
 
+	fn parse_boolean_literal(&self, pair: Pair<'p, Rule>) -> Expression {
+		let literal = pair.as_str();
+
+		match literal {
+			"true" => Expression::Boolean(true),
+			"false" => Expression::Boolean(false),
+
+			_ => unreachable!("Failed to parse boolean literal: expected 'true' or 'false', got '{}'", literal)
+		}
+	}
+
 	fn parse_term(&self, pair: Pair<'p, Rule>) -> Expression {
 		match pair.as_rule() {
 			Rule::unary_expression => self.parse_unary_expression(pair.into_inner()),
@@ -397,13 +453,107 @@ impl<'p> ASTParser<'p> {
 			Rule::array_expression => self.parse_array_expression(pair.into_inner()),
 			Rule::recursive_expression => self.parse_recursive_expression(pair.into_inner()),
 
-			Rule::number_literal => self.parse_number_literal(pair),
-			Rule::string_literal => self.parse_string_literal(pair),
+			Rule::number_literal |
+			Rule::string_literal |
+			Rule::boolean_literal => self.parse_literal(pair),
 
 			Rule::identifier => self.parse_identifier(pair),
 			Rule::r#type => self.parse_type(pair),
 
 			rule => panic!("Failed to parse term: got invalid expression rule '{:?}'", rule),
+		}
+	}
+
+	fn parse_elseif_branch(&self, pair: Pair<'p, Rule>) -> IfBranch {
+		let mut pairs = pair.into_inner();
+
+		if pairs.len() < 1 {
+			panic!("Failed to parse elseif branch: pairs are empty");
+		}
+
+		let expression_pair = pairs
+			.next()
+			.expect("Failed to parse elseif branch: expected expression, got nothing");
+
+		let statements_pair = pairs
+			.next()
+			.expect("Failed to parse elseif branch: expected statements, got nothing");
+
+		IfBranch {
+			condition: self.parse_expression(expression_pair),
+			statements: self.parse_program(statements_pair.into_inner())
+		}
+	}
+
+	fn parse_else_branch(&self, pair: Pair<'p, Rule>) -> IfBranch {
+		let mut pairs = pair.into_inner();
+
+		if pairs.len() < 1 {
+			panic!("Failed to parse else branch: pairs are empty");
+		}
+
+		let statements_pair = pairs
+			.next()
+			.expect("Failed to parse else branch: expected statements, got nothing");
+
+		IfBranch {
+			condition: Expression::Empty,
+			statements: self.parse_program(statements_pair.into_inner())
+		}
+	}
+
+	fn parse_if(&self, pairs: Pairs<'p, Rule>) -> Statement {
+		let mut pairs = pairs.clone();
+
+		if pairs.len() < 1 {
+			panic!("Failed to parse if statement: pairs are empty");
+		}
+
+		let condition_pair = pairs
+			.next()
+			.expect("Failed to parse if statement: condition is missing");
+
+		let statements_pair = pairs
+			.next()
+			.unwrap_or_else(|| unreachable!("Failed to parse if statement: statements are missing"));
+
+		let mut elseif_branches: Vec<IfBranch> = Vec::new();
+		let mut else_branch: Option<IfBranch> = None;
+
+		while let Some(pair) = pairs.next() {
+			if !matches!(pair.as_rule(), Rule::if_elseif | Rule::if_else) {
+				panic!("Failed to parse if statement: expected '{:?}' or '{:?}', got '{:?}'", Rule::if_elseif, Rule::if_else, pair.as_rule());
+			}
+			
+			if pair.as_rule() == Rule::if_elseif {
+				elseif_branches.push(self.parse_elseif_branch(pair));
+			} else {
+				else_branch = Some(self.parse_else_branch(pair));
+			}
+		}
+
+		Statement::If {
+			condition: self.parse_expression(condition_pair),
+			statements: self.parse_program(statements_pair.into_inner()),
+			elseif_branches,
+			else_branch
+		}
+	}
+
+	fn parse_while(&self, pairs: Pairs<'p, Rule>) -> Statement {
+		let mut pairs = pairs.clone();
+
+		let expression_pair = pairs
+			.next()
+			.expect("Failed to parse while statement: expected expression, got nothing");
+
+		let statements_pair = pairs
+			.next()
+			.expect("Failed to parse while statement: expected statements, got nothing");
+
+		Statement::While {
+			condition: self.parse_expression(expression_pair),
+			statements: self.parse_program(statements_pair.into_inner())
 		}
 	}
 
@@ -420,6 +570,7 @@ impl<'p> ASTParser<'p> {
 		match pair.as_rule() {
 			Rule::number_literal => self.parse_number_literal(pair),
 			Rule::string_literal => self.parse_string_literal(pair),
+			Rule::boolean_literal => self.parse_boolean_literal(pair),
 
 			rule => unreachable!("Failed to parse literal: got an unexpected rule. Expected number or string literal, got '{:?}'", rule)
 		}
@@ -1179,8 +1330,6 @@ impl<'p> ASTParser<'p> {
 	}
 
 	fn parse_function_call(&self, pairs: Pairs<'p, Rule>) -> Statement {
-		eprintln!("pairs = {}", pairs);
-
 		let last_pair = pairs
 			.clone()
 			.last()

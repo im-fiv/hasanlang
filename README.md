@@ -48,10 +48,12 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 - [ ] Store a span in every AST node for error reporting
 - [ ] Clarify `parse_..._expression` function calls *(call more specific functions instead)*
 - [ ] Add more unary operators
-- [ ] Implement if, while and for statements
 - [ ] Implement anonymous functions
 - [ ] Add support for floats
 - [ ] Allow for recursive parsing of types
+- [ ] Implement `for` statements
+- [x] Implement `if` and `while` statements
+- [x] Implement booleans
 - [x] Implement enums
 - [x] Make tests check the generated AST
 - [x] Add raw types *(direct LLVM types, should not have any methods on them, intended for compiler usage only)* that can be denoted with an exclamation mark: `AType!`, `ArrayType[]!`, `GenericType<...>!`, `GenericArrType<...>[]!`

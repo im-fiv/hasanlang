@@ -1,0 +1,57 @@
+[
+    VariableDefinition {
+        name: "counter",
+        kind: Empty,
+        value: Number(
+            0,
+        ),
+    },
+    While {
+        condition: Boolean(
+            true,
+        ),
+        statements: [
+            If {
+                condition: Binary(
+                    Identifier(
+                        "counter",
+                    ),
+                    GreaterThan,
+                    Number(
+                        10,
+                    ),
+                ),
+                statements: [
+                    Break,
+                ],
+                elseif_branches: [],
+                else_branch: None,
+            },
+            FunctionCall {
+                callee: Identifier(
+                    "print",
+                ),
+                generics: [],
+                arguments: [
+                    String(
+                        "it works!",
+                    ),
+                ],
+            },
+            VariableAssign(
+                Identifier(
+                    "counter",
+                ),
+                Binary(
+                    Identifier(
+                        "counter",
+                    ),
+                    Minus,
+                    Number(
+                        1,
+                    ),
+                ),
+            ),
+        ],
+    },
+]
