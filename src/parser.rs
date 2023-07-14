@@ -271,9 +271,7 @@ impl<'p> ASTParser<'p> {
 				Rule::COMMENT |
 				Rule::WHITESPACE |
 				Rule::line_comment |
-				Rule::block_comment |
-				Rule::number_literal |
-				Rule::string_literal => (),
+				Rule::block_comment => (),
 
 				Rule::program => statements = Some(self.parse_program(pair.into_inner())),
 
