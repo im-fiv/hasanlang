@@ -45,6 +45,7 @@ As I said before, this is my first time making a project as complex as this, so 
 Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 
 ## My current TODO list
+- [ ] Make tests check the generated AST
 - [ ] Implement enums
 - [ ] Store a span in every AST node for error reporting
 - [ ] Clarify `parse_..._expression` function calls *(call more specific functions instead)*
