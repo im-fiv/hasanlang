@@ -15,13 +15,13 @@ fn read_file(path: std::path::PathBuf) -> String {
 	let display = path_clone.display();
 
 	let file = File::open(path)
-		.expect(&format!("Failed to open file \"{}\" (read)", display));
+		.expect(&format!("Failed to open file {} (read)", display));
 
 	let mut reader = BufReader::new(file);
 	let mut contents = String::new();
 
 	reader.read_to_string(&mut contents)
-		.expect(&format!("Failed to read from file \"{}\"", display));
+		.expect(&format!("Failed to read from file {}", display));
 	
 	contents
 }
@@ -35,8 +35,19 @@ fn parse_all_files() {
 			.expect("Failed to resolve path")
 			.path();
 
-		let filename = path.file_name().unwrap_or_else(|| unreachable!("Failed to get file name"));
+		let filename = path
+			.file_name()
+			.unwrap_or_else(|| unreachable!("Failed to get file name"));
 
+		let filename_str = path
+			.file_stem()
+			.unwrap_or_else(|| unreachable!("Failed to get file stem"))
+			.to_str()
+			.unwrap_or_else(|| unreachable!("Failed to convert filename to str"));
+
+		let match_filename = format!("./tests/outputs/{}.txt", filename_str);
+
+		// compile
 		let contents = read_file(path.clone());
 		let parse_result = HasanPestParser::parse(Rule::program, &contents);
 
@@ -52,10 +63,17 @@ fn parse_all_files() {
 		let ast_parser = ASTParser::new(pairs);
 		let ast = panic::catch_unwind(|| ast_parser.parse());
 
-		if ast.is_ok() {
-			assert_ne!(ast.unwrap().len(), 0);
-		} else {
+		if !ast.is_ok() {
 			panic!("Failed to parse file {:?}", filename);
 		}
+
+		let ast = ast.unwrap();
+		assert_ne!(ast.len(), 0);
+
+		// confirm generated AST
+		let ast_string = format!("{:#?}", ast);
+		let expected_output = read_file(std::path::PathBuf::from(match_filename)).replace("\r\n", "\n");
+
+		assert_eq!(ast_string, expected_output, "AST does not match expected output for file {:?}", filename);
 	}
 }

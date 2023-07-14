@@ -1,0 +1,40 @@
+[
+    VariableDefinition {
+        name: "hello",
+        kind: Empty,
+        value: String(
+            "hello",
+        ),
+    },
+    VariableDefinition {
+        name: "world",
+        kind: Type {
+            base: Identifier(
+                "string",
+            ),
+            generics: [],
+            array: false,
+            raw: false,
+        },
+        value: String(
+            "world",
+        ),
+    },
+    Return(
+        Binary(
+            Binary(
+                Identifier(
+                    "hello",
+                ),
+                Plus,
+                String(
+                    " ",
+                ),
+            ),
+            Plus,
+            Identifier(
+                "world",
+            ),
+        ),
+    ),
+]

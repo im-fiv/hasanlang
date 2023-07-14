@@ -1,0 +1,138 @@
+[
+    FunctionDefinition {
+        name: "generic_function",
+        generics: [
+            Identifier(
+                "T",
+            ),
+        ],
+        arguments: [
+            FunctionArgument {
+                name: Identifier(
+                    "input",
+                ),
+                kind: Type {
+                    base: Identifier(
+                        "T",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+            },
+        ],
+        return_type: Type {
+            base: Identifier(
+                "T",
+            ),
+            generics: [],
+            array: true,
+            raw: false,
+        },
+        statements: [
+            Return(
+                Array(
+                    [
+                        Identifier(
+                            "input",
+                        ),
+                    ],
+                ),
+            ),
+        ],
+    },
+    ClassDefinition {
+        name: "generic_class",
+        generics: [
+            Identifier(
+                "T",
+            ),
+        ],
+        members: [
+            Variable {
+                name: "inner_value",
+                kind: Type {
+                    base: Identifier(
+                        "T",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+                default_value: Empty,
+            },
+            Function {
+                name: "value",
+                attributes: ClassFunctionAttributes {
+                    constructor: false,
+                    private: false,
+                    public: false,
+                    get: true,
+                    set: false,
+                    static_: false,
+                },
+                generics: [],
+                arguments: [],
+                return_type: Type {
+                    base: Identifier(
+                        "T",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+                statements: [
+                    Return(
+                        DotAccess(
+                            Identifier(
+                                "this",
+                            ),
+                            Identifier(
+                                "inner_value",
+                            ),
+                        ),
+                    ),
+                ],
+            },
+        ],
+    },
+    FunctionDefinition {
+        name: "main",
+        generics: [],
+        arguments: [],
+        return_type: Type {
+            base: Identifier(
+                "void",
+            ),
+            generics: [],
+            array: false,
+            raw: true,
+        },
+        statements: [
+            VariableDefinition {
+                name: "wrapped",
+                kind: Empty,
+                value: FunctionCall {
+                    callee: Identifier(
+                        "generic_function",
+                    ),
+                    generics: [
+                        Type {
+                            base: Identifier(
+                                "int",
+                            ),
+                            generics: [],
+                            array: false,
+                            raw: false,
+                        },
+                    ],
+                    arguments: [
+                        Number(
+                            5,
+                        ),
+                    ],
+                },
+            },
+        ],
+    },
+]

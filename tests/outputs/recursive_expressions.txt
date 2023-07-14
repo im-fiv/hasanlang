@@ -1,0 +1,496 @@
+[
+    VariableDefinition {
+        name: "a",
+        kind: Empty,
+        value: Binary(
+            Number(
+                2,
+            ),
+            Plus,
+            Binary(
+                Number(
+                    2,
+                ),
+                Times,
+                Number(
+                    2,
+                ),
+            ),
+        ),
+    },
+    VariableDefinition {
+        name: "b",
+        kind: Empty,
+        value: Binary(
+            FunctionCall {
+                callee: Identifier(
+                    "some_func",
+                ),
+                generics: [],
+                arguments: [],
+            },
+            Plus,
+            Binary(
+                Binary(
+                    Number(
+                        2,
+                    ),
+                    Divide,
+                    Number(
+                        2,
+                    ),
+                ),
+                Times,
+                Number(
+                    12312312,
+                ),
+            ),
+        ),
+    },
+    VariableDefinition {
+        name: "c",
+        kind: Empty,
+        value: Binary(
+            Binary(
+                FunctionCall {
+                    callee: FunctionCall {
+                        callee: FunctionCall {
+                            callee: FunctionCall {
+                                callee: FunctionCall {
+                                    callee: FunctionCall {
+                                        callee: Identifier(
+                                            "other_func",
+                                        ),
+                                        generics: [],
+                                        arguments: [],
+                                    },
+                                    generics: [],
+                                    arguments: [],
+                                },
+                                generics: [],
+                                arguments: [],
+                            },
+                            generics: [],
+                            arguments: [],
+                        },
+                        generics: [],
+                        arguments: [],
+                    },
+                    generics: [],
+                    arguments: [],
+                },
+                Plus,
+                Binary(
+                    Number(
+                        1337,
+                    ),
+                    Times,
+                    Number(
+                        3232892,
+                    ),
+                ),
+            ),
+            Minus,
+            Number(
+                1,
+            ),
+        ),
+    },
+    VariableDefinition {
+        name: "d",
+        kind: Empty,
+        value: Binary(
+            Binary(
+                ArrayAccess(
+                    ArrayAccess(
+                        ArrayAccess(
+                            ArrayAccess(
+                                ArrayAccess(
+                                    ArrayAccess(
+                                        Identifier(
+                                            "array",
+                                        ),
+                                        Number(
+                                            0,
+                                        ),
+                                    ),
+                                    Number(
+                                        1,
+                                    ),
+                                ),
+                                Number(
+                                    2,
+                                ),
+                            ),
+                            Number(
+                                3,
+                            ),
+                        ),
+                        Number(
+                            4,
+                        ),
+                    ),
+                    Number(
+                        5,
+                    ),
+                ),
+                Minus,
+                Number(
+                    1,
+                ),
+            ),
+            Plus,
+            FunctionCall {
+                callee: Identifier(
+                    "another_function",
+                ),
+                generics: [],
+                arguments: [],
+            },
+        ),
+    },
+    VariableDefinition {
+        name: "e",
+        kind: Empty,
+        value: ArrayAccess(
+            FunctionCall {
+                callee: FunctionCall {
+                    callee: ArrayAccess(
+                        Identifier(
+                            "array",
+                        ),
+                        Number(
+                            0,
+                        ),
+                    ),
+                    generics: [],
+                    arguments: [
+                        Binary(
+                            String(
+                                "hello, world!",
+                            ),
+                            Plus,
+                            String(
+                                "!",
+                            ),
+                        ),
+                    ],
+                },
+                generics: [],
+                arguments: [
+                    String(
+                        "asd",
+                    ),
+                ],
+            },
+            Binary(
+                Number(
+                    4,
+                ),
+                Minus,
+                Number(
+                    2,
+                ),
+            ),
+        ),
+    },
+    VariableDefinition {
+        name: "f",
+        kind: Empty,
+        value: Binary(
+            ArrowAccess(
+                Identifier(
+                    "some_class",
+                ),
+                Identifier(
+                    "some_property",
+                ),
+            ),
+            Plus,
+            FunctionCall {
+                callee: ArrowAccess(
+                    Identifier(
+                        "some_class",
+                    ),
+                    Identifier(
+                        "some_function",
+                    ),
+                ),
+                generics: [],
+                arguments: [],
+            },
+        ),
+    },
+    VariableDefinition {
+        name: "e",
+        kind: Empty,
+        value: Binary(
+            DotAccess(
+                Identifier(
+                    "something",
+                ),
+                Identifier(
+                    "something_else",
+                ),
+            ),
+            Divide,
+            FunctionCall {
+                callee: DotAccess(
+                    Identifier(
+                        "something",
+                    ),
+                    Identifier(
+                        "something_more",
+                    ),
+                ),
+                generics: [],
+                arguments: [],
+            },
+        ),
+    },
+    VariableDefinition {
+        name: "type_cast",
+        kind: Empty,
+        value: TypeCast(
+            TypeCast(
+                TypeCast(
+                    TypeCast(
+                        TypeCast(
+                            TypeCast(
+                                TypeCast(
+                                    Number(
+                                        3,
+                                    ),
+                                    Type {
+                                        base: Identifier(
+                                            "a",
+                                        ),
+                                        generics: [],
+                                        array: false,
+                                        raw: false,
+                                    },
+                                ),
+                                Type {
+                                    base: Identifier(
+                                        "b",
+                                    ),
+                                    generics: [],
+                                    array: false,
+                                    raw: false,
+                                },
+                            ),
+                            Type {
+                                base: Identifier(
+                                    "c",
+                                ),
+                                generics: [],
+                                array: false,
+                                raw: false,
+                            },
+                        ),
+                        Type {
+                            base: Identifier(
+                                "d",
+                            ),
+                            generics: [],
+                            array: false,
+                            raw: false,
+                        },
+                    ),
+                    Type {
+                        base: Identifier(
+                            "e",
+                        ),
+                        generics: [],
+                        array: false,
+                        raw: false,
+                    },
+                ),
+                Type {
+                    base: Identifier(
+                        "f",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+            ),
+            Type {
+                base: Identifier(
+                    "g",
+                ),
+                generics: [],
+                array: false,
+                raw: false,
+            },
+        ),
+    },
+    FunctionCall {
+        callee: Identifier(
+            "world",
+        ),
+        generics: [],
+        arguments: [
+            Number(
+                123,
+            ),
+        ],
+    },
+    VariableDefinition {
+        name: "arr",
+        kind: Empty,
+        value: FunctionCall {
+            callee: DotAccess(
+                Identifier(
+                    "Array",
+                ),
+                Identifier(
+                    "new",
+                ),
+            ),
+            generics: [],
+            arguments: [],
+        },
+    },
+    VariableDefinition {
+        name: "var1",
+        kind: Empty,
+        value: Identifier(
+            "random_variable_name",
+        ),
+    },
+    VariableDefinition {
+        name: "var2",
+        kind: Empty,
+        value: Binary(
+            Number(
+                2,
+            ),
+            Plus,
+            Number(
+                5,
+            ),
+        ),
+    },
+    VariableDefinition {
+        name: "complex_expression",
+        kind: Empty,
+        value: Binary(
+            Binary(
+                Binary(
+                    Binary(
+                        Identifier(
+                            "var2",
+                        ),
+                        Times,
+                        Number(
+                            15,
+                        ),
+                    ),
+                    Divide,
+                    Number(
+                        3,
+                    ),
+                ),
+                Plus,
+                Binary(
+                    FunctionCall {
+                        callee: DotAccess(
+                            ArrayAccess(
+                                Identifier(
+                                    "a",
+                                ),
+                                Number(
+                                    0,
+                                ),
+                            ),
+                            Identifier(
+                                "function",
+                            ),
+                        ),
+                        generics: [],
+                        arguments: [
+                            Number(
+                                1,
+                            ),
+                            Number(
+                                2,
+                            ),
+                            Number(
+                                3,
+                            ),
+                            String(
+                                "random string",
+                            ),
+                            Array(
+                                [],
+                            ),
+                        ],
+                    },
+                    Times,
+                    FunctionCall {
+                        callee: DotAccess(
+                            ArrowAccess(
+                                ArrowAccess(
+                                    ArrayAccess(
+                                        ArrayAccess(
+                                            Identifier(
+                                                "a",
+                                            ),
+                                            Number(
+                                                0,
+                                            ),
+                                        ),
+                                        Number(
+                                            1,
+                                        ),
+                                    ),
+                                    Identifier(
+                                        "static_1",
+                                    ),
+                                ),
+                                Identifier(
+                                    "static_2",
+                                ),
+                            ),
+                            Identifier(
+                                "asd",
+                            ),
+                        ),
+                        generics: [],
+                        arguments: [
+                            Binary(
+                                Number(
+                                    123123123,
+                                ),
+                                Times,
+                                Number(
+                                    2,
+                                ),
+                            ),
+                            Array(
+                                [],
+                            ),
+                        ],
+                    },
+                ),
+            ),
+            Plus,
+            Number(
+                2,
+            ),
+        ),
+    },
+    Return(
+        Array(
+            [
+                Identifier(
+                    "complex_expression",
+                ),
+                Identifier(
+                    "var2",
+                ),
+            ],
+        ),
+    ),
+]

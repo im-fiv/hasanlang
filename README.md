@@ -45,7 +45,6 @@ As I said before, this is my first time making a project as complex as this, so 
 Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 
 ## My current TODO list
-- [ ] Make tests check the generated AST
 - [ ] Implement enums
 - [ ] Store a span in every AST node for error reporting
 - [ ] Clarify `parse_..._expression` function calls *(call more specific functions instead)*
@@ -54,6 +53,7 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 - [ ] Implement anonymous functions
 - [ ] Add support for floats
 - [ ] Allow for recursive parsing of types
+- [x] Make tests check the generated AST
 - [x] Add raw types *(direct LLVM types, should not have any methods on them, intended for compiler usage only)* that can be denoted with an exclamation mark: `AType!`, `ArrayType[]!`, `GenericType<...>!`, `GenericArrType<...>[]!`
 - [x] Add type cast operator to *recursive* expressions
 - [x] Fix *recursive* expressions

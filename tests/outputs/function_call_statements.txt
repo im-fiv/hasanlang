@@ -1,0 +1,130 @@
+[
+    VariableAssign(
+        Identifier(
+            "a",
+        ),
+        Number(
+            5,
+        ),
+    ),
+    VariableAssign(
+        DotAccess(
+            DotAccess(
+                Identifier(
+                    "a",
+                ),
+                Identifier(
+                    "b",
+                ),
+            ),
+            Identifier(
+                "c",
+            ),
+        ),
+        Number(
+            3,
+        ),
+    ),
+    VariableAssign(
+        ArrowAccess(
+            DotAccess(
+                FunctionCall {
+                    callee: DotAccess(
+                        Identifier(
+                            "a",
+                        ),
+                        Identifier(
+                            "b",
+                        ),
+                    ),
+                    generics: [],
+                    arguments: [],
+                },
+                Identifier(
+                    "d",
+                ),
+            ),
+            Identifier(
+                "e",
+            ),
+        ),
+        FunctionCall {
+            callee: ArrayAccess(
+                FunctionCall {
+                    callee: ArrayAccess(
+                        DotAccess(
+                            FunctionCall {
+                                callee: FunctionCall {
+                                    callee: Identifier(
+                                        "f",
+                                    ),
+                                    generics: [],
+                                    arguments: [],
+                                },
+                                generics: [],
+                                arguments: [],
+                            },
+                            Identifier(
+                                "g",
+                            ),
+                        ),
+                        Identifier(
+                            "h",
+                        ),
+                    ),
+                    generics: [],
+                    arguments: [],
+                },
+                Identifier(
+                    "i",
+                ),
+            ),
+            generics: [],
+            arguments: [],
+        },
+    ),
+    FunctionCall {
+        callee: Identifier(
+            "a",
+        ),
+        generics: [],
+        arguments: [],
+    },
+    FunctionCall {
+        callee: FunctionCall {
+            callee: Identifier(
+                "a",
+            ),
+            generics: [
+                Type {
+                    base: Identifier(
+                        "B",
+                    ),
+                    generics: [],
+                    array: true,
+                    raw: true,
+                },
+            ],
+            arguments: [
+                String(
+                    "asd",
+                ),
+            ],
+        },
+        generics: [
+            Type {
+                base: Identifier(
+                    "A",
+                ),
+                generics: [],
+                array: false,
+                raw: false,
+            },
+        ],
+        arguments: [
+            Number(
+                1,
+            ),
+        ],
+    },
+]

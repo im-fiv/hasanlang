@@ -1,0 +1,130 @@
+[
+    TypeDefinition {
+        name: "Reg_T",
+        generics: [],
+        definition: Type {
+            base: Identifier(
+                "int",
+            ),
+            generics: [],
+            array: false,
+            raw: false,
+        },
+    },
+    TypeDefinition {
+        name: "Reg_ArrayT",
+        generics: [],
+        definition: Type {
+            base: Identifier(
+                "int",
+            ),
+            generics: [],
+            array: true,
+            raw: false,
+        },
+    },
+    TypeDefinition {
+        name: "Reg_GenericT",
+        generics: [
+            Identifier(
+                "A",
+            ),
+        ],
+        definition: Type {
+            base: Identifier(
+                "A",
+            ),
+            generics: [
+                Identifier(
+                    "A",
+                ),
+            ],
+            array: false,
+            raw: false,
+        },
+    },
+    TypeDefinition {
+        name: "Reg_GenericArrayT",
+        generics: [
+            Identifier(
+                "B",
+            ),
+        ],
+        definition: Type {
+            base: Identifier(
+                "B",
+            ),
+            generics: [
+                Identifier(
+                    "B",
+                ),
+            ],
+            array: true,
+            raw: false,
+        },
+    },
+    TypeDefinition {
+        name: "Raw_T",
+        generics: [],
+        definition: Type {
+            base: Identifier(
+                "int",
+            ),
+            generics: [],
+            array: false,
+            raw: true,
+        },
+    },
+    TypeDefinition {
+        name: "Raw_ArrayT",
+        generics: [],
+        definition: Type {
+            base: Identifier(
+                "int",
+            ),
+            generics: [],
+            array: true,
+            raw: true,
+        },
+    },
+    TypeDefinition {
+        name: "Raw_GenericT",
+        generics: [
+            Identifier(
+                "A",
+            ),
+        ],
+        definition: Type {
+            base: Identifier(
+                "A",
+            ),
+            generics: [
+                Identifier(
+                    "A",
+                ),
+            ],
+            array: false,
+            raw: true,
+        },
+    },
+    TypeDefinition {
+        name: "Raw_GenericArrayT",
+        generics: [
+            Identifier(
+                "B",
+            ),
+        ],
+        definition: Type {
+            base: Identifier(
+                "B",
+            ),
+            generics: [
+                Identifier(
+                    "B",
+                ),
+            ],
+            array: true,
+            raw: true,
+        },
+    },
+]

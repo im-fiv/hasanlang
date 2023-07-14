@@ -1,0 +1,160 @@
+[
+    FunctionDefinition {
+        name: "cast",
+        generics: [
+            Identifier(
+                "From",
+            ),
+            Identifier(
+                "To",
+            ),
+        ],
+        arguments: [
+            FunctionArgument {
+                name: Identifier(
+                    "input",
+                ),
+                kind: Type {
+                    base: Identifier(
+                        "From",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+            },
+        ],
+        return_type: Type {
+            base: Identifier(
+                "To",
+            ),
+            generics: [],
+            array: false,
+            raw: false,
+        },
+        statements: [
+            Return(
+                TypeCast(
+                    Identifier(
+                        "input",
+                    ),
+                    Type {
+                        base: Identifier(
+                            "To",
+                        ),
+                        generics: [],
+                        array: false,
+                        raw: false,
+                    },
+                ),
+            ),
+        ],
+    },
+    VariableDefinition {
+        name: "long_cast",
+        kind: Empty,
+        value: TypeCast(
+            TypeCast(
+                TypeCast(
+                    TypeCast(
+                        TypeCast(
+                            TypeCast(
+                                TypeCast(
+                                    Number(
+                                        3,
+                                    ),
+                                    Type {
+                                        base: Identifier(
+                                            "a",
+                                        ),
+                                        generics: [],
+                                        array: false,
+                                        raw: false,
+                                    },
+                                ),
+                                Type {
+                                    base: Identifier(
+                                        "b",
+                                    ),
+                                    generics: [],
+                                    array: false,
+                                    raw: false,
+                                },
+                            ),
+                            Type {
+                                base: Identifier(
+                                    "c",
+                                ),
+                                generics: [],
+                                array: false,
+                                raw: false,
+                            },
+                        ),
+                        Type {
+                            base: Identifier(
+                                "d",
+                            ),
+                            generics: [],
+                            array: false,
+                            raw: false,
+                        },
+                    ),
+                    Type {
+                        base: Identifier(
+                            "e",
+                        ),
+                        generics: [],
+                        array: false,
+                        raw: false,
+                    },
+                ),
+                Type {
+                    base: Identifier(
+                        "f",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+            ),
+            Type {
+                base: Identifier(
+                    "g",
+                ),
+                generics: [],
+                array: false,
+                raw: false,
+            },
+        ),
+    },
+    Return(
+        FunctionCall {
+            callee: Identifier(
+                "cast",
+            ),
+            generics: [
+                Type {
+                    base: Identifier(
+                        "int",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+                Type {
+                    base: Identifier(
+                        "float",
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                },
+            ],
+            arguments: [
+                Number(
+                    5,
+                ),
+            ],
+        },
+    ),
+]
