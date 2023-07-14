@@ -1,9 +1,0 @@
-enum Light
-	Green,
-	Yellow,
-	Red
-end
-
-var current_light: Light = Light.Green;
-current_light = Light.Yellow;
-current_light = Light.Red;
