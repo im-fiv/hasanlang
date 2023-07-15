@@ -4,13 +4,11 @@ use std::io::BufReader;
 use std::io::prelude::*;
 
 use pest::Parser;
+use clap::Parser as ClapParser;
 
 use hasan::{tokenizer, parser};
 use tokenizer::{HasanPestParser, Rule};
 use parser::ASTParser;
-
-const FILE_PATH: &str = "./input.hsl";
-const DEBUG: bool = true;
 
 fn read_file(path: &str) -> String {
     let file = File::open(path).expect(&format!("Failed to open file \"{}\" (read)", path));
@@ -27,12 +25,25 @@ fn write_file(path: &str, contents: String) {
     file.write_all(contents.as_bytes()).expect(&format!("Failed to write to file \"{}\"", path));
 }
 
+#[derive(ClapParser)]
+struct Cli {
+    file_path: Option<String>,
+    debug: Option<bool>
+}
+
 fn main() {
+    // parse cmdline arguments
+    let args = Cli::parse();
+
+    let file_path = &args.file_path.unwrap_or("./input.hsl".to_owned());
+    let debug = args.debug.unwrap_or(false);
+
+    // parse file
     fs::create_dir_all("./compiled").expect("Failed to create \"compiled\" directory");
 
     println!("Pest parsing...");
 
-    let contents = read_file(FILE_PATH);
+    let contents = read_file(file_path);
     let result = HasanPestParser::parse(Rule::program, &contents);
 
     if let Err(e) = result {
@@ -42,7 +53,7 @@ fn main() {
 
     let pairs = result.unwrap();
 
-    if DEBUG {
+    if debug {
         println!("Parsed pairs ({}): {}", pairs.len(), pairs);
         println!();
     }
@@ -54,7 +65,7 @@ fn main() {
     let ast_parser = ASTParser::new(pairs);
     let ast = ast_parser.parse();
 
-    if DEBUG {
+    if debug {
         println!("Parsed AST ({}): {:?}", ast.len(), ast);
         println!();
     }

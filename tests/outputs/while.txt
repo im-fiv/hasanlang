@@ -1,57 +1,143 @@
 [
     VariableDefinition {
-        name: "counter",
+        name: Span {
+            str: "counter",
+            start: 4,
+            end: 11,
+        },
         kind: Empty,
         value: Number(
             0,
+            Span {
+                str: "0",
+                start: 14,
+                end: 15,
+            },
         ),
+        span: Span {
+            str: "var counter = 0;",
+            start: 0,
+            end: 16,
+        },
     },
     While {
         condition: Boolean(
             true,
+            Span {
+                str: "true",
+                start: 26,
+                end: 30,
+            },
         ),
         statements: [
             If {
-                condition: Binary(
-                    Identifier(
-                        "counter",
+                condition: Binary {
+                    lhs: Identifier(
+                        Span {
+                            str: "counter",
+                            start: 39,
+                            end: 46,
+                        },
                     ),
-                    GreaterThan,
-                    Number(
+                    operator: GreaterThan,
+                    rhs: Number(
                         10,
+                        Span {
+                            str: "10",
+                            start: 49,
+                            end: 51,
+                        },
                     ),
-                ),
+                    span: Span {
+                        str: "counter > 10 ",
+                        start: 39,
+                        end: 52,
+                    },
+                },
                 statements: [
-                    Break,
+                    Break(
+                        Span {
+                            str: "break;",
+                            start: 60,
+                            end: 66,
+                        },
+                    ),
                 ],
                 elseif_branches: [],
                 else_branch: None,
+                span: Span {
+                    str: "if counter > 10 then\r\n\t\tbreak;\r\n\tend",
+                    start: 36,
+                    end: 72,
+                },
             },
             FunctionCall {
                 callee: Identifier(
-                    "print",
+                    Span {
+                        str: "print",
+                        start: 77,
+                        end: 82,
+                    },
                 ),
                 generics: [],
                 arguments: [
                     String(
                         "it works!",
+                        Span {
+                            str: "\"it works!\"",
+                            start: 83,
+                            end: 94,
+                        },
                     ),
                 ],
+                span: Span {
+                    str: "(\"it works!\")",
+                    start: 82,
+                    end: 95,
+                },
             },
-            VariableAssign(
-                Identifier(
-                    "counter",
+            VariableAssign {
+                name: Identifier(
+                    Span {
+                        str: "counter",
+                        start: 99,
+                        end: 106,
+                    },
                 ),
-                Binary(
-                    Identifier(
-                        "counter",
+                value: Binary {
+                    lhs: Identifier(
+                        Span {
+                            str: "counter",
+                            start: 109,
+                            end: 116,
+                        },
                     ),
-                    Minus,
-                    Number(
+                    operator: Minus,
+                    rhs: Number(
                         1,
+                        Span {
+                            str: "1",
+                            start: 119,
+                            end: 120,
+                        },
                     ),
-                ),
-            ),
+                    span: Span {
+                        str: "counter - 1",
+                        start: 109,
+                        end: 120,
+                    },
+                },
+                span: Span {
+                    str: "counter = counter - 1;",
+                    start: 99,
+                    end: 121,
+                },
+            },
         ],
+        span: Span {
+            str: "while true do\r\n\tif counter > 10 then\r\n\t\tbreak;\r\n\tend\r\n\r\n\tprint(\"it works!\");\r\n\tcounter = counter - 1;\r\nend",
+            start: 20,
+            end: 126,
+        },
     },
 ]

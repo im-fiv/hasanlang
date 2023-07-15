@@ -1,138 +1,307 @@
 [
     FunctionDefinition {
-        name: "generic_function",
+        name: Span {
+            str: "generic_function",
+            start: 5,
+            end: 21,
+        },
         generics: [
             Identifier(
-                "T",
+                Span {
+                    str: "T",
+                    start: 22,
+                    end: 23,
+                },
             ),
         ],
         arguments: [
             FunctionArgument {
                 name: Identifier(
-                    "input",
+                    Span {
+                        str: "input",
+                        start: 25,
+                        end: 30,
+                    },
                 ),
                 kind: Type {
                     base: Identifier(
-                        "T",
+                        Span {
+                            str: "T",
+                            start: 32,
+                            end: 33,
+                        },
                     ),
                     generics: [],
                     array: false,
                     raw: false,
+                    span: Span {
+                        str: "T",
+                        start: 32,
+                        end: 33,
+                    },
+                },
+                span: Span {
+                    str: "input: T",
+                    start: 25,
+                    end: 33,
                 },
             },
         ],
-        return_type: Type {
-            base: Identifier(
-                "T",
-            ),
-            generics: [],
-            array: true,
-            raw: false,
-        },
+        return_type: Some(
+            Type {
+                base: Identifier(
+                    Span {
+                        str: "T",
+                        start: 38,
+                        end: 39,
+                    },
+                ),
+                generics: [],
+                array: true,
+                raw: false,
+                span: Span {
+                    str: "T[] ",
+                    start: 38,
+                    end: 42,
+                },
+            },
+        ),
         statements: [
-            Return(
-                Array(
+            Return {
+                value: Array(
                     [
                         Identifier(
-                            "input",
+                            Span {
+                                str: "input",
+                                start: 86,
+                                end: 91,
+                            },
                         ),
                     ],
+                    Span {
+                        str: "[input]",
+                        start: 85,
+                        end: 92,
+                    },
                 ),
-            ),
+                span: Span {
+                    str: "return [input];",
+                    start: 78,
+                    end: 93,
+                },
+            },
         ],
+        span: Span {
+            str: "func generic_function<T>(input: T) -> T[] do\r\n\t// Wraps input into an array\r\n\treturn [input];\r\nend\r\n\r\n",
+            start: 0,
+            end: 102,
+        },
     },
     ClassDefinition {
-        name: "generic_class",
+        name: Span {
+            str: "generic_class",
+            start: 108,
+            end: 121,
+        },
         generics: [
             Identifier(
-                "T",
+                Span {
+                    str: "T",
+                    start: 122,
+                    end: 123,
+                },
             ),
         ],
         members: [
             Variable {
-                name: "inner_value",
+                name: Span {
+                    str: "inner_value",
+                    start: 127,
+                    end: 138,
+                },
                 kind: Type {
                     base: Identifier(
-                        "T",
+                        Span {
+                            str: "T",
+                            start: 140,
+                            end: 141,
+                        },
                     ),
                     generics: [],
                     array: false,
                     raw: false,
+                    span: Span {
+                        str: "T",
+                        start: 140,
+                        end: 141,
+                    },
                 },
                 default_value: Empty,
+                span: Span {
+                    str: "inner_value: T;",
+                    start: 127,
+                    end: 142,
+                },
             },
             Function {
-                name: "value",
-                attributes: ClassFunctionAttributes {
-                    constructor: false,
-                    private: false,
-                    public: false,
-                    get: true,
-                    set: false,
-                    static_: false,
+                name: Span {
+                    str: "value",
+                    start: 161,
+                    end: 166,
                 },
+                attributes: Some(
+                    ClassFunctionAttributes {
+                        attributes: [
+                            Get(
+                                Span {
+                                    str: "get",
+                                    start: 149,
+                                    end: 152,
+                                },
+                            ),
+                        ],
+                        span: Span {
+                            str: "#[get]",
+                            start: 147,
+                            end: 153,
+                        },
+                    },
+                ),
                 generics: [],
                 arguments: [],
-                return_type: Type {
-                    base: Identifier(
-                        "T",
-                    ),
-                    generics: [],
-                    array: false,
-                    raw: false,
-                },
-                statements: [
-                    Return(
-                        DotAccess(
-                            Identifier(
-                                "this",
-                            ),
-                            Identifier(
-                                "inner_value",
-                            ),
+                return_type: Some(
+                    Type {
+                        base: Identifier(
+                            Span {
+                                str: "T",
+                                start: 172,
+                                end: 173,
+                            },
                         ),
-                    ),
+                        generics: [],
+                        array: false,
+                        raw: false,
+                        span: Span {
+                            str: "T ",
+                            start: 172,
+                            end: 174,
+                        },
+                    },
+                ),
+                statements: [
+                    Return {
+                        value: DotAccess {
+                            expression: Identifier(
+                                Span {
+                                    str: "this",
+                                    start: 187,
+                                    end: 191,
+                                },
+                            ),
+                            accessor: Identifier(
+                                Span {
+                                    str: "inner_value",
+                                    start: 192,
+                                    end: 203,
+                                },
+                            ),
+                            span: Span {
+                                str: ".inner_value",
+                                start: 191,
+                                end: 203,
+                            },
+                        },
+                        span: Span {
+                            str: "return this.inner_value;",
+                            start: 180,
+                            end: 204,
+                        },
+                    },
                 ],
+                span: Span {
+                    str: "func value() -> T do\r\n\t\treturn this.inner_value;\r\n\tend\r\n",
+                    start: 156,
+                    end: 212,
+                },
             },
         ],
+        span: Span {
+            str: "class generic_class<T>\r\n\tinner_value: T;\r\n\r\n\t#[get]\r\n\tfunc value() -> T do\r\n\t\treturn this.inner_value;\r\n\tend\r\nend\r\n\r\n",
+            start: 102,
+            end: 219,
+        },
     },
     FunctionDefinition {
-        name: "main",
+        name: Span {
+            str: "main",
+            start: 224,
+            end: 228,
+        },
         generics: [],
         arguments: [],
-        return_type: Type {
-            base: Identifier(
-                "void",
-            ),
-            generics: [],
-            array: false,
-            raw: true,
-        },
+        return_type: None,
         statements: [
             VariableDefinition {
-                name: "wrapped",
+                name: Span {
+                    str: "wrapped",
+                    start: 240,
+                    end: 247,
+                },
                 kind: Empty,
                 value: FunctionCall {
                     callee: Identifier(
-                        "generic_function",
+                        Span {
+                            str: "generic_function",
+                            start: 250,
+                            end: 266,
+                        },
                     ),
                     generics: [
                         Type {
                             base: Identifier(
-                                "int",
+                                Span {
+                                    str: "int",
+                                    start: 267,
+                                    end: 270,
+                                },
                             ),
                             generics: [],
                             array: false,
                             raw: false,
+                            span: Span {
+                                str: "int",
+                                start: 267,
+                                end: 270,
+                            },
                         },
                     ],
                     arguments: [
                         Number(
                             5,
+                            Span {
+                                str: "5",
+                                start: 272,
+                                end: 273,
+                            },
                         ),
                     ],
+                    span: Span {
+                        str: "<int>(5)",
+                        start: 266,
+                        end: 274,
+                    },
+                },
+                span: Span {
+                    str: "var wrapped = generic_function<int>(5);",
+                    start: 236,
+                    end: 275,
                 },
             },
         ],
+        span: Span {
+            str: "func main() do\r\n\tvar wrapped = generic_function<int>(5);\r\nend",
+            start: 219,
+            end: 280,
+        },
     },
 ]

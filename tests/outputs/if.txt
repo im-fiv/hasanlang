@@ -1,115 +1,290 @@
 [
     VariableDefinition {
-        name: "a",
+        name: Span {
+            str: "a",
+            start: 4,
+            end: 5,
+        },
         kind: Empty,
-        value: Unary(
-            Not,
-            Boolean(
+        value: Unary {
+            operator: Not,
+            operand: Boolean(
                 true,
+                Span {
+                    str: "true",
+                    start: 12,
+                    end: 16,
+                },
             ),
-        ),
+            span: Span {
+                str: "not true",
+                start: 8,
+                end: 16,
+            },
+        },
+        span: Span {
+            str: "var a = not true;",
+            start: 0,
+            end: 17,
+        },
     },
     VariableDefinition {
-        name: "b",
+        name: Span {
+            str: "b",
+            start: 23,
+            end: 24,
+        },
         kind: Empty,
-        value: Binary(
-            Binary(
-                Number(
+        value: Binary {
+            lhs: Binary {
+                lhs: Number(
                     2,
+                    Span {
+                        str: "2",
+                        start: 27,
+                        end: 28,
+                    },
                 ),
-                Plus,
-                Binary(
-                    Number(
+                operator: Plus,
+                rhs: Binary {
+                    lhs: Number(
                         2,
+                        Span {
+                            str: "2",
+                            start: 31,
+                            end: 32,
+                        },
                     ),
-                    Times,
-                    Number(
+                    operator: Times,
+                    rhs: Number(
                         5,
+                        Span {
+                            str: "5",
+                            start: 35,
+                            end: 36,
+                        },
                     ),
-                ),
-            ),
-            NotEquals,
-            Number(
+                    span: Span {
+                        str: " 2 * 5 != 5",
+                        start: 30,
+                        end: 41,
+                    },
+                },
+                span: Span {
+                    str: "2 + 2 * 5 != 5",
+                    start: 27,
+                    end: 41,
+                },
+            },
+            operator: NotEquals,
+            rhs: Number(
                 5,
+                Span {
+                    str: "5",
+                    start: 40,
+                    end: 41,
+                },
             ),
-        ),
+            span: Span {
+                str: "2 + 2 * 5 != 5",
+                start: 27,
+                end: 41,
+            },
+        },
+        span: Span {
+            str: "var b = 2 + 2 * 5 != 5;",
+            start: 19,
+            end: 42,
+        },
     },
     If {
-        condition: Binary(
-            Boolean(
+        condition: Binary {
+            lhs: Boolean(
                 true,
+                Span {
+                    str: "true",
+                    start: 49,
+                    end: 53,
+                },
             ),
-            Equals,
-            Boolean(
+            operator: Equals,
+            rhs: Boolean(
                 true,
+                Span {
+                    str: "true",
+                    start: 57,
+                    end: 61,
+                },
             ),
-        ),
+            span: Span {
+                str: "true == true ",
+                start: 49,
+                end: 62,
+            },
+        },
         statements: [
             FunctionCall {
                 callee: Identifier(
-                    "print",
+                    Span {
+                        str: "print",
+                        start: 69,
+                        end: 74,
+                    },
                 ),
                 generics: [],
                 arguments: [
                     String(
                         "asdasd",
+                        Span {
+                            str: "\"asdasd\"",
+                            start: 75,
+                            end: 83,
+                        },
                     ),
                 ],
+                span: Span {
+                    str: "(\"asdasd\")",
+                    start: 74,
+                    end: 84,
+                },
             },
-            VariableAssign(
-                Identifier(
-                    "a",
+            VariableAssign {
+                name: Identifier(
+                    Span {
+                        str: "a",
+                        start: 88,
+                        end: 89,
+                    },
                 ),
-                Boolean(
+                value: Boolean(
                     false,
+                    Span {
+                        str: "false",
+                        start: 92,
+                        end: 97,
+                    },
                 ),
-            ),
+                span: Span {
+                    str: "a = false;",
+                    start: 88,
+                    end: 98,
+                },
+            },
         ],
         elseif_branches: [
             IfBranch {
-                condition: Binary(
-                    Boolean(
+                condition: Binary {
+                    lhs: Boolean(
                         false,
+                        Span {
+                            str: "false",
+                            start: 107,
+                            end: 112,
+                        },
                     ),
-                    NotEquals,
-                    Boolean(
+                    operator: NotEquals,
+                    rhs: Boolean(
                         true,
+                        Span {
+                            str: "true",
+                            start: 116,
+                            end: 120,
+                        },
                     ),
-                ),
+                    span: Span {
+                        str: "false != true ",
+                        start: 107,
+                        end: 121,
+                    },
+                },
                 statements: [
                     FunctionCall {
                         callee: Identifier(
-                            "do_something",
+                            Span {
+                                str: "do_something",
+                                start: 128,
+                                end: 140,
+                            },
                         ),
                         generics: [],
                         arguments: [],
+                        span: Span {
+                            str: "()",
+                            start: 140,
+                            end: 142,
+                        },
                     },
                 ],
+                span: Span {
+                    str: "elseif false != true then\r\n\tdo_something();",
+                    start: 100,
+                    end: 143,
+                },
             },
             IfBranch {
-                condition: Binary(
-                    Boolean(
+                condition: Binary {
+                    lhs: Boolean(
                         false,
+                        Span {
+                            str: "false",
+                            start: 152,
+                            end: 157,
+                        },
                     ),
-                    Or,
-                    Boolean(
+                    operator: Or,
+                    rhs: Boolean(
                         true,
+                        Span {
+                            str: "true",
+                            start: 161,
+                            end: 165,
+                        },
                     ),
-                ),
+                    span: Span {
+                        str: "false or true ",
+                        start: 152,
+                        end: 166,
+                    },
+                },
                 statements: [
-                    Return(
-                        Number(
+                    Return {
+                        value: Number(
                             5,
+                            Span {
+                                str: "5",
+                                start: 180,
+                                end: 181,
+                            },
                         ),
-                    ),
+                        span: Span {
+                            str: "return 5;",
+                            start: 173,
+                            end: 182,
+                        },
+                    },
                 ],
+                span: Span {
+                    str: "elseif false or true then\r\n\treturn 5;",
+                    start: 145,
+                    end: 182,
+                },
             },
         ],
         else_branch: Some(
             IfBranch {
                 condition: Empty,
                 statements: [],
+                span: Span {
+                    str: "else\r\n\t// do nothing\r\n",
+                    start: 184,
+                    end: 206,
+                },
             },
         ),
+        span: Span {
+            str: "if true == true then\r\n\tprint(\"asdasd\");\r\n\ta = false;\r\nelseif false != true then\r\n\tdo_something();\r\nelseif false or true then\r\n\treturn 5;\r\nelse\r\n\t// do nothing\r\nend",
+            start: 46,
+            end: 209,
+        },
     },
 ]

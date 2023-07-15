@@ -1,16 +1,44 @@
 [
     VariableDefinition {
-        name: "a",
+        name: Span {
+            str: "a",
+            start: 4,
+            end: 5,
+        },
         kind: Empty,
         value: Boolean(
             true,
+            Span {
+                str: "true",
+                start: 8,
+                end: 12,
+            },
         ),
+        span: Span {
+            str: "var a = true;",
+            start: 0,
+            end: 13,
+        },
     },
     VariableDefinition {
-        name: "b",
+        name: Span {
+            str: "b",
+            start: 19,
+            end: 20,
+        },
         kind: Empty,
         value: Boolean(
             false,
+            Span {
+                str: "false",
+                start: 23,
+                end: 28,
+            },
         ),
+        span: Span {
+            str: "var b = false;",
+            start: 15,
+            end: 29,
+        },
     },
 ]

@@ -1,130 +1,306 @@
 [
     TypeDefinition {
-        name: "Reg_T",
+        name: Span {
+            str: "Reg_T",
+            start: 5,
+            end: 10,
+        },
         generics: [],
         definition: Type {
             base: Identifier(
-                "int",
+                Span {
+                    str: "int",
+                    start: 13,
+                    end: 16,
+                },
             ),
             generics: [],
             array: false,
             raw: false,
+            span: Span {
+                str: "int",
+                start: 13,
+                end: 16,
+            },
+        },
+        span: Span {
+            str: "type Reg_T = int;",
+            start: 0,
+            end: 17,
         },
     },
     TypeDefinition {
-        name: "Reg_ArrayT",
+        name: Span {
+            str: "Reg_ArrayT",
+            start: 24,
+            end: 34,
+        },
         generics: [],
         definition: Type {
             base: Identifier(
-                "int",
+                Span {
+                    str: "int",
+                    start: 37,
+                    end: 40,
+                },
             ),
             generics: [],
             array: true,
             raw: false,
+            span: Span {
+                str: "int[]",
+                start: 37,
+                end: 42,
+            },
+        },
+        span: Span {
+            str: "type Reg_ArrayT = int[];",
+            start: 19,
+            end: 43,
         },
     },
     TypeDefinition {
-        name: "Reg_GenericT",
+        name: Span {
+            str: "Reg_GenericT",
+            start: 50,
+            end: 62,
+        },
         generics: [
             Identifier(
-                "A",
+                Span {
+                    str: "A",
+                    start: 63,
+                    end: 64,
+                },
             ),
         ],
         definition: Type {
             base: Identifier(
-                "A",
+                Span {
+                    str: "A",
+                    start: 68,
+                    end: 69,
+                },
             ),
             generics: [
                 Identifier(
-                    "A",
+                    Span {
+                        str: "A",
+                        start: 70,
+                        end: 71,
+                    },
                 ),
             ],
             array: false,
             raw: false,
+            span: Span {
+                str: "A<A>",
+                start: 68,
+                end: 72,
+            },
+        },
+        span: Span {
+            str: "type Reg_GenericT<A> = A<A>;",
+            start: 45,
+            end: 73,
         },
     },
     TypeDefinition {
-        name: "Reg_GenericArrayT",
+        name: Span {
+            str: "Reg_GenericArrayT",
+            start: 80,
+            end: 97,
+        },
         generics: [
             Identifier(
-                "B",
+                Span {
+                    str: "B",
+                    start: 98,
+                    end: 99,
+                },
             ),
         ],
         definition: Type {
             base: Identifier(
-                "B",
+                Span {
+                    str: "B",
+                    start: 103,
+                    end: 104,
+                },
             ),
             generics: [
                 Identifier(
-                    "B",
+                    Span {
+                        str: "B",
+                        start: 105,
+                        end: 106,
+                    },
                 ),
             ],
             array: true,
             raw: false,
+            span: Span {
+                str: "B<B>[]",
+                start: 103,
+                end: 109,
+            },
+        },
+        span: Span {
+            str: "type Reg_GenericArrayT<B> = B<B>[];",
+            start: 75,
+            end: 110,
         },
     },
     TypeDefinition {
-        name: "Raw_T",
+        name: Span {
+            str: "Raw_T",
+            start: 119,
+            end: 124,
+        },
         generics: [],
         definition: Type {
             base: Identifier(
-                "int",
+                Span {
+                    str: "int",
+                    start: 127,
+                    end: 130,
+                },
             ),
             generics: [],
             array: false,
             raw: true,
+            span: Span {
+                str: "int!",
+                start: 127,
+                end: 131,
+            },
+        },
+        span: Span {
+            str: "type Raw_T = int!;",
+            start: 114,
+            end: 132,
         },
     },
     TypeDefinition {
-        name: "Raw_ArrayT",
+        name: Span {
+            str: "Raw_ArrayT",
+            start: 139,
+            end: 149,
+        },
         generics: [],
         definition: Type {
             base: Identifier(
-                "int",
+                Span {
+                    str: "int",
+                    start: 152,
+                    end: 155,
+                },
             ),
             generics: [],
             array: true,
             raw: true,
+            span: Span {
+                str: "int[]!",
+                start: 152,
+                end: 158,
+            },
+        },
+        span: Span {
+            str: "type Raw_ArrayT = int[]!;",
+            start: 134,
+            end: 159,
         },
     },
     TypeDefinition {
-        name: "Raw_GenericT",
+        name: Span {
+            str: "Raw_GenericT",
+            start: 166,
+            end: 178,
+        },
         generics: [
             Identifier(
-                "A",
+                Span {
+                    str: "A",
+                    start: 179,
+                    end: 180,
+                },
             ),
         ],
         definition: Type {
             base: Identifier(
-                "A",
+                Span {
+                    str: "A",
+                    start: 184,
+                    end: 185,
+                },
             ),
             generics: [
                 Identifier(
-                    "A",
+                    Span {
+                        str: "A",
+                        start: 186,
+                        end: 187,
+                    },
                 ),
             ],
             array: false,
             raw: true,
+            span: Span {
+                str: "A<A>!",
+                start: 184,
+                end: 189,
+            },
+        },
+        span: Span {
+            str: "type Raw_GenericT<A> = A<A>!;",
+            start: 161,
+            end: 190,
         },
     },
     TypeDefinition {
-        name: "Raw_GenericArrayT",
+        name: Span {
+            str: "Raw_GenericArrayT",
+            start: 197,
+            end: 214,
+        },
         generics: [
             Identifier(
-                "B",
+                Span {
+                    str: "B",
+                    start: 215,
+                    end: 216,
+                },
             ),
         ],
         definition: Type {
             base: Identifier(
-                "B",
+                Span {
+                    str: "B",
+                    start: 220,
+                    end: 221,
+                },
             ),
             generics: [
                 Identifier(
-                    "B",
+                    Span {
+                        str: "B",
+                        start: 222,
+                        end: 223,
+                    },
                 ),
             ],
             array: true,
             raw: true,
+            span: Span {
+                str: "B<B>[]!",
+                start: 220,
+                end: 227,
+            },
+        },
+        span: Span {
+            str: "type Raw_GenericArrayT<B> = B<B>[]!;",
+            start: 192,
+            end: 228,
         },
     },
 ]

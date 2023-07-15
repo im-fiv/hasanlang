@@ -1,573 +1,1240 @@
 [
     ClassDefinition {
-        name: "Connection",
+        name: Span {
+            str: "Connection",
+            start: 6,
+            end: 16,
+        },
         generics: [],
         members: [
             Variable {
-                name: "event",
+                name: Span {
+                    str: "event",
+                    start: 19,
+                    end: 24,
+                },
                 kind: Type {
                     base: Identifier(
-                        "Event",
+                        Span {
+                            str: "Event",
+                            start: 26,
+                            end: 31,
+                        },
                     ),
                     generics: [],
                     array: false,
                     raw: false,
+                    span: Span {
+                        str: "Event",
+                        start: 26,
+                        end: 31,
+                    },
                 },
                 default_value: Empty,
+                span: Span {
+                    str: "event: Event;",
+                    start: 19,
+                    end: 32,
+                },
             },
             Variable {
-                name: "id",
+                name: Span {
+                    str: "id",
+                    start: 35,
+                    end: 37,
+                },
                 kind: Type {
                     base: Identifier(
-                        "int",
+                        Span {
+                            str: "int",
+                            start: 39,
+                            end: 42,
+                        },
                     ),
                     generics: [],
                     array: false,
                     raw: false,
+                    span: Span {
+                        str: "int",
+                        start: 39,
+                        end: 42,
+                    },
                 },
                 default_value: Empty,
+                span: Span {
+                    str: "id: int;",
+                    start: 35,
+                    end: 43,
+                },
             },
             Function {
-                name: "new",
-                attributes: ClassFunctionAttributes {
-                    constructor: true,
-                    private: false,
-                    public: false,
-                    get: false,
-                    set: false,
-                    static_: false,
+                name: Span {
+                    str: "new",
+                    start: 70,
+                    end: 73,
                 },
+                attributes: Some(
+                    ClassFunctionAttributes {
+                        attributes: [
+                            Constructor(
+                                Span {
+                                    str: "constructor",
+                                    start: 50,
+                                    end: 61,
+                                },
+                            ),
+                        ],
+                        span: Span {
+                            str: "#[constructor]",
+                            start: 48,
+                            end: 62,
+                        },
+                    },
+                ),
                 generics: [],
                 arguments: [
                     FunctionArgument {
                         name: Identifier(
-                            "event",
+                            Span {
+                                str: "event",
+                                start: 74,
+                                end: 79,
+                            },
                         ),
                         kind: Type {
                             base: Identifier(
-                                "Event",
+                                Span {
+                                    str: "Event",
+                                    start: 81,
+                                    end: 86,
+                                },
                             ),
                             generics: [],
                             array: false,
                             raw: false,
+                            span: Span {
+                                str: "Event",
+                                start: 81,
+                                end: 86,
+                            },
+                        },
+                        span: Span {
+                            str: "event: Event",
+                            start: 74,
+                            end: 86,
                         },
                     },
                     FunctionArgument {
                         name: Identifier(
-                            "id",
+                            Span {
+                                str: "id",
+                                start: 88,
+                                end: 90,
+                            },
                         ),
                         kind: Type {
                             base: Identifier(
-                                "int",
+                                Span {
+                                    str: "int",
+                                    start: 92,
+                                    end: 95,
+                                },
                             ),
                             generics: [],
                             array: false,
                             raw: false,
+                            span: Span {
+                                str: "int",
+                                start: 92,
+                                end: 95,
+                            },
+                        },
+                        span: Span {
+                            str: "id: int",
+                            start: 88,
+                            end: 95,
                         },
                     },
                 ],
-                return_type: Type {
-                    base: Identifier(
-                        "this",
-                    ),
-                    generics: [],
-                    array: false,
-                    raw: false,
-                },
-                statements: [
-                    VariableAssign(
-                        DotAccess(
-                            Identifier(
-                                "this",
-                            ),
-                            Identifier(
-                                "event",
-                            ),
-                        ),
-                        Identifier(
-                            "event",
-                        ),
-                    ),
-                    VariableAssign(
-                        DotAccess(
-                            Identifier(
-                                "this",
-                            ),
-                            Identifier(
-                                "id",
-                            ),
-                        ),
-                        Identifier(
-                            "id",
-                        ),
-                    ),
-                ],
-            },
-            Function {
-                name: "disconnect",
-                attributes: ClassFunctionAttributes {
-                    constructor: false,
-                    private: false,
-                    public: false,
-                    get: false,
-                    set: false,
-                    static_: false,
-                },
-                generics: [],
-                arguments: [],
-                return_type: Type {
-                    base: Identifier(
-                        "void",
-                    ),
-                    generics: [],
-                    array: false,
-                    raw: true,
-                },
-                statements: [
-                    FunctionCall {
-                        callee: DotAccess(
-                            DotAccess(
-                                Identifier(
-                                    "this",
-                                ),
-                                Identifier(
-                                    "event",
-                                ),
-                            ),
-                            Identifier(
-                                "_disconnect",
-                            ),
+                return_type: Some(
+                    Type {
+                        base: Identifier(
+                            Span {
+                                str: "this",
+                                start: 100,
+                                end: 104,
+                            },
                         ),
                         generics: [],
-                        arguments: [
-                            DotAccess(
-                                Identifier(
-                                    "this",
-                                ),
-                                Identifier(
-                                    "id",
-                                ),
+                        array: false,
+                        raw: false,
+                        span: Span {
+                            str: "this ",
+                            start: 100,
+                            end: 105,
+                        },
+                    },
+                ),
+                statements: [
+                    VariableAssign {
+                        name: DotAccess {
+                            expression: Identifier(
+                                Span {
+                                    str: "this",
+                                    start: 111,
+                                    end: 115,
+                                },
                             ),
-                        ],
+                            accessor: Identifier(
+                                Span {
+                                    str: "event",
+                                    start: 116,
+                                    end: 121,
+                                },
+                            ),
+                            span: Span {
+                                str: ".event",
+                                start: 115,
+                                end: 121,
+                            },
+                        },
+                        value: Identifier(
+                            Span {
+                                str: "event",
+                                start: 124,
+                                end: 129,
+                            },
+                        ),
+                        span: Span {
+                            str: "this.event = event;",
+                            start: 111,
+                            end: 130,
+                        },
+                    },
+                    VariableAssign {
+                        name: DotAccess {
+                            expression: Identifier(
+                                Span {
+                                    str: "this",
+                                    start: 134,
+                                    end: 138,
+                                },
+                            ),
+                            accessor: Identifier(
+                                Span {
+                                    str: "id",
+                                    start: 139,
+                                    end: 141,
+                                },
+                            ),
+                            span: Span {
+                                str: ".id",
+                                start: 138,
+                                end: 141,
+                            },
+                        },
+                        value: Identifier(
+                            Span {
+                                str: "id",
+                                start: 144,
+                                end: 146,
+                            },
+                        ),
+                        span: Span {
+                            str: "this.id = id;",
+                            start: 134,
+                            end: 147,
+                        },
                     },
                 ],
+                span: Span {
+                    str: "func new(event: Event, id: int) -> this do\r\n\t\tthis.event = event;\r\n\t\tthis.id = id;\r\n\tend\r\n\r\n\t",
+                    start: 65,
+                    end: 158,
+                },
+            },
+            Function {
+                name: Span {
+                    str: "disconnect",
+                    start: 163,
+                    end: 173,
+                },
+                attributes: None,
+                generics: [],
+                arguments: [],
+                return_type: None,
+                statements: [
+                    FunctionCall {
+                        callee: DotAccess {
+                            expression: DotAccess {
+                                expression: Identifier(
+                                    Span {
+                                        str: "this",
+                                        start: 182,
+                                        end: 186,
+                                    },
+                                ),
+                                accessor: Identifier(
+                                    Span {
+                                        str: "event",
+                                        start: 187,
+                                        end: 192,
+                                    },
+                                ),
+                                span: Span {
+                                    str: ".event",
+                                    start: 186,
+                                    end: 192,
+                                },
+                            },
+                            accessor: Identifier(
+                                Span {
+                                    str: "_disconnect",
+                                    start: 193,
+                                    end: 204,
+                                },
+                            ),
+                            span: Span {
+                                str: "._disconnect",
+                                start: 192,
+                                end: 204,
+                            },
+                        },
+                        generics: [],
+                        arguments: [
+                            DotAccess {
+                                expression: Identifier(
+                                    Span {
+                                        str: "this",
+                                        start: 205,
+                                        end: 209,
+                                    },
+                                ),
+                                accessor: Identifier(
+                                    Span {
+                                        str: "id",
+                                        start: 210,
+                                        end: 212,
+                                    },
+                                ),
+                                span: Span {
+                                    str: ".id",
+                                    start: 209,
+                                    end: 212,
+                                },
+                            },
+                        ],
+                        span: Span {
+                            str: "(this.id)",
+                            start: 204,
+                            end: 213,
+                        },
+                    },
+                ],
+                span: Span {
+                    str: "func disconnect() do\r\n\t\tthis.event._disconnect(this.id);\r\n\tend\r\n",
+                    start: 158,
+                    end: 222,
+                },
             },
         ],
+        span: Span {
+            str: "class Connection\r\n\tevent: Event;\r\n\tid: int;\r\n\r\n\t#[constructor]\r\n\tfunc new(event: Event, id: int) -> this do\r\n\t\tthis.event = event;\r\n\t\tthis.id = id;\r\n\tend\r\n\r\n\tfunc disconnect() do\r\n\t\tthis.event._disconnect(this.id);\r\n\tend\r\nend\r\n\r\n",
+            start: 0,
+            end: 229,
+        },
     },
     ClassDefinition {
-        name: "Event",
+        name: Span {
+            str: "Event",
+            start: 235,
+            end: 240,
+        },
         generics: [],
         members: [
             Variable {
-                name: "name",
+                name: Span {
+                    str: "name",
+                    start: 243,
+                    end: 247,
+                },
                 kind: Type {
                     base: Identifier(
-                        "string",
+                        Span {
+                            str: "string",
+                            start: 249,
+                            end: 255,
+                        },
                     ),
                     generics: [],
                     array: false,
                     raw: false,
+                    span: Span {
+                        str: "string",
+                        start: 249,
+                        end: 255,
+                    },
                 },
                 default_value: Empty,
+                span: Span {
+                    str: "name: string;",
+                    start: 243,
+                    end: 256,
+                },
             },
             Variable {
-                name: "functions",
+                name: Span {
+                    str: "functions",
+                    start: 259,
+                    end: 268,
+                },
                 kind: Type {
                     base: Identifier(
-                        "unknown",
+                        Span {
+                            str: "unknown",
+                            start: 270,
+                            end: 277,
+                        },
                     ),
                     generics: [],
                     array: true,
                     raw: false,
+                    span: Span {
+                        str: "unknown[]",
+                        start: 270,
+                        end: 279,
+                    },
                 },
                 default_value: Empty,
+                span: Span {
+                    str: "functions: unknown[];",
+                    start: 259,
+                    end: 280,
+                },
             },
             Function {
-                name: "new",
-                attributes: ClassFunctionAttributes {
-                    constructor: true,
-                    private: false,
-                    public: false,
-                    get: false,
-                    set: false,
-                    static_: false,
+                name: Span {
+                    str: "new",
+                    start: 307,
+                    end: 310,
                 },
+                attributes: Some(
+                    ClassFunctionAttributes {
+                        attributes: [
+                            Constructor(
+                                Span {
+                                    str: "constructor",
+                                    start: 287,
+                                    end: 298,
+                                },
+                            ),
+                        ],
+                        span: Span {
+                            str: "#[constructor]",
+                            start: 285,
+                            end: 299,
+                        },
+                    },
+                ),
                 generics: [],
                 arguments: [
                     FunctionArgument {
                         name: Identifier(
-                            "name",
+                            Span {
+                                str: "name",
+                                start: 311,
+                                end: 315,
+                            },
                         ),
                         kind: Type {
                             base: Identifier(
-                                "string",
+                                Span {
+                                    str: "string",
+                                    start: 317,
+                                    end: 323,
+                                },
                             ),
                             generics: [],
                             array: false,
                             raw: false,
+                            span: Span {
+                                str: "string",
+                                start: 317,
+                                end: 323,
+                            },
+                        },
+                        span: Span {
+                            str: "name: string",
+                            start: 311,
+                            end: 323,
                         },
                     },
                 ],
-                return_type: Type {
-                    base: Identifier(
-                        "this",
-                    ),
-                    generics: [],
-                    array: false,
-                    raw: false,
-                },
+                return_type: Some(
+                    Type {
+                        base: Identifier(
+                            Span {
+                                str: "this",
+                                start: 328,
+                                end: 332,
+                            },
+                        ),
+                        generics: [],
+                        array: false,
+                        raw: false,
+                        span: Span {
+                            str: "this ",
+                            start: 328,
+                            end: 333,
+                        },
+                    },
+                ),
                 statements: [
-                    VariableAssign(
-                        DotAccess(
-                            Identifier(
-                                "this",
+                    VariableAssign {
+                        name: DotAccess {
+                            expression: Identifier(
+                                Span {
+                                    str: "this",
+                                    start: 339,
+                                    end: 343,
+                                },
                             ),
-                            Identifier(
-                                "name",
+                            accessor: Identifier(
+                                Span {
+                                    str: "name",
+                                    start: 344,
+                                    end: 348,
+                                },
                             ),
+                            span: Span {
+                                str: ".name",
+                                start: 343,
+                                end: 348,
+                            },
+                        },
+                        value: Identifier(
+                            Span {
+                                str: "name",
+                                start: 351,
+                                end: 355,
+                            },
                         ),
-                        Identifier(
-                            "name",
-                        ),
-                    ),
+                        span: Span {
+                            str: "this.name = name;",
+                            start: 339,
+                            end: 356,
+                        },
+                    },
                 ],
+                span: Span {
+                    str: "func new(name: string) -> this do\r\n\t\tthis.name = name;\r\n\tend\r\n\r\n\t",
+                    start: 302,
+                    end: 367,
+                },
             },
             Function {
-                name: "connect",
-                attributes: ClassFunctionAttributes {
-                    constructor: false,
-                    private: false,
-                    public: false,
-                    get: false,
-                    set: false,
-                    static_: false,
+                name: Span {
+                    str: "connect",
+                    start: 372,
+                    end: 379,
                 },
+                attributes: None,
                 generics: [],
                 arguments: [
                     FunctionArgument {
                         name: Identifier(
-                            "function",
+                            Span {
+                                str: "function",
+                                start: 380,
+                                end: 388,
+                            },
                         ),
                         kind: Type {
                             base: Identifier(
-                                "unknown",
+                                Span {
+                                    str: "unknown",
+                                    start: 390,
+                                    end: 397,
+                                },
                             ),
                             generics: [],
                             array: false,
                             raw: false,
+                            span: Span {
+                                str: "unknown",
+                                start: 390,
+                                end: 397,
+                            },
+                        },
+                        span: Span {
+                            str: "function: unknown",
+                            start: 380,
+                            end: 397,
                         },
                     },
                 ],
-                return_type: Type {
-                    base: Identifier(
-                        "Connection",
-                    ),
-                    generics: [],
-                    array: false,
-                    raw: false,
-                },
+                return_type: Some(
+                    Type {
+                        base: Identifier(
+                            Span {
+                                str: "Connection",
+                                start: 402,
+                                end: 412,
+                            },
+                        ),
+                        generics: [],
+                        array: false,
+                        raw: false,
+                        span: Span {
+                            str: "Connection ",
+                            start: 402,
+                            end: 413,
+                        },
+                    },
+                ),
                 statements: [
                     VariableDefinition {
-                        name: "connection",
+                        name: Span {
+                            str: "connection",
+                            start: 423,
+                            end: 433,
+                        },
                         kind: Empty,
                         value: FunctionCall {
-                            callee: DotAccess(
-                                Identifier(
-                                    "Connection",
+                            callee: DotAccess {
+                                expression: Identifier(
+                                    Span {
+                                        str: "Connection",
+                                        start: 436,
+                                        end: 446,
+                                    },
                                 ),
-                                Identifier(
-                                    "new",
+                                accessor: Identifier(
+                                    Span {
+                                        str: "new",
+                                        start: 447,
+                                        end: 450,
+                                    },
                                 ),
-                            ),
+                                span: Span {
+                                    str: ".new",
+                                    start: 446,
+                                    end: 450,
+                                },
+                            },
                             generics: [],
                             arguments: [
                                 Identifier(
-                                    "this",
+                                    Span {
+                                        str: "this",
+                                        start: 451,
+                                        end: 455,
+                                    },
                                 ),
                             ],
+                            span: Span {
+                                str: "(this)",
+                                start: 450,
+                                end: 456,
+                            },
+                        },
+                        span: Span {
+                            str: "var connection = Connection.new(this);",
+                            start: 419,
+                            end: 457,
                         },
                     },
-                    VariableAssign(
-                        ArrayAccess(
-                            DotAccess(
-                                Identifier(
-                                    "this",
+                    VariableAssign {
+                        name: ArrayAccess {
+                            expression: DotAccess {
+                                expression: Identifier(
+                                    Span {
+                                        str: "this",
+                                        start: 461,
+                                        end: 465,
+                                    },
                                 ),
-                                Identifier(
-                                    "functions",
+                                accessor: Identifier(
+                                    Span {
+                                        str: "functions",
+                                        start: 466,
+                                        end: 475,
+                                    },
                                 ),
-                            ),
-                            Binary(
-                                DotAccess(
-                                    DotAccess(
-                                        Identifier(
-                                            "this",
+                                span: Span {
+                                    str: ".functions",
+                                    start: 465,
+                                    end: 475,
+                                },
+                            },
+                            accessor: Binary {
+                                lhs: DotAccess {
+                                    expression: DotAccess {
+                                        expression: Identifier(
+                                            Span {
+                                                str: "this",
+                                                start: 476,
+                                                end: 480,
+                                            },
                                         ),
-                                        Identifier(
-                                            "functions",
+                                        accessor: Identifier(
+                                            Span {
+                                                str: "functions",
+                                                start: 481,
+                                                end: 490,
+                                            },
                                         ),
+                                        span: Span {
+                                            str: ".functions",
+                                            start: 480,
+                                            end: 490,
+                                        },
+                                    },
+                                    accessor: Identifier(
+                                        Span {
+                                            str: "length",
+                                            start: 491,
+                                            end: 497,
+                                        },
                                     ),
-                                    Identifier(
-                                        "length",
-                                    ),
-                                ),
-                                Plus,
-                                Number(
+                                    span: Span {
+                                        str: ".length",
+                                        start: 490,
+                                        end: 497,
+                                    },
+                                },
+                                operator: Plus,
+                                rhs: Number(
                                     1,
+                                    Span {
+                                        str: "1",
+                                        start: 500,
+                                        end: 501,
+                                    },
                                 ),
-                            ),
+                                span: Span {
+                                    str: "this.functions.length + 1",
+                                    start: 476,
+                                    end: 501,
+                                },
+                            },
+                            span: Span {
+                                str: "[this.functions.length + 1]",
+                                start: 475,
+                                end: 502,
+                            },
+                        },
+                        value: Identifier(
+                            Span {
+                                str: "function",
+                                start: 505,
+                                end: 513,
+                            },
                         ),
-                        Identifier(
-                            "function",
+                        span: Span {
+                            str: "this.functions[this.functions.length + 1] = function;",
+                            start: 461,
+                            end: 514,
+                        },
+                    },
+                    Return {
+                        value: Identifier(
+                            Span {
+                                str: "connection",
+                                start: 527,
+                                end: 537,
+                            },
                         ),
-                    ),
-                    Return(
-                        Identifier(
-                            "connection",
-                        ),
-                    ),
+                        span: Span {
+                            str: "return connection;",
+                            start: 520,
+                            end: 538,
+                        },
+                    },
                 ],
+                span: Span {
+                    str: "func connect(function: unknown) -> Connection do\r\n\t\tvar connection = Connection.new(this);\r\n\t\tthis.functions[this.functions.length + 1] = function;\r\n\r\n\t\treturn connection;\r\n\tend\r\n\r\n\t",
+                    start: 367,
+                    end: 549,
+                },
             },
             Function {
-                name: "_disconnect",
-                attributes: ClassFunctionAttributes {
-                    constructor: false,
-                    private: false,
-                    public: false,
-                    get: false,
-                    set: false,
-                    static_: false,
+                name: Span {
+                    str: "_disconnect",
+                    start: 554,
+                    end: 565,
                 },
+                attributes: None,
                 generics: [],
                 arguments: [
                     FunctionArgument {
                         name: Identifier(
-                            "id",
+                            Span {
+                                str: "id",
+                                start: 566,
+                                end: 568,
+                            },
                         ),
                         kind: Type {
                             base: Identifier(
-                                "int",
+                                Span {
+                                    str: "int",
+                                    start: 570,
+                                    end: 573,
+                                },
                             ),
                             generics: [],
                             array: false,
                             raw: false,
+                            span: Span {
+                                str: "int",
+                                start: 570,
+                                end: 573,
+                            },
+                        },
+                        span: Span {
+                            str: "id: int",
+                            start: 566,
+                            end: 573,
                         },
                     },
                 ],
-                return_type: Type {
-                    base: Identifier(
-                        "void",
-                    ),
-                    generics: [],
-                    array: false,
-                    raw: true,
-                },
+                return_type: None,
                 statements: [
                     FunctionCall {
-                        callee: DotAccess(
-                            DotAccess(
-                                Identifier(
-                                    "this",
+                        callee: DotAccess {
+                            expression: DotAccess {
+                                expression: Identifier(
+                                    Span {
+                                        str: "this",
+                                        start: 581,
+                                        end: 585,
+                                    },
                                 ),
-                                Identifier(
-                                    "connections",
+                                accessor: Identifier(
+                                    Span {
+                                        str: "connections",
+                                        start: 586,
+                                        end: 597,
+                                    },
                                 ),
+                                span: Span {
+                                    str: ".connections",
+                                    start: 585,
+                                    end: 597,
+                                },
+                            },
+                            accessor: Identifier(
+                                Span {
+                                    str: "remove",
+                                    start: 598,
+                                    end: 604,
+                                },
                             ),
-                            Identifier(
-                                "remove",
-                            ),
-                        ),
+                            span: Span {
+                                str: ".remove",
+                                start: 597,
+                                end: 604,
+                            },
+                        },
                         generics: [],
                         arguments: [
                             Identifier(
-                                "id",
+                                Span {
+                                    str: "id",
+                                    start: 605,
+                                    end: 607,
+                                },
                             ),
                         ],
+                        span: Span {
+                            str: "(id)",
+                            start: 604,
+                            end: 608,
+                        },
                     },
                 ],
+                span: Span {
+                    str: "func _disconnect(id: int) do\r\n\t\tthis.connections.remove(id);\r\n\tend\r\n\r\n\t",
+                    start: 549,
+                    end: 620,
+                },
             },
             Function {
-                name: "fire",
-                attributes: ClassFunctionAttributes {
-                    constructor: false,
-                    private: false,
-                    public: false,
-                    get: false,
-                    set: false,
-                    static_: false,
+                name: Span {
+                    str: "fire",
+                    start: 625,
+                    end: 629,
                 },
+                attributes: None,
                 generics: [],
                 arguments: [],
-                return_type: Type {
-                    base: Identifier(
-                        "void",
-                    ),
-                    generics: [],
-                    array: false,
-                    raw: true,
-                },
+                return_type: None,
                 statements: [
                     FunctionDefinition {
-                        name: "call",
+                        name: Span {
+                            str: "call",
+                            start: 643,
+                            end: 647,
+                        },
                         generics: [],
                         arguments: [
                             FunctionArgument {
                                 name: Identifier(
-                                    "function",
+                                    Span {
+                                        str: "function",
+                                        start: 648,
+                                        end: 656,
+                                    },
                                 ),
                                 kind: Type {
                                     base: Identifier(
-                                        "unknown",
+                                        Span {
+                                            str: "unknown",
+                                            start: 658,
+                                            end: 665,
+                                        },
                                     ),
                                     generics: [],
                                     array: false,
                                     raw: false,
+                                    span: Span {
+                                        str: "unknown",
+                                        start: 658,
+                                        end: 665,
+                                    },
+                                },
+                                span: Span {
+                                    str: "function: unknown",
+                                    start: 648,
+                                    end: 665,
                                 },
                             },
                         ],
-                        return_type: Type {
-                            base: Identifier(
-                                "void",
-                            ),
-                            generics: [],
-                            array: false,
-                            raw: true,
-                        },
+                        return_type: None,
                         statements: [
                             FunctionCall {
                                 callee: Identifier(
-                                    "function",
+                                    Span {
+                                        str: "function",
+                                        start: 674,
+                                        end: 682,
+                                    },
                                 ),
                                 generics: [],
                                 arguments: [],
+                                span: Span {
+                                    str: "()",
+                                    start: 682,
+                                    end: 684,
+                                },
                             },
                         ],
+                        span: Span {
+                            str: "func call(function: unknown) do\r\n\t\t\tfunction();\r\n\t\tend\r\n\r\n\t\t",
+                            start: 638,
+                            end: 698,
+                        },
                     },
                     FunctionCall {
-                        callee: DotAccess(
-                            DotAccess(
-                                Identifier(
-                                    "this",
+                        callee: DotAccess {
+                            expression: DotAccess {
+                                expression: Identifier(
+                                    Span {
+                                        str: "this",
+                                        start: 698,
+                                        end: 702,
+                                    },
                                 ),
-                                Identifier(
-                                    "connections",
+                                accessor: Identifier(
+                                    Span {
+                                        str: "connections",
+                                        start: 703,
+                                        end: 714,
+                                    },
                                 ),
+                                span: Span {
+                                    str: ".connections",
+                                    start: 702,
+                                    end: 714,
+                                },
+                            },
+                            accessor: Identifier(
+                                Span {
+                                    str: "forEach",
+                                    start: 715,
+                                    end: 722,
+                                },
                             ),
-                            Identifier(
-                                "forEach",
-                            ),
-                        ),
+                            span: Span {
+                                str: ".forEach",
+                                start: 714,
+                                end: 722,
+                            },
+                        },
                         generics: [],
                         arguments: [
                             Identifier(
-                                "call",
+                                Span {
+                                    str: "call",
+                                    start: 723,
+                                    end: 727,
+                                },
                             ),
                         ],
+                        span: Span {
+                            str: "(call)",
+                            start: 722,
+                            end: 728,
+                        },
                     },
                 ],
+                span: Span {
+                    str: "func fire() do\r\n\t\tfunc call(function: unknown) do\r\n\t\t\tfunction();\r\n\t\tend\r\n\r\n\t\tthis.connections.forEach(call);\r\n\tend\r\n",
+                    start: 620,
+                    end: 737,
+                },
             },
         ],
+        span: Span {
+            str: "class Event\r\n\tname: string;\r\n\tfunctions: unknown[];\r\n\r\n\t#[constructor]\r\n\tfunc new(name: string) -> this do\r\n\t\tthis.name = name;\r\n\tend\r\n\r\n\tfunc connect(function: unknown) -> Connection do\r\n\t\tvar connection = Connection.new(this);\r\n\t\tthis.functions[this.functions.length + 1] = function;\r\n\r\n\t\treturn connection;\r\n\tend\r\n\r\n\tfunc _disconnect(id: int) do\r\n\t\tthis.connections.remove(id);\r\n\tend\r\n\r\n\tfunc fire() do\r\n\t\tfunc call(function: unknown) do\r\n\t\t\tfunction();\r\n\t\tend\r\n\r\n\t\tthis.connections.forEach(call);\r\n\tend\r\nend\r\n\r\n",
+            start: 229,
+            end: 744,
+        },
     },
     VariableDefinition {
-        name: "event",
+        name: Span {
+            str: "event",
+            start: 748,
+            end: 753,
+        },
         kind: Empty,
         value: FunctionCall {
-            callee: DotAccess(
-                Identifier(
-                    "Event",
+            callee: DotAccess {
+                expression: Identifier(
+                    Span {
+                        str: "Event",
+                        start: 756,
+                        end: 761,
+                    },
                 ),
-                Identifier(
-                    "new",
+                accessor: Identifier(
+                    Span {
+                        str: "new",
+                        start: 762,
+                        end: 765,
+                    },
                 ),
-            ),
+                span: Span {
+                    str: ".new",
+                    start: 761,
+                    end: 765,
+                },
+            },
             generics: [],
             arguments: [
                 String(
                     "Changed",
+                    Span {
+                        str: "\"Changed\"",
+                        start: 766,
+                        end: 775,
+                    },
                 ),
             ],
+            span: Span {
+                str: "(\"Changed\")",
+                start: 765,
+                end: 776,
+            },
+        },
+        span: Span {
+            str: "var event = Event.new(\"Changed\");",
+            start: 744,
+            end: 777,
         },
     },
     VariableDefinition {
-        name: "connection",
+        name: Span {
+            str: "connection",
+            start: 783,
+            end: 793,
+        },
         kind: Empty,
         value: FunctionCall {
-            callee: DotAccess(
-                Identifier(
-                    "event",
+            callee: DotAccess {
+                expression: Identifier(
+                    Span {
+                        str: "event",
+                        start: 796,
+                        end: 801,
+                    },
                 ),
-                Identifier(
-                    "connect",
+                accessor: Identifier(
+                    Span {
+                        str: "connect",
+                        start: 802,
+                        end: 809,
+                    },
                 ),
-            ),
+                span: Span {
+                    str: ".connect",
+                    start: 801,
+                    end: 809,
+                },
+            },
             generics: [],
             arguments: [
                 Identifier(
-                    "onChanged",
+                    Span {
+                        str: "onChanged",
+                        start: 810,
+                        end: 819,
+                    },
                 ),
             ],
+            span: Span {
+                str: "(onChanged)",
+                start: 809,
+                end: 820,
+            },
+        },
+        span: Span {
+            str: "var connection = event.connect(onChanged);",
+            start: 779,
+            end: 821,
         },
     },
     FunctionDefinition {
-        name: "onChanged",
+        name: Span {
+            str: "onChanged",
+            start: 830,
+            end: 839,
+        },
         generics: [],
         arguments: [],
-        return_type: Type {
-            base: Identifier(
-                "void",
-            ),
-            generics: [],
-            array: false,
-            raw: true,
-        },
+        return_type: None,
         statements: [
             FunctionCall {
                 callee: Identifier(
-                    "print",
+                    Span {
+                        str: "print",
+                        start: 847,
+                        end: 852,
+                    },
                 ),
                 generics: [],
                 arguments: [
                     String(
                         "event fired",
+                        Span {
+                            str: "\"event fired\"",
+                            start: 853,
+                            end: 866,
+                        },
                     ),
                 ],
+                span: Span {
+                    str: "(\"event fired\")",
+                    start: 852,
+                    end: 867,
+                },
             },
             FunctionCall {
-                callee: DotAccess(
-                    Identifier(
-                        "connection",
+                callee: DotAccess {
+                    expression: Identifier(
+                        Span {
+                            str: "connection",
+                            start: 871,
+                            end: 881,
+                        },
                     ),
-                    Identifier(
-                        "disconnect",
+                    accessor: Identifier(
+                        Span {
+                            str: "disconnect",
+                            start: 882,
+                            end: 892,
+                        },
                     ),
-                ),
+                    span: Span {
+                        str: ".disconnect",
+                        start: 881,
+                        end: 892,
+                    },
+                },
                 generics: [],
                 arguments: [],
+                span: Span {
+                    str: "()",
+                    start: 892,
+                    end: 894,
+                },
             },
         ],
+        span: Span {
+            str: "func onChanged() do\r\n\tprint(\"event fired\");\r\n\tconnection.disconnect();\r\nend\r\n\r\n",
+            start: 825,
+            end: 904,
+        },
     },
     FunctionCall {
-        callee: DotAccess(
-            Identifier(
-                "event",
+        callee: DotAccess {
+            expression: Identifier(
+                Span {
+                    str: "event",
+                    start: 904,
+                    end: 909,
+                },
             ),
-            Identifier(
-                "fire",
+            accessor: Identifier(
+                Span {
+                    str: "fire",
+                    start: 910,
+                    end: 914,
+                },
             ),
-        ),
+            span: Span {
+                str: ".fire",
+                start: 909,
+                end: 914,
+            },
+        },
         generics: [],
         arguments: [],
+        span: Span {
+            str: "()",
+            start: 914,
+            end: 916,
+        },
     },
     FunctionCall {
-        callee: DotAccess(
-            Identifier(
-                "event",
+        callee: DotAccess {
+            expression: Identifier(
+                Span {
+                    str: "event",
+                    start: 919,
+                    end: 924,
+                },
             ),
-            Identifier(
-                "fire",
+            accessor: Identifier(
+                Span {
+                    str: "fire",
+                    start: 925,
+                    end: 929,
+                },
             ),
-        ),
+            span: Span {
+                str: ".fire",
+                start: 924,
+                end: 929,
+            },
+        },
         generics: [],
         arguments: [],
+        span: Span {
+            str: "()",
+            start: 929,
+            end: 931,
+        },
     },
 ]

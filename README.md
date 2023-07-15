@@ -45,13 +45,15 @@ As I said before, this is my first time making a project as complex as this, so 
 Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 
 ## My current TODO list
-- [ ] Store a span in every AST node for error reporting
+- [ ] Fix spans of expressions
+- [ ] Implement error reporting
 - [ ] Clarify `parse_..._expression` function calls *(call more specific functions instead)*
 - [ ] Add more unary operators
 - [ ] Implement anonymous functions
 - [ ] Add support for floats
 - [ ] Allow for recursive parsing of types
 - [ ] Implement `for` statements
+- [x] Store a span in every AST node for error reporting
 - [x] Implement `if` and `while` statements
 - [x] Implement booleans
 - [x] Implement enums

@@ -1,160 +1,378 @@
 [
     FunctionDefinition {
-        name: "cast",
+        name: Span {
+            str: "cast",
+            start: 5,
+            end: 9,
+        },
         generics: [
             Identifier(
-                "From",
+                Span {
+                    str: "From",
+                    start: 10,
+                    end: 14,
+                },
             ),
             Identifier(
-                "To",
+                Span {
+                    str: "To",
+                    start: 16,
+                    end: 18,
+                },
             ),
         ],
         arguments: [
             FunctionArgument {
                 name: Identifier(
-                    "input",
+                    Span {
+                        str: "input",
+                        start: 20,
+                        end: 25,
+                    },
                 ),
                 kind: Type {
                     base: Identifier(
-                        "From",
+                        Span {
+                            str: "From",
+                            start: 27,
+                            end: 31,
+                        },
                     ),
                     generics: [],
                     array: false,
                     raw: false,
+                    span: Span {
+                        str: "From",
+                        start: 27,
+                        end: 31,
+                    },
+                },
+                span: Span {
+                    str: "input: From",
+                    start: 20,
+                    end: 31,
                 },
             },
         ],
-        return_type: Type {
-            base: Identifier(
-                "To",
-            ),
-            generics: [],
-            array: false,
-            raw: false,
-        },
-        statements: [
-            Return(
-                TypeCast(
-                    Identifier(
-                        "input",
-                    ),
-                    Type {
-                        base: Identifier(
-                            "To",
-                        ),
-                        generics: [],
-                        array: false,
-                        raw: false,
-                    },
-                ),
-            ),
-        ],
-    },
-    VariableDefinition {
-        name: "long_cast",
-        kind: Empty,
-        value: TypeCast(
-            TypeCast(
-                TypeCast(
-                    TypeCast(
-                        TypeCast(
-                            TypeCast(
-                                TypeCast(
-                                    Number(
-                                        3,
-                                    ),
-                                    Type {
-                                        base: Identifier(
-                                            "a",
-                                        ),
-                                        generics: [],
-                                        array: false,
-                                        raw: false,
-                                    },
-                                ),
-                                Type {
-                                    base: Identifier(
-                                        "b",
-                                    ),
-                                    generics: [],
-                                    array: false,
-                                    raw: false,
-                                },
-                            ),
-                            Type {
-                                base: Identifier(
-                                    "c",
-                                ),
-                                generics: [],
-                                array: false,
-                                raw: false,
-                            },
-                        ),
-                        Type {
-                            base: Identifier(
-                                "d",
-                            ),
-                            generics: [],
-                            array: false,
-                            raw: false,
-                        },
-                    ),
-                    Type {
-                        base: Identifier(
-                            "e",
-                        ),
-                        generics: [],
-                        array: false,
-                        raw: false,
-                    },
-                ),
-                Type {
-                    base: Identifier(
-                        "f",
-                    ),
-                    generics: [],
-                    array: false,
-                    raw: false,
-                },
-            ),
+        return_type: Some(
             Type {
                 base: Identifier(
-                    "g",
+                    Span {
+                        str: "To",
+                        start: 36,
+                        end: 38,
+                    },
                 ),
                 generics: [],
                 array: false,
                 raw: false,
+                span: Span {
+                    str: "To ",
+                    start: 36,
+                    end: 39,
+                },
             },
         ),
+        statements: [
+            Return {
+                value: TypeCast {
+                    value: Identifier(
+                        Span {
+                            str: "input",
+                            start: 51,
+                            end: 56,
+                        },
+                    ),
+                    kind: Type {
+                        base: Identifier(
+                            Span {
+                                str: "To",
+                                start: 60,
+                                end: 62,
+                            },
+                        ),
+                        generics: [],
+                        array: false,
+                        raw: false,
+                        span: Span {
+                            str: "To",
+                            start: 60,
+                            end: 62,
+                        },
+                    },
+                    span: Span {
+                        str: "as To",
+                        start: 57,
+                        end: 62,
+                    },
+                },
+                span: Span {
+                    str: "return input as To;",
+                    start: 44,
+                    end: 63,
+                },
+            },
+        ],
+        span: Span {
+            str: "func cast<From, To>(input: From) -> To do\r\n\treturn input as To;\r\nend\r\n\r\n",
+            start: 0,
+            end: 72,
+        },
     },
-    Return(
-        FunctionCall {
+    VariableDefinition {
+        name: Span {
+            str: "long_cast",
+            start: 76,
+            end: 85,
+        },
+        kind: Empty,
+        value: TypeCast {
+            value: TypeCast {
+                value: TypeCast {
+                    value: TypeCast {
+                        value: TypeCast {
+                            value: TypeCast {
+                                value: TypeCast {
+                                    value: Number(
+                                        3,
+                                        Span {
+                                            str: "3",
+                                            start: 88,
+                                            end: 89,
+                                        },
+                                    ),
+                                    kind: Type {
+                                        base: Identifier(
+                                            Span {
+                                                str: "a",
+                                                start: 93,
+                                                end: 94,
+                                            },
+                                        ),
+                                        generics: [],
+                                        array: false,
+                                        raw: false,
+                                        span: Span {
+                                            str: "a ",
+                                            start: 93,
+                                            end: 95,
+                                        },
+                                    },
+                                    span: Span {
+                                        str: "as a ",
+                                        start: 90,
+                                        end: 95,
+                                    },
+                                },
+                                kind: Type {
+                                    base: Identifier(
+                                        Span {
+                                            str: "b",
+                                            start: 98,
+                                            end: 99,
+                                        },
+                                    ),
+                                    generics: [],
+                                    array: false,
+                                    raw: false,
+                                    span: Span {
+                                        str: "b ",
+                                        start: 98,
+                                        end: 100,
+                                    },
+                                },
+                                span: Span {
+                                    str: "as b ",
+                                    start: 95,
+                                    end: 100,
+                                },
+                            },
+                            kind: Type {
+                                base: Identifier(
+                                    Span {
+                                        str: "c",
+                                        start: 103,
+                                        end: 104,
+                                    },
+                                ),
+                                generics: [],
+                                array: false,
+                                raw: false,
+                                span: Span {
+                                    str: "c ",
+                                    start: 103,
+                                    end: 105,
+                                },
+                            },
+                            span: Span {
+                                str: "as c ",
+                                start: 100,
+                                end: 105,
+                            },
+                        },
+                        kind: Type {
+                            base: Identifier(
+                                Span {
+                                    str: "d",
+                                    start: 108,
+                                    end: 109,
+                                },
+                            ),
+                            generics: [],
+                            array: false,
+                            raw: false,
+                            span: Span {
+                                str: "d ",
+                                start: 108,
+                                end: 110,
+                            },
+                        },
+                        span: Span {
+                            str: "as d ",
+                            start: 105,
+                            end: 110,
+                        },
+                    },
+                    kind: Type {
+                        base: Identifier(
+                            Span {
+                                str: "e",
+                                start: 113,
+                                end: 114,
+                            },
+                        ),
+                        generics: [],
+                        array: false,
+                        raw: false,
+                        span: Span {
+                            str: "e ",
+                            start: 113,
+                            end: 115,
+                        },
+                    },
+                    span: Span {
+                        str: "as e ",
+                        start: 110,
+                        end: 115,
+                    },
+                },
+                kind: Type {
+                    base: Identifier(
+                        Span {
+                            str: "f",
+                            start: 118,
+                            end: 119,
+                        },
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                    span: Span {
+                        str: "f ",
+                        start: 118,
+                        end: 120,
+                    },
+                },
+                span: Span {
+                    str: "as f ",
+                    start: 115,
+                    end: 120,
+                },
+            },
+            kind: Type {
+                base: Identifier(
+                    Span {
+                        str: "g",
+                        start: 123,
+                        end: 124,
+                    },
+                ),
+                generics: [],
+                array: false,
+                raw: false,
+                span: Span {
+                    str: "g",
+                    start: 123,
+                    end: 124,
+                },
+            },
+            span: Span {
+                str: "as g",
+                start: 120,
+                end: 124,
+            },
+        },
+        span: Span {
+            str: "var long_cast = 3 as a as b as c as d as e as f as g;",
+            start: 72,
+            end: 125,
+        },
+    },
+    Return {
+        value: FunctionCall {
             callee: Identifier(
-                "cast",
+                Span {
+                    str: "cast",
+                    start: 136,
+                    end: 140,
+                },
             ),
             generics: [
                 Type {
                     base: Identifier(
-                        "int",
+                        Span {
+                            str: "int",
+                            start: 141,
+                            end: 144,
+                        },
                     ),
                     generics: [],
                     array: false,
                     raw: false,
+                    span: Span {
+                        str: "int",
+                        start: 141,
+                        end: 144,
+                    },
                 },
                 Type {
                     base: Identifier(
-                        "float",
+                        Span {
+                            str: "float",
+                            start: 146,
+                            end: 151,
+                        },
                     ),
                     generics: [],
                     array: false,
                     raw: false,
+                    span: Span {
+                        str: "float",
+                        start: 146,
+                        end: 151,
+                    },
                 },
             ],
             arguments: [
                 Number(
                     5,
+                    Span {
+                        str: "5",
+                        start: 153,
+                        end: 154,
+                    },
                 ),
             ],
+            span: Span {
+                str: "<int, float>(5)",
+                start: 140,
+                end: 155,
+            },
         },
-    ),
+        span: Span {
+            str: "return cast<int, float>(5);",
+            start: 129,
+            end: 156,
+        },
+    },
 ]
