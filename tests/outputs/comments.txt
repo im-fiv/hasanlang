@@ -1,16 +1,18 @@
 [
     FunctionDefinition {
-        name: "main",
+        name: Span {
+            str: "main",
+            start: 122,
+            end: 126,
+        },
         generics: [],
         arguments: [],
-        return_type: Type {
-            base: Identifier(
-                "void",
-            ),
-            generics: [],
-            array: false,
-            raw: true,
-        },
+        return_type: None,
         statements: [],
+        span: Span {
+            str: "func main() do\r\n\t// Code here //////\r\nend",
+            start: 117,
+            end: 158,
+        },
     },
 ]

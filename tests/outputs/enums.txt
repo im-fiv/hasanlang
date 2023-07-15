@@ -1,61 +1,172 @@
 [
     EnumDefinition {
-        name: "Light",
+        name: Span {
+            str: "Light",
+            start: 5,
+            end: 10,
+        },
         members: [
             EnumMember {
-                name: "Green",
+                name: Span {
+                    str: "Green",
+                    start: 13,
+                    end: 18,
+                },
+                span: Span {
+                    str: "Green",
+                    start: 13,
+                    end: 18,
+                },
             },
             EnumMember {
-                name: "Yellow",
+                name: Span {
+                    str: "Yellow",
+                    start: 22,
+                    end: 28,
+                },
+                span: Span {
+                    str: "Yellow",
+                    start: 22,
+                    end: 28,
+                },
             },
             EnumMember {
-                name: "Red",
+                name: Span {
+                    str: "Red",
+                    start: 32,
+                    end: 35,
+                },
+                span: Span {
+                    str: "Red",
+                    start: 32,
+                    end: 35,
+                },
             },
         ],
+        span: Span {
+            str: "enum Light\r\n\tGreen,\r\n\tYellow,\r\n\tRed\r\nend",
+            start: 0,
+            end: 40,
+        },
     },
     VariableDefinition {
-        name: "current_light",
+        name: Span {
+            str: "current_light",
+            start: 48,
+            end: 61,
+        },
         kind: Type {
             base: Identifier(
-                "Light",
+                Span {
+                    str: "Light",
+                    start: 63,
+                    end: 68,
+                },
             ),
             generics: [],
             array: false,
             raw: false,
+            span: Span {
+                str: "Light ",
+                start: 63,
+                end: 69,
+            },
         },
-        value: DotAccess(
-            Identifier(
-                "Light",
+        value: DotAccess {
+            expression: Identifier(
+                Span {
+                    str: "Light",
+                    start: 71,
+                    end: 76,
+                },
             ),
-            Identifier(
-                "Green",
+            accessor: Identifier(
+                Span {
+                    str: "Green",
+                    start: 77,
+                    end: 82,
+                },
             ),
-        ),
+            span: Span {
+                str: ".Green",
+                start: 76,
+                end: 82,
+            },
+        },
+        span: Span {
+            str: "var current_light: Light = Light.Green;",
+            start: 44,
+            end: 83,
+        },
     },
-    VariableAssign(
-        Identifier(
-            "current_light",
+    VariableAssign {
+        name: Identifier(
+            Span {
+                str: "current_light",
+                start: 85,
+                end: 98,
+            },
         ),
-        DotAccess(
-            Identifier(
-                "Light",
+        value: DotAccess {
+            expression: Identifier(
+                Span {
+                    str: "Light",
+                    start: 101,
+                    end: 106,
+                },
             ),
-            Identifier(
-                "Yellow",
+            accessor: Identifier(
+                Span {
+                    str: "Yellow",
+                    start: 107,
+                    end: 113,
+                },
             ),
+            span: Span {
+                str: ".Yellow",
+                start: 106,
+                end: 113,
+            },
+        },
+        span: Span {
+            str: "current_light = Light.Yellow;",
+            start: 85,
+            end: 114,
+        },
+    },
+    VariableAssign {
+        name: Identifier(
+            Span {
+                str: "current_light",
+                start: 116,
+                end: 129,
+            },
         ),
-    ),
-    VariableAssign(
-        Identifier(
-            "current_light",
-        ),
-        DotAccess(
-            Identifier(
-                "Light",
+        value: DotAccess {
+            expression: Identifier(
+                Span {
+                    str: "Light",
+                    start: 132,
+                    end: 137,
+                },
             ),
-            Identifier(
-                "Red",
+            accessor: Identifier(
+                Span {
+                    str: "Red",
+                    start: 138,
+                    end: 141,
+                },
             ),
-        ),
-    ),
+            span: Span {
+                str: ".Red",
+                start: 137,
+                end: 141,
+            },
+        },
+        span: Span {
+            str: "current_light = Light.Red;",
+            start: 116,
+            end: 142,
+        },
+    },
 ]

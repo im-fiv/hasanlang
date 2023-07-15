@@ -1,0 +1,65 @@
+[
+    Return {
+        value: Binary {
+            lhs: Number(
+                2,
+                Span {
+                    str: "2",
+                    start: 7,
+                    end: 8,
+                },
+            ),
+            operator: Minus,
+            rhs: Binary {
+                lhs: Binary {
+                    lhs: Number(
+                        5,
+                        Span {
+                            str: "5",
+                            start: 11,
+                            end: 12,
+                        },
+                    ),
+                    operator: Times,
+                    rhs: Number(
+                        5,
+                        Span {
+                            str: "5",
+                            start: 15,
+                            end: 16,
+                        },
+                    ),
+                    span: Span {
+                        str: " 5 * 5 * 5",
+                        start: 10,
+                        end: 20,
+                    },
+                },
+                operator: Times,
+                rhs: Number(
+                    5,
+                    Span {
+                        str: "5",
+                        start: 19,
+                        end: 20,
+                    },
+                ),
+                span: Span {
+                    str: " 5 * 5 * 5",
+                    start: 10,
+                    end: 20,
+                },
+            },
+            span: Span {
+                str: "2 - 5 * 5 * 5",
+                start: 7,
+                end: 20,
+            },
+        },
+        span: Span {
+            str: "return 2 - 5 * 5 * 5;",
+            start: 0,
+            end: 21,
+        },
+    },
+]

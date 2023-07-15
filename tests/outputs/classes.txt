@@ -1,240 +1,526 @@
 [
     ClassDefinition {
-        name: "ClassDefinition",
+        name: Span {
+            str: "ClassDefinition",
+            start: 6,
+            end: 21,
+        },
         generics: [],
         members: [
             Variable {
-                name: "a",
+                name: Span {
+                    str: "a",
+                    start: 24,
+                    end: 25,
+                },
                 kind: Type {
                     base: Identifier(
-                        "int",
+                        Span {
+                            str: "int",
+                            start: 27,
+                            end: 30,
+                        },
                     ),
                     generics: [],
                     array: true,
                     raw: false,
+                    span: Span {
+                        str: "int[][]",
+                        start: 27,
+                        end: 34,
+                    },
                 },
                 default_value: String(
                     "default value",
+                    Span {
+                        str: "\"default value\"",
+                        start: 37,
+                        end: 52,
+                    },
                 ),
+                span: Span {
+                    str: "a: int[][] = \"default value\";",
+                    start: 24,
+                    end: 53,
+                },
             },
             Variable {
-                name: "b",
+                name: Span {
+                    str: "b",
+                    start: 56,
+                    end: 57,
+                },
                 kind: Type {
                     base: Identifier(
-                        "SomeType",
+                        Span {
+                            str: "SomeType",
+                            start: 59,
+                            end: 67,
+                        },
                     ),
                     generics: [
                         Identifier(
-                            "int",
+                            Span {
+                                str: "int",
+                                start: 68,
+                                end: 71,
+                            },
                         ),
                     ],
                     array: true,
                     raw: false,
+                    span: Span {
+                        str: "SomeType<int>[]",
+                        start: 59,
+                        end: 74,
+                    },
                 },
                 default_value: Empty,
+                span: Span {
+                    str: "b: SomeType<int>[];",
+                    start: 56,
+                    end: 75,
+                },
             },
             Function {
-                name: "some_function",
-                attributes: ClassFunctionAttributes {
-                    constructor: true,
-                    private: false,
-                    public: false,
-                    get: false,
-                    set: false,
-                    static_: true,
+                name: Span {
+                    str: "some_function",
+                    start: 110,
+                    end: 123,
                 },
+                attributes: Some(
+                    ClassFunctionAttributes {
+                        attributes: [
+                            Static(
+                                Span {
+                                    str: "static",
+                                    start: 82,
+                                    end: 88,
+                                },
+                            ),
+                            Constructor(
+                                Span {
+                                    str: "constructor",
+                                    start: 90,
+                                    end: 101,
+                                },
+                            ),
+                        ],
+                        span: Span {
+                            str: "#[static, constructor]",
+                            start: 80,
+                            end: 102,
+                        },
+                    },
+                ),
                 generics: [],
                 arguments: [],
-                return_type: Type {
-                    base: Identifier(
-                        "bool",
-                    ),
-                    generics: [],
-                    array: false,
-                    raw: false,
-                },
+                return_type: Some(
+                    Type {
+                        base: Identifier(
+                            Span {
+                                str: "bool",
+                                start: 129,
+                                end: 133,
+                            },
+                        ),
+                        generics: [],
+                        array: false,
+                        raw: false,
+                        span: Span {
+                            str: "bool ",
+                            start: 129,
+                            end: 134,
+                        },
+                    },
+                ),
                 statements: [],
+                span: Span {
+                    str: "func some_function() -> bool do\r\n\r\n\tend;",
+                    start: 105,
+                    end: 145,
+                },
             },
             Variable {
-                name: "c",
+                name: Span {
+                    str: "c",
+                    start: 150,
+                    end: 151,
+                },
                 kind: Type {
                     base: Identifier(
-                        "bool",
+                        Span {
+                            str: "bool",
+                            start: 153,
+                            end: 157,
+                        },
                     ),
                     generics: [],
                     array: false,
                     raw: false,
+                    span: Span {
+                        str: "bool",
+                        start: 153,
+                        end: 157,
+                    },
                 },
                 default_value: Empty,
+                span: Span {
+                    str: "c: bool;",
+                    start: 150,
+                    end: 158,
+                },
             },
             Function {
-                name: "another_function",
-                attributes: ClassFunctionAttributes {
-                    constructor: false,
-                    private: false,
-                    public: false,
-                    get: false,
-                    set: false,
-                    static_: false,
+                name: Span {
+                    str: "another_function",
+                    start: 168,
+                    end: 184,
                 },
+                attributes: None,
                 generics: [],
                 arguments: [],
-                return_type: Type {
-                    base: Identifier(
-                        "int",
-                    ),
-                    generics: [],
-                    array: false,
-                    raw: false,
-                },
+                return_type: Some(
+                    Type {
+                        base: Identifier(
+                            Span {
+                                str: "int",
+                                start: 190,
+                                end: 193,
+                            },
+                        ),
+                        generics: [],
+                        array: false,
+                        raw: false,
+                        span: Span {
+                            str: "int ",
+                            start: 190,
+                            end: 194,
+                        },
+                    },
+                ),
                 statements: [],
+                span: Span {
+                    str: "func another_function() -> int do\r\n\r\n\tend\r\n",
+                    start: 163,
+                    end: 206,
+                },
             },
         ],
+        span: Span {
+            str: "class ClassDefinition\r\n\ta: int[][] = \"default value\";\r\n\tb: SomeType<int>[];\r\n\r\n\t#[static, constructor]\r\n\tfunc some_function() -> bool do\r\n\r\n\tend;\r\n\r\n\tc: bool;\r\n\r\n\tfunc another_function() -> int do\r\n\r\n\tend\r\nend;",
+            start: 0,
+            end: 210,
+        },
     },
     ClassDeclaration {
-        name: "ClassDeclaraction",
+        name: Span {
+            str: "ClassDeclaraction",
+            start: 228,
+            end: 245,
+        },
         generics: [],
         members: [
             Variable {
-                name: "a",
+                name: Span {
+                    str: "a",
+                    start: 248,
+                    end: 249,
+                },
                 kind: Type {
                     base: Identifier(
-                        "int",
+                        Span {
+                            str: "int",
+                            start: 251,
+                            end: 254,
+                        },
                     ),
                     generics: [],
                     array: false,
                     raw: false,
+                    span: Span {
+                        str: "int",
+                        start: 251,
+                        end: 254,
+                    },
+                },
+                span: Span {
+                    str: "a: int;",
+                    start: 248,
+                    end: 255,
                 },
             },
             Function {
-                name: "some_function",
-                attributes: ClassFunctionAttributes {
-                    constructor: true,
-                    private: false,
-                    public: false,
-                    get: false,
-                    set: false,
-                    static_: true,
+                name: Span {
+                    str: "some_function",
+                    start: 290,
+                    end: 303,
                 },
+                attributes: Some(
+                    ClassFunctionAttributes {
+                        attributes: [
+                            Static(
+                                Span {
+                                    str: "static",
+                                    start: 262,
+                                    end: 268,
+                                },
+                            ),
+                            Constructor(
+                                Span {
+                                    str: "constructor",
+                                    start: 270,
+                                    end: 281,
+                                },
+                            ),
+                        ],
+                        span: Span {
+                            str: "#[static, constructor]",
+                            start: 260,
+                            end: 282,
+                        },
+                    },
+                ),
                 generics: [],
                 arguments: [],
-                return_type: Type {
-                    base: Identifier(
-                        "bool",
-                    ),
-                    generics: [],
-                    array: false,
-                    raw: false,
+                return_type: Some(
+                    Type {
+                        base: Identifier(
+                            Span {
+                                str: "bool",
+                                start: 309,
+                                end: 313,
+                            },
+                        ),
+                        generics: [],
+                        array: false,
+                        raw: false,
+                        span: Span {
+                            str: "bool",
+                            start: 309,
+                            end: 313,
+                        },
+                    },
+                ),
+                span: Span {
+                    str: "func some_function() -> bool;",
+                    start: 285,
+                    end: 314,
                 },
             },
             Function {
-                name: "other_function",
-                attributes: ClassFunctionAttributes {
-                    constructor: false,
-                    private: false,
-                    public: false,
-                    get: false,
-                    set: false,
-                    static_: false,
+                name: Span {
+                    str: "other_function",
+                    start: 324,
+                    end: 338,
                 },
+                attributes: None,
                 generics: [],
                 arguments: [],
-                return_type: Type {
-                    base: Identifier(
-                        "int",
-                    ),
-                    generics: [],
-                    array: false,
-                    raw: false,
+                return_type: Some(
+                    Type {
+                        base: Identifier(
+                            Span {
+                                str: "int",
+                                start: 344,
+                                end: 347,
+                            },
+                        ),
+                        generics: [],
+                        array: false,
+                        raw: false,
+                        span: Span {
+                            str: "int",
+                            start: 344,
+                            end: 347,
+                        },
+                    },
+                ),
+                span: Span {
+                    str: "func other_function() -> int;",
+                    start: 319,
+                    end: 348,
                 },
             },
         ],
+        span: Span {
+            str: "declare class ClassDeclaraction\r\n\ta: int;\r\n\r\n\t#[static, constructor]\r\n\tfunc some_function() -> bool;\r\n\r\n\tfunc other_function() -> int;\r\nend\r\n\r\n",
+            start: 214,
+            end: 357,
+        },
     },
     ClassDeclaration {
-        name: "Array",
+        name: Span {
+            str: "Array",
+            start: 371,
+            end: 376,
+        },
         generics: [
             Identifier(
-                "T",
+                Span {
+                    str: "T",
+                    start: 377,
+                    end: 378,
+                },
             ),
         ],
         members: [
             Function {
-                name: "length",
-                attributes: ClassFunctionAttributes {
-                    constructor: false,
-                    private: false,
-                    public: false,
-                    get: true,
-                    set: false,
-                    static_: false,
+                name: Span {
+                    str: "length",
+                    start: 396,
+                    end: 402,
                 },
+                attributes: Some(
+                    ClassFunctionAttributes {
+                        attributes: [
+                            Get(
+                                Span {
+                                    str: "get",
+                                    start: 384,
+                                    end: 387,
+                                },
+                            ),
+                        ],
+                        span: Span {
+                            str: "#[get]",
+                            start: 382,
+                            end: 388,
+                        },
+                    },
+                ),
                 generics: [],
                 arguments: [],
-                return_type: Type {
-                    base: Identifier(
-                        "int",
-                    ),
-                    generics: [],
-                    array: false,
-                    raw: false,
+                return_type: Some(
+                    Type {
+                        base: Identifier(
+                            Span {
+                                str: "int",
+                                start: 408,
+                                end: 411,
+                            },
+                        ),
+                        generics: [],
+                        array: false,
+                        raw: false,
+                        span: Span {
+                            str: "int",
+                            start: 408,
+                            end: 411,
+                        },
+                    },
+                ),
+                span: Span {
+                    str: "func length() -> int;",
+                    start: 391,
+                    end: 412,
                 },
             },
             Function {
-                name: "append",
-                attributes: ClassFunctionAttributes {
-                    constructor: false,
-                    private: false,
-                    public: false,
-                    get: false,
-                    set: false,
-                    static_: false,
+                name: Span {
+                    str: "append",
+                    start: 422,
+                    end: 428,
                 },
+                attributes: None,
                 generics: [],
                 arguments: [
                     FunctionArgument {
                         name: Identifier(
-                            "_elem",
+                            Span {
+                                str: "_elem",
+                                start: 429,
+                                end: 434,
+                            },
                         ),
                         kind: Type {
                             base: Identifier(
-                                "T",
+                                Span {
+                                    str: "T",
+                                    start: 436,
+                                    end: 437,
+                                },
                             ),
                             generics: [],
                             array: false,
                             raw: false,
+                            span: Span {
+                                str: "T",
+                                start: 436,
+                                end: 437,
+                            },
+                        },
+                        span: Span {
+                            str: "_elem: T",
+                            start: 429,
+                            end: 437,
                         },
                     },
                 ],
-                return_type: Type {
-                    base: Identifier(
-                        "void",
-                    ),
-                    generics: [],
-                    array: false,
-                    raw: false,
+                return_type: Some(
+                    Type {
+                        base: Identifier(
+                            Span {
+                                str: "void",
+                                start: 442,
+                                end: 446,
+                            },
+                        ),
+                        generics: [],
+                        array: false,
+                        raw: false,
+                        span: Span {
+                            str: "void",
+                            start: 442,
+                            end: 446,
+                        },
+                    },
+                ),
+                span: Span {
+                    str: "func append(_elem: T) -> void;",
+                    start: 417,
+                    end: 447,
                 },
             },
             Function {
-                name: "copy",
-                attributes: ClassFunctionAttributes {
-                    constructor: false,
-                    private: false,
-                    public: false,
-                    get: false,
-                    set: false,
-                    static_: false,
+                name: Span {
+                    str: "copy",
+                    start: 455,
+                    end: 459,
                 },
+                attributes: None,
                 generics: [],
                 arguments: [],
-                return_type: Type {
-                    base: Identifier(
-                        "this",
-                    ),
-                    generics: [],
-                    array: false,
-                    raw: false,
+                return_type: Some(
+                    Type {
+                        base: Identifier(
+                            Span {
+                                str: "this",
+                                start: 465,
+                                end: 469,
+                            },
+                        ),
+                        generics: [],
+                        array: false,
+                        raw: false,
+                        span: Span {
+                            str: "this",
+                            start: 465,
+                            end: 469,
+                        },
+                    },
+                ),
+                span: Span {
+                    str: "func copy() -> this;",
+                    start: 450,
+                    end: 470,
                 },
             },
         ],
+        span: Span {
+            str: "declare class Array<T>\r\n\t#[get]\r\n\tfunc length() -> int;\r\n\r\n\tfunc append(_elem: T) -> void;\r\n\tfunc copy() -> this;\r\nend",
+            start: 357,
+            end: 475,
+        },
     },
 ]

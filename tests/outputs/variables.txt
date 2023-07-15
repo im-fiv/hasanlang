@@ -1,40 +1,105 @@
 [
     VariableDefinition {
-        name: "hello",
+        name: Span {
+            str: "hello",
+            start: 4,
+            end: 9,
+        },
         kind: Empty,
         value: String(
             "hello",
+            Span {
+                str: "\"hello\"",
+                start: 12,
+                end: 19,
+            },
         ),
+        span: Span {
+            str: "var hello = \"hello\";",
+            start: 0,
+            end: 20,
+        },
     },
     VariableDefinition {
-        name: "world",
+        name: Span {
+            str: "world",
+            start: 26,
+            end: 31,
+        },
         kind: Type {
             base: Identifier(
-                "string",
+                Span {
+                    str: "string",
+                    start: 33,
+                    end: 39,
+                },
             ),
             generics: [],
             array: false,
             raw: false,
+            span: Span {
+                str: "string ",
+                start: 33,
+                end: 40,
+            },
         },
         value: String(
             "world",
+            Span {
+                str: "\"world\"",
+                start: 42,
+                end: 49,
+            },
         ),
+        span: Span {
+            str: "var world: string = \"world\";",
+            start: 22,
+            end: 50,
+        },
     },
-    Return(
-        Binary(
-            Binary(
-                Identifier(
-                    "hello",
+    Return {
+        value: Binary {
+            lhs: Binary {
+                lhs: Identifier(
+                    Span {
+                        str: "hello",
+                        start: 61,
+                        end: 66,
+                    },
                 ),
-                Plus,
-                String(
+                operator: Plus,
+                rhs: String(
                     " ",
+                    Span {
+                        str: "\" \"",
+                        start: 69,
+                        end: 72,
+                    },
                 ),
+                span: Span {
+                    str: "hello + \" \" + world",
+                    start: 61,
+                    end: 80,
+                },
+            },
+            operator: Plus,
+            rhs: Identifier(
+                Span {
+                    str: "world",
+                    start: 75,
+                    end: 80,
+                },
             ),
-            Plus,
-            Identifier(
-                "world",
-            ),
-        ),
-    ),
+            span: Span {
+                str: "hello + \" \" + world",
+                start: 61,
+                end: 80,
+            },
+        },
+        span: Span {
+            str: "return hello + \" \" + world;",
+            start: 54,
+            end: 81,
+        },
+    },
 ]
