@@ -32,16 +32,16 @@
     TypeDefinition {
         name: Span {
             str: "Reg_ArrayT",
-            start: 24,
-            end: 34,
+            start: 23,
+            end: 33,
         },
         generics: [],
         definition: Type {
             base: Identifier(
                 Span {
                     str: "int",
-                    start: 37,
-                    end: 40,
+                    start: 36,
+                    end: 39,
                 },
             ),
             generics: [],
@@ -49,28 +49,28 @@
             raw: false,
             span: Span {
                 str: "int[]",
-                start: 37,
-                end: 42,
+                start: 36,
+                end: 41,
             },
         },
         span: Span {
             str: "type Reg_ArrayT = int[];",
-            start: 19,
-            end: 43,
+            start: 18,
+            end: 42,
         },
     },
     TypeDefinition {
         name: Span {
             str: "Reg_GenericT",
-            start: 50,
-            end: 62,
+            start: 48,
+            end: 60,
         },
         generics: [
             Identifier(
                 Span {
                     str: "A",
-                    start: 63,
-                    end: 64,
+                    start: 61,
+                    end: 62,
                 },
             ),
         ],
@@ -78,16 +78,16 @@
             base: Identifier(
                 Span {
                     str: "A",
-                    start: 68,
-                    end: 69,
+                    start: 66,
+                    end: 67,
                 },
             ),
             generics: [
                 Identifier(
                     Span {
                         str: "A",
-                        start: 70,
-                        end: 71,
+                        start: 68,
+                        end: 69,
                     },
                 ),
             ],
@@ -95,28 +95,28 @@
             raw: false,
             span: Span {
                 str: "A<A>",
-                start: 68,
-                end: 72,
+                start: 66,
+                end: 70,
             },
         },
         span: Span {
             str: "type Reg_GenericT<A> = A<A>;",
-            start: 45,
-            end: 73,
+            start: 43,
+            end: 71,
         },
     },
     TypeDefinition {
         name: Span {
             str: "Reg_GenericArrayT",
-            start: 80,
-            end: 97,
+            start: 77,
+            end: 94,
         },
         generics: [
             Identifier(
                 Span {
                     str: "B",
-                    start: 98,
-                    end: 99,
+                    start: 95,
+                    end: 96,
                 },
             ),
         ],
@@ -124,16 +124,16 @@
             base: Identifier(
                 Span {
                     str: "B",
-                    start: 103,
-                    end: 104,
+                    start: 100,
+                    end: 101,
                 },
             ),
             generics: [
                 Identifier(
                     Span {
                         str: "B",
-                        start: 105,
-                        end: 106,
+                        start: 102,
+                        end: 103,
                     },
                 ),
             ],
@@ -141,29 +141,29 @@
             raw: false,
             span: Span {
                 str: "B<B>[]",
-                start: 103,
-                end: 109,
+                start: 100,
+                end: 106,
             },
         },
         span: Span {
             str: "type Reg_GenericArrayT<B> = B<B>[];",
-            start: 75,
-            end: 110,
+            start: 72,
+            end: 107,
         },
     },
     TypeDefinition {
         name: Span {
             str: "Raw_T",
-            start: 119,
-            end: 124,
+            start: 114,
+            end: 119,
         },
         generics: [],
         definition: Type {
             base: Identifier(
                 Span {
                     str: "int",
-                    start: 127,
-                    end: 130,
+                    start: 122,
+                    end: 125,
                 },
             ),
             generics: [],
@@ -171,29 +171,29 @@
             raw: true,
             span: Span {
                 str: "int!",
-                start: 127,
-                end: 131,
+                start: 122,
+                end: 126,
             },
         },
         span: Span {
             str: "type Raw_T = int!;",
-            start: 114,
-            end: 132,
+            start: 109,
+            end: 127,
         },
     },
     TypeDefinition {
         name: Span {
             str: "Raw_ArrayT",
-            start: 139,
-            end: 149,
+            start: 133,
+            end: 143,
         },
         generics: [],
         definition: Type {
             base: Identifier(
                 Span {
                     str: "int",
-                    start: 152,
-                    end: 155,
+                    start: 146,
+                    end: 149,
                 },
             ),
             generics: [],
@@ -201,28 +201,28 @@
             raw: true,
             span: Span {
                 str: "int[]!",
-                start: 152,
-                end: 158,
+                start: 146,
+                end: 152,
             },
         },
         span: Span {
             str: "type Raw_ArrayT = int[]!;",
-            start: 134,
-            end: 159,
+            start: 128,
+            end: 153,
         },
     },
     TypeDefinition {
         name: Span {
             str: "Raw_GenericT",
-            start: 166,
-            end: 178,
+            start: 159,
+            end: 171,
         },
         generics: [
             Identifier(
                 Span {
                     str: "A",
-                    start: 179,
-                    end: 180,
+                    start: 172,
+                    end: 173,
                 },
             ),
         ],
@@ -230,16 +230,16 @@
             base: Identifier(
                 Span {
                     str: "A",
-                    start: 184,
-                    end: 185,
+                    start: 177,
+                    end: 178,
                 },
             ),
             generics: [
                 Identifier(
                     Span {
                         str: "A",
-                        start: 186,
-                        end: 187,
+                        start: 179,
+                        end: 180,
                     },
                 ),
             ],
@@ -247,28 +247,28 @@
             raw: true,
             span: Span {
                 str: "A<A>!",
-                start: 184,
-                end: 189,
+                start: 177,
+                end: 182,
             },
         },
         span: Span {
             str: "type Raw_GenericT<A> = A<A>!;",
-            start: 161,
-            end: 190,
+            start: 154,
+            end: 183,
         },
     },
     TypeDefinition {
         name: Span {
             str: "Raw_GenericArrayT",
-            start: 197,
-            end: 214,
+            start: 189,
+            end: 206,
         },
         generics: [
             Identifier(
                 Span {
                     str: "B",
-                    start: 215,
-                    end: 216,
+                    start: 207,
+                    end: 208,
                 },
             ),
         ],
@@ -276,16 +276,16 @@
             base: Identifier(
                 Span {
                     str: "B",
-                    start: 220,
-                    end: 221,
+                    start: 212,
+                    end: 213,
                 },
             ),
             generics: [
                 Identifier(
                     Span {
                         str: "B",
-                        start: 222,
-                        end: 223,
+                        start: 214,
+                        end: 215,
                     },
                 ),
             ],
@@ -293,14 +293,14 @@
             raw: true,
             span: Span {
                 str: "B<B>[]!",
-                start: 220,
-                end: 227,
+                start: 212,
+                end: 219,
             },
         },
         span: Span {
             str: "type Raw_GenericArrayT<B> = B<B>[]!;",
-            start: 192,
-            end: 228,
+            start: 184,
+            end: 220,
         },
     },
 ]

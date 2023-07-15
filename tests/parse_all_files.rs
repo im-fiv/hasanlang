@@ -71,7 +71,7 @@ fn parse_all_files() {
 		assert_ne!(ast.len(), 0);
 
 		// confirm generated AST
-		let ast_string = format!("{:#?}", ast);
+		let ast_string = format!("{:#?}", ast).replace("\r\n", "\n");
 		let expected_output = read_file(std::path::PathBuf::from(match_filename));
 
 		assert_eq!(ast_string, expected_output, "AST does not match expected output for file {:?}", filename);

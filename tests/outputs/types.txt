@@ -55,15 +55,15 @@
     FunctionDefinition {
         name: Span {
             str: "asd",
-            start: 101,
-            end: 104,
+            start: 98,
+            end: 101,
         },
         generics: [
             Identifier(
                 Span {
                     str: "Generic2",
-                    start: 105,
-                    end: 113,
+                    start: 102,
+                    end: 110,
                 },
             ),
         ],
@@ -73,23 +73,23 @@
                 base: Identifier(
                     Span {
                         str: "AType",
-                        start: 120,
-                        end: 125,
+                        start: 117,
+                        end: 122,
                     },
                 ),
                 generics: [
                     Identifier(
                         Span {
                             str: "int",
-                            start: 126,
-                            end: 129,
+                            start: 123,
+                            end: 126,
                         },
                     ),
                     Identifier(
                         Span {
                             str: "Generic2",
-                            start: 131,
-                            end: 139,
+                            start: 128,
+                            end: 136,
                         },
                     ),
                 ],
@@ -97,8 +97,8 @@
                 raw: false,
                 span: Span {
                     str: "AType<int, Generic2>",
-                    start: 120,
-                    end: 140,
+                    start: 117,
+                    end: 137,
                 },
             },
         ),
@@ -110,28 +110,28 @@
                             5,
                             Span {
                                 str: "5",
-                                start: 154,
-                                end: 155,
+                                start: 150,
+                                end: 151,
                             },
                         ),
                     ],
                     Span {
                         str: "[5]",
-                        start: 153,
-                        end: 156,
+                        start: 149,
+                        end: 152,
                     },
                 ),
                 span: Span {
                     str: "return [5];",
-                    start: 146,
-                    end: 157,
+                    start: 142,
+                    end: 153,
                 },
             },
         ],
         span: Span {
-            str: "func asd<Generic2>() -> AType<int, Generic2> do\r\n\treturn [5];\r\nend",
-            start: 96,
-            end: 162,
+            str: "func asd<Generic2>() -> AType<int, Generic2> do\n\treturn [5];\nend",
+            start: 93,
+            end: 157,
         },
     },
 ]

@@ -23,22 +23,22 @@
     VariableDefinition {
         name: Span {
             str: "b",
-            start: 19,
-            end: 20,
+            start: 18,
+            end: 19,
         },
         kind: Empty,
         value: Boolean(
             false,
             Span {
                 str: "false",
-                start: 23,
-                end: 28,
+                start: 22,
+                end: 27,
             },
         ),
         span: Span {
             str: "var b = false;",
-            start: 15,
-            end: 29,
+            start: 14,
+            end: 28,
         },
     },
 ]
