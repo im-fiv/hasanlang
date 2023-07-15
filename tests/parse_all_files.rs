@@ -48,7 +48,7 @@ fn parse_all_files() {
 		let match_filename = format!("./tests/outputs/{}.txt", filename_str);
 
 		// compile
-		let contents = read_file(path.clone());
+		let contents = read_file(path.clone()).replace("\r\n", "\n");
 		let parse_result = HasanPestParser::parse(Rule::program, &contents);
 
 		if parse_result.is_err() {
@@ -71,7 +71,7 @@ fn parse_all_files() {
 		assert_ne!(ast.len(), 0);
 
 		// confirm generated AST
-		let ast_string = format!("{:#?}", ast).replace("\r\n", "\n");
+		let ast_string = format!("{:#?}", ast);
 		let expected_output = read_file(std::path::PathBuf::from(match_filename));
 
 		assert_eq!(ast_string, expected_output, "AST does not match expected output for file {:?}", filename);
