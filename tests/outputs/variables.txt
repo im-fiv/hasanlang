@@ -23,15 +23,15 @@
     VariableDefinition {
         name: Span {
             str: "world",
-            start: 26,
-            end: 31,
+            start: 25,
+            end: 30,
         },
         kind: Type {
             base: Identifier(
                 Span {
                     str: "string",
-                    start: 33,
-                    end: 39,
+                    start: 32,
+                    end: 38,
                 },
             ),
             generics: [],
@@ -39,22 +39,22 @@
             raw: false,
             span: Span {
                 str: "string ",
-                start: 33,
-                end: 40,
+                start: 32,
+                end: 39,
             },
         },
         value: String(
             "world",
             Span {
                 str: "\"world\"",
-                start: 42,
-                end: 49,
+                start: 41,
+                end: 48,
             },
         ),
         span: Span {
             str: "var world: string = \"world\";",
-            start: 22,
-            end: 50,
+            start: 21,
+            end: 49,
         },
     },
     Return {
@@ -63,8 +63,8 @@
                 lhs: Identifier(
                     Span {
                         str: "hello",
-                        start: 61,
-                        end: 66,
+                        start: 58,
+                        end: 63,
                     },
                 ),
                 operator: Plus,
@@ -72,34 +72,34 @@
                     " ",
                     Span {
                         str: "\" \"",
-                        start: 69,
-                        end: 72,
+                        start: 66,
+                        end: 69,
                     },
                 ),
                 span: Span {
                     str: "hello + \" \" + world",
-                    start: 61,
-                    end: 80,
+                    start: 58,
+                    end: 77,
                 },
             },
             operator: Plus,
             rhs: Identifier(
                 Span {
                     str: "world",
-                    start: 75,
-                    end: 80,
+                    start: 72,
+                    end: 77,
                 },
             ),
             span: Span {
                 str: "hello + \" \" + world",
-                start: 61,
-                end: 80,
+                start: 58,
+                end: 77,
             },
         },
         span: Span {
             str: "return hello + \" \" + world;",
-            start: 54,
-            end: 81,
+            start: 51,
+            end: 78,
         },
     },
 ]

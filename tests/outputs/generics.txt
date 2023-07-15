@@ -73,42 +73,42 @@
                         Identifier(
                             Span {
                                 str: "input",
-                                start: 86,
-                                end: 91,
+                                start: 84,
+                                end: 89,
                             },
                         ),
                     ],
                     Span {
                         str: "[input]",
-                        start: 85,
-                        end: 92,
+                        start: 83,
+                        end: 90,
                     },
                 ),
                 span: Span {
                     str: "return [input];",
-                    start: 78,
-                    end: 93,
+                    start: 76,
+                    end: 91,
                 },
             },
         ],
         span: Span {
-            str: "func generic_function<T>(input: T) -> T[] do\r\n\t// Wraps input into an array\r\n\treturn [input];\r\nend\r\n\r\n",
+            str: "func generic_function<T>(input: T) -> T[] do\n\t// Wraps input into an array\n\treturn [input];\nend\n\n",
             start: 0,
-            end: 102,
+            end: 97,
         },
     },
     ClassDefinition {
         name: Span {
             str: "generic_class",
-            start: 108,
-            end: 121,
+            start: 103,
+            end: 116,
         },
         generics: [
             Identifier(
                 Span {
                     str: "T",
-                    start: 122,
-                    end: 123,
+                    start: 117,
+                    end: 118,
                 },
             ),
         ],
@@ -116,15 +116,15 @@
             Variable {
                 name: Span {
                     str: "inner_value",
-                    start: 127,
-                    end: 138,
+                    start: 121,
+                    end: 132,
                 },
                 kind: Type {
                     base: Identifier(
                         Span {
                             str: "T",
-                            start: 140,
-                            end: 141,
+                            start: 134,
+                            end: 135,
                         },
                     ),
                     generics: [],
@@ -132,22 +132,22 @@
                     raw: false,
                     span: Span {
                         str: "T",
-                        start: 140,
-                        end: 141,
+                        start: 134,
+                        end: 135,
                     },
                 },
                 default_value: Empty,
                 span: Span {
                     str: "inner_value: T;",
-                    start: 127,
-                    end: 142,
+                    start: 121,
+                    end: 136,
                 },
             },
             Function {
                 name: Span {
                     str: "value",
-                    start: 161,
-                    end: 166,
+                    start: 152,
+                    end: 157,
                 },
                 attributes: Some(
                     ClassFunctionAttributes {
@@ -155,15 +155,15 @@
                             Get(
                                 Span {
                                     str: "get",
-                                    start: 149,
-                                    end: 152,
+                                    start: 141,
+                                    end: 144,
                                 },
                             ),
                         ],
                         span: Span {
                             str: "#[get]",
-                            start: 147,
-                            end: 153,
+                            start: 139,
+                            end: 145,
                         },
                     },
                 ),
@@ -174,8 +174,8 @@
                         base: Identifier(
                             Span {
                                 str: "T",
-                                start: 172,
-                                end: 173,
+                                start: 163,
+                                end: 164,
                             },
                         ),
                         generics: [],
@@ -183,8 +183,8 @@
                         raw: false,
                         span: Span {
                             str: "T ",
-                            start: 172,
-                            end: 174,
+                            start: 163,
+                            end: 165,
                         },
                     },
                 ),
@@ -194,48 +194,48 @@
                             expression: Identifier(
                                 Span {
                                     str: "this",
-                                    start: 187,
-                                    end: 191,
+                                    start: 177,
+                                    end: 181,
                                 },
                             ),
                             accessor: Identifier(
                                 Span {
                                     str: "inner_value",
-                                    start: 192,
-                                    end: 203,
+                                    start: 182,
+                                    end: 193,
                                 },
                             ),
                             span: Span {
                                 str: ".inner_value",
-                                start: 191,
-                                end: 203,
+                                start: 181,
+                                end: 193,
                             },
                         },
                         span: Span {
                             str: "return this.inner_value;",
-                            start: 180,
-                            end: 204,
+                            start: 170,
+                            end: 194,
                         },
                     },
                 ],
                 span: Span {
-                    str: "func value() -> T do\r\n\t\treturn this.inner_value;\r\n\tend\r\n",
-                    start: 156,
-                    end: 212,
+                    str: "func value() -> T do\n\t\treturn this.inner_value;\n\tend\n",
+                    start: 147,
+                    end: 200,
                 },
             },
         ],
         span: Span {
-            str: "class generic_class<T>\r\n\tinner_value: T;\r\n\r\n\t#[get]\r\n\tfunc value() -> T do\r\n\t\treturn this.inner_value;\r\n\tend\r\nend\r\n\r\n",
-            start: 102,
-            end: 219,
+            str: "class generic_class<T>\n\tinner_value: T;\n\n\t#[get]\n\tfunc value() -> T do\n\t\treturn this.inner_value;\n\tend\nend\n\n",
+            start: 97,
+            end: 205,
         },
     },
     FunctionDefinition {
         name: Span {
             str: "main",
-            start: 224,
-            end: 228,
+            start: 210,
+            end: 214,
         },
         generics: [],
         arguments: [],
@@ -244,16 +244,16 @@
             VariableDefinition {
                 name: Span {
                     str: "wrapped",
-                    start: 240,
-                    end: 247,
+                    start: 225,
+                    end: 232,
                 },
                 kind: Empty,
                 value: FunctionCall {
                     callee: Identifier(
                         Span {
                             str: "generic_function",
-                            start: 250,
-                            end: 266,
+                            start: 235,
+                            end: 251,
                         },
                     ),
                     generics: [
@@ -261,8 +261,8 @@
                             base: Identifier(
                                 Span {
                                     str: "int",
-                                    start: 267,
-                                    end: 270,
+                                    start: 252,
+                                    end: 255,
                                 },
                             ),
                             generics: [],
@@ -270,8 +270,8 @@
                             raw: false,
                             span: Span {
                                 str: "int",
-                                start: 267,
-                                end: 270,
+                                start: 252,
+                                end: 255,
                             },
                         },
                     ],
@@ -280,28 +280,28 @@
                             5,
                             Span {
                                 str: "5",
-                                start: 272,
-                                end: 273,
+                                start: 257,
+                                end: 258,
                             },
                         ),
                     ],
                     span: Span {
                         str: "<int>(5)",
-                        start: 266,
-                        end: 274,
+                        start: 251,
+                        end: 259,
                     },
                 },
                 span: Span {
                     str: "var wrapped = generic_function<int>(5);",
-                    start: 236,
-                    end: 275,
+                    start: 221,
+                    end: 260,
                 },
             },
         ],
         span: Span {
-            str: "func main() do\r\n\tvar wrapped = generic_function<int>(5);\r\nend",
-            start: 219,
-            end: 280,
+            str: "func main() do\n\tvar wrapped = generic_function<int>(5);\nend",
+            start: 205,
+            end: 264,
         },
     },
 ]

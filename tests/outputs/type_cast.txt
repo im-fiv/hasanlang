@@ -79,16 +79,16 @@
                     value: Identifier(
                         Span {
                             str: "input",
-                            start: 51,
-                            end: 56,
+                            start: 50,
+                            end: 55,
                         },
                     ),
                     kind: Type {
                         base: Identifier(
                             Span {
                                 str: "To",
-                                start: 60,
-                                end: 62,
+                                start: 59,
+                                end: 61,
                             },
                         ),
                         generics: [],
@@ -96,34 +96,34 @@
                         raw: false,
                         span: Span {
                             str: "To",
-                            start: 60,
-                            end: 62,
+                            start: 59,
+                            end: 61,
                         },
                     },
                     span: Span {
                         str: "as To",
-                        start: 57,
-                        end: 62,
+                        start: 56,
+                        end: 61,
                     },
                 },
                 span: Span {
                     str: "return input as To;",
-                    start: 44,
-                    end: 63,
+                    start: 43,
+                    end: 62,
                 },
             },
         ],
         span: Span {
-            str: "func cast<From, To>(input: From) -> To do\r\n\treturn input as To;\r\nend\r\n\r\n",
+            str: "func cast<From, To>(input: From) -> To do\n\treturn input as To;\nend\n\n",
             start: 0,
-            end: 72,
+            end: 68,
         },
     },
     VariableDefinition {
         name: Span {
             str: "long_cast",
-            start: 76,
-            end: 85,
+            start: 72,
+            end: 81,
         },
         kind: Empty,
         value: TypeCast {
@@ -137,16 +137,16 @@
                                         3,
                                         Span {
                                             str: "3",
-                                            start: 88,
-                                            end: 89,
+                                            start: 84,
+                                            end: 85,
                                         },
                                     ),
                                     kind: Type {
                                         base: Identifier(
                                             Span {
                                                 str: "a",
-                                                start: 93,
-                                                end: 94,
+                                                start: 89,
+                                                end: 90,
                                             },
                                         ),
                                         generics: [],
@@ -154,22 +154,22 @@
                                         raw: false,
                                         span: Span {
                                             str: "a ",
-                                            start: 93,
-                                            end: 95,
+                                            start: 89,
+                                            end: 91,
                                         },
                                     },
                                     span: Span {
                                         str: "as a ",
-                                        start: 90,
-                                        end: 95,
+                                        start: 86,
+                                        end: 91,
                                     },
                                 },
                                 kind: Type {
                                     base: Identifier(
                                         Span {
                                             str: "b",
-                                            start: 98,
-                                            end: 99,
+                                            start: 94,
+                                            end: 95,
                                         },
                                     ),
                                     generics: [],
@@ -177,22 +177,22 @@
                                     raw: false,
                                     span: Span {
                                         str: "b ",
-                                        start: 98,
-                                        end: 100,
+                                        start: 94,
+                                        end: 96,
                                     },
                                 },
                                 span: Span {
                                     str: "as b ",
-                                    start: 95,
-                                    end: 100,
+                                    start: 91,
+                                    end: 96,
                                 },
                             },
                             kind: Type {
                                 base: Identifier(
                                     Span {
                                         str: "c",
-                                        start: 103,
-                                        end: 104,
+                                        start: 99,
+                                        end: 100,
                                     },
                                 ),
                                 generics: [],
@@ -200,22 +200,22 @@
                                 raw: false,
                                 span: Span {
                                     str: "c ",
-                                    start: 103,
-                                    end: 105,
+                                    start: 99,
+                                    end: 101,
                                 },
                             },
                             span: Span {
                                 str: "as c ",
-                                start: 100,
-                                end: 105,
+                                start: 96,
+                                end: 101,
                             },
                         },
                         kind: Type {
                             base: Identifier(
                                 Span {
                                     str: "d",
-                                    start: 108,
-                                    end: 109,
+                                    start: 104,
+                                    end: 105,
                                 },
                             ),
                             generics: [],
@@ -223,22 +223,22 @@
                             raw: false,
                             span: Span {
                                 str: "d ",
-                                start: 108,
-                                end: 110,
+                                start: 104,
+                                end: 106,
                             },
                         },
                         span: Span {
                             str: "as d ",
-                            start: 105,
-                            end: 110,
+                            start: 101,
+                            end: 106,
                         },
                     },
                     kind: Type {
                         base: Identifier(
                             Span {
                                 str: "e",
-                                start: 113,
-                                end: 114,
+                                start: 109,
+                                end: 110,
                             },
                         ),
                         generics: [],
@@ -246,22 +246,22 @@
                         raw: false,
                         span: Span {
                             str: "e ",
-                            start: 113,
-                            end: 115,
+                            start: 109,
+                            end: 111,
                         },
                     },
                     span: Span {
                         str: "as e ",
-                        start: 110,
-                        end: 115,
+                        start: 106,
+                        end: 111,
                     },
                 },
                 kind: Type {
                     base: Identifier(
                         Span {
                             str: "f",
-                            start: 118,
-                            end: 119,
+                            start: 114,
+                            end: 115,
                         },
                     ),
                     generics: [],
@@ -269,22 +269,22 @@
                     raw: false,
                     span: Span {
                         str: "f ",
-                        start: 118,
-                        end: 120,
+                        start: 114,
+                        end: 116,
                     },
                 },
                 span: Span {
                     str: "as f ",
-                    start: 115,
-                    end: 120,
+                    start: 111,
+                    end: 116,
                 },
             },
             kind: Type {
                 base: Identifier(
                     Span {
                         str: "g",
-                        start: 123,
-                        end: 124,
+                        start: 119,
+                        end: 120,
                     },
                 ),
                 generics: [],
@@ -292,20 +292,20 @@
                 raw: false,
                 span: Span {
                     str: "g",
-                    start: 123,
-                    end: 124,
+                    start: 119,
+                    end: 120,
                 },
             },
             span: Span {
                 str: "as g",
-                start: 120,
-                end: 124,
+                start: 116,
+                end: 120,
             },
         },
         span: Span {
             str: "var long_cast = 3 as a as b as c as d as e as f as g;",
-            start: 72,
-            end: 125,
+            start: 68,
+            end: 121,
         },
     },
     Return {
@@ -313,8 +313,8 @@
             callee: Identifier(
                 Span {
                     str: "cast",
-                    start: 136,
-                    end: 140,
+                    start: 130,
+                    end: 134,
                 },
             ),
             generics: [
@@ -322,8 +322,8 @@
                     base: Identifier(
                         Span {
                             str: "int",
-                            start: 141,
-                            end: 144,
+                            start: 135,
+                            end: 138,
                         },
                     ),
                     generics: [],
@@ -331,16 +331,16 @@
                     raw: false,
                     span: Span {
                         str: "int",
-                        start: 141,
-                        end: 144,
+                        start: 135,
+                        end: 138,
                     },
                 },
                 Type {
                     base: Identifier(
                         Span {
                             str: "float",
-                            start: 146,
-                            end: 151,
+                            start: 140,
+                            end: 145,
                         },
                     ),
                     generics: [],
@@ -348,8 +348,8 @@
                     raw: false,
                     span: Span {
                         str: "float",
-                        start: 146,
-                        end: 151,
+                        start: 140,
+                        end: 145,
                     },
                 },
             ],
@@ -358,21 +358,21 @@
                     5,
                     Span {
                         str: "5",
-                        start: 153,
-                        end: 154,
+                        start: 147,
+                        end: 148,
                     },
                 ),
             ],
             span: Span {
                 str: "<int, float>(5)",
-                start: 140,
-                end: 155,
+                start: 134,
+                end: 149,
             },
         },
         span: Span {
             str: "return cast<int, float>(5);",
-            start: 129,
-            end: 156,
+            start: 123,
+            end: 150,
         },
     },
 ]

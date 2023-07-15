@@ -25,8 +25,8 @@
             true,
             Span {
                 str: "true",
-                start: 26,
-                end: 30,
+                start: 24,
+                end: 28,
             },
         ),
         statements: [
@@ -35,8 +35,8 @@
                     lhs: Identifier(
                         Span {
                             str: "counter",
-                            start: 39,
-                            end: 46,
+                            start: 36,
+                            end: 43,
                         },
                     ),
                     operator: GreaterThan,
@@ -44,39 +44,39 @@
                         10,
                         Span {
                             str: "10",
-                            start: 49,
-                            end: 51,
+                            start: 46,
+                            end: 48,
                         },
                     ),
                     span: Span {
                         str: "counter > 10 ",
-                        start: 39,
-                        end: 52,
+                        start: 36,
+                        end: 49,
                     },
                 },
                 statements: [
                     Break(
                         Span {
                             str: "break;",
-                            start: 60,
-                            end: 66,
+                            start: 56,
+                            end: 62,
                         },
                     ),
                 ],
                 elseif_branches: [],
                 else_branch: None,
                 span: Span {
-                    str: "if counter > 10 then\r\n\t\tbreak;\r\n\tend",
-                    start: 36,
-                    end: 72,
+                    str: "if counter > 10 then\n\t\tbreak;\n\tend",
+                    start: 33,
+                    end: 67,
                 },
             },
             FunctionCall {
                 callee: Identifier(
                     Span {
                         str: "print",
-                        start: 77,
-                        end: 82,
+                        start: 70,
+                        end: 75,
                     },
                 ),
                 generics: [],
@@ -85,31 +85,31 @@
                         "it works!",
                         Span {
                             str: "\"it works!\"",
-                            start: 83,
-                            end: 94,
+                            start: 76,
+                            end: 87,
                         },
                     ),
                 ],
                 span: Span {
                     str: "(\"it works!\")",
-                    start: 82,
-                    end: 95,
+                    start: 75,
+                    end: 88,
                 },
             },
             VariableAssign {
                 name: Identifier(
                     Span {
                         str: "counter",
-                        start: 99,
-                        end: 106,
+                        start: 91,
+                        end: 98,
                     },
                 ),
                 value: Binary {
                     lhs: Identifier(
                         Span {
                             str: "counter",
-                            start: 109,
-                            end: 116,
+                            start: 101,
+                            end: 108,
                         },
                     ),
                     operator: Minus,
@@ -117,27 +117,27 @@
                         1,
                         Span {
                             str: "1",
-                            start: 119,
-                            end: 120,
+                            start: 111,
+                            end: 112,
                         },
                     ),
                     span: Span {
                         str: "counter - 1",
-                        start: 109,
-                        end: 120,
+                        start: 101,
+                        end: 112,
                     },
                 },
                 span: Span {
                     str: "counter = counter - 1;",
-                    start: 99,
-                    end: 121,
+                    start: 91,
+                    end: 113,
                 },
             },
         ],
         span: Span {
-            str: "while true do\r\n\tif counter > 10 then\r\n\t\tbreak;\r\n\tend\r\n\r\n\tprint(\"it works!\");\r\n\tcounter = counter - 1;\r\nend",
-            start: 20,
-            end: 126,
+            str: "while true do\n\tif counter > 10 then\n\t\tbreak;\n\tend\n\n\tprint(\"it works!\");\n\tcounter = counter - 1;\nend",
+            start: 18,
+            end: 117,
         },
     },
 ]

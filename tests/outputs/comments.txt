@@ -2,17 +2,17 @@
     FunctionDefinition {
         name: Span {
             str: "main",
-            start: 122,
-            end: 126,
+            start: 114,
+            end: 118,
         },
         generics: [],
         arguments: [],
         return_type: None,
         statements: [],
         span: Span {
-            str: "func main() do\r\n\t// Code here //////\r\nend",
-            start: 117,
-            end: 158,
+            str: "func main() do\n\t// Code here //////\nend",
+            start: 109,
+            end: 148,
         },
     },
 ]

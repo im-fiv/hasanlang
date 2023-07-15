@@ -10,15 +10,15 @@
             Variable {
                 name: Span {
                     str: "event",
-                    start: 19,
-                    end: 24,
+                    start: 18,
+                    end: 23,
                 },
                 kind: Type {
                     base: Identifier(
                         Span {
                             str: "Event",
-                            start: 26,
-                            end: 31,
+                            start: 25,
+                            end: 30,
                         },
                     ),
                     generics: [],
@@ -26,29 +26,29 @@
                     raw: false,
                     span: Span {
                         str: "Event",
-                        start: 26,
-                        end: 31,
+                        start: 25,
+                        end: 30,
                     },
                 },
                 default_value: Empty,
                 span: Span {
                     str: "event: Event;",
-                    start: 19,
-                    end: 32,
+                    start: 18,
+                    end: 31,
                 },
             },
             Variable {
                 name: Span {
                     str: "id",
-                    start: 35,
-                    end: 37,
+                    start: 33,
+                    end: 35,
                 },
                 kind: Type {
                     base: Identifier(
                         Span {
                             str: "int",
-                            start: 39,
-                            end: 42,
+                            start: 37,
+                            end: 40,
                         },
                     ),
                     generics: [],
@@ -56,22 +56,22 @@
                     raw: false,
                     span: Span {
                         str: "int",
-                        start: 39,
-                        end: 42,
+                        start: 37,
+                        end: 40,
                     },
                 },
                 default_value: Empty,
                 span: Span {
                     str: "id: int;",
-                    start: 35,
-                    end: 43,
+                    start: 33,
+                    end: 41,
                 },
             },
             Function {
                 name: Span {
                     str: "new",
-                    start: 70,
-                    end: 73,
+                    start: 65,
+                    end: 68,
                 },
                 attributes: Some(
                     ClassFunctionAttributes {
@@ -79,15 +79,15 @@
                             Constructor(
                                 Span {
                                     str: "constructor",
-                                    start: 50,
-                                    end: 61,
+                                    start: 46,
+                                    end: 57,
                                 },
                             ),
                         ],
                         span: Span {
                             str: "#[constructor]",
-                            start: 48,
-                            end: 62,
+                            start: 44,
+                            end: 58,
                         },
                     },
                 ),
@@ -97,16 +97,16 @@
                         name: Identifier(
                             Span {
                                 str: "event",
-                                start: 74,
-                                end: 79,
+                                start: 69,
+                                end: 74,
                             },
                         ),
                         kind: Type {
                             base: Identifier(
                                 Span {
                                     str: "Event",
-                                    start: 81,
-                                    end: 86,
+                                    start: 76,
+                                    end: 81,
                                 },
                             ),
                             generics: [],
@@ -114,30 +114,30 @@
                             raw: false,
                             span: Span {
                                 str: "Event",
-                                start: 81,
-                                end: 86,
+                                start: 76,
+                                end: 81,
                             },
                         },
                         span: Span {
                             str: "event: Event",
-                            start: 74,
-                            end: 86,
+                            start: 69,
+                            end: 81,
                         },
                     },
                     FunctionArgument {
                         name: Identifier(
                             Span {
                                 str: "id",
-                                start: 88,
-                                end: 90,
+                                start: 83,
+                                end: 85,
                             },
                         ),
                         kind: Type {
                             base: Identifier(
                                 Span {
                                     str: "int",
-                                    start: 92,
-                                    end: 95,
+                                    start: 87,
+                                    end: 90,
                                 },
                             ),
                             generics: [],
@@ -145,14 +145,14 @@
                             raw: false,
                             span: Span {
                                 str: "int",
-                                start: 92,
-                                end: 95,
+                                start: 87,
+                                end: 90,
                             },
                         },
                         span: Span {
                             str: "id: int",
-                            start: 88,
-                            end: 95,
+                            start: 83,
+                            end: 90,
                         },
                     },
                 ],
@@ -161,8 +161,8 @@
                         base: Identifier(
                             Span {
                                 str: "this",
-                                start: 100,
-                                end: 104,
+                                start: 95,
+                                end: 99,
                             },
                         ),
                         generics: [],
@@ -170,8 +170,8 @@
                         raw: false,
                         span: Span {
                             str: "this ",
-                            start: 100,
-                            end: 105,
+                            start: 95,
+                            end: 100,
                         },
                     },
                 ),
@@ -181,34 +181,34 @@
                             expression: Identifier(
                                 Span {
                                     str: "this",
-                                    start: 111,
-                                    end: 115,
+                                    start: 105,
+                                    end: 109,
                                 },
                             ),
                             accessor: Identifier(
                                 Span {
                                     str: "event",
-                                    start: 116,
-                                    end: 121,
+                                    start: 110,
+                                    end: 115,
                                 },
                             ),
                             span: Span {
                                 str: ".event",
-                                start: 115,
-                                end: 121,
+                                start: 109,
+                                end: 115,
                             },
                         },
                         value: Identifier(
                             Span {
                                 str: "event",
-                                start: 124,
-                                end: 129,
+                                start: 118,
+                                end: 123,
                             },
                         ),
                         span: Span {
                             str: "this.event = event;",
-                            start: 111,
-                            end: 130,
+                            start: 105,
+                            end: 124,
                         },
                     },
                     VariableAssign {
@@ -216,48 +216,48 @@
                             expression: Identifier(
                                 Span {
                                     str: "this",
-                                    start: 134,
-                                    end: 138,
+                                    start: 127,
+                                    end: 131,
                                 },
                             ),
                             accessor: Identifier(
                                 Span {
                                     str: "id",
-                                    start: 139,
-                                    end: 141,
+                                    start: 132,
+                                    end: 134,
                                 },
                             ),
                             span: Span {
                                 str: ".id",
-                                start: 138,
-                                end: 141,
+                                start: 131,
+                                end: 134,
                             },
                         },
                         value: Identifier(
                             Span {
                                 str: "id",
-                                start: 144,
-                                end: 146,
+                                start: 137,
+                                end: 139,
                             },
                         ),
                         span: Span {
                             str: "this.id = id;",
-                            start: 134,
-                            end: 147,
+                            start: 127,
+                            end: 140,
                         },
                     },
                 ],
                 span: Span {
-                    str: "func new(event: Event, id: int) -> this do\r\n\t\tthis.event = event;\r\n\t\tthis.id = id;\r\n\tend\r\n\r\n\t",
-                    start: 65,
-                    end: 158,
+                    str: "func new(event: Event, id: int) -> this do\n\t\tthis.event = event;\n\t\tthis.id = id;\n\tend\n\n\t",
+                    start: 60,
+                    end: 148,
                 },
             },
             Function {
                 name: Span {
                     str: "disconnect",
-                    start: 163,
-                    end: 173,
+                    start: 153,
+                    end: 163,
                 },
                 attributes: None,
                 generics: [],
@@ -270,34 +270,34 @@
                                 expression: Identifier(
                                     Span {
                                         str: "this",
-                                        start: 182,
-                                        end: 186,
+                                        start: 171,
+                                        end: 175,
                                     },
                                 ),
                                 accessor: Identifier(
                                     Span {
                                         str: "event",
-                                        start: 187,
-                                        end: 192,
+                                        start: 176,
+                                        end: 181,
                                     },
                                 ),
                                 span: Span {
                                     str: ".event",
-                                    start: 186,
-                                    end: 192,
+                                    start: 175,
+                                    end: 181,
                                 },
                             },
                             accessor: Identifier(
                                 Span {
                                     str: "_disconnect",
-                                    start: 193,
-                                    end: 204,
+                                    start: 182,
+                                    end: 193,
                                 },
                             ),
                             span: Span {
                                 str: "._disconnect",
-                                start: 192,
-                                end: 204,
+                                start: 181,
+                                end: 193,
                             },
                         },
                         generics: [],
@@ -306,64 +306,64 @@
                                 expression: Identifier(
                                     Span {
                                         str: "this",
-                                        start: 205,
-                                        end: 209,
+                                        start: 194,
+                                        end: 198,
                                     },
                                 ),
                                 accessor: Identifier(
                                     Span {
                                         str: "id",
-                                        start: 210,
-                                        end: 212,
+                                        start: 199,
+                                        end: 201,
                                     },
                                 ),
                                 span: Span {
                                     str: ".id",
-                                    start: 209,
-                                    end: 212,
+                                    start: 198,
+                                    end: 201,
                                 },
                             },
                         ],
                         span: Span {
                             str: "(this.id)",
-                            start: 204,
-                            end: 213,
+                            start: 193,
+                            end: 202,
                         },
                     },
                 ],
                 span: Span {
-                    str: "func disconnect() do\r\n\t\tthis.event._disconnect(this.id);\r\n\tend\r\n",
-                    start: 158,
-                    end: 222,
+                    str: "func disconnect() do\n\t\tthis.event._disconnect(this.id);\n\tend\n",
+                    start: 148,
+                    end: 209,
                 },
             },
         ],
         span: Span {
-            str: "class Connection\r\n\tevent: Event;\r\n\tid: int;\r\n\r\n\t#[constructor]\r\n\tfunc new(event: Event, id: int) -> this do\r\n\t\tthis.event = event;\r\n\t\tthis.id = id;\r\n\tend\r\n\r\n\tfunc disconnect() do\r\n\t\tthis.event._disconnect(this.id);\r\n\tend\r\nend\r\n\r\n",
+            str: "class Connection\n\tevent: Event;\n\tid: int;\n\n\t#[constructor]\n\tfunc new(event: Event, id: int) -> this do\n\t\tthis.event = event;\n\t\tthis.id = id;\n\tend\n\n\tfunc disconnect() do\n\t\tthis.event._disconnect(this.id);\n\tend\nend\n\n",
             start: 0,
-            end: 229,
+            end: 214,
         },
     },
     ClassDefinition {
         name: Span {
             str: "Event",
-            start: 235,
-            end: 240,
+            start: 220,
+            end: 225,
         },
         generics: [],
         members: [
             Variable {
                 name: Span {
                     str: "name",
-                    start: 243,
-                    end: 247,
+                    start: 227,
+                    end: 231,
                 },
                 kind: Type {
                     base: Identifier(
                         Span {
                             str: "string",
-                            start: 249,
-                            end: 255,
+                            start: 233,
+                            end: 239,
                         },
                     ),
                     generics: [],
@@ -371,29 +371,29 @@
                     raw: false,
                     span: Span {
                         str: "string",
-                        start: 249,
-                        end: 255,
+                        start: 233,
+                        end: 239,
                     },
                 },
                 default_value: Empty,
                 span: Span {
                     str: "name: string;",
-                    start: 243,
-                    end: 256,
+                    start: 227,
+                    end: 240,
                 },
             },
             Variable {
                 name: Span {
                     str: "functions",
-                    start: 259,
-                    end: 268,
+                    start: 242,
+                    end: 251,
                 },
                 kind: Type {
                     base: Identifier(
                         Span {
                             str: "unknown",
-                            start: 270,
-                            end: 277,
+                            start: 253,
+                            end: 260,
                         },
                     ),
                     generics: [],
@@ -401,22 +401,22 @@
                     raw: false,
                     span: Span {
                         str: "unknown[]",
-                        start: 270,
-                        end: 279,
+                        start: 253,
+                        end: 262,
                     },
                 },
                 default_value: Empty,
                 span: Span {
                     str: "functions: unknown[];",
-                    start: 259,
-                    end: 280,
+                    start: 242,
+                    end: 263,
                 },
             },
             Function {
                 name: Span {
                     str: "new",
-                    start: 307,
-                    end: 310,
+                    start: 287,
+                    end: 290,
                 },
                 attributes: Some(
                     ClassFunctionAttributes {
@@ -424,15 +424,15 @@
                             Constructor(
                                 Span {
                                     str: "constructor",
-                                    start: 287,
-                                    end: 298,
+                                    start: 268,
+                                    end: 279,
                                 },
                             ),
                         ],
                         span: Span {
                             str: "#[constructor]",
-                            start: 285,
-                            end: 299,
+                            start: 266,
+                            end: 280,
                         },
                     },
                 ),
@@ -442,16 +442,16 @@
                         name: Identifier(
                             Span {
                                 str: "name",
-                                start: 311,
-                                end: 315,
+                                start: 291,
+                                end: 295,
                             },
                         ),
                         kind: Type {
                             base: Identifier(
                                 Span {
                                     str: "string",
-                                    start: 317,
-                                    end: 323,
+                                    start: 297,
+                                    end: 303,
                                 },
                             ),
                             generics: [],
@@ -459,14 +459,14 @@
                             raw: false,
                             span: Span {
                                 str: "string",
-                                start: 317,
-                                end: 323,
+                                start: 297,
+                                end: 303,
                             },
                         },
                         span: Span {
                             str: "name: string",
-                            start: 311,
-                            end: 323,
+                            start: 291,
+                            end: 303,
                         },
                     },
                 ],
@@ -475,8 +475,8 @@
                         base: Identifier(
                             Span {
                                 str: "this",
-                                start: 328,
-                                end: 332,
+                                start: 308,
+                                end: 312,
                             },
                         ),
                         generics: [],
@@ -484,8 +484,8 @@
                         raw: false,
                         span: Span {
                             str: "this ",
-                            start: 328,
-                            end: 333,
+                            start: 308,
+                            end: 313,
                         },
                     },
                 ),
@@ -495,48 +495,48 @@
                             expression: Identifier(
                                 Span {
                                     str: "this",
-                                    start: 339,
-                                    end: 343,
+                                    start: 318,
+                                    end: 322,
                                 },
                             ),
                             accessor: Identifier(
                                 Span {
                                     str: "name",
-                                    start: 344,
-                                    end: 348,
+                                    start: 323,
+                                    end: 327,
                                 },
                             ),
                             span: Span {
                                 str: ".name",
-                                start: 343,
-                                end: 348,
+                                start: 322,
+                                end: 327,
                             },
                         },
                         value: Identifier(
                             Span {
                                 str: "name",
-                                start: 351,
-                                end: 355,
+                                start: 330,
+                                end: 334,
                             },
                         ),
                         span: Span {
                             str: "this.name = name;",
-                            start: 339,
-                            end: 356,
+                            start: 318,
+                            end: 335,
                         },
                     },
                 ],
                 span: Span {
-                    str: "func new(name: string) -> this do\r\n\t\tthis.name = name;\r\n\tend\r\n\r\n\t",
-                    start: 302,
-                    end: 367,
+                    str: "func new(name: string) -> this do\n\t\tthis.name = name;\n\tend\n\n\t",
+                    start: 282,
+                    end: 343,
                 },
             },
             Function {
                 name: Span {
                     str: "connect",
-                    start: 372,
-                    end: 379,
+                    start: 348,
+                    end: 355,
                 },
                 attributes: None,
                 generics: [],
@@ -545,16 +545,16 @@
                         name: Identifier(
                             Span {
                                 str: "function",
-                                start: 380,
-                                end: 388,
+                                start: 356,
+                                end: 364,
                             },
                         ),
                         kind: Type {
                             base: Identifier(
                                 Span {
                                     str: "unknown",
-                                    start: 390,
-                                    end: 397,
+                                    start: 366,
+                                    end: 373,
                                 },
                             ),
                             generics: [],
@@ -562,14 +562,14 @@
                             raw: false,
                             span: Span {
                                 str: "unknown",
-                                start: 390,
-                                end: 397,
+                                start: 366,
+                                end: 373,
                             },
                         },
                         span: Span {
                             str: "function: unknown",
-                            start: 380,
-                            end: 397,
+                            start: 356,
+                            end: 373,
                         },
                     },
                 ],
@@ -578,8 +578,8 @@
                         base: Identifier(
                             Span {
                                 str: "Connection",
-                                start: 402,
-                                end: 412,
+                                start: 378,
+                                end: 388,
                             },
                         ),
                         generics: [],
@@ -587,8 +587,8 @@
                         raw: false,
                         span: Span {
                             str: "Connection ",
-                            start: 402,
-                            end: 413,
+                            start: 378,
+                            end: 389,
                         },
                     },
                 ),
@@ -596,8 +596,8 @@
                     VariableDefinition {
                         name: Span {
                             str: "connection",
-                            start: 423,
-                            end: 433,
+                            start: 398,
+                            end: 408,
                         },
                         kind: Empty,
                         value: FunctionCall {
@@ -605,21 +605,21 @@
                                 expression: Identifier(
                                     Span {
                                         str: "Connection",
-                                        start: 436,
-                                        end: 446,
+                                        start: 411,
+                                        end: 421,
                                     },
                                 ),
                                 accessor: Identifier(
                                     Span {
                                         str: "new",
-                                        start: 447,
-                                        end: 450,
+                                        start: 422,
+                                        end: 425,
                                     },
                                 ),
                                 span: Span {
                                     str: ".new",
-                                    start: 446,
-                                    end: 450,
+                                    start: 421,
+                                    end: 425,
                                 },
                             },
                             generics: [],
@@ -627,21 +627,21 @@
                                 Identifier(
                                     Span {
                                         str: "this",
-                                        start: 451,
-                                        end: 455,
+                                        start: 426,
+                                        end: 430,
                                     },
                                 ),
                             ],
                             span: Span {
                                 str: "(this)",
-                                start: 450,
-                                end: 456,
+                                start: 425,
+                                end: 431,
                             },
                         },
                         span: Span {
                             str: "var connection = Connection.new(this);",
-                            start: 419,
-                            end: 457,
+                            start: 394,
+                            end: 432,
                         },
                     },
                     VariableAssign {
@@ -650,21 +650,21 @@
                                 expression: Identifier(
                                     Span {
                                         str: "this",
-                                        start: 461,
-                                        end: 465,
+                                        start: 435,
+                                        end: 439,
                                     },
                                 ),
                                 accessor: Identifier(
                                     Span {
                                         str: "functions",
-                                        start: 466,
-                                        end: 475,
+                                        start: 440,
+                                        end: 449,
                                     },
                                 ),
                                 span: Span {
                                     str: ".functions",
-                                    start: 465,
-                                    end: 475,
+                                    start: 439,
+                                    end: 449,
                                 },
                             },
                             accessor: Binary {
@@ -673,34 +673,34 @@
                                         expression: Identifier(
                                             Span {
                                                 str: "this",
-                                                start: 476,
-                                                end: 480,
+                                                start: 450,
+                                                end: 454,
                                             },
                                         ),
                                         accessor: Identifier(
                                             Span {
                                                 str: "functions",
-                                                start: 481,
-                                                end: 490,
+                                                start: 455,
+                                                end: 464,
                                             },
                                         ),
                                         span: Span {
                                             str: ".functions",
-                                            start: 480,
-                                            end: 490,
+                                            start: 454,
+                                            end: 464,
                                         },
                                     },
                                     accessor: Identifier(
                                         Span {
                                             str: "length",
-                                            start: 491,
-                                            end: 497,
+                                            start: 465,
+                                            end: 471,
                                         },
                                     ),
                                     span: Span {
                                         str: ".length",
-                                        start: 490,
-                                        end: 497,
+                                        start: 464,
+                                        end: 471,
                                     },
                                 },
                                 operator: Plus,
@@ -708,61 +708,61 @@
                                     1,
                                     Span {
                                         str: "1",
-                                        start: 500,
-                                        end: 501,
+                                        start: 474,
+                                        end: 475,
                                     },
                                 ),
                                 span: Span {
                                     str: "this.functions.length + 1",
-                                    start: 476,
-                                    end: 501,
+                                    start: 450,
+                                    end: 475,
                                 },
                             },
                             span: Span {
                                 str: "[this.functions.length + 1]",
-                                start: 475,
-                                end: 502,
+                                start: 449,
+                                end: 476,
                             },
                         },
                         value: Identifier(
                             Span {
                                 str: "function",
-                                start: 505,
-                                end: 513,
+                                start: 479,
+                                end: 487,
                             },
                         ),
                         span: Span {
                             str: "this.functions[this.functions.length + 1] = function;",
-                            start: 461,
-                            end: 514,
+                            start: 435,
+                            end: 488,
                         },
                     },
                     Return {
                         value: Identifier(
                             Span {
                                 str: "connection",
-                                start: 527,
-                                end: 537,
+                                start: 499,
+                                end: 509,
                             },
                         ),
                         span: Span {
                             str: "return connection;",
-                            start: 520,
-                            end: 538,
+                            start: 492,
+                            end: 510,
                         },
                     },
                 ],
                 span: Span {
-                    str: "func connect(function: unknown) -> Connection do\r\n\t\tvar connection = Connection.new(this);\r\n\t\tthis.functions[this.functions.length + 1] = function;\r\n\r\n\t\treturn connection;\r\n\tend\r\n\r\n\t",
-                    start: 367,
-                    end: 549,
+                    str: "func connect(function: unknown) -> Connection do\n\t\tvar connection = Connection.new(this);\n\t\tthis.functions[this.functions.length + 1] = function;\n\n\t\treturn connection;\n\tend\n\n\t",
+                    start: 343,
+                    end: 518,
                 },
             },
             Function {
                 name: Span {
                     str: "_disconnect",
-                    start: 554,
-                    end: 565,
+                    start: 523,
+                    end: 534,
                 },
                 attributes: None,
                 generics: [],
@@ -771,16 +771,16 @@
                         name: Identifier(
                             Span {
                                 str: "id",
-                                start: 566,
-                                end: 568,
+                                start: 535,
+                                end: 537,
                             },
                         ),
                         kind: Type {
                             base: Identifier(
                                 Span {
                                     str: "int",
-                                    start: 570,
-                                    end: 573,
+                                    start: 539,
+                                    end: 542,
                                 },
                             ),
                             generics: [],
@@ -788,14 +788,14 @@
                             raw: false,
                             span: Span {
                                 str: "int",
-                                start: 570,
-                                end: 573,
+                                start: 539,
+                                end: 542,
                             },
                         },
                         span: Span {
                             str: "id: int",
-                            start: 566,
-                            end: 573,
+                            start: 535,
+                            end: 542,
                         },
                     },
                 ],
@@ -807,34 +807,34 @@
                                 expression: Identifier(
                                     Span {
                                         str: "this",
-                                        start: 581,
-                                        end: 585,
+                                        start: 549,
+                                        end: 553,
                                     },
                                 ),
                                 accessor: Identifier(
                                     Span {
                                         str: "connections",
-                                        start: 586,
-                                        end: 597,
+                                        start: 554,
+                                        end: 565,
                                     },
                                 ),
                                 span: Span {
                                     str: ".connections",
-                                    start: 585,
-                                    end: 597,
+                                    start: 553,
+                                    end: 565,
                                 },
                             },
                             accessor: Identifier(
                                 Span {
                                     str: "remove",
-                                    start: 598,
-                                    end: 604,
+                                    start: 566,
+                                    end: 572,
                                 },
                             ),
                             span: Span {
                                 str: ".remove",
-                                start: 597,
-                                end: 604,
+                                start: 565,
+                                end: 572,
                             },
                         },
                         generics: [],
@@ -842,29 +842,29 @@
                             Identifier(
                                 Span {
                                     str: "id",
-                                    start: 605,
-                                    end: 607,
+                                    start: 573,
+                                    end: 575,
                                 },
                             ),
                         ],
                         span: Span {
                             str: "(id)",
-                            start: 604,
-                            end: 608,
+                            start: 572,
+                            end: 576,
                         },
                     },
                 ],
                 span: Span {
-                    str: "func _disconnect(id: int) do\r\n\t\tthis.connections.remove(id);\r\n\tend\r\n\r\n\t",
-                    start: 549,
-                    end: 620,
+                    str: "func _disconnect(id: int) do\n\t\tthis.connections.remove(id);\n\tend\n\n\t",
+                    start: 518,
+                    end: 585,
                 },
             },
             Function {
                 name: Span {
                     str: "fire",
-                    start: 625,
-                    end: 629,
+                    start: 590,
+                    end: 594,
                 },
                 attributes: None,
                 generics: [],
@@ -874,8 +874,8 @@
                     FunctionDefinition {
                         name: Span {
                             str: "call",
-                            start: 643,
-                            end: 647,
+                            start: 607,
+                            end: 611,
                         },
                         generics: [],
                         arguments: [
@@ -883,16 +883,16 @@
                                 name: Identifier(
                                     Span {
                                         str: "function",
-                                        start: 648,
-                                        end: 656,
+                                        start: 612,
+                                        end: 620,
                                     },
                                 ),
                                 kind: Type {
                                     base: Identifier(
                                         Span {
                                             str: "unknown",
-                                            start: 658,
-                                            end: 665,
+                                            start: 622,
+                                            end: 629,
                                         },
                                     ),
                                     generics: [],
@@ -900,14 +900,14 @@
                                     raw: false,
                                     span: Span {
                                         str: "unknown",
-                                        start: 658,
-                                        end: 665,
+                                        start: 622,
+                                        end: 629,
                                     },
                                 },
                                 span: Span {
                                     str: "function: unknown",
-                                    start: 648,
-                                    end: 665,
+                                    start: 612,
+                                    end: 629,
                                 },
                             },
                         ],
@@ -917,23 +917,23 @@
                                 callee: Identifier(
                                     Span {
                                         str: "function",
-                                        start: 674,
-                                        end: 682,
+                                        start: 637,
+                                        end: 645,
                                     },
                                 ),
                                 generics: [],
                                 arguments: [],
                                 span: Span {
                                     str: "()",
-                                    start: 682,
-                                    end: 684,
+                                    start: 645,
+                                    end: 647,
                                 },
                             },
                         ],
                         span: Span {
-                            str: "func call(function: unknown) do\r\n\t\t\tfunction();\r\n\t\tend\r\n\r\n\t\t",
-                            start: 638,
-                            end: 698,
+                            str: "func call(function: unknown) do\n\t\t\tfunction();\n\t\tend\n\n\t\t",
+                            start: 602,
+                            end: 658,
                         },
                     },
                     FunctionCall {
@@ -942,34 +942,34 @@
                                 expression: Identifier(
                                     Span {
                                         str: "this",
-                                        start: 698,
-                                        end: 702,
+                                        start: 658,
+                                        end: 662,
                                     },
                                 ),
                                 accessor: Identifier(
                                     Span {
                                         str: "connections",
-                                        start: 703,
-                                        end: 714,
+                                        start: 663,
+                                        end: 674,
                                     },
                                 ),
                                 span: Span {
                                     str: ".connections",
-                                    start: 702,
-                                    end: 714,
+                                    start: 662,
+                                    end: 674,
                                 },
                             },
                             accessor: Identifier(
                                 Span {
                                     str: "forEach",
-                                    start: 715,
-                                    end: 722,
+                                    start: 675,
+                                    end: 682,
                                 },
                             ),
                             span: Span {
                                 str: ".forEach",
-                                start: 714,
-                                end: 722,
+                                start: 674,
+                                end: 682,
                             },
                         },
                         generics: [],
@@ -977,36 +977,36 @@
                             Identifier(
                                 Span {
                                     str: "call",
-                                    start: 723,
-                                    end: 727,
+                                    start: 683,
+                                    end: 687,
                                 },
                             ),
                         ],
                         span: Span {
                             str: "(call)",
-                            start: 722,
-                            end: 728,
+                            start: 682,
+                            end: 688,
                         },
                     },
                 ],
                 span: Span {
-                    str: "func fire() do\r\n\t\tfunc call(function: unknown) do\r\n\t\t\tfunction();\r\n\t\tend\r\n\r\n\t\tthis.connections.forEach(call);\r\n\tend\r\n",
-                    start: 620,
-                    end: 737,
+                    str: "func fire() do\n\t\tfunc call(function: unknown) do\n\t\t\tfunction();\n\t\tend\n\n\t\tthis.connections.forEach(call);\n\tend\n",
+                    start: 585,
+                    end: 695,
                 },
             },
         ],
         span: Span {
-            str: "class Event\r\n\tname: string;\r\n\tfunctions: unknown[];\r\n\r\n\t#[constructor]\r\n\tfunc new(name: string) -> this do\r\n\t\tthis.name = name;\r\n\tend\r\n\r\n\tfunc connect(function: unknown) -> Connection do\r\n\t\tvar connection = Connection.new(this);\r\n\t\tthis.functions[this.functions.length + 1] = function;\r\n\r\n\t\treturn connection;\r\n\tend\r\n\r\n\tfunc _disconnect(id: int) do\r\n\t\tthis.connections.remove(id);\r\n\tend\r\n\r\n\tfunc fire() do\r\n\t\tfunc call(function: unknown) do\r\n\t\t\tfunction();\r\n\t\tend\r\n\r\n\t\tthis.connections.forEach(call);\r\n\tend\r\nend\r\n\r\n",
-            start: 229,
-            end: 744,
+            str: "class Event\n\tname: string;\n\tfunctions: unknown[];\n\n\t#[constructor]\n\tfunc new(name: string) -> this do\n\t\tthis.name = name;\n\tend\n\n\tfunc connect(function: unknown) -> Connection do\n\t\tvar connection = Connection.new(this);\n\t\tthis.functions[this.functions.length + 1] = function;\n\n\t\treturn connection;\n\tend\n\n\tfunc _disconnect(id: int) do\n\t\tthis.connections.remove(id);\n\tend\n\n\tfunc fire() do\n\t\tfunc call(function: unknown) do\n\t\t\tfunction();\n\t\tend\n\n\t\tthis.connections.forEach(call);\n\tend\nend\n\n",
+            start: 214,
+            end: 700,
         },
     },
     VariableDefinition {
         name: Span {
             str: "event",
-            start: 748,
-            end: 753,
+            start: 704,
+            end: 709,
         },
         kind: Empty,
         value: FunctionCall {
@@ -1014,21 +1014,21 @@
                 expression: Identifier(
                     Span {
                         str: "Event",
-                        start: 756,
-                        end: 761,
+                        start: 712,
+                        end: 717,
                     },
                 ),
                 accessor: Identifier(
                     Span {
                         str: "new",
-                        start: 762,
-                        end: 765,
+                        start: 718,
+                        end: 721,
                     },
                 ),
                 span: Span {
                     str: ".new",
-                    start: 761,
-                    end: 765,
+                    start: 717,
+                    end: 721,
                 },
             },
             generics: [],
@@ -1037,28 +1037,28 @@
                     "Changed",
                     Span {
                         str: "\"Changed\"",
-                        start: 766,
-                        end: 775,
+                        start: 722,
+                        end: 731,
                     },
                 ),
             ],
             span: Span {
                 str: "(\"Changed\")",
-                start: 765,
-                end: 776,
+                start: 721,
+                end: 732,
             },
         },
         span: Span {
             str: "var event = Event.new(\"Changed\");",
-            start: 744,
-            end: 777,
+            start: 700,
+            end: 733,
         },
     },
     VariableDefinition {
         name: Span {
             str: "connection",
-            start: 783,
-            end: 793,
+            start: 738,
+            end: 748,
         },
         kind: Empty,
         value: FunctionCall {
@@ -1066,21 +1066,21 @@
                 expression: Identifier(
                     Span {
                         str: "event",
-                        start: 796,
-                        end: 801,
+                        start: 751,
+                        end: 756,
                     },
                 ),
                 accessor: Identifier(
                     Span {
                         str: "connect",
-                        start: 802,
-                        end: 809,
+                        start: 757,
+                        end: 764,
                     },
                 ),
                 span: Span {
                     str: ".connect",
-                    start: 801,
-                    end: 809,
+                    start: 756,
+                    end: 764,
                 },
             },
             generics: [],
@@ -1088,28 +1088,28 @@
                 Identifier(
                     Span {
                         str: "onChanged",
-                        start: 810,
-                        end: 819,
+                        start: 765,
+                        end: 774,
                     },
                 ),
             ],
             span: Span {
                 str: "(onChanged)",
-                start: 809,
-                end: 820,
+                start: 764,
+                end: 775,
             },
         },
         span: Span {
             str: "var connection = event.connect(onChanged);",
-            start: 779,
-            end: 821,
+            start: 734,
+            end: 776,
         },
     },
     FunctionDefinition {
         name: Span {
             str: "onChanged",
-            start: 830,
-            end: 839,
+            start: 783,
+            end: 792,
         },
         generics: [],
         arguments: [],
@@ -1119,8 +1119,8 @@
                 callee: Identifier(
                     Span {
                         str: "print",
-                        start: 847,
-                        end: 852,
+                        start: 799,
+                        end: 804,
                     },
                 ),
                 generics: [],
@@ -1129,15 +1129,15 @@
                         "event fired",
                         Span {
                             str: "\"event fired\"",
-                            start: 853,
-                            end: 866,
+                            start: 805,
+                            end: 818,
                         },
                     ),
                 ],
                 span: Span {
                     str: "(\"event fired\")",
-                    start: 852,
-                    end: 867,
+                    start: 804,
+                    end: 819,
                 },
             },
             FunctionCall {
@@ -1145,36 +1145,36 @@
                     expression: Identifier(
                         Span {
                             str: "connection",
-                            start: 871,
-                            end: 881,
+                            start: 822,
+                            end: 832,
                         },
                     ),
                     accessor: Identifier(
                         Span {
                             str: "disconnect",
-                            start: 882,
-                            end: 892,
+                            start: 833,
+                            end: 843,
                         },
                     ),
                     span: Span {
                         str: ".disconnect",
-                        start: 881,
-                        end: 892,
+                        start: 832,
+                        end: 843,
                     },
                 },
                 generics: [],
                 arguments: [],
                 span: Span {
                     str: "()",
-                    start: 892,
-                    end: 894,
+                    start: 843,
+                    end: 845,
                 },
             },
         ],
         span: Span {
-            str: "func onChanged() do\r\n\tprint(\"event fired\");\r\n\tconnection.disconnect();\r\nend\r\n\r\n",
-            start: 825,
-            end: 904,
+            str: "func onChanged() do\n\tprint(\"event fired\");\n\tconnection.disconnect();\nend\n\n",
+            start: 778,
+            end: 852,
         },
     },
     FunctionCall {
@@ -1182,29 +1182,29 @@
             expression: Identifier(
                 Span {
                     str: "event",
-                    start: 904,
-                    end: 909,
+                    start: 852,
+                    end: 857,
                 },
             ),
             accessor: Identifier(
                 Span {
                     str: "fire",
-                    start: 910,
-                    end: 914,
+                    start: 858,
+                    end: 862,
                 },
             ),
             span: Span {
                 str: ".fire",
-                start: 909,
-                end: 914,
+                start: 857,
+                end: 862,
             },
         },
         generics: [],
         arguments: [],
         span: Span {
             str: "()",
-            start: 914,
-            end: 916,
+            start: 862,
+            end: 864,
         },
     },
     FunctionCall {
@@ -1212,29 +1212,29 @@
             expression: Identifier(
                 Span {
                     str: "event",
-                    start: 919,
-                    end: 924,
+                    start: 866,
+                    end: 871,
                 },
             ),
             accessor: Identifier(
                 Span {
                     str: "fire",
-                    start: 925,
-                    end: 929,
+                    start: 872,
+                    end: 876,
                 },
             ),
             span: Span {
                 str: ".fire",
-                start: 924,
-                end: 929,
+                start: 871,
+                end: 876,
             },
         },
         generics: [],
         arguments: [],
         span: Span {
             str: "()",
-            start: 929,
-            end: 931,
+            start: 876,
+            end: 878,
         },
     },
 ]
