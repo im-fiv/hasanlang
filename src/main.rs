@@ -36,7 +36,7 @@ fn main() {
     let args = Cli::parse();
 
     let file_path = &args.file_path.unwrap_or("./input.hsl".to_owned());
-    let debug = args.debug.unwrap_or(false);
+    let debug = args.debug.unwrap_or(true);
 
     // parse file
     fs::create_dir_all("./compiled").expect("Failed to create \"compiled\" directory");
