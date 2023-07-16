@@ -23,7 +23,7 @@ fn read_file(path: std::path::PathBuf) -> String {
 	reader.read_to_string(&mut contents)
 		.expect(&format!("Failed to read from file {}", display));
 	
-	contents
+	contents.replace("\r\n", "\n")
 }
 
 #[test]
@@ -48,7 +48,7 @@ fn parse_all_files() {
 		let match_filename = format!("./tests/outputs/{}.txt", filename_str);
 
 		// compile
-		let contents = read_file(path.clone()).replace("\r\n", "\n");
+		let contents = read_file(path.clone());
 		let parse_result = HasanPestParser::parse(Rule::program, &contents);
 
 		if parse_result.is_err() {
