@@ -41,7 +41,7 @@ type_definition_stmt = { "type" ~ identifier ~ definition_generics? ~ "=" ~ type
 // class declaration defined later //
 variable_definition_stmt = { "var" ~ identifier ~ (":" ~ type)? ~ "=" ~ expression ~ stmt_sep }
 variable_assign_stmt = { (recursive_expression | expression) ~ "=" ~ expression ~ stmt_sep }
-enum_definition_stmt = { "enum" ~ identifier ~ (enum_member ~ ("," ~ enum_member)*)? ~ "end" }
+enum_definition_stmt = { "enum" ~ identifier ~ (enum_variant ~ ("," ~ enum_variant)*)? ~ "end" }
 
 //* control flow *//
 if_stmt = { "if" ~ expression ~ "then" ~ statements ~ if_elseif* ~ if_else? ~ "end" }
@@ -79,7 +79,7 @@ attributes = { "#[" ~ attribute_identifier ~ ("," ~ attribute_identifier)* ~ "]"
 attribute_identifier = { "constructor" | "private" | "public" | "get" | "set" | "static" }
 
 //* enums *//
-enum_member = { identifier }
+enum_variant = { identifier }
 
 //* types *//
 type = { raw_type | array_type | base_type }
