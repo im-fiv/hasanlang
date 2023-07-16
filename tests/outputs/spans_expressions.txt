@@ -1,7 +1,7 @@
 [
     Return {
         value: Binary {
-            lhs: Number(
+            lhs: Int(
                 2,
                 Span {
                     str: "2",
@@ -12,7 +12,7 @@
             operator: Minus,
             rhs: Binary {
                 lhs: Binary {
-                    lhs: Number(
+                    lhs: Int(
                         5,
                         Span {
                             str: "5",
@@ -21,7 +21,7 @@
                         },
                     ),
                     operator: Times,
-                    rhs: Number(
+                    rhs: Int(
                         5,
                         Span {
                             str: "5",
@@ -36,7 +36,7 @@
                     },
                 },
                 operator: Times,
-                rhs: Number(
+                rhs: Int(
                     5,
                     Span {
                         str: "5",

@@ -12,7 +12,7 @@
             return_type: None,
             statements: [
                 Return {
-                    value: Number(
+                    value: Int(
                         5,
                         Span {
                             str: "5",
@@ -71,7 +71,7 @@
             statements: [
                 Return {
                     value: Binary {
-                        lhs: Number(
+                        lhs: Int(
                             2,
                             Span {
                                 str: "2",
@@ -80,7 +80,7 @@
                             },
                         ),
                         operator: Plus,
-                        rhs: Number(
+                        rhs: Int(
                             2,
                             Span {
                                 str: "2",
@@ -572,7 +572,7 @@
                 return_type: None,
                 statements: [
                     Return {
-                        value: Number(
+                        value: Int(
                             2,
                             Span {
                                 str: "2",
@@ -663,7 +663,7 @@
                         },
                     ],
                     arguments: [
-                        Number(
+                        Int(
                             2,
                             Span {
                                 str: "2",
@@ -671,7 +671,7 @@
                                 end: 468,
                             },
                         ),
-                        Number(
+                        Int(
                             2,
                             Span {
                                 str: "2",
@@ -687,7 +687,7 @@
                     },
                 },
                 operator: Equals,
-                rhs: Number(
+                rhs: Int(
                     4,
                     Span {
                         str: "4",

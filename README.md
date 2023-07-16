@@ -48,9 +48,9 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 - [ ] Rename function definition arguments into function_arguments
 - [ ] Rewrite `parse_function_header` to use `parse_function_definition_arguments`
 - [ ] Fix spans of expressions
-- [ ] Add support for floats
 - [ ] Allow for recursive parsing of types
 - [ ] Implement `for` statements
+- [x] Add support for floats
 - [x] Implement anonymous functions
 - [x] Add more unary operators
 - [x] Implement error reporting

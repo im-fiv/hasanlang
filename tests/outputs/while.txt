@@ -6,7 +6,7 @@
             end: 11,
         },
         kind: Empty,
-        value: Number(
+        value: Int(
             0,
             Span {
                 str: "0",
@@ -40,7 +40,7 @@
                         },
                     ),
                     operator: GreaterThan,
-                    rhs: Number(
+                    rhs: Int(
                         10,
                         Span {
                             str: "10",
@@ -113,7 +113,7 @@
                         },
                     ),
                     operator: Minus,
-                    rhs: Number(
+                    rhs: Int(
                         1,
                         Span {
                             str: "1",

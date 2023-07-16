@@ -7,7 +7,7 @@
         },
         kind: Empty,
         value: Binary {
-            lhs: Number(
+            lhs: Int(
                 2,
                 Span {
                     str: "2",
@@ -17,7 +17,7 @@
             ),
             operator: Plus,
             rhs: Binary {
-                lhs: Number(
+                lhs: Int(
                     2,
                     Span {
                         str: "2",
@@ -26,7 +26,7 @@
                     },
                 ),
                 operator: Times,
-                rhs: Number(
+                rhs: Int(
                     2,
                     Span {
                         str: "2",
@@ -79,7 +79,7 @@
             operator: Plus,
             rhs: Binary {
                 lhs: Binary {
-                    lhs: Number(
+                    lhs: Int(
                         2,
                         Span {
                             str: "2",
@@ -88,7 +88,7 @@
                         },
                     ),
                     operator: Divide,
-                    rhs: Number(
+                    rhs: Int(
                         2,
                         Span {
                             str: "2",
@@ -103,7 +103,7 @@
                     },
                 },
                 operator: Times,
-                rhs: Number(
+                rhs: Int(
                     12312312,
                     Span {
                         str: "12312312",
@@ -201,7 +201,7 @@
                 },
                 operator: Plus,
                 rhs: Binary {
-                    lhs: Number(
+                    lhs: Int(
                         1337,
                         Span {
                             str: "1337",
@@ -210,7 +210,7 @@
                         },
                     ),
                     operator: Times,
-                    rhs: Number(
+                    rhs: Int(
                         3232892,
                         Span {
                             str: "3232892",
@@ -231,7 +231,7 @@
                 },
             },
             operator: Minus,
-            rhs: Number(
+            rhs: Int(
                 1,
                 Span {
                     str: "1",
@@ -273,7 +273,7 @@
                                                 end: 130,
                                             },
                                         ),
-                                        accessor: Number(
+                                        accessor: Int(
                                             0,
                                             Span {
                                                 str: "0",
@@ -287,7 +287,7 @@
                                             end: 133,
                                         },
                                     },
-                                    accessor: Number(
+                                    accessor: Int(
                                         1,
                                         Span {
                                             str: "1",
@@ -301,7 +301,7 @@
                                         end: 136,
                                     },
                                 },
-                                accessor: Number(
+                                accessor: Int(
                                     2,
                                     Span {
                                         str: "2",
@@ -315,7 +315,7 @@
                                     end: 139,
                                 },
                             },
-                            accessor: Number(
+                            accessor: Int(
                                 3,
                                 Span {
                                     str: "3",
@@ -329,7 +329,7 @@
                                 end: 142,
                             },
                         },
-                        accessor: Number(
+                        accessor: Int(
                             4,
                             Span {
                                 str: "4",
@@ -343,7 +343,7 @@
                             end: 145,
                         },
                     },
-                    accessor: Number(
+                    accessor: Int(
                         5,
                         Span {
                             str: "5",
@@ -358,7 +358,7 @@
                     },
                 },
                 operator: Minus,
-                rhs: Number(
+                rhs: Int(
                     1,
                     Span {
                         str: "1",
@@ -419,7 +419,7 @@
                                 end: 189,
                             },
                         ),
-                        accessor: Number(
+                        accessor: Int(
                             0,
                             Span {
                                 str: "0",
@@ -484,7 +484,7 @@
                 },
             },
             accessor: Binary {
-                lhs: Number(
+                lhs: Int(
                     4,
                     Span {
                         str: "4",
@@ -493,7 +493,7 @@
                     },
                 ),
                 operator: Minus,
-                rhs: Number(
+                rhs: Int(
                     2,
                     Span {
                         str: "2",
@@ -677,7 +677,7 @@
                         value: TypeCast {
                             value: TypeCast {
                                 value: TypeCast {
-                                    value: Number(
+                                    value: Int(
                                         3,
                                         Span {
                                             str: "3",
@@ -862,7 +862,7 @@
         ),
         generics: [],
         arguments: [
-            Number(
+            Int(
                 123,
                 Span {
                     str: "123",
@@ -948,7 +948,7 @@
         },
         kind: Empty,
         value: Binary {
-            lhs: Number(
+            lhs: Int(
                 2,
                 Span {
                     str: "2",
@@ -957,7 +957,7 @@
                 },
             ),
             operator: Plus,
-            rhs: Number(
+            rhs: Int(
                 5,
                 Span {
                     str: "5",
@@ -996,7 +996,7 @@
                             },
                         ),
                         operator: Times,
-                        rhs: Number(
+                        rhs: Int(
                             15,
                             Span {
                                 str: "15",
@@ -1011,7 +1011,7 @@
                         },
                     },
                     operator: Divide,
-                    rhs: Number(
+                    rhs: Int(
                         3,
                         Span {
                             str: "3",
@@ -1037,7 +1037,7 @@
                                         end: 550,
                                     },
                                 ),
-                                accessor: Number(
+                                accessor: Int(
                                     0,
                                     Span {
                                         str: "0",
@@ -1066,7 +1066,7 @@
                         },
                         generics: [],
                         arguments: [
-                            Number(
+                            Int(
                                 1,
                                 Span {
                                     str: "1",
@@ -1074,7 +1074,7 @@
                                     end: 564,
                                 },
                             ),
-                            Number(
+                            Int(
                                 2,
                                 Span {
                                     str: "2",
@@ -1082,7 +1082,7 @@
                                     end: 567,
                                 },
                             ),
-                            Number(
+                            Int(
                                 3,
                                 Span {
                                     str: "3",
@@ -1127,7 +1127,7 @@
                                                     end: 596,
                                                 },
                                             ),
-                                            accessor: Number(
+                                            accessor: Int(
                                                 0,
                                                 Span {
                                                     str: "0",
@@ -1141,7 +1141,7 @@
                                                 end: 599,
                                             },
                                         },
-                                        accessor: Number(
+                                        accessor: Int(
                                             1,
                                             Span {
                                                 str: "1",
@@ -1197,7 +1197,7 @@
                         generics: [],
                         arguments: [
                             Binary {
-                                lhs: Number(
+                                lhs: Int(
                                     123123123,
                                     Span {
                                         str: "123123123",
@@ -1206,7 +1206,7 @@
                                     },
                                 ),
                                 operator: Times,
-                                rhs: Number(
+                                rhs: Int(
                                     2,
                                     Span {
                                         str: "2",
@@ -1248,7 +1248,7 @@
                 },
             },
             operator: Plus,
-            rhs: Number(
+            rhs: Int(
                 2,
                 Span {
                     str: "2",

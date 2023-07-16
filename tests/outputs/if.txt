@@ -37,7 +37,7 @@
         kind: Empty,
         value: Binary {
             lhs: Binary {
-                lhs: Number(
+                lhs: Int(
                     2,
                     Span {
                         str: "2",
@@ -47,7 +47,7 @@
                 ),
                 operator: Plus,
                 rhs: Binary {
-                    lhs: Number(
+                    lhs: Int(
                         2,
                         Span {
                             str: "2",
@@ -56,7 +56,7 @@
                         },
                     ),
                     operator: Times,
-                    rhs: Number(
+                    rhs: Int(
                         5,
                         Span {
                             str: "5",
@@ -77,7 +77,7 @@
                 },
             },
             operator: NotEquals,
-            rhs: Number(
+            rhs: Int(
                 5,
                 Span {
                     str: "5",
@@ -248,7 +248,7 @@
                 },
                 statements: [
                     Return {
-                        value: Number(
+                        value: Int(
                             5,
                             Span {
                                 str: "5",

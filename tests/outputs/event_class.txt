@@ -704,7 +704,7 @@
                                     },
                                 },
                                 operator: Plus,
-                                rhs: Number(
+                                rhs: Int(
                                     1,
                                     Span {
                                         str: "1",

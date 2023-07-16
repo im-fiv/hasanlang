@@ -7,7 +7,7 @@
                 end: 1,
             },
         ),
-        value: Number(
+        value: Int(
             5,
             Span {
                 str: "5",
@@ -57,7 +57,7 @@
                 end: 12,
             },
         },
-        value: Number(
+        value: Int(
             3,
             Span {
                 str: "3",
@@ -301,7 +301,7 @@
             },
         ],
         arguments: [
-            Number(
+            Int(
                 1,
                 Span {
                     str: "1",

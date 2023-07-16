@@ -1,0 +1,44 @@
+[
+    VariableDefinition {
+        name: Span {
+            str: "pi",
+            start: 4,
+            end: 6,
+        },
+        kind: Empty,
+        value: Float(
+            3.14159265359,
+            Span {
+                str: "3.14159265359",
+                start: 9,
+                end: 22,
+            },
+        ),
+        span: Span {
+            str: "var pi = 3.14159265359;",
+            start: 0,
+            end: 23,
+        },
+    },
+    VariableDefinition {
+        name: Span {
+            str: "meaning_of_life",
+            start: 64,
+            end: 79,
+        },
+        kind: Empty,
+        value: Int(
+            42,
+            Span {
+                str: "42",
+                start: 82,
+                end: 84,
+            },
+        ),
+        span: Span {
+            str: "var meaning_of_life = 42;",
+            start: 60,
+            end: 85,
+        },
+    },
+]
