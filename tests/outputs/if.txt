@@ -172,7 +172,7 @@
             },
         ],
         elseif_branches: [
-            IfBranch {
+            ConditionBranch {
                 condition: Binary {
                     lhs: Boolean(
                         false,
@@ -221,7 +221,7 @@
                     end: 136,
                 },
             },
-            IfBranch {
+            ConditionBranch {
                 condition: Binary {
                     lhs: Boolean(
                         false,
@@ -271,7 +271,7 @@
             },
         ],
         else_branch: Some(
-            IfBranch {
+            ConditionBranch {
                 condition: Empty,
                 statements: [],
                 span: Span {
@@ -362,7 +362,7 @@
             },
         ],
         elseif_branches: [
-            IfBranch {
+            ConditionBranch {
                 condition: Binary {
                     lhs: Boolean(
                         false,
@@ -411,7 +411,7 @@
                     end: 293,
                 },
             },
-            IfBranch {
+            ConditionBranch {
                 condition: Binary {
                     lhs: Boolean(
                         false,
@@ -461,7 +461,7 @@
             },
         ],
         else_branch: Some(
-            IfBranch {
+            ConditionBranch {
                 condition: Empty,
                 statements: [],
                 span: Span {

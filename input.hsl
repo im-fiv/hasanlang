@@ -1,0 +1,24 @@
+var a = not true;
+var b = 2 + 2 * 5 != 5;
+
+if true == true then
+	print("asdasd");
+	a = false;
+elseif false != true then
+	do_something();
+elseif false or true then
+	return 5;
+else
+	// do nothing
+end
+
+if true == true then
+	print("asdasd");
+	a = false;
+else if false != true then
+	do_something();
+else if false or true then
+	return 5;
+else
+	// do nothing
+end

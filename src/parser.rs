@@ -87,15 +87,15 @@ pub enum Statement<'p> {
 
 	EnumDefinition {
 		name: Span<'p>,
-		members: Vec<EnumMember<'p>>,
+		variants: Vec<EnumVariant<'p>>,
 		span: Span<'p>
 	},
 
 	If {
 		condition: Expression<'p>,
 		statements: Vec<Statement<'p>>,
-		elseif_branches: Vec<IfBranch<'p>>,
-		else_branch: Option<IfBranch<'p>>,
+		elseif_branches: Vec<ConditionBranch<'p>>,
+		else_branch: Option<ConditionBranch<'p>>,
 		span: Span<'p>
 	},
 
@@ -113,7 +113,7 @@ pub enum Statement<'p> {
 
 #[allow(dead_code)]
 #[derive(Debug)]
-pub struct IfBranch<'p> {
+pub struct ConditionBranch<'p> {
 	condition: Expression<'p>,
 	statements: Vec<Statement<'p>>,
 	span: Span<'p>
@@ -121,7 +121,7 @@ pub struct IfBranch<'p> {
 
 #[allow(dead_code)]
 #[derive(Debug)]
-pub struct EnumMember<'p> {
+pub struct EnumVariant<'p> {
 	name: Span<'p>,
 	span: Span<'p>
 }
@@ -645,7 +645,7 @@ impl<'p> ASTParser<'p> {
 		}
 	}
 
-	fn parse_elseif_branch(&self, pair: Pair<'p, Rule>) -> IfBranch {
+	fn parse_elseif_branch(&self, pair: Pair<'p, Rule>) -> ConditionBranch {
 		if pair.as_rule() != Rule::if_elseif {
 			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::if_elseif, pair.as_rule());
 		}
@@ -665,14 +665,14 @@ impl<'p> ASTParser<'p> {
 			.next()
 			.expect("Failed to parse elseif branch: expected statements, got nothing");
 
-		IfBranch {
+		ConditionBranch {
 			condition: self.parse_expression(expression_pair),
 			statements: self.parse_program(statements_pair.into_inner()),
 			span
 		}
 	}
 
-	fn parse_else_branch(&self, pair: Pair<'p, Rule>) -> IfBranch {
+	fn parse_else_branch(&self, pair: Pair<'p, Rule>) -> ConditionBranch {
 		if pair.as_rule() != Rule::if_else {
 			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::if_else, pair.as_rule());
 		}
@@ -688,7 +688,7 @@ impl<'p> ASTParser<'p> {
 			.next()
 			.expect("Failed to parse else branch: expected statements, got nothing");
 
-		IfBranch {
+		ConditionBranch {
 			condition: Expression::Empty,
 			statements: self.parse_program(statements_pair.into_inner()),
 			span
@@ -715,8 +715,8 @@ impl<'p> ASTParser<'p> {
 			.next()
 			.unwrap_or_else(|| unreachable!("Failed to parse if statement: statements are missing"));
 
-		let mut elseif_branches: Vec<IfBranch> = Vec::new();
-		let mut else_branch: Option<IfBranch> = None;
+		let mut elseif_branches: Vec<ConditionBranch> = Vec::new();
+		let mut else_branch: Option<ConditionBranch> = None;
 
 		while let Some(pair) = pairs.next() {
 			if !matches!(pair.as_rule(), Rule::if_elseif | Rule::if_else) {
@@ -986,16 +986,16 @@ impl<'p> ASTParser<'p> {
 		generics
 	}
 
-	fn parse_enum_member(&self, pair: Pair<'p, Rule>) -> EnumMember {
+	fn parse_enum_variant(&self, pair: Pair<'p, Rule>) -> EnumVariant {
 		let span = pair.as_span();
 		let mut pairs = pair.into_inner();
 
 		let name = pairs
 			.next()
-			.expect("Failed to parse enum member: name is missing")
+			.expect("Failed to parse enum variant: name is missing")
 			.as_span();
 
-		EnumMember { name, span }
+		EnumVariant { name, span }
 	}
 
 	fn parse_enum_definition(&self, pair: Pair<'p, Rule>) -> Statement {
@@ -1007,17 +1007,17 @@ impl<'p> ASTParser<'p> {
 			.expect("Failed to parse enum definition: enum name is missing")
 			.as_span();
 
-		let mut members: Vec<EnumMember> = Vec::new();
+		let mut variants: Vec<EnumVariant> = Vec::new();
 
 		while let Some(pair) = pairs.next() {
-			if pair.as_rule() != Rule::enum_member {
-				error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::enum_member, pair.as_rule());
+			if pair.as_rule() != Rule::enum_variant {
+				error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::enum_variant, pair.as_rule());
 			}
 
-			members.push(self.parse_enum_member(pair));
+			variants.push(self.parse_enum_variant(pair));
 		}
 
-		Statement::EnumDefinition { name, members, span }
+		Statement::EnumDefinition { name, variants, span }
 	}
 
 	fn parse_type(&self, pair: Pair<'p, Rule>) -> Expression {

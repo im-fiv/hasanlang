@@ -5,8 +5,8 @@
             start: 5,
             end: 10,
         },
-        members: [
-            EnumMember {
+        variants: [
+            EnumVariant {
                 name: Span {
                     str: "Green",
                     start: 12,
@@ -18,7 +18,7 @@
                     end: 17,
                 },
             },
-            EnumMember {
+            EnumVariant {
                 name: Span {
                     str: "Yellow",
                     start: 20,
@@ -30,7 +30,7 @@
                     end: 26,
                 },
             },
-            EnumMember {
+            EnumVariant {
                 name: Span {
                     str: "Red",
                     start: 29,
