@@ -60,9 +60,9 @@
                 array: true,
                 raw: false,
                 span: Span {
-                    str: "T[] ",
+                    str: "T[]",
                     start: 38,
-                    end: 42,
+                    end: 41,
                 },
             },
         ),

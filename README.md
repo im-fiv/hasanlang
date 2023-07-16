@@ -45,8 +45,6 @@ As I said before, this is my first time making a project as complex as this, so 
 Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 
 ## My current TODO list (Corrective Parser stage)
-- [ ] Fix spans of expressions
-- [ ] Allow for recursive parsing of types
 - [ ] Implement `for` statements
 - [x] Rename function definition arguments into function_arguments
 - [x] Rewrite `parse_function_header` to use `parse_function_definition_arguments`
@@ -64,3 +62,9 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 - [x] Fix *recursive* expressions
 - [x] Remove `inputX.hsl` code samples from root directory
 - [x] Move this into `README.md`
+
+## Side tasks
+
+### Corrective Parser:
+- [ ] Fix spans of expressions
+- [ ] Allow for recursive parsing of types
