@@ -8,6 +8,7 @@ pub struct CLI {
 	pub subcommand: CLISubcommand
 }
 
+// A workaround to allow not importing clap::Parser
 impl CLI {
 	pub fn parse_custom() -> Self {
 		CLI::parse()
