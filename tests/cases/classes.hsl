@@ -1,5 +1,5 @@
 class ClassDefinition
-	a: int[][] = "default value";
+	a: int[] = "default value";
 	b: SomeType<int>[];
 
 	#[static, constructor]
