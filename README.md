@@ -45,13 +45,14 @@ As I said before, this is my first time making a project as complex as this, so 
 Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 
 ## My current TODO list
+- [ ] Rename function definition arguments into function_arguments
+- [ ] Rewrite `parse_function_header` to use `parse_function_definition_arguments`
 - [ ] Fix spans of expressions
-- [ ] Clarify `parse_..._expression` function calls *(call more specific functions instead)*
-- [ ] Add more unary operators
-- [ ] Implement anonymous functions
 - [ ] Add support for floats
 - [ ] Allow for recursive parsing of types
 - [ ] Implement `for` statements
+- [x] Implement anonymous functions
+- [x] Add more unary operators
 - [x] Implement error reporting
 - [x] Store a span in every AST node for error reporting
 - [x] Implement `if` and `while` statements

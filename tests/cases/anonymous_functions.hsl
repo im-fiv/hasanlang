@@ -1,0 +1,27 @@
+var no_args_return = func() do
+	return 5;
+end;
+
+var no_args = func() -> int do
+	return 2 + 2;
+end;
+
+var no_return = func(a: int, b: int) do
+	return a + b;
+end;
+
+var no_statements = func() do end;
+var no_statements = func(a: int) do end;
+var no_statements = func(a: int) -> int do end;
+var no_statements = func() -> int do end;
+
+var generics = func<A, B>(a: A, b: B) do
+	return a + b;
+end;
+
+var immediate_call = (func() do
+	return 2;
+end)();
+
+print(generics<int, int>(2, 2) == 4);
+print(immediate_call);

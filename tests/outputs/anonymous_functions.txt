@@ -1,0 +1,735 @@
+[
+    VariableDefinition {
+        name: Span {
+            str: "no_args_return",
+            start: 4,
+            end: 18,
+        },
+        kind: Empty,
+        value: AnonymousFunction {
+            generics: [],
+            arguments: [],
+            return_type: None,
+            statements: [
+                Return {
+                    value: Number(
+                        5,
+                        Span {
+                            str: "5",
+                            start: 39,
+                            end: 40,
+                        },
+                    ),
+                    span: Span {
+                        str: "return 5;",
+                        start: 32,
+                        end: 41,
+                    },
+                },
+            ],
+            span: Span {
+                str: "func() do\n\treturn 5;\nend",
+                start: 21,
+                end: 45,
+            },
+        },
+        span: Span {
+            str: "var no_args_return = func() do\n\treturn 5;\nend;",
+            start: 0,
+            end: 46,
+        },
+    },
+    VariableDefinition {
+        name: Span {
+            str: "no_args",
+            start: 52,
+            end: 59,
+        },
+        kind: Empty,
+        value: AnonymousFunction {
+            generics: [],
+            arguments: [],
+            return_type: Some(
+                Type {
+                    base: Identifier(
+                        Span {
+                            str: "int",
+                            start: 72,
+                            end: 75,
+                        },
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                    span: Span {
+                        str: "int ",
+                        start: 72,
+                        end: 76,
+                    },
+                },
+            ),
+            statements: [
+                Return {
+                    value: Binary {
+                        lhs: Number(
+                            2,
+                            Span {
+                                str: "2",
+                                start: 87,
+                                end: 88,
+                            },
+                        ),
+                        operator: Plus,
+                        rhs: Number(
+                            2,
+                            Span {
+                                str: "2",
+                                start: 91,
+                                end: 92,
+                            },
+                        ),
+                        span: Span {
+                            str: "2 + 2",
+                            start: 87,
+                            end: 92,
+                        },
+                    },
+                    span: Span {
+                        str: "return 2 + 2;",
+                        start: 80,
+                        end: 93,
+                    },
+                },
+            ],
+            span: Span {
+                str: "func() -> int do\n\treturn 2 + 2;\nend",
+                start: 62,
+                end: 97,
+            },
+        },
+        span: Span {
+            str: "var no_args = func() -> int do\n\treturn 2 + 2;\nend;",
+            start: 48,
+            end: 98,
+        },
+    },
+    VariableDefinition {
+        name: Span {
+            str: "no_return",
+            start: 104,
+            end: 113,
+        },
+        kind: Empty,
+        value: AnonymousFunction {
+            generics: [],
+            arguments: [
+                FunctionArgument {
+                    name: Identifier(
+                        Span {
+                            str: "a",
+                            start: 121,
+                            end: 122,
+                        },
+                    ),
+                    kind: Type {
+                        base: Identifier(
+                            Span {
+                                str: "int",
+                                start: 124,
+                                end: 127,
+                            },
+                        ),
+                        generics: [],
+                        array: false,
+                        raw: false,
+                        span: Span {
+                            str: "int",
+                            start: 124,
+                            end: 127,
+                        },
+                    },
+                    span: Span {
+                        str: "a: int",
+                        start: 121,
+                        end: 127,
+                    },
+                },
+                FunctionArgument {
+                    name: Identifier(
+                        Span {
+                            str: "b",
+                            start: 129,
+                            end: 130,
+                        },
+                    ),
+                    kind: Type {
+                        base: Identifier(
+                            Span {
+                                str: "int",
+                                start: 132,
+                                end: 135,
+                            },
+                        ),
+                        generics: [],
+                        array: false,
+                        raw: false,
+                        span: Span {
+                            str: "int",
+                            start: 132,
+                            end: 135,
+                        },
+                    },
+                    span: Span {
+                        str: "b: int",
+                        start: 129,
+                        end: 135,
+                    },
+                },
+            ],
+            return_type: None,
+            statements: [
+                Return {
+                    value: Binary {
+                        lhs: Identifier(
+                            Span {
+                                str: "a",
+                                start: 148,
+                                end: 149,
+                            },
+                        ),
+                        operator: Plus,
+                        rhs: Identifier(
+                            Span {
+                                str: "b",
+                                start: 152,
+                                end: 153,
+                            },
+                        ),
+                        span: Span {
+                            str: "a + b",
+                            start: 148,
+                            end: 153,
+                        },
+                    },
+                    span: Span {
+                        str: "return a + b;",
+                        start: 141,
+                        end: 154,
+                    },
+                },
+            ],
+            span: Span {
+                str: "func(a: int, b: int) do\n\treturn a + b;\nend",
+                start: 116,
+                end: 158,
+            },
+        },
+        span: Span {
+            str: "var no_return = func(a: int, b: int) do\n\treturn a + b;\nend;",
+            start: 100,
+            end: 159,
+        },
+    },
+    VariableDefinition {
+        name: Span {
+            str: "no_statements",
+            start: 165,
+            end: 178,
+        },
+        kind: Empty,
+        value: AnonymousFunction {
+            generics: [],
+            arguments: [],
+            return_type: None,
+            statements: [],
+            span: Span {
+                str: "func() do end",
+                start: 181,
+                end: 194,
+            },
+        },
+        span: Span {
+            str: "var no_statements = func() do end;",
+            start: 161,
+            end: 195,
+        },
+    },
+    VariableDefinition {
+        name: Span {
+            str: "no_statements",
+            start: 200,
+            end: 213,
+        },
+        kind: Empty,
+        value: AnonymousFunction {
+            generics: [],
+            arguments: [
+                FunctionArgument {
+                    name: Identifier(
+                        Span {
+                            str: "a",
+                            start: 221,
+                            end: 222,
+                        },
+                    ),
+                    kind: Type {
+                        base: Identifier(
+                            Span {
+                                str: "int",
+                                start: 224,
+                                end: 227,
+                            },
+                        ),
+                        generics: [],
+                        array: false,
+                        raw: false,
+                        span: Span {
+                            str: "int",
+                            start: 224,
+                            end: 227,
+                        },
+                    },
+                    span: Span {
+                        str: "a: int",
+                        start: 221,
+                        end: 227,
+                    },
+                },
+            ],
+            return_type: None,
+            statements: [],
+            span: Span {
+                str: "func(a: int) do end",
+                start: 216,
+                end: 235,
+            },
+        },
+        span: Span {
+            str: "var no_statements = func(a: int) do end;",
+            start: 196,
+            end: 236,
+        },
+    },
+    VariableDefinition {
+        name: Span {
+            str: "no_statements",
+            start: 241,
+            end: 254,
+        },
+        kind: Empty,
+        value: AnonymousFunction {
+            generics: [],
+            arguments: [
+                FunctionArgument {
+                    name: Identifier(
+                        Span {
+                            str: "a",
+                            start: 262,
+                            end: 263,
+                        },
+                    ),
+                    kind: Type {
+                        base: Identifier(
+                            Span {
+                                str: "int",
+                                start: 265,
+                                end: 268,
+                            },
+                        ),
+                        generics: [],
+                        array: false,
+                        raw: false,
+                        span: Span {
+                            str: "int",
+                            start: 265,
+                            end: 268,
+                        },
+                    },
+                    span: Span {
+                        str: "a: int",
+                        start: 262,
+                        end: 268,
+                    },
+                },
+            ],
+            return_type: Some(
+                Type {
+                    base: Identifier(
+                        Span {
+                            str: "int",
+                            start: 273,
+                            end: 276,
+                        },
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                    span: Span {
+                        str: "int ",
+                        start: 273,
+                        end: 277,
+                    },
+                },
+            ),
+            statements: [],
+            span: Span {
+                str: "func(a: int) -> int do end",
+                start: 257,
+                end: 283,
+            },
+        },
+        span: Span {
+            str: "var no_statements = func(a: int) -> int do end;",
+            start: 237,
+            end: 284,
+        },
+    },
+    VariableDefinition {
+        name: Span {
+            str: "no_statements",
+            start: 289,
+            end: 302,
+        },
+        kind: Empty,
+        value: AnonymousFunction {
+            generics: [],
+            arguments: [],
+            return_type: Some(
+                Type {
+                    base: Identifier(
+                        Span {
+                            str: "int",
+                            start: 315,
+                            end: 318,
+                        },
+                    ),
+                    generics: [],
+                    array: false,
+                    raw: false,
+                    span: Span {
+                        str: "int ",
+                        start: 315,
+                        end: 319,
+                    },
+                },
+            ),
+            statements: [],
+            span: Span {
+                str: "func() -> int do end",
+                start: 305,
+                end: 325,
+            },
+        },
+        span: Span {
+            str: "var no_statements = func() -> int do end;",
+            start: 285,
+            end: 326,
+        },
+    },
+    VariableDefinition {
+        name: Span {
+            str: "generics",
+            start: 332,
+            end: 340,
+        },
+        kind: Empty,
+        value: AnonymousFunction {
+            generics: [
+                Identifier(
+                    Span {
+                        str: "A",
+                        start: 348,
+                        end: 349,
+                    },
+                ),
+                Identifier(
+                    Span {
+                        str: "B",
+                        start: 351,
+                        end: 352,
+                    },
+                ),
+            ],
+            arguments: [
+                FunctionArgument {
+                    name: Identifier(
+                        Span {
+                            str: "a",
+                            start: 354,
+                            end: 355,
+                        },
+                    ),
+                    kind: Type {
+                        base: Identifier(
+                            Span {
+                                str: "A",
+                                start: 357,
+                                end: 358,
+                            },
+                        ),
+                        generics: [],
+                        array: false,
+                        raw: false,
+                        span: Span {
+                            str: "A",
+                            start: 357,
+                            end: 358,
+                        },
+                    },
+                    span: Span {
+                        str: "a: A",
+                        start: 354,
+                        end: 358,
+                    },
+                },
+                FunctionArgument {
+                    name: Identifier(
+                        Span {
+                            str: "b",
+                            start: 360,
+                            end: 361,
+                        },
+                    ),
+                    kind: Type {
+                        base: Identifier(
+                            Span {
+                                str: "B",
+                                start: 363,
+                                end: 364,
+                            },
+                        ),
+                        generics: [],
+                        array: false,
+                        raw: false,
+                        span: Span {
+                            str: "B",
+                            start: 363,
+                            end: 364,
+                        },
+                    },
+                    span: Span {
+                        str: "b: B",
+                        start: 360,
+                        end: 364,
+                    },
+                },
+            ],
+            return_type: None,
+            statements: [
+                Return {
+                    value: Binary {
+                        lhs: Identifier(
+                            Span {
+                                str: "a",
+                                start: 377,
+                                end: 378,
+                            },
+                        ),
+                        operator: Plus,
+                        rhs: Identifier(
+                            Span {
+                                str: "b",
+                                start: 381,
+                                end: 382,
+                            },
+                        ),
+                        span: Span {
+                            str: "a + b",
+                            start: 377,
+                            end: 382,
+                        },
+                    },
+                    span: Span {
+                        str: "return a + b;",
+                        start: 370,
+                        end: 383,
+                    },
+                },
+            ],
+            span: Span {
+                str: "func<A, B>(a: A, b: B) do\n\treturn a + b;\nend",
+                start: 343,
+                end: 387,
+            },
+        },
+        span: Span {
+            str: "var generics = func<A, B>(a: A, b: B) do\n\treturn a + b;\nend;",
+            start: 328,
+            end: 388,
+        },
+    },
+    VariableDefinition {
+        name: Span {
+            str: "immediate_call",
+            start: 394,
+            end: 408,
+        },
+        kind: Empty,
+        value: FunctionCall {
+            callee: AnonymousFunction {
+                generics: [],
+                arguments: [],
+                return_type: None,
+                statements: [
+                    Return {
+                        value: Number(
+                            2,
+                            Span {
+                                str: "2",
+                                start: 430,
+                                end: 431,
+                            },
+                        ),
+                        span: Span {
+                            str: "return 2;",
+                            start: 423,
+                            end: 432,
+                        },
+                    },
+                ],
+                span: Span {
+                    str: "func() do\n\treturn 2;\nend",
+                    start: 412,
+                    end: 436,
+                },
+            },
+            generics: [],
+            arguments: [],
+            span: Span {
+                str: "()",
+                start: 437,
+                end: 439,
+            },
+        },
+        span: Span {
+            str: "var immediate_call = (func() do\n\treturn 2;\nend)();",
+            start: 390,
+            end: 440,
+        },
+    },
+    FunctionCall {
+        callee: Identifier(
+            Span {
+                str: "print",
+                start: 442,
+                end: 447,
+            },
+        ),
+        generics: [],
+        arguments: [
+            Binary {
+                lhs: FunctionCall {
+                    callee: Identifier(
+                        Span {
+                            str: "generics",
+                            start: 448,
+                            end: 456,
+                        },
+                    ),
+                    generics: [
+                        Type {
+                            base: Identifier(
+                                Span {
+                                    str: "int",
+                                    start: 457,
+                                    end: 460,
+                                },
+                            ),
+                            generics: [],
+                            array: false,
+                            raw: false,
+                            span: Span {
+                                str: "int",
+                                start: 457,
+                                end: 460,
+                            },
+                        },
+                        Type {
+                            base: Identifier(
+                                Span {
+                                    str: "int",
+                                    start: 462,
+                                    end: 465,
+                                },
+                            ),
+                            generics: [],
+                            array: false,
+                            raw: false,
+                            span: Span {
+                                str: "int",
+                                start: 462,
+                                end: 465,
+                            },
+                        },
+                    ],
+                    arguments: [
+                        Number(
+                            2,
+                            Span {
+                                str: "2",
+                                start: 467,
+                                end: 468,
+                            },
+                        ),
+                        Number(
+                            2,
+                            Span {
+                                str: "2",
+                                start: 470,
+                                end: 471,
+                            },
+                        ),
+                    ],
+                    span: Span {
+                        str: "<int, int>(2, 2)",
+                        start: 456,
+                        end: 472,
+                    },
+                },
+                operator: Equals,
+                rhs: Number(
+                    4,
+                    Span {
+                        str: "4",
+                        start: 476,
+                        end: 477,
+                    },
+                ),
+                span: Span {
+                    str: "generics<int, int>(2, 2) == 4",
+                    start: 448,
+                    end: 477,
+                },
+            },
+        ],
+        span: Span {
+            str: "(generics<int, int>(2, 2) == 4)",
+            start: 447,
+            end: 478,
+        },
+    },
+    FunctionCall {
+        callee: Identifier(
+            Span {
+                str: "print",
+                start: 480,
+                end: 485,
+            },
+        ),
+        generics: [],
+        arguments: [
+            Identifier(
+                Span {
+                    str: "immediate_call",
+                    start: 486,
+                    end: 500,
+                },
+            ),
+        ],
+        span: Span {
+            str: "(immediate_call)",
+            start: 485,
+            end: 501,
+        },
+    },
+]

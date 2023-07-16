@@ -257,7 +257,7 @@ impl<'p> ClassDeclarationMember<'p> {
 	}
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub enum Expression<'p> {
 	Number(i32, Span<'p>),
 	String(String, Span<'p>),
@@ -328,11 +328,20 @@ pub enum Expression<'p> {
 		span: Span<'p>
 	},
 
+	AnonymousFunction {
+		generics: Vec<Expression<'p>>,
+		arguments: Vec<FunctionArgument<'p>>,
+		return_type: Box<Option<Expression<'p>>>,
+		statements: Vec<Statement<'p>>,
+
+		span: Span<'p>
+	},
+
 	Empty,
 	Unimplemented
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub enum BinaryOperator {
 	Plus,
 	Minus,
@@ -349,7 +358,7 @@ pub enum BinaryOperator {
 	LessThanEqual
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub enum UnaryOperator {
 	Minus,
 	Not
@@ -567,6 +576,7 @@ impl<'p> ASTParser<'p> {
 
 	fn parse_term(&self, pair: Pair<'p, Rule>) -> Expression {
 		match pair.as_rule() {
+			Rule::anonymous_function => self.parse_anonymous_function(pair),
 			Rule::unary_expression => self.parse_unary_expression(pair),
 			Rule::binary_expression | Rule::expression => self.parse_expression(pair),
 
@@ -584,7 +594,54 @@ impl<'p> ASTParser<'p> {
 		}
 	}
 
+	fn parse_anonymous_function(&self, pair: Pair<'p, Rule>) -> Expression {
+		if pair.as_rule() != Rule::anonymous_function {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::anonymous_function, pair.as_rule());
+		}
+
+		let span = pair.as_span();
+		let mut pairs = pair.into_inner();
+
+		let mut generics: Vec<Expression> = Vec::new();
+		let mut arguments: Vec<FunctionArgument> = Vec::new();
+		let mut statements: Vec<Statement> = Vec::new();
+		let mut return_type: Option<Expression> = None;
+
+		while let Some(pair) = pairs.next() {
+			match pair.as_rule() {
+				Rule::do_block => statements = self.parse_program(pair.into_inner()),
+				Rule::r#type => return_type = Some(self.parse_type(pair)),
+				Rule::function_definition_arguments => arguments = self.parse_function_definition_arguments(pair),
+				Rule::definition_generics => generics = self.parse_generics_as_identifiers(pair),
+
+				rule => error!(
+					self,
+					"expected '{:?}', '{:?}', '{:?}' or '{:?}', got '{:?}'",
+					pair.as_span(),
+
+					Rule::do_block,
+					Rule::r#type,
+					Rule::function_definition_arguments,
+					Rule::definition_generics,
+					rule
+				)
+			};
+		}
+
+		Expression::AnonymousFunction {
+			generics,
+			arguments,
+			return_type: Box::new(return_type),
+			statements,
+			span
+		}
+	}
+
 	fn parse_elseif_branch(&self, pair: Pair<'p, Rule>) -> IfBranch {
+		if pair.as_rule() != Rule::if_elseif {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::if_elseif, pair.as_rule());
+		}
+
 		let span = pair.as_span();
 		let mut pairs = pair.into_inner();
 
@@ -608,6 +665,10 @@ impl<'p> ASTParser<'p> {
 	}
 
 	fn parse_else_branch(&self, pair: Pair<'p, Rule>) -> IfBranch {
+		if pair.as_rule() != Rule::if_else {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::if_else, pair.as_rule());
+		}
+
 		let span = pair.as_span();
 		let mut pairs = pair.into_inner();
 
@@ -627,6 +688,10 @@ impl<'p> ASTParser<'p> {
 	}
 
 	fn parse_if(&self, pair: Pair<'p, Rule>) -> Statement {
+		if pair.as_rule() != Rule::if_stmt {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::if_stmt, pair.as_rule());
+		}
+
 		let span = pair.as_span();
 		let mut pairs = pair.into_inner();
 
@@ -667,6 +732,10 @@ impl<'p> ASTParser<'p> {
 	}
 
 	fn parse_while(&self, pair: Pair<'p, Rule>) -> Statement {
+		if pair.as_rule() != Rule::while_stmt {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::while_stmt, pair.as_rule());
+		}
+
 		let span = pair.as_span();
 		let mut pairs = pair.into_inner();
 
@@ -1027,6 +1096,43 @@ impl<'p> ASTParser<'p> {
 		}
 
 		attributes
+	}
+
+	fn parse_function_definition_arguments(&self, pair: Pair<'p, Rule>) -> Vec<FunctionArgument> {
+		if pair.as_rule() != Rule::function_definition_arguments {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::function_definition_arguments, pair.as_rule());
+		}
+
+		// not needed yet
+		// let span = pair.as_span();
+		let mut pairs = pair.into_inner();
+
+		let mut arguments: Vec<FunctionArgument> = Vec::new();
+
+		while let Some(pair) = pairs.next() {
+			if pair.as_rule() != Rule::function_definition_argument {
+				error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::function_definition_argument, pair.as_rule());
+			}
+
+			let arg_span = pair.as_span();
+			let mut arg_pairs = pair.into_inner();
+
+			let name_pair = arg_pairs
+				.next()
+				.expect("Failed to parse function definition arguments: argument name is missing");
+
+			let kind_pair = arg_pairs
+				.next()
+				.expect("Failed to parse function definition arguments: argument type is missing");
+
+			arguments.push(FunctionArgument {
+				name: self.parse_identifier(name_pair),
+				kind: self.parse_type(kind_pair),
+				span: arg_span
+			});
+		}
+
+		arguments
 	}
 
 	fn parse_function_header(&self, pair: Pair<'p, Rule>) -> (Span, Vec<Expression>, Vec<FunctionArgument>, Option<Expression>) {

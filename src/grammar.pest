@@ -34,7 +34,7 @@ stmt_sep = _{ ";" }
 //* statements *//
 return_stmt = { "return" ~ expression? ~ stmt_sep }
 function_call_stmt = { term_without_recursion ~ recursive_operator+ ~ stmt_sep } // this is wrong, but it will be handled inside the parser //
-function_definition_stmt = { function_header ~ do_block }
+function_definition_stmt = { function_header ~ do_block ~ stmt_sep? }
 function_declaration_stmt = { function_header ~ stmt_sep }
 type_definition_stmt = { "type" ~ identifier ~ definition_generics? ~ "=" ~ type ~ stmt_sep }
 // class definition defined later //
@@ -48,7 +48,7 @@ if_stmt = { "if" ~ expression ~ "then" ~ statements ~ if_elseif* ~ if_else? ~ "e
 	if_elseif = { "elseif" ~ expression ~ "then" ~ statements }
 	if_else = { "else" ~ statements }
 
-while_stmt = { "while" ~ expression ~ do_block }
+while_stmt = { "while" ~ expression ~ do_block ~ stmt_sep? }
 break_stmt = { "break" ~ stmt_sep }
 
 //* functions *//
@@ -58,7 +58,7 @@ function_definition_argument = { identifier ~ ":" ~ type }
 function_definition_arguments = { function_definition_argument ~ ("," ~ function_definition_argument)* }
 function_call_arguments = { expression ~ ("," ~ expression)* ~ ","? }
 
-do_block = { "do" ~ statement* ~ "end" ~ stmt_sep? }
+do_block = { "do" ~ statement* ~ "end" }
 
 //* class declaration *//
 class_declaration = { "declare"? ~ "class" ~ identifier ~ definition_generics? ~ class_declaration_member* ~ "end" ~ stmt_sep? }
@@ -92,17 +92,18 @@ definition_generics = { "<" ~ identifier ~ ("," ~ identifier)* ~ ">" }
 call_generics = { "<" ~ type ~ ("," ~ type)* ~ ">" }
 
 //* expressions *//
-expression = { unary_expression | binary_expression | array_expression | recursive_expression | term }
+expression = { anonymous_function | unary_expression | binary_expression | array_expression | recursive_expression | term }
 binary_operator = { "+" | "-" | "/" | "*" | "%" | "==" | "!=" | "and" | "or" | ">" | "<" | ">=" | "<=" }
 unary_operator = { "-" | "not" }
 
 // general expression stuff //
+anonymous_function = { "func" ~ definition_generics? ~ "(" ~ function_definition_arguments? ~ ")" ~ ("->" ~ type)? ~ do_block }
 unary_expression = { unary_operator ~ term }
 binary_expression = { term ~ (binary_operator ~ term)+ }
 array_expression = { ("[" ~ "]") | ("[" ~ expression ~ ("," ~ expression)* ~ "]") }
 
 // terms //
-term = _{ unary_expression | array_expression | recursive_expression | term_without_recursion }
+term = _{ anonymous_function | unary_expression | array_expression | recursive_expression | term_without_recursion }
 term_without_recursion = _{ literal | identifier | "(" ~ expression ~ ")" }
 
 // recursive expressions //
