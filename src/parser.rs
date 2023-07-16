@@ -619,7 +619,7 @@ impl<'p> ASTParser<'p> {
 			match pair.as_rule() {
 				Rule::do_block => statements = self.parse_program(pair.into_inner()),
 				Rule::r#type => return_type = Some(self.parse_type(pair)),
-				Rule::function_definition_arguments => arguments = self.parse_function_definition_arguments(pair),
+				Rule::function_arguments => arguments = self.parse_function_arguments(pair),
 				Rule::definition_generics => generics = self.parse_generics_as_identifiers(pair),
 
 				rule => error!(
@@ -629,7 +629,7 @@ impl<'p> ASTParser<'p> {
 
 					Rule::do_block,
 					Rule::r#type,
-					Rule::function_definition_arguments,
+					Rule::function_arguments,
 					Rule::definition_generics,
 					rule
 				)
@@ -1106,9 +1106,9 @@ impl<'p> ASTParser<'p> {
 		attributes
 	}
 
-	fn parse_function_definition_arguments(&self, pair: Pair<'p, Rule>) -> Vec<FunctionArgument> {
-		if pair.as_rule() != Rule::function_definition_arguments {
-			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::function_definition_arguments, pair.as_rule());
+	fn parse_function_arguments(&self, pair: Pair<'p, Rule>) -> Vec<FunctionArgument> {
+		if pair.as_rule() != Rule::function_arguments {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::function_arguments, pair.as_rule());
 		}
 
 		// not needed yet
@@ -1118,8 +1118,8 @@ impl<'p> ASTParser<'p> {
 		let mut arguments: Vec<FunctionArgument> = Vec::new();
 
 		while let Some(pair) = pairs.next() {
-			if pair.as_rule() != Rule::function_definition_argument {
-				error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::function_definition_argument, pair.as_rule());
+			if pair.as_rule() != Rule::function_argument {
+				error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::function_argument, pair.as_rule());
 			}
 
 			let arg_span = pair.as_span();
@@ -1152,69 +1152,15 @@ impl<'p> ASTParser<'p> {
 
 		let mut generics: Vec<Expression> = Vec::new();
 		let mut arguments: Vec<FunctionArgument> = Vec::new();
-
-		// check if arguments or generics exist
-		if header_pairs.len() > 0 {
-			let next_pair = header_pairs
-				.peek()
-				.unwrap_or_else(|| unreachable!("Failed to parse function header: expected generics or arguments, got nothing")); // header_pairs is guaranteed to have at least one pair left
-
-			if next_pair.as_rule() == Rule::definition_generics {
-				generics = self.parse_generics_as_identifiers(next_pair);
-				header_pairs.next();
-			}
-
-			// now check for arguments
-			if header_pairs.len() > 0 {
-				// must clone to prevent argument_pairs from eating the return type
-				let argument_pairs = header_pairs
-					.clone()
-					.next()
-					.expect("Failed to parse function header: arguments are missing")
-					.into_inner();
-
-				let filtered_arguments: Vec<Pair<Rule>> = argument_pairs
-					.clone()
-					.filter(|pair| pair.as_rule() == Rule::function_definition_argument)
-					.collect();
-
-				for arg_pair in filtered_arguments {
-					// arg_pair is here expected to be function_definition_argument
-					let span = arg_pair.as_span();
-					let mut arg = arg_pair.into_inner();
-
-					let arg_name = self.parse_identifier(
-						arg
-							.next()
-							.expect("Failed to parse function header: argument name is missing")
-					);
-
-					let arg_type = arg
-						.next()
-						.expect("Failed to parse function header: argument type is missing");
-
-					let arg_type = self.parse_type(arg_type);
-
-					arguments.push(
-						FunctionArgument::new(arg_name, arg_type, span)
-					);
-				}
-			}
-		}
-
-		while header_pairs.len() > 1 {
-			header_pairs.next();
-		}
-
 		let mut return_type: Option<Expression> = None;
-		
-		if header_pairs.len() > 0 {
-			let pair = header_pairs
-				.next()
-				.unwrap_or_else(|| unreachable!("Failed to parse function header: expected return type, got nothing"));
 
-			if pair.as_rule() == Rule::r#type {
-				return_type = Some(self.parse_type(pair));
+		while let Some(pair) = header_pairs.next() {
+			match pair.as_rule() {
+				Rule::definition_generics => generics = self.parse_generics_as_identifiers(pair),
+				Rule::function_arguments => arguments = self.parse_function_arguments(pair),
+				Rule::r#type => return_type = Some(self.parse_type(pair)),
+
+				rule => error!(self, "unexpected rule '{:?}'", pair.as_span(), rule)
 			}
 		}
 

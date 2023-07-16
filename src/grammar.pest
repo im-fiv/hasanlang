@@ -52,10 +52,10 @@ while_stmt = { "while" ~ expression ~ do_block ~ stmt_sep? }
 break_stmt = { "break" ~ stmt_sep }
 
 //* functions *//
-function_header = { "func" ~ identifier ~ definition_generics? ~ "(" ~ function_definition_arguments? ~ ")" ~ ("->" ~ type)? }
+function_header = { "func" ~ identifier ~ definition_generics? ~ "(" ~ function_arguments? ~ ")" ~ ("->" ~ type)? }
 
-function_definition_argument = { identifier ~ ":" ~ type }
-function_definition_arguments = { function_definition_argument ~ ("," ~ function_definition_argument)* }
+function_argument = { identifier ~ ":" ~ type }
+function_arguments = { function_argument ~ ("," ~ function_argument)* }
 function_call_arguments = { expression ~ ("," ~ expression)* ~ ","? }
 
 do_block = { "do" ~ statement* ~ "end" }
@@ -97,7 +97,7 @@ binary_operator = { "+" | "-" | "/" | "*" | "%" | "==" | "!=" | "and" | "or" | "
 unary_operator = { "-" | "not" }
 
 // general expression stuff //
-anonymous_function = { "func" ~ definition_generics? ~ "(" ~ function_definition_arguments? ~ ")" ~ ("->" ~ type)? ~ do_block }
+anonymous_function = { "func" ~ definition_generics? ~ "(" ~ function_arguments? ~ ")" ~ ("->" ~ type)? ~ do_block }
 unary_expression = { unary_operator ~ term }
 binary_expression = { term ~ (binary_operator ~ term)+ }
 array_expression = { ("[" ~ "]") | ("[" ~ expression ~ ("," ~ expression)* ~ "]") }
