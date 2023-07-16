@@ -45,7 +45,7 @@ enum_definition_stmt = { "enum" ~ identifier ~ (enum_member ~ ("," ~ enum_member
 
 //* control flow *//
 if_stmt = { "if" ~ expression ~ "then" ~ statements ~ if_elseif* ~ if_else? ~ "end" }
-	if_elseif = { "elseif" ~ expression ~ "then" ~ statements }
+	if_elseif = { ("else if" | "elseif") ~ expression ~ "then" ~ statements }
 	if_else = { "else" ~ statements }
 
 while_stmt = { "while" ~ expression ~ do_block ~ stmt_sep? }
