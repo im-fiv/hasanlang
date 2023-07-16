@@ -106,7 +106,7 @@
             Return {
                 value: Array(
                     [
-                        Number(
+                        Int(
                             5,
                             Span {
                                 str: "5",

@@ -16,8 +16,6 @@ macro_rules! error {
 	};
 }
 
-pub type NumberType = i32;
-
 pub struct ASTParser<'p> {
 	pairs: Pairs<'p, Rule>
 }
@@ -257,9 +255,13 @@ impl<'p> ClassDeclarationMember<'p> {
 	}
 }
 
+type IntType = i64;
+type FloatType = f64;
+
 #[derive(Debug)]
 pub enum Expression<'p> {
-	Number(i32, Span<'p>),
+	Int(IntType, Span<'p>),
+	Float(FloatType, Span<'p>),
 	String(String, Span<'p>),
 	Boolean(bool, Span<'p>),
 
@@ -548,12 +550,18 @@ impl<'p> ASTParser<'p> {
 	}
 
 	fn parse_number_literal(&self, pair: Pair<'p, Rule>) -> Expression {
+		let span = pair.as_span();
 		let string = pair.as_str().to_owned();
 
-		let literal = string.parse::<NumberType>()
-			.unwrap_or_else(|_| error!(self, "failed to parse number literal '{}'", pair.as_span(), string));
+		let literal = match string.parse::<IntType>() {
+			Ok(i) => Expression::Int(i, span),
+			Err(_) => match string.parse::<FloatType>() {
+				Ok(f) => Expression::Float(f, span),
+				Err(_) => error!(self, "failed to parse number literal '{}'", pair.as_span(), string),
+			},
+		};
 
-		Expression::Number(literal, pair.as_span())
+		literal
 	}
 
 	fn parse_string_literal(&self, pair: Pair<'p, Rule>) -> Expression {

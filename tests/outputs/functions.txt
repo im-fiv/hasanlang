@@ -112,7 +112,7 @@
         ),
         statements: [
             Return {
-                value: Number(
+                value: Int(
                     5,
                     Span {
                         str: "5",
@@ -386,7 +386,7 @@
                     end: 303,
                 },
                 kind: Empty,
-                value: Number(
+                value: Int(
                     2,
                     Span {
                         str: "2",

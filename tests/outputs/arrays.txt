@@ -3,7 +3,7 @@
         value: ArrayAccess {
             expression: Array(
                 [
-                    Number(
+                    Int(
                         1,
                         Span {
                             str: "1",
@@ -11,7 +11,7 @@
                             end: 10,
                         },
                     ),
-                    Number(
+                    Int(
                         2,
                         Span {
                             str: "2",
@@ -19,7 +19,7 @@
                             end: 13,
                         },
                     ),
-                    Number(
+                    Int(
                         3,
                         Span {
                             str: "3",
@@ -36,7 +36,7 @@
             ),
             accessor: Binary {
                 lhs: Binary {
-                    lhs: Number(
+                    lhs: Int(
                         1,
                         Span {
                             str: "1",
@@ -45,7 +45,7 @@
                         },
                     ),
                     operator: Plus,
-                    rhs: Number(
+                    rhs: Int(
                         1,
                         Span {
                             str: "1",
@@ -68,7 +68,7 @@
                             end: 31,
                         },
                     ),
-                    accessor: Number(
+                    accessor: Int(
                         0,
                         Span {
                             str: "0",

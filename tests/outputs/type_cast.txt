@@ -133,7 +133,7 @@
                         value: TypeCast {
                             value: TypeCast {
                                 value: TypeCast {
-                                    value: Number(
+                                    value: Int(
                                         3,
                                         Span {
                                             str: "3",
@@ -354,7 +354,7 @@
                 },
             ],
             arguments: [
-                Number(
+                Int(
                     5,
                     Span {
                         str: "5",
