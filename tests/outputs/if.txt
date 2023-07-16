@@ -287,4 +287,194 @@
             end: 197,
         },
     },
+    If {
+        condition: Binary {
+            lhs: Boolean(
+                true,
+                Span {
+                    str: "true",
+                    start: 202,
+                    end: 206,
+                },
+            ),
+            operator: Equals,
+            rhs: Boolean(
+                true,
+                Span {
+                    str: "true",
+                    start: 210,
+                    end: 214,
+                },
+            ),
+            span: Span {
+                str: "true == true ",
+                start: 202,
+                end: 215,
+            },
+        },
+        statements: [
+            FunctionCall {
+                callee: Identifier(
+                    Span {
+                        str: "print",
+                        start: 221,
+                        end: 226,
+                    },
+                ),
+                generics: [],
+                arguments: [
+                    String(
+                        "asdasd",
+                        Span {
+                            str: "\"asdasd\"",
+                            start: 227,
+                            end: 235,
+                        },
+                    ),
+                ],
+                span: Span {
+                    str: "(\"asdasd\")",
+                    start: 226,
+                    end: 236,
+                },
+            },
+            VariableAssign {
+                name: Identifier(
+                    Span {
+                        str: "a",
+                        start: 239,
+                        end: 240,
+                    },
+                ),
+                value: Boolean(
+                    false,
+                    Span {
+                        str: "false",
+                        start: 243,
+                        end: 248,
+                    },
+                ),
+                span: Span {
+                    str: "a = false;",
+                    start: 239,
+                    end: 249,
+                },
+            },
+        ],
+        elseif_branches: [
+            IfBranch {
+                condition: Binary {
+                    lhs: Boolean(
+                        false,
+                        Span {
+                            str: "false",
+                            start: 258,
+                            end: 263,
+                        },
+                    ),
+                    operator: NotEquals,
+                    rhs: Boolean(
+                        true,
+                        Span {
+                            str: "true",
+                            start: 267,
+                            end: 271,
+                        },
+                    ),
+                    span: Span {
+                        str: "false != true ",
+                        start: 258,
+                        end: 272,
+                    },
+                },
+                statements: [
+                    FunctionCall {
+                        callee: Identifier(
+                            Span {
+                                str: "do_something",
+                                start: 278,
+                                end: 290,
+                            },
+                        ),
+                        generics: [],
+                        arguments: [],
+                        span: Span {
+                            str: "()",
+                            start: 290,
+                            end: 292,
+                        },
+                    },
+                ],
+                span: Span {
+                    str: "else if false != true then\n\tdo_something();",
+                    start: 250,
+                    end: 293,
+                },
+            },
+            IfBranch {
+                condition: Binary {
+                    lhs: Boolean(
+                        false,
+                        Span {
+                            str: "false",
+                            start: 302,
+                            end: 307,
+                        },
+                    ),
+                    operator: Or,
+                    rhs: Boolean(
+                        true,
+                        Span {
+                            str: "true",
+                            start: 311,
+                            end: 315,
+                        },
+                    ),
+                    span: Span {
+                        str: "false or true ",
+                        start: 302,
+                        end: 316,
+                    },
+                },
+                statements: [
+                    Return {
+                        value: Int(
+                            5,
+                            Span {
+                                str: "5",
+                                start: 329,
+                                end: 330,
+                            },
+                        ),
+                        span: Span {
+                            str: "return 5;",
+                            start: 322,
+                            end: 331,
+                        },
+                    },
+                ],
+                span: Span {
+                    str: "else if false or true then\n\treturn 5;",
+                    start: 294,
+                    end: 331,
+                },
+            },
+        ],
+        else_branch: Some(
+            IfBranch {
+                condition: Empty,
+                statements: [],
+                span: Span {
+                    str: "else\n\t// do nothing\n",
+                    start: 332,
+                    end: 352,
+                },
+            },
+        ),
+        span: Span {
+            str: "if true == true then\n\tprint(\"asdasd\");\n\ta = false;\nelse if false != true then\n\tdo_something();\nelse if false or true then\n\treturn 5;\nelse\n\t// do nothing\nend",
+            start: 199,
+            end: 355,
+        },
+    },
 ]
