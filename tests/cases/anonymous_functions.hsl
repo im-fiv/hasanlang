@@ -23,5 +23,9 @@ var immediate_call = (func() do
 	return 2;
 end)();
 
+(func(input: string) do
+	print(input);
+end)("anonymous function call statement");
+
 print(generics<int, int>(2, 2) == 4);
 print(immediate_call);
