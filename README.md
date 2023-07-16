@@ -45,11 +45,11 @@ As I said before, this is my first time making a project as complex as this, so 
 Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 
 ## My current TODO list (Corrective Parser stage)
-- [ ] Rename function definition arguments into function_arguments
-- [ ] Rewrite `parse_function_header` to use `parse_function_definition_arguments`
 - [ ] Fix spans of expressions
 - [ ] Allow for recursive parsing of types
 - [ ] Implement `for` statements
+- [x] Rename function definition arguments into function_arguments
+- [x] Rewrite `parse_function_header` to use `parse_function_definition_arguments`
 - [x] Add support for floats
 - [x] Implement anonymous functions
 - [x] Add more unary operators
