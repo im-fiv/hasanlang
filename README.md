@@ -45,9 +45,9 @@ As I said before, this is my first time making a project as complex as this, so 
 Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 
 ## My current TODO list (Corrective Parser stage)
-- [ ] Constants
 - [ ] Module system
 - [ ] Interfaces
+- [x] Constants
 - [x] Implement `for` statements
 - [x] Separate `public`, `private`, and `static` from class function attributes
 - [x] Rename function definition arguments into function_arguments
