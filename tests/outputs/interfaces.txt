@@ -1,0 +1,542 @@
+[
+    Interface {
+        modifiers: GeneralModifiers {
+            modifiers: [
+                Public(
+                    Span {
+                        str: "pub",
+                        start: 0,
+                        end: 3,
+                    },
+                ),
+                Constant(
+                    Span {
+                        str: "const",
+                        start: 4,
+                        end: 9,
+                    },
+                ),
+                Static(
+                    Span {
+                        str: "static",
+                        start: 10,
+                        end: 16,
+                    },
+                ),
+            ],
+            span: Span {
+                str: "pub const static",
+                start: 0,
+                end: 16,
+            },
+        },
+        name: Span {
+            str: "ComplexInterface",
+            start: 27,
+            end: 43,
+        },
+        generics: [
+            Identifier(
+                Span {
+                    str: "A",
+                    start: 44,
+                    end: 45,
+                },
+            ),
+            Identifier(
+                Span {
+                    str: "B",
+                    start: 47,
+                    end: 48,
+                },
+            ),
+            Identifier(
+                Span {
+                    str: "C",
+                    start: 50,
+                    end: 51,
+                },
+            ),
+        ],
+        members: [
+            Variable {
+                modifiers: GeneralModifiers {
+                    modifiers: [
+                        Static(
+                            Span {
+                                str: "static",
+                                start: 54,
+                                end: 60,
+                            },
+                        ),
+                    ],
+                    span: Span {
+                        str: "static",
+                        start: 54,
+                        end: 60,
+                    },
+                },
+                name: Span {
+                    str: "hello",
+                    start: 65,
+                    end: 70,
+                },
+                kind: Regular {
+                    base: Identifier(
+                        Span {
+                            str: "string",
+                            start: 72,
+                            end: 78,
+                        },
+                    ),
+                    generics: [],
+                    raw: false,
+                    array: true,
+                    span: Span {
+                        str: "string[]",
+                        start: 72,
+                        end: 80,
+                    },
+                },
+                span: Span {
+                    str: "static var hello: string[];",
+                    start: 54,
+                    end: 81,
+                },
+            },
+            Variable {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 83,
+                        end: 83,
+                    },
+                },
+                name: Span {
+                    str: "reg_var",
+                    start: 87,
+                    end: 94,
+                },
+                kind: Regular {
+                    base: Identifier(
+                        Span {
+                            str: "int",
+                            start: 96,
+                            end: 99,
+                        },
+                    ),
+                    generics: [],
+                    raw: true,
+                    array: false,
+                    span: Span {
+                        str: "int!",
+                        start: 96,
+                        end: 100,
+                    },
+                },
+                span: Span {
+                    str: "var reg_var: int!;",
+                    start: 83,
+                    end: 101,
+                },
+            },
+            Function {
+                modifiers: GeneralModifiers {
+                    modifiers: [
+                        Public(
+                            Span {
+                                str: "pub",
+                                start: 120,
+                                end: 123,
+                            },
+                        ),
+                    ],
+                    span: Span {
+                        str: "pub ",
+                        start: 120,
+                        end: 124,
+                    },
+                },
+                attributes: Some(
+                    ClassFunctionAttributes {
+                        attributes: [
+                            Constructor(
+                                Span {
+                                    str: "constructor",
+                                    start: 106,
+                                    end: 117,
+                                },
+                            ),
+                        ],
+                        span: Span {
+                            str: "#[constructor]",
+                            start: 104,
+                            end: 118,
+                        },
+                    },
+                ),
+                name: Span {
+                    str: "world",
+                    start: 129,
+                    end: 134,
+                },
+                generics: [
+                    Identifier(
+                        Span {
+                            str: "T",
+                            start: 135,
+                            end: 136,
+                        },
+                    ),
+                ],
+                arguments: Some(
+                    InterfaceFunctionArguments {
+                        argument_types: [
+                            Regular {
+                                base: Identifier(
+                                    Span {
+                                        str: "int",
+                                        start: 138,
+                                        end: 141,
+                                    },
+                                ),
+                                generics: [],
+                                raw: false,
+                                array: false,
+                                span: Span {
+                                    str: "int",
+                                    start: 138,
+                                    end: 141,
+                                },
+                            },
+                            Regular {
+                                base: Identifier(
+                                    Span {
+                                        str: "int",
+                                        start: 143,
+                                        end: 146,
+                                    },
+                                ),
+                                generics: [],
+                                raw: false,
+                                array: false,
+                                span: Span {
+                                    str: "int",
+                                    start: 143,
+                                    end: 146,
+                                },
+                            },
+                        ],
+                        span: Span {
+                            str: "int, int",
+                            start: 138,
+                            end: 146,
+                        },
+                    },
+                ),
+                return_type: Regular {
+                    base: Identifier(
+                        Span {
+                            str: "int",
+                            start: 151,
+                            end: 154,
+                        },
+                    ),
+                    generics: [],
+                    raw: false,
+                    array: false,
+                    span: Span {
+                        str: "int",
+                        start: 151,
+                        end: 154,
+                    },
+                },
+                span: Span {
+                    str: "#[constructor]\n\tpub func world<T>(int, int) -> int;",
+                    start: 104,
+                    end: 155,
+                },
+            },
+            Function {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 158,
+                        end: 158,
+                    },
+                },
+                attributes: None,
+                name: Span {
+                    str: "bye",
+                    start: 163,
+                    end: 166,
+                },
+                generics: [
+                    Identifier(
+                        Span {
+                            str: "A",
+                            start: 167,
+                            end: 168,
+                        },
+                    ),
+                ],
+                arguments: None,
+                return_type: Regular {
+                    base: Identifier(
+                        Span {
+                            str: "B",
+                            start: 175,
+                            end: 176,
+                        },
+                    ),
+                    generics: [],
+                    raw: true,
+                    array: true,
+                    span: Span {
+                        str: "B![]",
+                        start: 175,
+                        end: 179,
+                    },
+                },
+                span: Span {
+                    str: "func bye<A>() -> B![];",
+                    start: 158,
+                    end: 180,
+                },
+            },
+            Function {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 183,
+                        end: 183,
+                    },
+                },
+                attributes: None,
+                name: Span {
+                    str: "test",
+                    start: 188,
+                    end: 192,
+                },
+                generics: [],
+                arguments: None,
+                return_type: Function {
+                    argument_types: [
+                        Regular {
+                            base: Identifier(
+                                Span {
+                                    str: "int",
+                                    start: 199,
+                                    end: 202,
+                                },
+                            ),
+                            generics: [],
+                            raw: false,
+                            array: false,
+                            span: Span {
+                                str: "int",
+                                start: 199,
+                                end: 202,
+                            },
+                        },
+                        Regular {
+                            base: Identifier(
+                                Span {
+                                    str: "int",
+                                    start: 204,
+                                    end: 207,
+                                },
+                            ),
+                            generics: [],
+                            raw: false,
+                            array: false,
+                            span: Span {
+                                str: "int",
+                                start: 204,
+                                end: 207,
+                            },
+                        },
+                    ],
+                    return_type: Function {
+                        argument_types: [
+                            Regular {
+                                base: Identifier(
+                                    Span {
+                                        str: "int",
+                                        start: 213,
+                                        end: 216,
+                                    },
+                                ),
+                                generics: [],
+                                raw: false,
+                                array: false,
+                                span: Span {
+                                    str: "int",
+                                    start: 213,
+                                    end: 216,
+                                },
+                            },
+                            Regular {
+                                base: Identifier(
+                                    Span {
+                                        str: "C",
+                                        start: 218,
+                                        end: 219,
+                                    },
+                                ),
+                                generics: [],
+                                raw: false,
+                                array: false,
+                                span: Span {
+                                    str: "C",
+                                    start: 218,
+                                    end: 219,
+                                },
+                            },
+                        ],
+                        return_type: Regular {
+                            base: Identifier(
+                                Span {
+                                    str: "void",
+                                    start: 224,
+                                    end: 228,
+                                },
+                            ),
+                            generics: [],
+                            raw: true,
+                            array: false,
+                            span: Span {
+                                str: "void!",
+                                start: 224,
+                                end: 229,
+                            },
+                        },
+                        span: Span {
+                            str: "(int, C) -> void!",
+                            start: 212,
+                            end: 229,
+                        },
+                    },
+                    span: Span {
+                        str: "(int, int) -> (int, C) -> void!",
+                        start: 198,
+                        end: 229,
+                    },
+                },
+                span: Span {
+                    str: "func test() -> (int, int) -> (int, C) -> void!;",
+                    start: 183,
+                    end: 230,
+                },
+            },
+        ],
+        span: Span {
+            str: "pub const static interface ComplexInterface<A, B, C>\n\tstatic var hello: string[];\n\tvar reg_var: int!;\n\n\t#[constructor]\n\tpub func world<T>(int, int) -> int;\n\n\tfunc bye<A>() -> B![];\n\n\tfunc test() -> (int, int) -> (int, C) -> void!;\nend\n\n",
+            start: 0,
+            end: 236,
+        },
+    },
+    Interface {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 236,
+                end: 236,
+            },
+        },
+        name: Span {
+            str: "SimpleInterface",
+            start: 246,
+            end: 261,
+        },
+        generics: [],
+        members: [
+            Variable {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 263,
+                        end: 263,
+                    },
+                },
+                name: Span {
+                    str: "some_variable",
+                    start: 267,
+                    end: 280,
+                },
+                kind: Regular {
+                    base: Identifier(
+                        Span {
+                            str: "int",
+                            start: 282,
+                            end: 285,
+                        },
+                    ),
+                    generics: [],
+                    raw: false,
+                    array: false,
+                    span: Span {
+                        str: "int",
+                        start: 282,
+                        end: 285,
+                    },
+                },
+                span: Span {
+                    str: "var some_variable: int;",
+                    start: 263,
+                    end: 286,
+                },
+            },
+            Function {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 289,
+                        end: 289,
+                    },
+                },
+                attributes: None,
+                name: Span {
+                    str: "some_function",
+                    start: 294,
+                    end: 307,
+                },
+                generics: [],
+                arguments: None,
+                return_type: Regular {
+                    base: Identifier(
+                        Span {
+                            str: "void",
+                            start: 313,
+                            end: 317,
+                        },
+                    ),
+                    generics: [],
+                    raw: false,
+                    array: false,
+                    span: Span {
+                        str: "void",
+                        start: 313,
+                        end: 317,
+                    },
+                },
+                span: Span {
+                    str: "func some_function() -> void;",
+                    start: 289,
+                    end: 318,
+                },
+            },
+        ],
+        span: Span {
+            str: "interface SimpleInterface\n\tvar some_variable: int;\n\n\tfunc some_function() -> void;\nend\n\n// TODO: interface class implementations are to come soon",
+            start: 236,
+            end: 381,
+        },
+    },
+]

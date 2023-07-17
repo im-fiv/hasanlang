@@ -4,6 +4,7 @@ program = { SOI ~ statement* ~ EOI }
 statements = { statement* }
 
 statement = _{
+	interface_stmt |
 	return_stmt |
 	if_stmt |
 	while_stmt |
@@ -40,6 +41,7 @@ general_modifiers = { modifier_public? ~ modifier_constant? ~ modifier_static? }
 	modifier_constant = { "const" }
 
 //* Statements *//
+interface_stmt = { general_modifiers ~ "interface" ~ identifier ~ definition_generics? ~ interface_members ~ "end" ~ stmt_sep? }
 return_stmt = { "return" ~ expression? ~ stmt_sep }
 function_call_stmt = { term_without_recursion ~ recursive_operator+ ~ stmt_sep } // this is wrong, but it will be handled inside the parser
 function_definition_stmt = { function_header ~ do_block ~ stmt_sep? }
@@ -50,6 +52,14 @@ type_definition_stmt = { "type" ~ identifier ~ definition_generics? ~ "=" ~ type
 variable_definition_stmt = { general_modifiers ~ "var" ~ identifier ~ (":" ~ type)? ~ "=" ~ expression ~ stmt_sep }
 variable_assign_stmt = { (recursive_expression | expression) ~ "=" ~ expression ~ stmt_sep }
 enum_definition_stmt = { general_modifiers ~ "enum" ~ identifier ~ (enum_variant ~ ("," ~ enum_variant)*)? ~ "end" }
+
+//* Interfaces *//
+interface_members = { (interface_variable | interface_function)* }
+	interface_member = { interface_variable | interface_function }
+
+interface_variable = { general_modifiers ~ "var" ~ identifier ~ ":" ~ type ~ stmt_sep }
+interface_function = { attributes? ~ general_modifiers ~ "func" ~ identifier ~ definition_generics? ~ "(" ~ interface_function_arguments? ~ ")" ~ "->" ~ type ~ stmt_sep }
+	interface_function_arguments = { type ~ ("," ~ type)* }
 
 //* Control flow *//
 if_stmt = { "if" ~ expression ~ "then" ~ statements ~ if_elseif* ~ if_else? ~ "end" }
@@ -64,8 +74,8 @@ for_in_stmt = { "for" ~ expression ~ "in" ~ expression ~ do_block ~ stmt_sep? }
 //* Functions *//
 function_header = { general_modifiers ~ "func" ~ identifier ~ definition_generics? ~ "(" ~ function_arguments? ~ ")" ~ ("->" ~ type)? }
 
-function_argument = { identifier ~ ":" ~ type }
 function_arguments = { function_argument ~ ("," ~ function_argument)* }
+	function_argument = { identifier ~ ":" ~ type }
 function_call_arguments = { expression ~ ("," ~ expression)* ~ ","? }
 
 do_block = { "do" ~ statement* ~ "end" }
