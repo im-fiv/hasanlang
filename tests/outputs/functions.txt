@@ -1,5 +1,13 @@
 [
     FunctionDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 0,
+                end: 0,
+            },
+        },
         name: Span {
             str: "print_hello_world",
             start: 5,
@@ -76,6 +84,14 @@
         },
     },
     FunctionDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 88,
+                end: 88,
+            },
+        },
         name: Span {
             str: "random_number",
             start: 93,
@@ -134,6 +150,14 @@
         },
     },
     FunctionDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 142,
+                end: 142,
+            },
+        },
         name: Span {
             str: "arguments",
             start: 147,
@@ -307,6 +331,14 @@
         },
     },
     FunctionDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 233,
+                end: 233,
+            },
+        },
         name: Span {
             str: "no_return_type",
             start: 238,
@@ -370,6 +402,14 @@
         },
     },
     FunctionDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 280,
+                end: 280,
+            },
+        },
         name: Span {
             str: "main",
             start: 285,
@@ -380,6 +420,14 @@
         return_type: None,
         statements: [
             VariableDefinition {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 296,
+                        end: 296,
+                    },
+                },
                 name: Span {
                     str: "add",
                     start: 300,
@@ -464,6 +512,14 @@
         },
     },
     FunctionDeclaration {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 350,
+                end: 350,
+            },
+        },
         name: Span {
             str: "function_declaration",
             start: 355,

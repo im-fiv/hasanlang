@@ -1,9 +1,25 @@
 [
     VariableDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [
+                Public(
+                    Span {
+                        str: "pub",
+                        start: 0,
+                        end: 3,
+                    },
+                ),
+            ],
+            span: Span {
+                str: "pub ",
+                start: 0,
+                end: 4,
+            },
+        },
         name: Span {
             str: "no_args_return",
-            start: 4,
-            end: 18,
+            start: 8,
+            end: 22,
         },
         kind: Empty,
         value: AnonymousFunction {
@@ -16,34 +32,42 @@
                         5,
                         Span {
                             str: "5",
-                            start: 39,
-                            end: 40,
+                            start: 43,
+                            end: 44,
                         },
                     ),
                     span: Span {
                         str: "return 5;",
-                        start: 32,
-                        end: 41,
+                        start: 36,
+                        end: 45,
                     },
                 },
             ],
             span: Span {
                 str: "func() do\n\treturn 5;\nend",
-                start: 21,
-                end: 45,
+                start: 25,
+                end: 49,
             },
         },
         span: Span {
-            str: "var no_args_return = func() do\n\treturn 5;\nend;",
+            str: "pub var no_args_return = func() do\n\treturn 5;\nend;",
             start: 0,
-            end: 46,
+            end: 50,
         },
     },
     VariableDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 52,
+                end: 52,
+            },
+        },
         name: Span {
             str: "no_args",
-            start: 52,
-            end: 59,
+            start: 56,
+            end: 63,
         },
         kind: Empty,
         value: AnonymousFunction {
@@ -54,8 +78,8 @@
                     base: Identifier(
                         Span {
                             str: "int",
-                            start: 72,
-                            end: 75,
+                            start: 76,
+                            end: 79,
                         },
                     ),
                     generics: [],
@@ -63,8 +87,8 @@
                     raw: false,
                     span: Span {
                         str: "int ",
-                        start: 72,
-                        end: 76,
+                        start: 76,
+                        end: 80,
                     },
                 },
             ),
@@ -75,8 +99,8 @@
                             2,
                             Span {
                                 str: "2",
-                                start: 87,
-                                end: 88,
+                                start: 91,
+                                end: 92,
                             },
                         ),
                         operator: Plus,
@@ -84,40 +108,48 @@
                             2,
                             Span {
                                 str: "2",
-                                start: 91,
-                                end: 92,
+                                start: 95,
+                                end: 96,
                             },
                         ),
                         span: Span {
                             str: "2 + 2",
-                            start: 87,
-                            end: 92,
+                            start: 91,
+                            end: 96,
                         },
                     },
                     span: Span {
                         str: "return 2 + 2;",
-                        start: 80,
-                        end: 93,
+                        start: 84,
+                        end: 97,
                     },
                 },
             ],
             span: Span {
                 str: "func() -> int do\n\treturn 2 + 2;\nend",
-                start: 62,
-                end: 97,
+                start: 66,
+                end: 101,
             },
         },
         span: Span {
             str: "var no_args = func() -> int do\n\treturn 2 + 2;\nend;",
-            start: 48,
-            end: 98,
+            start: 52,
+            end: 102,
         },
     },
     VariableDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 104,
+                end: 104,
+            },
+        },
         name: Span {
             str: "no_return",
-            start: 104,
-            end: 113,
+            start: 108,
+            end: 117,
         },
         kind: Empty,
         value: AnonymousFunction {
@@ -127,16 +159,16 @@
                     name: Identifier(
                         Span {
                             str: "a",
-                            start: 121,
-                            end: 122,
+                            start: 125,
+                            end: 126,
                         },
                     ),
                     kind: Type {
                         base: Identifier(
                             Span {
                                 str: "int",
-                                start: 124,
-                                end: 127,
+                                start: 128,
+                                end: 131,
                             },
                         ),
                         generics: [],
@@ -144,30 +176,30 @@
                         raw: false,
                         span: Span {
                             str: "int",
-                            start: 124,
-                            end: 127,
+                            start: 128,
+                            end: 131,
                         },
                     },
                     span: Span {
                         str: "a: int",
-                        start: 121,
-                        end: 127,
+                        start: 125,
+                        end: 131,
                     },
                 },
                 FunctionArgument {
                     name: Identifier(
                         Span {
                             str: "b",
-                            start: 129,
-                            end: 130,
+                            start: 133,
+                            end: 134,
                         },
                     ),
                     kind: Type {
                         base: Identifier(
                             Span {
                                 str: "int",
-                                start: 132,
-                                end: 135,
+                                start: 136,
+                                end: 139,
                             },
                         ),
                         generics: [],
@@ -175,14 +207,14 @@
                         raw: false,
                         span: Span {
                             str: "int",
-                            start: 132,
-                            end: 135,
+                            start: 136,
+                            end: 139,
                         },
                     },
                     span: Span {
                         str: "b: int",
-                        start: 129,
-                        end: 135,
+                        start: 133,
+                        end: 139,
                     },
                 },
             ],
@@ -193,48 +225,64 @@
                         lhs: Identifier(
                             Span {
                                 str: "a",
-                                start: 148,
-                                end: 149,
+                                start: 152,
+                                end: 153,
                             },
                         ),
                         operator: Plus,
                         rhs: Identifier(
                             Span {
                                 str: "b",
-                                start: 152,
-                                end: 153,
+                                start: 156,
+                                end: 157,
                             },
                         ),
                         span: Span {
                             str: "a + b",
-                            start: 148,
-                            end: 153,
+                            start: 152,
+                            end: 157,
                         },
                     },
                     span: Span {
                         str: "return a + b;",
-                        start: 141,
-                        end: 154,
+                        start: 145,
+                        end: 158,
                     },
                 },
             ],
             span: Span {
                 str: "func(a: int, b: int) do\n\treturn a + b;\nend",
-                start: 116,
-                end: 158,
+                start: 120,
+                end: 162,
             },
         },
         span: Span {
             str: "var no_return = func(a: int, b: int) do\n\treturn a + b;\nend;",
-            start: 100,
-            end: 159,
+            start: 104,
+            end: 163,
         },
     },
     VariableDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [
+                Public(
+                    Span {
+                        str: "pub",
+                        start: 165,
+                        end: 168,
+                    },
+                ),
+            ],
+            span: Span {
+                str: "pub ",
+                start: 165,
+                end: 169,
+            },
+        },
         name: Span {
             str: "no_statements",
-            start: 165,
-            end: 178,
+            start: 173,
+            end: 186,
         },
         kind: Empty,
         value: AnonymousFunction {
@@ -244,21 +292,37 @@
             statements: [],
             span: Span {
                 str: "func() do end",
-                start: 181,
-                end: 194,
+                start: 189,
+                end: 202,
             },
         },
         span: Span {
-            str: "var no_statements = func() do end;",
-            start: 161,
-            end: 195,
+            str: "pub var no_statements = func() do end;",
+            start: 165,
+            end: 203,
         },
     },
     VariableDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [
+                Public(
+                    Span {
+                        str: "pub",
+                        start: 204,
+                        end: 207,
+                    },
+                ),
+            ],
+            span: Span {
+                str: "pub ",
+                start: 204,
+                end: 208,
+            },
+        },
         name: Span {
             str: "no_statements",
-            start: 200,
-            end: 213,
+            start: 212,
+            end: 225,
         },
         kind: Empty,
         value: AnonymousFunction {
@@ -268,16 +332,16 @@
                     name: Identifier(
                         Span {
                             str: "a",
-                            start: 221,
-                            end: 222,
+                            start: 233,
+                            end: 234,
                         },
                     ),
                     kind: Type {
                         base: Identifier(
                             Span {
                                 str: "int",
-                                start: 224,
-                                end: 227,
+                                start: 236,
+                                end: 239,
                             },
                         ),
                         generics: [],
@@ -285,14 +349,14 @@
                         raw: false,
                         span: Span {
                             str: "int",
-                            start: 224,
-                            end: 227,
+                            start: 236,
+                            end: 239,
                         },
                     },
                     span: Span {
                         str: "a: int",
-                        start: 221,
-                        end: 227,
+                        start: 233,
+                        end: 239,
                     },
                 },
             ],
@@ -300,21 +364,37 @@
             statements: [],
             span: Span {
                 str: "func(a: int) do end",
-                start: 216,
-                end: 235,
+                start: 228,
+                end: 247,
             },
         },
         span: Span {
-            str: "var no_statements = func(a: int) do end;",
-            start: 196,
-            end: 236,
+            str: "pub var no_statements = func(a: int) do end;",
+            start: 204,
+            end: 248,
         },
     },
     VariableDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [
+                Public(
+                    Span {
+                        str: "pub",
+                        start: 249,
+                        end: 252,
+                    },
+                ),
+            ],
+            span: Span {
+                str: "pub ",
+                start: 249,
+                end: 253,
+            },
+        },
         name: Span {
             str: "no_statements",
-            start: 241,
-            end: 254,
+            start: 257,
+            end: 270,
         },
         kind: Empty,
         value: AnonymousFunction {
@@ -324,16 +404,16 @@
                     name: Identifier(
                         Span {
                             str: "a",
-                            start: 262,
-                            end: 263,
+                            start: 278,
+                            end: 279,
                         },
                     ),
                     kind: Type {
                         base: Identifier(
                             Span {
                                 str: "int",
-                                start: 265,
-                                end: 268,
+                                start: 281,
+                                end: 284,
                             },
                         ),
                         generics: [],
@@ -341,14 +421,14 @@
                         raw: false,
                         span: Span {
                             str: "int",
-                            start: 265,
-                            end: 268,
+                            start: 281,
+                            end: 284,
                         },
                     },
                     span: Span {
                         str: "a: int",
-                        start: 262,
-                        end: 268,
+                        start: 278,
+                        end: 284,
                     },
                 },
             ],
@@ -357,8 +437,8 @@
                     base: Identifier(
                         Span {
                             str: "int",
-                            start: 273,
-                            end: 276,
+                            start: 289,
+                            end: 292,
                         },
                     ),
                     generics: [],
@@ -366,29 +446,45 @@
                     raw: false,
                     span: Span {
                         str: "int ",
-                        start: 273,
-                        end: 277,
+                        start: 289,
+                        end: 293,
                     },
                 },
             ),
             statements: [],
             span: Span {
                 str: "func(a: int) -> int do end",
-                start: 257,
-                end: 283,
+                start: 273,
+                end: 299,
             },
         },
         span: Span {
-            str: "var no_statements = func(a: int) -> int do end;",
-            start: 237,
-            end: 284,
+            str: "pub var no_statements = func(a: int) -> int do end;",
+            start: 249,
+            end: 300,
         },
     },
     VariableDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [
+                Public(
+                    Span {
+                        str: "pub",
+                        start: 301,
+                        end: 304,
+                    },
+                ),
+            ],
+            span: Span {
+                str: "pub ",
+                start: 301,
+                end: 305,
+            },
+        },
         name: Span {
             str: "no_statements",
-            start: 289,
-            end: 302,
+            start: 309,
+            end: 322,
         },
         kind: Empty,
         value: AnonymousFunction {
@@ -399,8 +495,8 @@
                     base: Identifier(
                         Span {
                             str: "int",
-                            start: 315,
-                            end: 318,
+                            start: 335,
+                            end: 338,
                         },
                     ),
                     generics: [],
@@ -408,29 +504,37 @@
                     raw: false,
                     span: Span {
                         str: "int ",
-                        start: 315,
-                        end: 319,
+                        start: 335,
+                        end: 339,
                     },
                 },
             ),
             statements: [],
             span: Span {
                 str: "func() -> int do end",
-                start: 305,
-                end: 325,
+                start: 325,
+                end: 345,
             },
         },
         span: Span {
-            str: "var no_statements = func() -> int do end;",
-            start: 285,
-            end: 326,
+            str: "pub var no_statements = func() -> int do end;",
+            start: 301,
+            end: 346,
         },
     },
     VariableDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 348,
+                end: 348,
+            },
+        },
         name: Span {
             str: "generics",
-            start: 332,
-            end: 340,
+            start: 352,
+            end: 360,
         },
         kind: Empty,
         value: AnonymousFunction {
@@ -438,15 +542,15 @@
                 Identifier(
                     Span {
                         str: "A",
-                        start: 348,
-                        end: 349,
+                        start: 368,
+                        end: 369,
                     },
                 ),
                 Identifier(
                     Span {
                         str: "B",
-                        start: 351,
-                        end: 352,
+                        start: 371,
+                        end: 372,
                     },
                 ),
             ],
@@ -455,16 +559,16 @@
                     name: Identifier(
                         Span {
                             str: "a",
-                            start: 354,
-                            end: 355,
+                            start: 374,
+                            end: 375,
                         },
                     ),
                     kind: Type {
                         base: Identifier(
                             Span {
                                 str: "A",
-                                start: 357,
-                                end: 358,
+                                start: 377,
+                                end: 378,
                             },
                         ),
                         generics: [],
@@ -472,30 +576,30 @@
                         raw: false,
                         span: Span {
                             str: "A",
-                            start: 357,
-                            end: 358,
+                            start: 377,
+                            end: 378,
                         },
                     },
                     span: Span {
                         str: "a: A",
-                        start: 354,
-                        end: 358,
+                        start: 374,
+                        end: 378,
                     },
                 },
                 FunctionArgument {
                     name: Identifier(
                         Span {
                             str: "b",
-                            start: 360,
-                            end: 361,
+                            start: 380,
+                            end: 381,
                         },
                     ),
                     kind: Type {
                         base: Identifier(
                             Span {
                                 str: "B",
-                                start: 363,
-                                end: 364,
+                                start: 383,
+                                end: 384,
                             },
                         ),
                         generics: [],
@@ -503,14 +607,14 @@
                         raw: false,
                         span: Span {
                             str: "B",
-                            start: 363,
-                            end: 364,
+                            start: 383,
+                            end: 384,
                         },
                     },
                     span: Span {
                         str: "b: B",
-                        start: 360,
-                        end: 364,
+                        start: 380,
+                        end: 384,
                     },
                 },
             ],
@@ -521,48 +625,56 @@
                         lhs: Identifier(
                             Span {
                                 str: "a",
-                                start: 377,
-                                end: 378,
+                                start: 397,
+                                end: 398,
                             },
                         ),
                         operator: Plus,
                         rhs: Identifier(
                             Span {
                                 str: "b",
-                                start: 381,
-                                end: 382,
+                                start: 401,
+                                end: 402,
                             },
                         ),
                         span: Span {
                             str: "a + b",
-                            start: 377,
-                            end: 382,
+                            start: 397,
+                            end: 402,
                         },
                     },
                     span: Span {
                         str: "return a + b;",
-                        start: 370,
-                        end: 383,
+                        start: 390,
+                        end: 403,
                     },
                 },
             ],
             span: Span {
                 str: "func<A, B>(a: A, b: B) do\n\treturn a + b;\nend",
-                start: 343,
-                end: 387,
+                start: 363,
+                end: 407,
             },
         },
         span: Span {
             str: "var generics = func<A, B>(a: A, b: B) do\n\treturn a + b;\nend;",
-            start: 328,
-            end: 388,
+            start: 348,
+            end: 408,
         },
     },
     VariableDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 410,
+                end: 410,
+            },
+        },
         name: Span {
             str: "immediate_call",
-            start: 394,
-            end: 408,
+            start: 414,
+            end: 428,
         },
         kind: Empty,
         value: FunctionCall {
@@ -576,35 +688,35 @@
                             2,
                             Span {
                                 str: "2",
-                                start: 430,
-                                end: 431,
+                                start: 450,
+                                end: 451,
                             },
                         ),
                         span: Span {
                             str: "return 2;",
-                            start: 423,
-                            end: 432,
+                            start: 443,
+                            end: 452,
                         },
                     },
                 ],
                 span: Span {
                     str: "func() do\n\treturn 2;\nend",
-                    start: 412,
-                    end: 436,
+                    start: 432,
+                    end: 456,
                 },
             },
             generics: [],
             arguments: [],
             span: Span {
                 str: "()",
-                start: 437,
-                end: 439,
+                start: 457,
+                end: 459,
             },
         },
         span: Span {
             str: "var immediate_call = (func() do\n\treturn 2;\nend)();",
-            start: 390,
-            end: 440,
+            start: 410,
+            end: 460,
         },
     },
     FunctionCall {
@@ -615,16 +727,16 @@
                     name: Identifier(
                         Span {
                             str: "input",
-                            start: 448,
-                            end: 453,
+                            start: 468,
+                            end: 473,
                         },
                     ),
                     kind: Type {
                         base: Identifier(
                             Span {
                                 str: "string",
-                                start: 455,
-                                end: 461,
+                                start: 475,
+                                end: 481,
                             },
                         ),
                         generics: [],
@@ -632,14 +744,14 @@
                         raw: false,
                         span: Span {
                             str: "string",
-                            start: 455,
-                            end: 461,
+                            start: 475,
+                            end: 481,
                         },
                     },
                     span: Span {
                         str: "input: string",
-                        start: 448,
-                        end: 461,
+                        start: 468,
+                        end: 481,
                     },
                 },
             ],
@@ -649,8 +761,8 @@
                     callee: Identifier(
                         Span {
                             str: "print",
-                            start: 467,
-                            end: 472,
+                            start: 487,
+                            end: 492,
                         },
                     ),
                     generics: [],
@@ -658,22 +770,22 @@
                         Identifier(
                             Span {
                                 str: "input",
-                                start: 473,
-                                end: 478,
+                                start: 493,
+                                end: 498,
                             },
                         ),
                     ],
                     span: Span {
                         str: "(input)",
-                        start: 472,
-                        end: 479,
+                        start: 492,
+                        end: 499,
                     },
                 },
             ],
             span: Span {
                 str: "func(input: string) do\n\tprint(input);\nend",
-                start: 443,
-                end: 484,
+                start: 463,
+                end: 504,
             },
         },
         generics: [],
@@ -682,23 +794,23 @@
                 "anonymous function call statement",
                 Span {
                     str: "\"anonymous function call statement\"",
-                    start: 486,
-                    end: 521,
+                    start: 506,
+                    end: 541,
                 },
             ),
         ],
         span: Span {
             str: "(\"anonymous function call statement\")",
-            start: 485,
-            end: 522,
+            start: 505,
+            end: 542,
         },
     },
     FunctionCall {
         callee: Identifier(
             Span {
                 str: "print",
-                start: 525,
-                end: 530,
+                start: 545,
+                end: 550,
             },
         ),
         generics: [],
@@ -708,8 +820,8 @@
                     callee: Identifier(
                         Span {
                             str: "generics",
-                            start: 531,
-                            end: 539,
+                            start: 551,
+                            end: 559,
                         },
                     ),
                     generics: [
@@ -717,8 +829,8 @@
                             base: Identifier(
                                 Span {
                                     str: "int",
-                                    start: 540,
-                                    end: 543,
+                                    start: 560,
+                                    end: 563,
                                 },
                             ),
                             generics: [],
@@ -726,16 +838,16 @@
                             raw: false,
                             span: Span {
                                 str: "int",
-                                start: 540,
-                                end: 543,
+                                start: 560,
+                                end: 563,
                             },
                         },
                         Type {
                             base: Identifier(
                                 Span {
                                     str: "int",
-                                    start: 545,
-                                    end: 548,
+                                    start: 565,
+                                    end: 568,
                                 },
                             ),
                             generics: [],
@@ -743,8 +855,8 @@
                             raw: false,
                             span: Span {
                                 str: "int",
-                                start: 545,
-                                end: 548,
+                                start: 565,
+                                end: 568,
                             },
                         },
                     ],
@@ -753,23 +865,23 @@
                             2,
                             Span {
                                 str: "2",
-                                start: 550,
-                                end: 551,
+                                start: 570,
+                                end: 571,
                             },
                         ),
                         Int(
                             2,
                             Span {
                                 str: "2",
-                                start: 553,
-                                end: 554,
+                                start: 573,
+                                end: 574,
                             },
                         ),
                     ],
                     span: Span {
                         str: "<int, int>(2, 2)",
-                        start: 539,
-                        end: 555,
+                        start: 559,
+                        end: 575,
                     },
                 },
                 operator: Equals,
@@ -777,29 +889,29 @@
                     4,
                     Span {
                         str: "4",
-                        start: 559,
-                        end: 560,
+                        start: 579,
+                        end: 580,
                     },
                 ),
                 span: Span {
                     str: "generics<int, int>(2, 2) == 4",
-                    start: 531,
-                    end: 560,
+                    start: 551,
+                    end: 580,
                 },
             },
         ],
         span: Span {
             str: "(generics<int, int>(2, 2) == 4)",
-            start: 530,
-            end: 561,
+            start: 550,
+            end: 581,
         },
     },
     FunctionCall {
         callee: Identifier(
             Span {
                 str: "print",
-                start: 563,
-                end: 568,
+                start: 583,
+                end: 588,
             },
         ),
         generics: [],
@@ -807,15 +919,15 @@
             Identifier(
                 Span {
                     str: "immediate_call",
-                    start: 569,
-                    end: 583,
+                    start: 589,
+                    end: 603,
                 },
             ),
         ],
         span: Span {
             str: "(immediate_call)",
-            start: 568,
-            end: 584,
+            start: 588,
+            end: 604,
         },
     },
 ]

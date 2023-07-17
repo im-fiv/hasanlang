@@ -1,5 +1,13 @@
 [
     ClassDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 0,
+                end: 0,
+            },
+        },
         name: Span {
             str: "Connection",
             start: 6,
@@ -8,6 +16,14 @@
         generics: [],
         members: [
             Variable {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 18,
+                        end: 18,
+                    },
+                },
                 name: Span {
                     str: "event",
                     start: 18,
@@ -38,6 +54,14 @@
                 },
             },
             Variable {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 33,
+                        end: 33,
+                    },
+                },
                 name: Span {
                     str: "id",
                     start: 33,
@@ -68,6 +92,14 @@
                 },
             },
             Function {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 60,
+                        end: 60,
+                    },
+                },
                 name: Span {
                     str: "new",
                     start: 65,
@@ -254,6 +286,14 @@
                 },
             },
             Function {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 148,
+                        end: 148,
+                    },
+                },
                 name: Span {
                     str: "disconnect",
                     start: 153,
@@ -345,6 +385,14 @@
         },
     },
     ClassDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 214,
+                end: 214,
+            },
+        },
         name: Span {
             str: "Event",
             start: 220,
@@ -353,6 +401,14 @@
         generics: [],
         members: [
             Variable {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 227,
+                        end: 227,
+                    },
+                },
                 name: Span {
                     str: "name",
                     start: 227,
@@ -383,6 +439,14 @@
                 },
             },
             Variable {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 242,
+                        end: 242,
+                    },
+                },
                 name: Span {
                     str: "functions",
                     start: 242,
@@ -413,6 +477,14 @@
                 },
             },
             Function {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 282,
+                        end: 282,
+                    },
+                },
                 name: Span {
                     str: "new",
                     start: 287,
@@ -533,6 +605,14 @@
                 },
             },
             Function {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 343,
+                        end: 343,
+                    },
+                },
                 name: Span {
                     str: "connect",
                     start: 348,
@@ -594,6 +674,14 @@
                 ),
                 statements: [
                     VariableDefinition {
+                        modifiers: GeneralModifiers {
+                            modifiers: [],
+                            span: Span {
+                                str: "",
+                                start: 394,
+                                end: 394,
+                            },
+                        },
                         name: Span {
                             str: "connection",
                             start: 398,
@@ -759,6 +847,14 @@
                 },
             },
             Function {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 518,
+                        end: 518,
+                    },
+                },
                 name: Span {
                     str: "_disconnect",
                     start: 523,
@@ -861,6 +957,14 @@
                 },
             },
             Function {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 585,
+                        end: 585,
+                    },
+                },
                 name: Span {
                     str: "fire",
                     start: 590,
@@ -872,6 +976,14 @@
                 return_type: None,
                 statements: [
                     FunctionDefinition {
+                        modifiers: GeneralModifiers {
+                            modifiers: [],
+                            span: Span {
+                                str: "",
+                                start: 602,
+                                end: 602,
+                            },
+                        },
                         name: Span {
                             str: "call",
                             start: 607,
@@ -1003,6 +1115,14 @@
         },
     },
     VariableDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 700,
+                end: 700,
+            },
+        },
         name: Span {
             str: "event",
             start: 704,
@@ -1055,6 +1175,14 @@
         },
     },
     VariableDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 734,
+                end: 734,
+            },
+        },
         name: Span {
             str: "connection",
             start: 738,
@@ -1106,6 +1234,14 @@
         },
     },
     FunctionDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 778,
+                end: 778,
+            },
+        },
         name: Span {
             str: "onChanged",
             start: 783,

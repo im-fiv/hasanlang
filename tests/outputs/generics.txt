@@ -1,5 +1,13 @@
 [
     FunctionDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 0,
+                end: 0,
+            },
+        },
         name: Span {
             str: "generic_function",
             start: 5,
@@ -98,6 +106,14 @@
         },
     },
     ClassDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 97,
+                end: 97,
+            },
+        },
         name: Span {
             str: "generic_class",
             start: 103,
@@ -114,6 +130,14 @@
         ],
         members: [
             Variable {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 121,
+                        end: 121,
+                    },
+                },
                 name: Span {
                     str: "inner_value",
                     start: 121,
@@ -144,6 +168,14 @@
                 },
             },
             Function {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 147,
+                        end: 147,
+                    },
+                },
                 name: Span {
                     str: "value",
                     start: 152,
@@ -232,6 +264,14 @@
         },
     },
     FunctionDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 205,
+                end: 205,
+            },
+        },
         name: Span {
             str: "main",
             start: 210,
@@ -242,6 +282,14 @@
         return_type: None,
         statements: [
             VariableDefinition {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 221,
+                        end: 221,
+                    },
+                },
                 name: Span {
                     str: "wrapped",
                     start: 225,
