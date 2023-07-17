@@ -29,20 +29,24 @@ pub struct Program<'p> {
 pub enum Statement<'p> {
 	FunctionDefinition {
 		modifiers: GeneralModifiers<'p>,
+
 		name: Span<'p>,
 		generics: Vec<Expression<'p>>,
 		arguments: Vec<FunctionArgument<'p>>,
 		return_type: Option<Type<'p>>,
 		statements: Vec<Statement<'p>>,
+
 		span: Span<'p>
 	},
 
 	FunctionDeclaration {
 		modifiers: GeneralModifiers<'p>,
+
 		name: Span<'p>,
 		generics: Vec<Expression<'p>>,
 		arguments: Vec<FunctionArgument<'p>>,
 		return_type: Option<Type<'p>>,
+
 		span: Span<'p>
 	},
 
@@ -50,36 +54,44 @@ pub enum Statement<'p> {
 		name: Span<'p>,
 		generics: Vec<Expression<'p>>,
 		definition: Type<'p>,
+
 		span: Span<'p>
 	},
 
 	ClassDefinition {
 		modifiers: GeneralModifiers<'p>,
+
 		name: Span<'p>,
 		generics: Vec<Expression<'p>>,
 		members: Vec<ClassDefinitionMember<'p>>,
+
 		span: Span<'p>
 	},
 
 	ClassDeclaration {
 		modifiers: GeneralModifiers<'p>,
+
 		name: Span<'p>,
 		generics: Vec<Expression<'p>>,
 		members: Vec<ClassDeclarationMember<'p>>,
+
 		span: Span<'p>
 	},
 
 	VariableDefinition {
 		modifiers: GeneralModifiers<'p>,
+
 		name: Span<'p>,
 		kind: Option<Type<'p>>,
 		value: Expression<'p>,
+
 		span: Span<'p>
 	},
 
 	VariableAssign {
 		name: Expression<'p>,
 		value: Expression<'p>,
+
 		span: Span<'p>
 	},
 
@@ -87,18 +99,22 @@ pub enum Statement<'p> {
 		callee: Expression<'p>,
 		generics: Vec<Type<'p>>,
 		arguments: Vec<Expression<'p>>,
+
 		span: Span<'p>
 	},
 
 	Return {
 		value: Expression<'p>,
+
 		span: Span<'p>
 	},
 
 	EnumDefinition {
 		modifiers: GeneralModifiers<'p>,
+
 		name: Span<'p>,
 		variants: Vec<EnumVariant<'p>>,
+
 		span: Span<'p>
 	},
 
@@ -107,12 +123,14 @@ pub enum Statement<'p> {
 		statements: Vec<Statement<'p>>,
 		elseif_branches: Vec<ConditionBranch<'p>>,
 		else_branch: Option<ConditionBranch<'p>>,
+
 		span: Span<'p>
 	},
 
 	While {
 		condition: Expression<'p>,
 		statements: Vec<Statement<'p>>,
+
 		span: Span<'p>
 	},
 
@@ -120,6 +138,17 @@ pub enum Statement<'p> {
 		left: Expression<'p>,
 		right: Expression<'p>,
 		statements: Vec<Statement<'p>>,
+
+		span: Span<'p>
+	},
+
+	Interface {
+		modifiers: GeneralModifiers<'p>,
+
+		name: Span<'p>,
+		generics: Vec<Expression<'p>>,
+		members: Vec<InterfaceMember<'p>>,
+
 		span: Span<'p>
 	},
 	
@@ -129,11 +158,43 @@ pub enum Statement<'p> {
 	Unimplemented
 }
 
+#[derive(Debug, Clone)]
+pub enum InterfaceMember<'p> {
+	Variable {
+		modifiers: GeneralModifiers<'p>,
+
+		name: Span<'p>,
+		kind: Type<'p>,
+
+		span: Span<'p>
+	},
+
+	Function {
+		modifiers: GeneralModifiers<'p>,
+		attributes: Option<ClassFunctionAttributes<'p>>,
+
+		name: Span<'p>,
+		generics: Vec<Expression<'p>>,
+		arguments: Option<InterfaceFunctionArguments<'p>>,
+		return_type: Type<'p>,
+
+		span: Span<'p>
+	}
+}
+
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct InterfaceFunctionArguments<'p> {
+	argument_types: Vec<Type<'p>>,
+	span: Span<'p>
+}
+
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct ConditionBranch<'p> {
 	condition: Expression<'p>,
 	statements: Vec<Statement<'p>>,
+
 	span: Span<'p>
 }
 
@@ -149,6 +210,7 @@ pub struct EnumVariant<'p> {
 pub struct FunctionArgument<'p> {
 	name: Expression<'p>, //* Expression::Identifier
 	kind: Type<'p>,
+
 	span: Span<'p>
 }
 
@@ -208,20 +270,24 @@ impl<'p> GeneralModifiers<'p> {
 pub enum ClassDefinitionMember<'p> {
 	Variable {
 		modifiers: GeneralModifiers<'p>,
+
 		name: Span<'p>,
 		kind: Type<'p>,
 		default_value: Expression<'p>,
+
 		span: Span<'p>
 	},
 
 	Function {
 		modifiers: GeneralModifiers<'p>,
+
 		name: Span<'p>,
 		attributes: Option<ClassFunctionAttributes<'p>>,
 		generics: Vec<Expression<'p>>,
 		arguments: Vec<FunctionArgument<'p>>,
 		return_type: Option<Type<'p>>,
 		statements: Vec<Statement<'p>>,
+
 		span: Span<'p>
 	}
 }
@@ -472,6 +538,7 @@ impl<'p> HasanParser<'p> {
 				Rule::function_call_stmt => self.parse_function_call(pair),
 				Rule::return_stmt => self.parse_return(pair),
 				Rule::enum_definition_stmt => self.parse_enum_definition(pair),
+				Rule::interface_stmt => self.parse_interface(pair),
 
 				Rule::if_stmt => self.parse_if(pair),
 				Rule::while_stmt => self.parse_while(pair),
@@ -664,6 +731,212 @@ impl<'p> HasanParser<'p> {
 
 			rule => error!(self, "invalid expression rule '{:?}'", pair.as_span(), rule)
 		}
+	}
+
+	fn parse_interface_variable(&self, pair: Pair<'p, Rule>) -> InterfaceMember {
+		if pair.as_rule() != Rule::interface_variable {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::interface_variable, pair.as_rule());
+		}
+
+		let span = pair.as_span();
+		let mut pairs = pair.into_inner();
+
+		let modifiers_pair = pairs
+			.next()
+			.expect("Failed to parse interface variable: modifiers pair is missing");
+
+		let modifiers = self.parse_general_modifiers(modifiers_pair);
+
+		let name = pairs
+			.next()
+			.expect("Failed to parse interface variable: name pair is missing")
+			.as_span();
+
+		let type_pair = pairs
+			.next()
+			.expect("Failed to parse interface variable: type pair is missing");
+
+		InterfaceMember::Variable {
+			modifiers,
+			name,
+			kind: self.parse_type(type_pair),
+			span
+		}
+	}
+
+	fn parse_interface_function_arguments(&self, pair: Pair<'p, Rule>) -> InterfaceFunctionArguments {
+		if pair.as_rule() != Rule::interface_function_arguments {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::interface_function_arguments, pair.as_rule());
+		}
+
+		let span = pair.as_span();
+		let mut pairs = pair.into_inner();
+
+		let mut argument_types: Vec<Type> = Vec::new();
+
+		while let Some(pair) = pairs.next() {
+			if pair.as_rule() != Rule::r#type {
+				error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::r#type, pair.as_rule());
+			}
+			
+			argument_types.push(self.parse_type(pair));
+		}
+
+		InterfaceFunctionArguments { argument_types, span }
+	}
+
+	fn parse_interface_function(&self, pair: Pair<'p, Rule>) -> InterfaceMember {
+		if pair.as_rule() != Rule::interface_function {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::interface_function, pair.as_rule());
+		}
+
+		// Get usual span and inner pairs
+		let span = pair.as_span();
+		let mut pairs = pair.into_inner();
+
+		// Next pair can either be attributes or modifiers
+		let mut next_pair = pairs
+			.next()
+			.expect("Failed to parse interface function: attributes/modifiers pair is missing");
+
+		let mut attributes: Option<ClassFunctionAttributes> = None;
+		
+		if next_pair.as_rule() == Rule::attributes {
+			attributes = Some(self.parse_class_function_attributes(next_pair));
+
+			// Next pair is guaranteed to be `general_modifiers`, even if it's empty
+			next_pair = pairs
+				.next()
+				.unwrap_or_else(|| unreachable!("Failed to parse interface function: modifiers pair is missing"));
+		}
+
+		// Parse modifiers
+		let modifiers = self.parse_general_modifiers(next_pair);
+
+		// Get function name
+		let name = pairs
+			.next()
+			.expect("Failed to parse interface variable: name pair is missing")
+			.as_span();
+
+		// Next pair can be generics, arguments or return_type
+		let mut next_pair = pairs
+			.next()
+			.expect("Failed to parse interface function: generics/arguments/return type pair is missing");
+
+		let mut generics: Vec<Expression> = Vec::new();
+
+		// If it's generics, parse and go to the next pair
+		if next_pair.as_rule() == Rule::definition_generics {
+			generics = self.parse_generics_as_identifiers(next_pair);
+
+			next_pair = pairs
+				.next()
+				.unwrap_or_else(|| unreachable!("Failed to parse interface function: arguments/return type pair is missing"));
+		}
+
+		let mut arguments: Option<InterfaceFunctionArguments> = None;
+
+		// If it's arguments, parse them as types and skip to the return type
+		if next_pair.as_rule() == Rule::interface_function_arguments {
+			arguments = Some(self.parse_interface_function_arguments(next_pair));
+
+			next_pair = pairs
+				.next()
+				.unwrap_or_else(|| unreachable!("Failed to parse interface function: return type pair is missing"));
+		}
+
+		// Make sure that the last rule is a type (return type)
+		if next_pair.as_rule() != Rule::r#type {
+			error!(self, "expected '{:?}', got '{:?}'", next_pair.as_span(), Rule::r#type, next_pair.as_rule());
+		}
+
+		// Parse the return type
+		let return_type = self.parse_type(next_pair);
+
+		InterfaceMember::Function {
+			modifiers,
+			attributes,
+
+			name,
+			generics,
+			arguments,
+			return_type,
+
+			span
+		}
+	}
+
+	fn parse_interface_members(&self, pair: Pair<'p, Rule>) -> Vec<InterfaceMember> {
+		if pair.as_rule() != Rule::interface_members {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::interface_members, pair.as_rule());
+		}
+
+		// Not needed yet
+		// let span = pair.as_span();
+		let mut pairs = pair.into_inner();
+
+		let mut members = Vec::new();
+
+		while let Some(pair) = pairs.next() {
+			let member = match pair.as_rule() {
+				Rule::interface_variable => self.parse_interface_variable(pair),
+				Rule::interface_function => self.parse_interface_function(pair),
+
+				rule => error!(
+					self,
+					"expected '{:?}' or '{:?}', got '{:?}'",
+					pair.as_span(),
+					
+					Rule::interface_variable,
+					Rule::interface_function,
+					rule
+				)
+			};
+
+			members.push(member);
+		}
+
+		members
+	}
+
+	fn parse_interface(&self, pair: Pair<'p, Rule>) -> Statement {
+		if pair.as_rule() != Rule::interface_stmt {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::interface_stmt, pair.as_rule());
+		}
+
+		let span = pair.as_span();
+		let mut pairs = pair.into_inner();
+
+		let modifiers_pair = pairs
+			.next()
+			.expect("Failed to parse interface statement: modifiers pair is missing");
+
+		let modifiers = self.parse_general_modifiers(modifiers_pair);
+
+		let name = pairs
+			.next()
+			.expect("Failed to parse interface statement: name pair is missing")
+			.as_span();
+
+		let mut next_pair = pairs
+			.next()
+			.expect("Failed to parse interface statement: generics/members pair is missing");
+
+		let mut generics: Vec<Expression> = Vec::new();
+
+		if next_pair.as_rule() == Rule::definition_generics {
+			generics = self.parse_generics_as_identifiers(next_pair);
+
+			// Next pair is guaranteed to be `interface_members`, even if there are no members
+			next_pair = pairs
+				.next()
+				.unwrap_or_else(|| unreachable!("Failed to parse interface statement: members pair is missing"));
+		}
+
+		let members = self.parse_interface_members(next_pair);
+
+		Statement::Interface { modifiers, name, generics, members, span }
 	}
 
 	fn parse_anonymous_function(&self, pair: Pair<'p, Rule>) -> Expression {
