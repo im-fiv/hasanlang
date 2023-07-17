@@ -9,7 +9,7 @@ elseif false != true then
 elseif false or true then
 	return 5;
 else
-	// do nothing
+	// Do nothing
 end
 
 if true == true then
@@ -20,5 +20,5 @@ else if false != true then
 else if false or true then
 	return 5;
 else
-	// do nothing
+	// Do nothing
 end
