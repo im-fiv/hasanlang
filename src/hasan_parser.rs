@@ -1705,9 +1705,7 @@ impl<'p> HasanParser<'p> {
 			.expect("Failed to parse variable definition: expected type/value, got nothing");
 
 		let mut kind = Expression::Empty;
-
-		#[allow(unused_assignments)]
-		let mut value = Expression::Empty;
+		let value: Expression;
 
 		if next_pair.as_rule() == Rule::r#type {
 			kind = self.parse_type(next_pair);
