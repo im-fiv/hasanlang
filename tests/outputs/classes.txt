@@ -37,7 +37,7 @@
                     start: 27,
                     end: 28,
                 },
-                kind: Type {
+                kind: Regular {
                     base: Identifier(
                         Span {
                             str: "int",
@@ -46,8 +46,8 @@
                         },
                     ),
                     generics: [],
-                    array: true,
                     raw: false,
+                    array: true,
                     span: Span {
                         str: "int[]",
                         start: 30,
@@ -90,7 +90,7 @@
                     start: 60,
                     end: 61,
                 },
-                kind: Type {
+                kind: Regular {
                     base: Identifier(
                         Span {
                             str: "SomeType",
@@ -107,8 +107,8 @@
                             },
                         ),
                     ],
-                    array: true,
                     raw: false,
+                    array: true,
                     span: Span {
                         str: "SomeType<int>[]",
                         start: 63,
@@ -165,7 +165,7 @@
                 generics: [],
                 arguments: [],
                 return_type: Some(
-                    Type {
+                    Regular {
                         base: Identifier(
                             Span {
                                 str: "bool",
@@ -174,8 +174,8 @@
                             },
                         ),
                         generics: [],
-                        array: false,
                         raw: false,
+                        array: false,
                         span: Span {
                             str: "bool ",
                             start: 129,
@@ -204,7 +204,7 @@
                     start: 148,
                     end: 149,
                 },
-                kind: Type {
+                kind: Regular {
                     base: Identifier(
                         Span {
                             str: "bool",
@@ -213,8 +213,8 @@
                         },
                     ),
                     generics: [],
-                    array: false,
                     raw: false,
+                    array: false,
                     span: Span {
                         str: "bool",
                         start: 151,
@@ -246,7 +246,7 @@
                 generics: [],
                 arguments: [],
                 return_type: Some(
-                    Type {
+                    Regular {
                         base: Identifier(
                             Span {
                                 str: "int",
@@ -255,8 +255,8 @@
                             },
                         ),
                         generics: [],
-                        array: false,
                         raw: false,
+                        array: false,
                         span: Span {
                             str: "int ",
                             start: 186,
@@ -316,7 +316,7 @@
                     start: 242,
                     end: 243,
                 },
-                kind: Type {
+                kind: Regular {
                     base: Identifier(
                         Span {
                             str: "int",
@@ -325,8 +325,8 @@
                         },
                     ),
                     generics: [],
-                    array: false,
                     raw: false,
+                    array: false,
                     span: Span {
                         str: "int",
                         start: 245,
@@ -374,7 +374,7 @@
                 generics: [],
                 arguments: [],
                 return_type: Some(
-                    Type {
+                    Regular {
                         base: Identifier(
                             Span {
                                 str: "bool",
@@ -383,8 +383,8 @@
                             },
                         ),
                         generics: [],
-                        array: false,
                         raw: false,
+                        array: false,
                         span: Span {
                             str: "bool",
                             start: 292,
@@ -424,7 +424,7 @@
                 generics: [],
                 arguments: [],
                 return_type: Some(
-                    Type {
+                    Regular {
                         base: Identifier(
                             Span {
                                 str: "int",
@@ -433,8 +433,8 @@
                             },
                         ),
                         generics: [],
-                        array: false,
                         raw: false,
+                        array: false,
                         span: Span {
                             str: "int",
                             start: 329,
@@ -522,7 +522,7 @@
                 generics: [],
                 arguments: [],
                 return_type: Some(
-                    Type {
+                    Regular {
                         base: Identifier(
                             Span {
                                 str: "int",
@@ -531,8 +531,8 @@
                             },
                         ),
                         generics: [],
-                        array: false,
                         raw: false,
+                        array: false,
                         span: Span {
                             str: "int",
                             start: 395,
@@ -579,7 +579,7 @@
                                 end: 426,
                             },
                         ),
-                        kind: Type {
+                        kind: Regular {
                             base: Identifier(
                                 Span {
                                     str: "T",
@@ -588,8 +588,8 @@
                                 },
                             ),
                             generics: [],
-                            array: false,
                             raw: false,
+                            array: false,
                             span: Span {
                                 str: "T",
                                 start: 428,
@@ -604,7 +604,7 @@
                     },
                 ],
                 return_type: Some(
-                    Type {
+                    Regular {
                         base: Identifier(
                             Span {
                                 str: "void",
@@ -613,8 +613,8 @@
                             },
                         ),
                         generics: [],
-                        array: false,
                         raw: false,
+                        array: false,
                         span: Span {
                             str: "void",
                             start: 434,
@@ -646,7 +646,7 @@
                 generics: [],
                 arguments: [],
                 return_type: Some(
-                    Type {
+                    Regular {
                         base: Identifier(
                             Span {
                                 str: "this",
@@ -655,8 +655,8 @@
                             },
                         ),
                         generics: [],
-                        array: false,
                         raw: false,
+                        array: false,
                         span: Span {
                             str: "this",
                             start: 456,
@@ -736,7 +736,7 @@
                 generics: [],
                 arguments: [],
                 return_type: Some(
-                    Type {
+                    Regular {
                         base: Identifier(
                             Span {
                                 str: "int",
@@ -745,8 +745,8 @@
                             },
                         ),
                         generics: [],
-                        array: false,
                         raw: false,
+                        array: false,
                         span: Span {
                             str: "int",
                             start: 516,
@@ -793,7 +793,7 @@
                                 end: 547,
                             },
                         ),
-                        kind: Type {
+                        kind: Regular {
                             base: Identifier(
                                 Span {
                                     str: "T",
@@ -802,8 +802,8 @@
                                 },
                             ),
                             generics: [],
-                            array: false,
                             raw: false,
+                            array: false,
                             span: Span {
                                 str: "T",
                                 start: 549,
@@ -818,7 +818,7 @@
                     },
                 ],
                 return_type: Some(
-                    Type {
+                    Regular {
                         base: Identifier(
                             Span {
                                 str: "void",
@@ -827,8 +827,8 @@
                             },
                         ),
                         generics: [],
-                        array: false,
                         raw: false,
+                        array: false,
                         span: Span {
                             str: "void",
                             start: 555,
@@ -860,7 +860,7 @@
                 generics: [],
                 arguments: [],
                 return_type: Some(
-                    Type {
+                    Regular {
                         base: Identifier(
                             Span {
                                 str: "this",
@@ -869,8 +869,8 @@
                             },
                         ),
                         generics: [],
-                        array: false,
                         raw: false,
+                        array: false,
                         span: Span {
                             str: "this",
                             start: 577,

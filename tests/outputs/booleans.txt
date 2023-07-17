@@ -13,7 +13,7 @@
             start: 4,
             end: 5,
         },
-        kind: Empty,
+        kind: None,
         value: Boolean(
             true,
             Span {
@@ -42,7 +42,7 @@
             start: 18,
             end: 19,
         },
-        kind: Empty,
+        kind: None,
         value: Boolean(
             false,
             Span {

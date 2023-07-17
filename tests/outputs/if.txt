@@ -13,7 +13,7 @@
             start: 4,
             end: 5,
         },
-        kind: Empty,
+        kind: None,
         value: Unary {
             operator: Not,
             operand: Boolean(
@@ -50,7 +50,7 @@
             start: 22,
             end: 23,
         },
-        kind: Empty,
+        kind: None,
         value: Binary {
             lhs: Binary {
                 lhs: Int(

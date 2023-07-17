@@ -21,7 +21,7 @@
             start: 8,
             end: 22,
         },
-        kind: Empty,
+        kind: None,
         value: AnonymousFunction {
             generics: [],
             arguments: [],
@@ -69,12 +69,12 @@
             start: 56,
             end: 63,
         },
-        kind: Empty,
+        kind: None,
         value: AnonymousFunction {
             generics: [],
             arguments: [],
             return_type: Some(
-                Type {
+                Regular {
                     base: Identifier(
                         Span {
                             str: "int",
@@ -83,8 +83,8 @@
                         },
                     ),
                     generics: [],
-                    array: false,
                     raw: false,
+                    array: false,
                     span: Span {
                         str: "int ",
                         start: 76,
@@ -151,7 +151,7 @@
             start: 108,
             end: 117,
         },
-        kind: Empty,
+        kind: None,
         value: AnonymousFunction {
             generics: [],
             arguments: [
@@ -163,7 +163,7 @@
                             end: 126,
                         },
                     ),
-                    kind: Type {
+                    kind: Regular {
                         base: Identifier(
                             Span {
                                 str: "int",
@@ -172,8 +172,8 @@
                             },
                         ),
                         generics: [],
-                        array: false,
                         raw: false,
+                        array: false,
                         span: Span {
                             str: "int",
                             start: 128,
@@ -194,7 +194,7 @@
                             end: 134,
                         },
                     ),
-                    kind: Type {
+                    kind: Regular {
                         base: Identifier(
                             Span {
                                 str: "int",
@@ -203,8 +203,8 @@
                             },
                         ),
                         generics: [],
-                        array: false,
                         raw: false,
+                        array: false,
                         span: Span {
                             str: "int",
                             start: 136,
@@ -284,7 +284,7 @@
             start: 173,
             end: 186,
         },
-        kind: Empty,
+        kind: None,
         value: AnonymousFunction {
             generics: [],
             arguments: [],
@@ -324,7 +324,7 @@
             start: 212,
             end: 225,
         },
-        kind: Empty,
+        kind: None,
         value: AnonymousFunction {
             generics: [],
             arguments: [
@@ -336,7 +336,7 @@
                             end: 234,
                         },
                     ),
-                    kind: Type {
+                    kind: Regular {
                         base: Identifier(
                             Span {
                                 str: "int",
@@ -345,8 +345,8 @@
                             },
                         ),
                         generics: [],
-                        array: false,
                         raw: false,
+                        array: false,
                         span: Span {
                             str: "int",
                             start: 236,
@@ -396,7 +396,7 @@
             start: 257,
             end: 270,
         },
-        kind: Empty,
+        kind: None,
         value: AnonymousFunction {
             generics: [],
             arguments: [
@@ -408,7 +408,7 @@
                             end: 279,
                         },
                     ),
-                    kind: Type {
+                    kind: Regular {
                         base: Identifier(
                             Span {
                                 str: "int",
@@ -417,8 +417,8 @@
                             },
                         ),
                         generics: [],
-                        array: false,
                         raw: false,
+                        array: false,
                         span: Span {
                             str: "int",
                             start: 281,
@@ -433,7 +433,7 @@
                 },
             ],
             return_type: Some(
-                Type {
+                Regular {
                     base: Identifier(
                         Span {
                             str: "int",
@@ -442,8 +442,8 @@
                         },
                     ),
                     generics: [],
-                    array: false,
                     raw: false,
+                    array: false,
                     span: Span {
                         str: "int ",
                         start: 289,
@@ -486,12 +486,12 @@
             start: 309,
             end: 322,
         },
-        kind: Empty,
+        kind: None,
         value: AnonymousFunction {
             generics: [],
             arguments: [],
             return_type: Some(
-                Type {
+                Regular {
                     base: Identifier(
                         Span {
                             str: "int",
@@ -500,8 +500,8 @@
                         },
                     ),
                     generics: [],
-                    array: false,
                     raw: false,
+                    array: false,
                     span: Span {
                         str: "int ",
                         start: 335,
@@ -536,7 +536,7 @@
             start: 352,
             end: 360,
         },
-        kind: Empty,
+        kind: None,
         value: AnonymousFunction {
             generics: [
                 Identifier(
@@ -563,7 +563,7 @@
                             end: 375,
                         },
                     ),
-                    kind: Type {
+                    kind: Regular {
                         base: Identifier(
                             Span {
                                 str: "A",
@@ -572,8 +572,8 @@
                             },
                         ),
                         generics: [],
-                        array: false,
                         raw: false,
+                        array: false,
                         span: Span {
                             str: "A",
                             start: 377,
@@ -594,7 +594,7 @@
                             end: 381,
                         },
                     ),
-                    kind: Type {
+                    kind: Regular {
                         base: Identifier(
                             Span {
                                 str: "B",
@@ -603,8 +603,8 @@
                             },
                         ),
                         generics: [],
-                        array: false,
                         raw: false,
+                        array: false,
                         span: Span {
                             str: "B",
                             start: 383,
@@ -676,7 +676,7 @@
             start: 414,
             end: 428,
         },
-        kind: Empty,
+        kind: None,
         value: FunctionCall {
             callee: AnonymousFunction {
                 generics: [],
@@ -731,7 +731,7 @@
                             end: 473,
                         },
                     ),
-                    kind: Type {
+                    kind: Regular {
                         base: Identifier(
                             Span {
                                 str: "string",
@@ -740,8 +740,8 @@
                             },
                         ),
                         generics: [],
-                        array: false,
                         raw: false,
+                        array: false,
                         span: Span {
                             str: "string",
                             start: 475,
@@ -825,7 +825,7 @@
                         },
                     ),
                     generics: [
-                        Type {
+                        Regular {
                             base: Identifier(
                                 Span {
                                     str: "int",
@@ -834,15 +834,15 @@
                                 },
                             ),
                             generics: [],
-                            array: false,
                             raw: false,
+                            array: false,
                             span: Span {
                                 str: "int",
                                 start: 560,
                                 end: 563,
                             },
                         },
-                        Type {
+                        Regular {
                             base: Identifier(
                                 Span {
                                     str: "int",
@@ -851,8 +851,8 @@
                                 },
                             ),
                             generics: [],
-                            array: false,
                             raw: false,
+                            array: false,
                             span: Span {
                                 str: "int",
                                 start: 565,

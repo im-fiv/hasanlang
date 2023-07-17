@@ -13,7 +13,7 @@
             start: 4,
             end: 6,
         },
-        kind: Empty,
+        kind: None,
         value: Float(
             3.14159265359,
             Span {
@@ -42,7 +42,7 @@
             start: 64,
             end: 79,
         },
-        kind: Empty,
+        kind: None,
         value: Int(
             42,
             Span {

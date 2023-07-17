@@ -31,7 +31,7 @@
                         end: 30,
                     },
                 ),
-                kind: Type {
+                kind: Regular {
                     base: Identifier(
                         Span {
                             str: "T",
@@ -40,8 +40,8 @@
                         },
                     ),
                     generics: [],
-                    array: false,
                     raw: false,
+                    array: false,
                     span: Span {
                         str: "T",
                         start: 32,
@@ -56,7 +56,7 @@
             },
         ],
         return_type: Some(
-            Type {
+            Regular {
                 base: Identifier(
                     Span {
                         str: "T",
@@ -65,8 +65,8 @@
                     },
                 ),
                 generics: [],
-                array: true,
                 raw: false,
+                array: true,
                 span: Span {
                     str: "T[]",
                     start: 38,
@@ -143,7 +143,7 @@
                     start: 121,
                     end: 132,
                 },
-                kind: Type {
+                kind: Regular {
                     base: Identifier(
                         Span {
                             str: "T",
@@ -152,8 +152,8 @@
                         },
                     ),
                     generics: [],
-                    array: false,
                     raw: false,
+                    array: false,
                     span: Span {
                         str: "T",
                         start: 134,
@@ -202,7 +202,7 @@
                 generics: [],
                 arguments: [],
                 return_type: Some(
-                    Type {
+                    Regular {
                         base: Identifier(
                             Span {
                                 str: "T",
@@ -211,8 +211,8 @@
                             },
                         ),
                         generics: [],
-                        array: false,
                         raw: false,
+                        array: false,
                         span: Span {
                             str: "T ",
                             start: 163,
@@ -295,7 +295,7 @@
                     start: 225,
                     end: 232,
                 },
-                kind: Empty,
+                kind: None,
                 value: FunctionCall {
                     callee: Identifier(
                         Span {
@@ -305,7 +305,7 @@
                         },
                     ),
                     generics: [
-                        Type {
+                        Regular {
                             base: Identifier(
                                 Span {
                                     str: "int",
@@ -314,8 +314,8 @@
                                 },
                             ),
                             generics: [],
-                            array: false,
                             raw: false,
+                            array: false,
                             span: Span {
                                 str: "int",
                                 start: 252,
