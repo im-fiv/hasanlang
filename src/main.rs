@@ -6,9 +6,9 @@ use std::path::PathBuf;
 
 use pest::Parser;
 
-use hasan::{cli, tokenizer, parser};
-use tokenizer::{HasanPestParser, Rule};
-use parser::ASTParser;
+use hasan::{cli, pest_parser, hasan_parser};
+use pest_parser::{PestParser, Rule};
+use hasan_parser::HasanParser;
 
 //* Helper functions *//
 fn read_file(path: &str) -> String {
@@ -45,7 +45,7 @@ fn compile(command: cli::CompileCommand) {
 	println!("Pest parsing...");
 	
 	let contents = read_file(&file_path);
-	let result = HasanPestParser::parse(Rule::program, &contents);
+	let result = PestParser::parse(Rule::program, &contents);
 	
 	if let Err(e) = result {
 		println!("{}", e);
@@ -63,7 +63,7 @@ fn compile(command: cli::CompileCommand) {
 	
 	println!("AST parsing...");
 	
-	let ast_parser = ASTParser::new(pairs);
+	let ast_parser = HasanParser::new(pairs);
 	let ast = ast_parser.parse();
 	
 	if debug {

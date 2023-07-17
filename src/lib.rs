@@ -1,4 +1,4 @@
 pub mod cli;
-pub mod tokenizer;
-pub mod parser;
+pub mod pest_parser;
+pub mod hasan_parser;
 pub mod compiler;

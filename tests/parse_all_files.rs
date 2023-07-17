@@ -6,8 +6,8 @@ use std::io::prelude::*;
 use pest::Parser;
 
 use hasan::{
-	tokenizer::{HasanPestParser, Rule},
-	parser::ASTParser
+	pest_parser::{PestParser, Rule},
+	hasan_parser::HasanParser
 };
 
 fn read_file(path: std::path::PathBuf) -> String {
@@ -49,7 +49,7 @@ fn parse_all_files() {
 
 		// compile
 		let contents = read_file(path.clone());
-		let parse_result = HasanPestParser::parse(Rule::program, &contents);
+		let parse_result = PestParser::parse(Rule::program, &contents);
 
 		if parse_result.is_err() {
 			let err = parse_result.err().unwrap_or_else(|| unreachable!("Parse result is not an error variant"));
@@ -60,7 +60,7 @@ fn parse_all_files() {
 
 		let pairs = parse_result.unwrap_or_else(|_| unreachable!());
 
-		let ast_parser = ASTParser::new(pairs);
+		let ast_parser = HasanParser::new(pairs);
 		let ast = panic::catch_unwind(|| ast_parser.parse());
 
 		if !ast.is_ok() {
