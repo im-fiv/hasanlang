@@ -67,7 +67,7 @@ fn parse_all_files() {
 			panic!("Failed to parse file {:?}", filename);
 		}
 
-		let ast = ast.unwrap();
+		let ast = ast.unwrap().statements;
 		assert_ne!(ast.len(), 0);
 
 		// Confirm generated AST

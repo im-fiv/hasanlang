@@ -21,6 +21,11 @@ pub struct HasanParser<'p> {
 }
 
 #[derive(Debug)]
+pub struct Program<'p> {
+	pub statements: Vec<Statement<'p>>
+}
+
+#[derive(Debug)]
 pub enum Statement<'p> {
 	FunctionDefinition {
 		modifiers: GeneralModifiers<'p>,
@@ -110,6 +115,13 @@ pub enum Statement<'p> {
 		statements: Vec<Statement<'p>>,
 		span: Span<'p>
 	},
+
+	For {
+		left: Expression<'p>,
+		right: Expression<'p>,
+		statements: Vec<Statement<'p>>,
+		span: Span<'p>
+	},
 	
 	Break(Span<'p>),
 
@@ -182,6 +194,7 @@ pub struct GeneralModifiers<'p> {
 #[derive(Debug)]
 pub enum GeneralModifier<'p> {
 	Public(Span<'p>),
+	Constant(Span<'p>),
 	Static(Span<'p>)
 }
 
@@ -411,7 +424,7 @@ impl<'p> HasanParser<'p> {
 		)
 	}
 
-	pub fn parse(&self) -> Vec<Statement> {
+	pub fn parse(&self) -> Program {
 		let mut statements: Option<Vec<Statement>> = None;
 
 		for pair in self.pairs.clone() {
@@ -427,7 +440,8 @@ impl<'p> HasanParser<'p> {
 			}
 		}
 
-		statements.unwrap_or_else(|| unreachable!("Failed to parse program: no idea what went wrong"))
+		let statements = statements.unwrap_or_else(|| unreachable!("Failed to parse program: no idea what went wrong"));
+		Program { statements }
 	}
 
 	fn parse_program(&self, pairs: Pairs<'p, Rule>) -> Vec<Statement> {
@@ -453,6 +467,7 @@ impl<'p> HasanParser<'p> {
 				Rule::if_stmt => self.parse_if(pair),
 				Rule::while_stmt => self.parse_while(pair),
 				Rule::break_stmt => Statement::Break(pair.as_span()),
+				Rule::for_in_stmt => self.parse_for_in(pair),
 
 				rule => error!(self, "unexpected statement '{:?}'", pair.as_span(), rule)
 			};
@@ -790,6 +805,34 @@ impl<'p> HasanParser<'p> {
 
 		Statement::While {
 			condition: self.parse_expression(expression_pair),
+			statements: self.parse_program(statements_pair.into_inner()),
+			span
+		}
+	}
+
+	fn parse_for_in(&self, pair: Pair<'p, Rule>) -> Statement {
+		if pair.as_rule() != Rule::for_in_stmt {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::for_in_stmt, pair.as_rule());
+		}
+
+		let span = pair.as_span();
+		let mut pairs = pair.into_inner();
+
+		let left_pair = pairs
+			.next()
+			.expect("Failed to parse for statement: left side is missing");
+
+		let right_pair = pairs
+			.next()
+			.expect("Failed to parse for statement: right side is missing");
+
+		let statements_pair = pairs
+			.next()
+			.expect("Failed to parse for statement: right side is missing");
+
+		Statement::For {
+			left: self.parse_expression(left_pair),
+			right: self.parse_expression(right_pair),
 			statements: self.parse_program(statements_pair.into_inner()),
 			span
 		}
@@ -1205,6 +1248,7 @@ impl<'p> HasanParser<'p> {
 
 			let modifier = match as_str {
 				"pub" => Public(span),
+				"const" => Constant(span),
 				"static" => Static(span),
 
 				_ => unreachable!("Failed to parse modifiers: unknown modifier '{}'", as_str)

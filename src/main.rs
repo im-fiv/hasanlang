@@ -66,7 +66,7 @@ fn compile(command: cli::CompileCommand) {
 	println!("AST parsing...");
 	
 	let ast_parser = HasanParser::new(pairs);
-	let ast = ast_parser.parse();
+	let ast = ast_parser.parse().statements;
 	
 	if debug {
 		println!("Parsed AST ({}): {:?}", ast.len(), ast);

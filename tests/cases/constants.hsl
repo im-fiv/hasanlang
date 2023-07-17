@@ -1,0 +1,12 @@
+// This should work
+const var a = 5;
+
+// This should error
+a = 4;
+
+// This should error as well
+const enum Hello
+	World
+end
+
+// All const definitions other than variables and class variables should not work.
