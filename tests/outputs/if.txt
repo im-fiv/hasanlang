@@ -291,14 +291,14 @@
                 condition: Empty,
                 statements: [],
                 span: Span {
-                    str: "else\n\t// do nothing\n",
+                    str: "else\n\t// Do nothing\n",
                     start: 174,
                     end: 194,
                 },
             },
         ),
         span: Span {
-            str: "if true == true then\n\tprint(\"asdasd\");\n\ta = false;\nelseif false != true then\n\tdo_something();\nelseif false or true then\n\treturn 5;\nelse\n\t// do nothing\nend",
+            str: "if true == true then\n\tprint(\"asdasd\");\n\ta = false;\nelseif false != true then\n\tdo_something();\nelseif false or true then\n\treturn 5;\nelse\n\t// Do nothing\nend",
             start: 43,
             end: 197,
         },
@@ -481,14 +481,14 @@
                 condition: Empty,
                 statements: [],
                 span: Span {
-                    str: "else\n\t// do nothing\n",
+                    str: "else\n\t// Do nothing\n",
                     start: 332,
                     end: 352,
                 },
             },
         ),
         span: Span {
-            str: "if true == true then\n\tprint(\"asdasd\");\n\ta = false;\nelse if false != true then\n\tdo_something();\nelse if false or true then\n\treturn 5;\nelse\n\t// do nothing\nend",
+            str: "if true == true then\n\tprint(\"asdasd\");\n\ta = false;\nelse if false != true then\n\tdo_something();\nelse if false or true then\n\treturn 5;\nelse\n\t// Do nothing\nend",
             start: 199,
             end: 355,
         },
