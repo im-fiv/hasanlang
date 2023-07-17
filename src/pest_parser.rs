@@ -1,3 +1,3 @@
 #[derive(pest_derive::Parser)]
 #[grammar = "grammar.pest"]
-pub struct HasanPestParser;
+pub struct PestParser;

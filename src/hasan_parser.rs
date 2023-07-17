@@ -1,6 +1,6 @@
 use std::iter::Peekable;
 
-use crate::tokenizer::Rule;
+use crate::pest_parser::Rule;
 
 use pest::error::{Error, ErrorVariant};
 use pest::iterators::{Pair, Pairs};
@@ -16,7 +16,7 @@ macro_rules! error {
 	};
 }
 
-pub struct ASTParser<'p> {
+pub struct HasanParser<'p> {
 	pairs: Pairs<'p, Rule>
 }
 
@@ -366,9 +366,9 @@ pub enum UnaryOperator {
 	Not
 }
 
-impl<'p> ASTParser<'p> {
+impl<'p> HasanParser<'p> {
 	pub fn new(pairs: Pairs<'p, Rule>) -> Self {
-		ASTParser { pairs }
+		HasanParser { pairs }
 	}
 
 	fn create_error(&self, message: &str, span: Span<'p>) -> Error<Rule> {
