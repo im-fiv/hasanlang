@@ -1,0 +1,67 @@
+[
+    For {
+        left: Identifier(
+            Span {
+                str: "i",
+                start: 4,
+                end: 5,
+            },
+        ),
+        right: FunctionCall {
+            callee: Identifier(
+                Span {
+                    str: "range",
+                    start: 9,
+                    end: 14,
+                },
+            ),
+            generics: [],
+            arguments: [
+                Int(
+                    5,
+                    Span {
+                        str: "5",
+                        start: 15,
+                        end: 16,
+                    },
+                ),
+            ],
+            span: Span {
+                str: "(5)",
+                start: 14,
+                end: 17,
+            },
+        },
+        statements: [
+            FunctionCall {
+                callee: Identifier(
+                    Span {
+                        str: "print",
+                        start: 22,
+                        end: 27,
+                    },
+                ),
+                generics: [],
+                arguments: [
+                    Identifier(
+                        Span {
+                            str: "i",
+                            start: 28,
+                            end: 29,
+                        },
+                    ),
+                ],
+                span: Span {
+                    str: "(i)",
+                    start: 27,
+                    end: 30,
+                },
+            },
+        ],
+        span: Span {
+            str: "for i in range(5) do\n\tprint(i);\nend",
+            start: 0,
+            end: 35,
+        },
+    },
+]

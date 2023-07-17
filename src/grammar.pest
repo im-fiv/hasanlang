@@ -8,6 +8,7 @@ statement = _{
 	if_stmt |
 	while_stmt |
 	break_stmt |
+	for_in_stmt |
 	function_call_stmt |
 	function_definition_stmt |
 	function_declaration_stmt |
@@ -26,18 +27,21 @@ keywords = {
 	"set" | "static" | "as" | "enum" |
 	"and" | "or" | "not" | "if" | "else" |
 	"elseif" | "while" | "break" | "true" |
-	"false" | "then"
+	"false" | "then" | "for" | "in" |
+	"use" | "module" | "interface" | "const" |
+	"impl"
 }
 
 stmt_sep = _{ ";" }
 
-general_modifiers = { modifier_public? ~ modifier_static? }
+general_modifiers = { modifier_public? ~ modifier_constant? ~ modifier_static? }
 	modifier_public = { "pub" }
 	modifier_static = { "static" }
+	modifier_constant = { "const" }
 
 //* Statements *//
 return_stmt = { "return" ~ expression? ~ stmt_sep }
-function_call_stmt = { term_without_recursion ~ recursive_operator+ ~ stmt_sep } // this is wrong, but it will be handled inside the parser //
+function_call_stmt = { term_without_recursion ~ recursive_operator+ ~ stmt_sep } // this is wrong, but it will be handled inside the parser
 function_definition_stmt = { function_header ~ do_block ~ stmt_sep? }
 function_declaration_stmt = { function_header ~ stmt_sep }
 type_definition_stmt = { "type" ~ identifier ~ definition_generics? ~ "=" ~ type ~ stmt_sep }
@@ -54,6 +58,8 @@ if_stmt = { "if" ~ expression ~ "then" ~ statements ~ if_elseif* ~ if_else? ~ "e
 
 while_stmt = { "while" ~ expression ~ do_block ~ stmt_sep? }
 break_stmt = { "break" ~ stmt_sep }
+
+for_in_stmt = { "for" ~ expression ~ "in" ~ expression ~ do_block ~ stmt_sep? }
 
 //* Functions *//
 function_header = { general_modifiers ~ "func" ~ identifier ~ definition_generics? ~ "(" ~ function_arguments? ~ ")" ~ ("->" ~ type)? }
