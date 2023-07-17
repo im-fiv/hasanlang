@@ -9,6 +9,7 @@ module <name>;
 
 // Rest of the code
 ```
+Note that if a file has not been marked as a module but is intended to be used as one, it will be recognized as a standalone program and will require you to define an entry point function `main`. Additionally, without being properly marked as a module, the file cannot be imported into other parts of your program.
 
 ## Importing a module
 
