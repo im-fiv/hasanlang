@@ -92,11 +92,16 @@ attribute_identifier = { "constructor" | "get" | "set" }
 enum_variant = { identifier }
 
 //* Types *//
-type = { raw_type | array_type | base_type }
+type = { regular_type | function_type }
 
-base_type = _{ identifier ~ definition_generics? }
-array_type = { base_type ~ ("[" ~ "]") }
-raw_type = { (array_type | base_type) ~ "!" }
+regular_type = { identifier ~ type_operators }
+	type_operators = { type_operator_raw? ~ type_operator_generics? ~ type_operator_array? }
+		type_operator_raw = { "!" }
+		type_operator_generics = { definition_generics }
+		type_operator_array = { "[" ~ "]" }
+
+function_type = { "(" ~ function_type_arguments ~ ")" ~ "->" ~ type }
+	function_type_arguments = { (type ~ ("," ~ type)*)? }
 
 definition_generics = { "<" ~ identifier ~ ("," ~ identifier)* ~ ">" }
 call_generics = { "<" ~ type ~ ("," ~ type)* ~ ">" }

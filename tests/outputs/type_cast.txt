@@ -38,7 +38,7 @@
                         end: 25,
                     },
                 ),
-                kind: Type {
+                kind: Regular {
                     base: Identifier(
                         Span {
                             str: "From",
@@ -47,8 +47,8 @@
                         },
                     ),
                     generics: [],
-                    array: false,
                     raw: false,
+                    array: false,
                     span: Span {
                         str: "From",
                         start: 27,
@@ -63,7 +63,7 @@
             },
         ],
         return_type: Some(
-            Type {
+            Regular {
                 base: Identifier(
                     Span {
                         str: "To",
@@ -72,8 +72,8 @@
                     },
                 ),
                 generics: [],
-                array: false,
                 raw: false,
+                array: false,
                 span: Span {
                     str: "To ",
                     start: 36,
@@ -91,7 +91,7 @@
                             end: 55,
                         },
                     ),
-                    kind: Type {
+                    kind: Regular {
                         base: Identifier(
                             Span {
                                 str: "To",
@@ -100,8 +100,8 @@
                             },
                         ),
                         generics: [],
-                        array: false,
                         raw: false,
+                        array: false,
                         span: Span {
                             str: "To",
                             start: 59,
@@ -141,7 +141,7 @@
             start: 72,
             end: 81,
         },
-        kind: Empty,
+        kind: None,
         value: TypeCast {
             value: TypeCast {
                 value: TypeCast {
@@ -157,7 +157,7 @@
                                             end: 85,
                                         },
                                     ),
-                                    kind: Type {
+                                    kind: Regular {
                                         base: Identifier(
                                             Span {
                                                 str: "a",
@@ -166,8 +166,8 @@
                                             },
                                         ),
                                         generics: [],
-                                        array: false,
                                         raw: false,
+                                        array: false,
                                         span: Span {
                                             str: "a ",
                                             start: 89,
@@ -180,7 +180,7 @@
                                         end: 91,
                                     },
                                 },
-                                kind: Type {
+                                kind: Regular {
                                     base: Identifier(
                                         Span {
                                             str: "b",
@@ -189,8 +189,8 @@
                                         },
                                     ),
                                     generics: [],
-                                    array: false,
                                     raw: false,
+                                    array: false,
                                     span: Span {
                                         str: "b ",
                                         start: 94,
@@ -203,7 +203,7 @@
                                     end: 96,
                                 },
                             },
-                            kind: Type {
+                            kind: Regular {
                                 base: Identifier(
                                     Span {
                                         str: "c",
@@ -212,8 +212,8 @@
                                     },
                                 ),
                                 generics: [],
-                                array: false,
                                 raw: false,
+                                array: false,
                                 span: Span {
                                     str: "c ",
                                     start: 99,
@@ -226,7 +226,7 @@
                                 end: 101,
                             },
                         },
-                        kind: Type {
+                        kind: Regular {
                             base: Identifier(
                                 Span {
                                     str: "d",
@@ -235,8 +235,8 @@
                                 },
                             ),
                             generics: [],
-                            array: false,
                             raw: false,
+                            array: false,
                             span: Span {
                                 str: "d ",
                                 start: 104,
@@ -249,7 +249,7 @@
                             end: 106,
                         },
                     },
-                    kind: Type {
+                    kind: Regular {
                         base: Identifier(
                             Span {
                                 str: "e",
@@ -258,8 +258,8 @@
                             },
                         ),
                         generics: [],
-                        array: false,
                         raw: false,
+                        array: false,
                         span: Span {
                             str: "e ",
                             start: 109,
@@ -272,7 +272,7 @@
                         end: 111,
                     },
                 },
-                kind: Type {
+                kind: Regular {
                     base: Identifier(
                         Span {
                             str: "f",
@@ -281,8 +281,8 @@
                         },
                     ),
                     generics: [],
-                    array: false,
                     raw: false,
+                    array: false,
                     span: Span {
                         str: "f ",
                         start: 114,
@@ -295,7 +295,7 @@
                     end: 116,
                 },
             },
-            kind: Type {
+            kind: Regular {
                 base: Identifier(
                     Span {
                         str: "g",
@@ -304,8 +304,8 @@
                     },
                 ),
                 generics: [],
-                array: false,
                 raw: false,
+                array: false,
                 span: Span {
                     str: "g",
                     start: 119,
@@ -334,7 +334,7 @@
                 },
             ),
             generics: [
-                Type {
+                Regular {
                     base: Identifier(
                         Span {
                             str: "int",
@@ -343,15 +343,15 @@
                         },
                     ),
                     generics: [],
-                    array: false,
                     raw: false,
+                    array: false,
                     span: Span {
                         str: "int",
                         start: 135,
                         end: 138,
                     },
                 },
-                Type {
+                Regular {
                     base: Identifier(
                         Span {
                             str: "float",
@@ -360,8 +360,8 @@
                         },
                     ),
                     generics: [],
-                    array: false,
                     raw: false,
+                    array: false,
                     span: Span {
                         str: "float",
                         start: 140,

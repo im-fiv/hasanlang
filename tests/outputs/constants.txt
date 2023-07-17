@@ -21,7 +21,7 @@
             start: 30,
             end: 31,
         },
-        kind: Empty,
+        kind: None,
         value: Int(
             5,
             Span {

@@ -25,14 +25,14 @@ pub struct Program<'p> {
 	pub statements: Vec<Statement<'p>>
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Statement<'p> {
 	FunctionDefinition {
 		modifiers: GeneralModifiers<'p>,
 		name: Span<'p>,
 		generics: Vec<Expression<'p>>,
 		arguments: Vec<FunctionArgument<'p>>,
-		return_type: Option<Expression<'p>>, //* Expression::Type
+		return_type: Option<Type<'p>>,
 		statements: Vec<Statement<'p>>,
 		span: Span<'p>
 	},
@@ -42,14 +42,14 @@ pub enum Statement<'p> {
 		name: Span<'p>,
 		generics: Vec<Expression<'p>>,
 		arguments: Vec<FunctionArgument<'p>>,
-		return_type: Option<Expression<'p>>, //* Expression::Type
+		return_type: Option<Type<'p>>,
 		span: Span<'p>
 	},
 
 	TypeDefinition {
 		name: Span<'p>,
 		generics: Vec<Expression<'p>>,
-		definition: Expression<'p>,
+		definition: Type<'p>,
 		span: Span<'p>
 	},
 
@@ -72,7 +72,7 @@ pub enum Statement<'p> {
 	VariableDefinition {
 		modifiers: GeneralModifiers<'p>,
 		name: Span<'p>,
-		kind: Expression<'p>, //* Expression::Type
+		kind: Option<Type<'p>>,
 		value: Expression<'p>,
 		span: Span<'p>
 	},
@@ -85,7 +85,7 @@ pub enum Statement<'p> {
 
 	FunctionCall {
 		callee: Expression<'p>,
-		generics: Vec<Expression<'p>>,
+		generics: Vec<Type<'p>>,
 		arguments: Vec<Expression<'p>>,
 		span: Span<'p>
 	},
@@ -130,7 +130,7 @@ pub enum Statement<'p> {
 }
 
 #[allow(dead_code)]
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ConditionBranch<'p> {
 	condition: Expression<'p>,
 	statements: Vec<Statement<'p>>,
@@ -138,37 +138,34 @@ pub struct ConditionBranch<'p> {
 }
 
 #[allow(dead_code)]
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct EnumVariant<'p> {
 	name: Span<'p>,
 	span: Span<'p>
 }
 
 #[allow(dead_code)]
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct FunctionArgument<'p> {
 	name: Expression<'p>, //* Expression::Identifier
-	kind: Expression<'p>, //* Expression::Type
+	kind: Type<'p>,
 	span: Span<'p>
 }
 
 impl<'p> FunctionArgument<'p> {
-	pub fn new(name: Expression<'p>, kind: Expression<'p>, span: Span<'p>) -> Self {
-		match kind {
-			Expression::Type { .. } => FunctionArgument { name, kind, span },
-			_ => panic!("Got an unexpected 'kind' argument. Expected '{:?}', got '{:?}'", Rule::r#type, kind)
-		}
+	pub fn new(name: Expression<'p>, kind: Type<'p>, span: Span<'p>) -> Self {
+		FunctionArgument { name, kind, span }
 	}
 }
 
 #[allow(dead_code)]
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ClassFunctionAttributes<'p> {
 	attributes: Vec<ClassFunctionAttribute<'p>>,
 	span: Span<'p>
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum ClassFunctionAttribute<'p> {
 	Constructor(Span<'p>),
 	Get(Span<'p>),
@@ -185,13 +182,13 @@ impl<'p> ClassFunctionAttributes<'p> {
 }
 
 #[allow(dead_code)]
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct GeneralModifiers<'p> {
 	modifiers: Vec<GeneralModifier<'p>>,
 	span: Span<'p>
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum GeneralModifier<'p> {
 	Public(Span<'p>),
 	Constant(Span<'p>),
@@ -207,12 +204,12 @@ impl<'p> GeneralModifiers<'p> {
 	}
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum ClassDefinitionMember<'p> {
 	Variable {
 		modifiers: GeneralModifiers<'p>,
 		name: Span<'p>,
-		kind: Expression<'p>, //* Expression::Type
+		kind: Type<'p>,
 		default_value: Expression<'p>,
 		span: Span<'p>
 	},
@@ -223,7 +220,7 @@ pub enum ClassDefinitionMember<'p> {
 		attributes: Option<ClassFunctionAttributes<'p>>,
 		generics: Vec<Expression<'p>>,
 		arguments: Vec<FunctionArgument<'p>>,
-		return_type: Option<Expression<'p>>, //* Expression::Type
+		return_type: Option<Type<'p>>,
 		statements: Vec<Statement<'p>>,
 		span: Span<'p>
 	}
@@ -256,12 +253,12 @@ impl<'p> ClassDefinitionMember<'p> {
 	}
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum ClassDeclarationMember<'p> {
 	Variable {
 		modifiers: GeneralModifiers<'p>,
 		name: Span<'p>,
-		kind: Expression<'p>, //* Expression::Type
+		kind: Type<'p>,
 		span: Span<'p>
 	},
 
@@ -271,7 +268,7 @@ pub enum ClassDeclarationMember<'p> {
 		attributes: Option<ClassFunctionAttributes<'p>>,
 		generics: Vec<Expression<'p>>,
 		arguments: Vec<FunctionArgument<'p>>,
-		return_type: Option<Expression<'p>>, //* Expression::Type
+		return_type: Option<Type<'p>>,
 		span: Span<'p>
 	}
 }
@@ -304,7 +301,28 @@ impl<'p> ClassDeclarationMember<'p> {
 type IntType = i64;
 type FloatType = f64;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
+pub enum Type<'p> {
+	Regular {
+		base: Box<Expression<'p>>,
+		generics: Vec<Expression<'p>>,
+
+		// Type attributes
+		raw: bool,
+		array: bool,
+
+		span: Span<'p>
+	},
+
+	Function {
+		argument_types: Vec<Type<'p>>,
+		return_type: Box<Type<'p>>,
+
+		span: Span<'p>
+	}
+}
+
+#[derive(Debug, Clone)]
 pub enum Expression<'p> {
 	Int(IntType, Span<'p>),
 	Float(FloatType, Span<'p>),
@@ -328,7 +346,7 @@ pub enum Expression<'p> {
 
 	FunctionCall {
 		callee: Box<Expression<'p>>,
-		generics: Vec<Expression<'p>>,
+		generics: Vec<Type<'p>>,
 		arguments: Vec<Expression<'p>>,
 
 		span: Span<'p>
@@ -358,20 +376,11 @@ pub enum Expression<'p> {
 	Array(Vec<Expression<'p>>, Span<'p>),
 	Identifier(Span<'p>),
 
-	Type {
-		base: Box<Expression<'p>>,
-		generics: Vec<Expression<'p>>,
-
-		// Type attributes
-		array: bool,
-		raw: bool,
-
-		span: Span<'p>
-	},
+	Type(Type<'p>),
 
 	TypeCast {
 		value: Box<Expression<'p>>,
-		kind: Box<Expression<'p>>,
+		kind: Box<Type<'p>>,
 
 		span: Span<'p>
 	},
@@ -379,7 +388,7 @@ pub enum Expression<'p> {
 	AnonymousFunction {
 		generics: Vec<Expression<'p>>,
 		arguments: Vec<FunctionArgument<'p>>,
-		return_type: Box<Option<Expression<'p>>>,
+		return_type: Box<Option<Type<'p>>>,
 		statements: Vec<Statement<'p>>,
 
 		span: Span<'p>
@@ -389,7 +398,7 @@ pub enum Expression<'p> {
 	Unimplemented
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum BinaryOperator {
 	Plus,
 	Minus,
@@ -406,7 +415,7 @@ pub enum BinaryOperator {
 	LessThanEqual
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum UnaryOperator {
 	Minus,
 	Not
@@ -507,6 +516,13 @@ impl<'p> HasanParser<'p> {
 		}
 	}
 
+	fn is_term(&self, pair: Pair<'p, Rule>) -> bool {
+		matches!(
+			pair.as_rule(),
+			Rule::anonymous_function
+		)
+	}
+
 	fn parse_expression(&self, expression_pair: Pair<'p, Rule>) -> Expression {
 		let mut pairs = expression_pair
 			.clone()
@@ -516,7 +532,7 @@ impl<'p> HasanParser<'p> {
 		let span = expression_pair.as_span();
 
 		// Check if an iterator is empty
-		if pairs.len() < 1 {
+		if pairs.len() < 1 || self.is_term(expression_pair.clone()) {
 			return self.parse_term(expression_pair);
 		}
 
@@ -644,7 +660,7 @@ impl<'p> HasanParser<'p> {
 			Rule::boolean_literal => self.parse_literal(pair),
 
 			Rule::identifier => self.parse_identifier(pair),
-			Rule::r#type => self.parse_type(pair),
+			Rule::r#type => Expression::Type(self.parse_type(pair)),
 
 			rule => error!(self, "invalid expression rule '{:?}'", pair.as_span(), rule)
 		}
@@ -661,7 +677,7 @@ impl<'p> HasanParser<'p> {
 		let mut generics: Vec<Expression> = Vec::new();
 		let mut arguments: Vec<FunctionArgument> = Vec::new();
 		let mut statements: Vec<Statement> = Vec::new();
-		let mut return_type: Option<Expression> = None;
+		let mut return_type: Option<Type> = None;
 
 		while let Some(pair) = pairs.next() {
 			match pair.as_rule() {
@@ -908,7 +924,7 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.unwrap_or_else(|| unreachable!("Failed to parse function call expression: call pairs iterator is empty"));
 
-		let mut generics: Vec<Expression> = Vec::new();
+		let mut generics: Vec<Type> = Vec::new();
 		let mut arguments: Vec<Expression> = Vec::new();
 
 		// Notify that incorrect generics are being passed to the function
@@ -1043,13 +1059,13 @@ impl<'p> HasanParser<'p> {
 	/// # Arguments
 	/// 
 	/// * `pair` - A Pest.rs parser pair with type Rule::call_generics
-	fn parse_generics_as_types(&self, pair: Pair<'p, Rule>) -> Vec<Expression> {
+	fn parse_generics_as_types(&self, pair: Pair<'p, Rule>) -> Vec<Type> {
 		if pair.as_rule() != Rule::call_generics {
 			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::call_generics, pair.as_rule());
 		}
 
 		let inner_pairs = pair.into_inner();
-		let mut generics: Vec<Expression> = Vec::new();
+		let mut generics: Vec<Type> = Vec::new();
 
 		for arg in inner_pairs {
 			if arg.as_rule() != Rule::r#type {
@@ -1102,46 +1118,142 @@ impl<'p> HasanParser<'p> {
 		Statement::EnumDefinition { modifiers, name, variants, span }
 	}
 
-	fn parse_type(&self, pair: Pair<'p, Rule>) -> Expression {
+	fn parse_regular_type(&self, pair: Pair<'p, Rule>) -> Type {
+		if pair.as_rule() != Rule::regular_type {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::regular_type, pair.as_rule());
+		}
+
+		let span = pair.as_span();
+		let mut pairs = pair.into_inner();
+
+		let type_pair = pairs
+			.next()
+			.expect("Failed to parse type: type expression pair is missing");
+
+		let operators_pair = pairs
+			.next()
+			.expect("Failed to parse type: operators pair is missing");
+
+		let mut operator_pairs = operators_pair.into_inner();
+
+		let mut output_type = Type::Regular {
+			base: Box::new(self.parse_expression(type_pair)),
+			generics: Vec::new(),
+			raw: false,
+			array: false,
+			span
+		};
+
+		while let Some(pair) = operator_pairs.next() {
+			match pair.as_rule() {
+				Rule::type_operator_raw => {
+					if let Type::Regular { base, generics, raw: _, array, span } = output_type {
+						output_type = Type::Regular {
+							base,
+							generics,
+							raw: true,
+							array,
+							span
+						};
+					}
+				},
+
+				Rule::type_operator_generics => {
+					if let Type::Regular { base, generics: _, raw, array: _, span } = output_type {
+						let definition_pair = pair
+							.into_inner()
+							.next()
+							.unwrap_or_else(|| unreachable!("Failed to parse type: generics pair is missing"));
+
+						output_type = Type::Regular {
+							base,
+							generics: self.parse_generics_as_identifiers(definition_pair),
+							raw,
+							array: true,
+							span
+						};
+					}
+				},
+
+				Rule::type_operator_array => {
+					if let Type::Regular { base, generics, raw, array: _, span } = output_type {
+						output_type = Type::Regular {
+							base,
+							generics,
+							raw,
+							array: true,
+							span
+						};
+					}
+				},
+
+				rule => error!(self, "unexpected rule '{:?}'", pair.as_span(), rule)
+			}
+		}
+
+		output_type
+	}
+
+	fn parse_function_type(&self, pair: Pair<'p, Rule>) -> Type {
+		if pair.as_rule() != Rule::function_type {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::function_type, pair.as_rule());
+		}
+
+		let span = pair.as_span();
+		let mut pairs = pair.into_inner();
+
+		let mut arguments_pairs = pairs
+			.next()
+			.expect("Failed to parse function type: arguments pair is missing")
+			.into_inner();
+
+		let return_type_pair = pairs
+			.next()
+			.expect("Failed to parse function type: arguments pair is missing");
+
+		let mut argument_types: Vec<Type> = Vec::new();
+
+		while let Some(pair) = arguments_pairs.next() {
+			if pair.as_rule() != Rule::r#type {
+				error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::r#type, pair.as_rule());
+			}
+
+			argument_types.push(self.parse_type(pair));
+		}
+
+		let return_type = Box::new(self.parse_type(return_type_pair));
+
+		Type::Function {
+			argument_types,
+			return_type,
+			span
+		}
+	}
+
+	fn parse_type(&self, pair: Pair<'p, Rule>) -> Type {
 		if pair.as_rule() != Rule::r#type {
 			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::r#type, pair.as_rule());
 		}
 
-		let span = pair.as_span();
-		let mut inner_pairs = pair.into_inner();
+		let mut pairs = pair.into_inner();
 
-		// Check if the type is an array type
-		let mut next_pair = inner_pairs.peek().expect("Failed to parse type: everything is missing");
+		let inner_type_pair = pairs
+			.next()
+			.expect("Failed to parse type: pairs are empty");
 
-		let is_raw_type = next_pair.as_rule() == Rule::raw_type;
+		match inner_type_pair.as_rule() {
+			Rule::regular_type => self.parse_regular_type(inner_type_pair),
+			Rule::function_type => self.parse_function_type(inner_type_pair),
 
-		if is_raw_type {
-			inner_pairs = next_pair.into_inner();
-			next_pair = inner_pairs.peek().expect("Failed to parse type: expected '[]' or identifier, got nothing");
-		}
+			rule => error!(
+				self,
+				"expected '{:?}' or '{:?}', got '{:?}'",
+				inner_type_pair.as_span(),
 
-		let is_array_type = next_pair.as_rule() == Rule::array_type;
-
-		if is_array_type {
-			inner_pairs = next_pair.into_inner();
-		}
-		
-		// Get type identifier
-		let name_pair = inner_pairs.next().expect("Failed to parse type: name is missing");
-		let mut generics: Vec<Expression> = Vec::new();
-
-		// Check if there are generics present
-		if inner_pairs.len() > 0 {
-			let generics_pair = inner_pairs.next().unwrap_or_else(|| unreachable!("Failed to parse type: generics are missing"));
-			generics = self.parse_generics_as_identifiers(generics_pair);
-		}
-
-		Expression::Type {
-			base: Box::new(Expression::Identifier(name_pair.as_span())),
-			generics,
-			array: is_array_type,
-			raw: is_raw_type,
-			span
+				Rule::regular_type,
+				Rule::function_type,
+				rule
+			)
 		}
 	}
 
@@ -1263,7 +1375,7 @@ impl<'p> HasanParser<'p> {
 		modifiers
 	}
 
-	fn parse_function_header(&self, pair: Pair<'p, Rule>) -> (GeneralModifiers, Span, Vec<Expression>, Vec<FunctionArgument>, Option<Expression>) {
+	fn parse_function_header(&self, pair: Pair<'p, Rule>) -> (GeneralModifiers, Span, Vec<Expression>, Vec<FunctionArgument>, Option<Type>) {
 		let mut header_pairs = pair.into_inner();
 
 		let modifiers_pair = header_pairs
@@ -1278,7 +1390,7 @@ impl<'p> HasanParser<'p> {
 
 		let mut generics: Vec<Expression> = Vec::new();
 		let mut arguments: Vec<FunctionArgument> = Vec::new();
-		let mut return_type: Option<Expression> = None;
+		let mut return_type: Option<Type> = None;
 
 		while let Some(pair) = header_pairs.next() {
 			match pair.as_rule() {
@@ -1704,11 +1816,11 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse variable definition: expected type/value, got nothing");
 
-		let mut kind = Expression::Empty;
+		let mut kind = None;
 		let value: Expression;
 
 		if next_pair.as_rule() == Rule::r#type {
-			kind = self.parse_type(next_pair);
+			kind = Some(self.parse_type(next_pair));
 
 			next_pair = pairs
 				.next()

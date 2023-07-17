@@ -13,7 +13,7 @@
             start: 4,
             end: 11,
         },
-        kind: Empty,
+        kind: None,
         value: Int(
             0,
             Span {

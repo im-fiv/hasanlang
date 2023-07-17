@@ -137,23 +137,25 @@
             start: 84,
             end: 97,
         },
-        kind: Type {
-            base: Identifier(
-                Span {
-                    str: "Light",
+        kind: Some(
+            Regular {
+                base: Identifier(
+                    Span {
+                        str: "Light",
+                        start: 99,
+                        end: 104,
+                    },
+                ),
+                generics: [],
+                raw: false,
+                array: false,
+                span: Span {
+                    str: "Light ",
                     start: 99,
-                    end: 104,
+                    end: 105,
                 },
-            ),
-            generics: [],
-            array: false,
-            raw: false,
-            span: Span {
-                str: "Light ",
-                start: 99,
-                end: 105,
             },
-        },
+        ),
         value: DotAccess {
             expression: Identifier(
                 Span {

@@ -247,7 +247,7 @@
                 },
             ),
             generics: [
-                Type {
+                Regular {
                     base: Identifier(
                         Span {
                             str: "B",
@@ -256,10 +256,10 @@
                         },
                     ),
                     generics: [],
-                    array: true,
                     raw: true,
+                    array: true,
                     span: Span {
-                        str: "B[]!",
+                        str: "B![]",
                         start: 58,
                         end: 62,
                     },
@@ -276,13 +276,13 @@
                 ),
             ],
             span: Span {
-                str: "<B[]!>(\"asd\")",
+                str: "<B![]>(\"asd\")",
                 start: 57,
                 end: 70,
             },
         },
         generics: [
-            Type {
+            Regular {
                 base: Identifier(
                     Span {
                         str: "A",
@@ -291,8 +291,8 @@
                     },
                 ),
                 generics: [],
-                array: false,
                 raw: false,
+                array: false,
                 span: Span {
                     str: "A",
                     start: 71,
