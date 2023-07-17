@@ -46,6 +46,7 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 
 ## My current TODO list (Corrective Parser stage)
 - [ ] Implement `for` statements
+- [ ] Constants
 - [ ] Module system
 - [x] Separate `public`, `private`, and `static` from class function attributes
 - [x] Rename function definition arguments into function_arguments
