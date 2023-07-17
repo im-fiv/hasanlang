@@ -1,10 +1,10 @@
 class ClassDefinition
-	a: int[] = "default value";
-	b: SomeType<int>[];
+	pub a: int[] = "default value";
+	pub b: SomeType<int>[];
 
-	#[static, constructor]
-	func some_function() -> bool do
-
+	#[constructor]
+	static func some_function() -> bool do
+		
 	end;
 
 	c: bool;
@@ -14,19 +14,27 @@ class ClassDefinition
 	end
 end;
 
-declare class ClassDeclaraction
+declare pub class ClassDeclaraction
 	a: int;
 
-	#[static, constructor]
+	#[constructor]
 	func some_function() -> bool;
 
-	func other_function() -> int;
+	pub func other_function() -> int;
+end
+
+declare static class Array<T>
+	#[get]
+	func length() -> int;
+
+	static func append(_elem: T) -> void;
+	func copy() -> this;
 end
 
 declare class Array<T>
 	#[get]
 	func length() -> int;
 
-	func append(_elem: T) -> void;
+	static func append(_elem: T) -> void;
 	func copy() -> this;
 end

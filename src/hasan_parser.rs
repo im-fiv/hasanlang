@@ -23,6 +23,7 @@ pub struct HasanParser<'p> {
 #[derive(Debug)]
 pub enum Statement<'p> {
 	FunctionDefinition {
+		modifiers: GeneralModifiers<'p>,
 		name: Span<'p>,
 		generics: Vec<Expression<'p>>,
 		arguments: Vec<FunctionArgument<'p>>,
@@ -32,6 +33,7 @@ pub enum Statement<'p> {
 	},
 
 	FunctionDeclaration {
+		modifiers: GeneralModifiers<'p>,
 		name: Span<'p>,
 		generics: Vec<Expression<'p>>,
 		arguments: Vec<FunctionArgument<'p>>,
@@ -47,6 +49,7 @@ pub enum Statement<'p> {
 	},
 
 	ClassDefinition {
+		modifiers: GeneralModifiers<'p>,
 		name: Span<'p>,
 		generics: Vec<Expression<'p>>,
 		members: Vec<ClassDefinitionMember<'p>>,
@@ -54,6 +57,7 @@ pub enum Statement<'p> {
 	},
 
 	ClassDeclaration {
+		modifiers: GeneralModifiers<'p>,
 		name: Span<'p>,
 		generics: Vec<Expression<'p>>,
 		members: Vec<ClassDeclarationMember<'p>>,
@@ -61,6 +65,7 @@ pub enum Statement<'p> {
 	},
 
 	VariableDefinition {
+		modifiers: GeneralModifiers<'p>,
 		name: Span<'p>,
 		kind: Expression<'p>, //* Expression::Type
 		value: Expression<'p>,
@@ -86,6 +91,7 @@ pub enum Statement<'p> {
 	},
 
 	EnumDefinition {
+		modifiers: GeneralModifiers<'p>,
 		name: Span<'p>,
 		variants: Vec<EnumVariant<'p>>,
 		span: Span<'p>
@@ -153,11 +159,8 @@ pub struct ClassFunctionAttributes<'p> {
 #[derive(Debug)]
 pub enum ClassFunctionAttribute<'p> {
 	Constructor(Span<'p>),
-	Private(Span<'p>),
-	Public(Span<'p>),
 	Get(Span<'p>),
-	Set(Span<'p>),
-	Static(Span<'p>)
+	Set(Span<'p>)
 }
 
 impl<'p> ClassFunctionAttributes<'p> {
@@ -169,9 +172,32 @@ impl<'p> ClassFunctionAttributes<'p> {
 	}
 }
 
+#[allow(dead_code)]
+#[derive(Debug)]
+pub struct GeneralModifiers<'p> {
+	modifiers: Vec<GeneralModifier<'p>>,
+	span: Span<'p>
+}
+
+#[derive(Debug)]
+pub enum GeneralModifier<'p> {
+	Public(Span<'p>),
+	Static(Span<'p>)
+}
+
+impl<'p> GeneralModifiers<'p> {
+	fn new(span: Span<'p>) -> Self {
+		GeneralModifiers {
+			modifiers: Vec::new(),
+			span
+		}
+	}
+}
+
 #[derive(Debug)]
 pub enum ClassDefinitionMember<'p> {
 	Variable {
+		modifiers: GeneralModifiers<'p>,
 		name: Span<'p>,
 		kind: Expression<'p>, //* Expression::Type
 		default_value: Expression<'p>,
@@ -179,6 +205,7 @@ pub enum ClassDefinitionMember<'p> {
 	},
 
 	Function {
+		modifiers: GeneralModifiers<'p>,
 		name: Span<'p>,
 		attributes: Option<ClassFunctionAttributes<'p>>,
 		generics: Vec<Expression<'p>>,
@@ -192,6 +219,7 @@ pub enum ClassDefinitionMember<'p> {
 impl<'p> ClassDefinitionMember<'p> {
 	pub fn function_from_statement(statement: Statement<'p>, attributes: Option<ClassFunctionAttributes<'p>>) -> Self {
 		if let Statement::FunctionDefinition {
+			modifiers,
 			name,
 			generics,
 			arguments,
@@ -200,6 +228,7 @@ impl<'p> ClassDefinitionMember<'p> {
 			span
 		} = statement {
 			return ClassDefinitionMember::Function {
+				modifiers,
 				name,
 				attributes,
 				generics,
@@ -217,12 +246,14 @@ impl<'p> ClassDefinitionMember<'p> {
 #[derive(Debug)]
 pub enum ClassDeclarationMember<'p> {
 	Variable {
+		modifiers: GeneralModifiers<'p>,
 		name: Span<'p>,
 		kind: Expression<'p>, //* Expression::Type
 		span: Span<'p>
 	},
 
 	Function {
+		modifiers: GeneralModifiers<'p>,
 		name: Span<'p>,
 		attributes: Option<ClassFunctionAttributes<'p>>,
 		generics: Vec<Expression<'p>>,
@@ -235,6 +266,7 @@ pub enum ClassDeclarationMember<'p> {
 impl<'p> ClassDeclarationMember<'p> {
 	pub fn function_from_statement(statement: Statement<'p>, attributes: Option<ClassFunctionAttributes<'p>>) -> Self {
 		if let Statement::FunctionDeclaration {
+			modifiers,
 			name,
 			generics,
 			arguments,
@@ -242,6 +274,7 @@ impl<'p> ClassDeclarationMember<'p> {
 			span
 		} = statement {
 			return ClassDeclarationMember::Function {
+				modifiers,
 				name,
 				attributes,
 				generics,
@@ -1002,6 +1035,12 @@ impl<'p> HasanParser<'p> {
 		let span = pair.as_span();
 		let mut pairs = pair.into_inner();
 
+		let modifiers_pair = pairs
+			.next()
+			.expect("Failed to parse enum definition: modifiers are missing");
+
+		let modifiers = self.parse_general_modifiers(modifiers_pair);
+
 		let name = pairs
 			.next()
 			.expect("Failed to parse enum definition: enum name is missing")
@@ -1017,7 +1056,7 @@ impl<'p> HasanParser<'p> {
 			variants.push(self.parse_enum_variant(pair));
 		}
 
-		Statement::EnumDefinition { name, variants, span }
+		Statement::EnumDefinition { modifiers, name, variants, span }
 	}
 
 	fn parse_type(&self, pair: Pair<'p, Rule>) -> Expression {
@@ -1088,11 +1127,8 @@ impl<'p> HasanParser<'p> {
 
 			let attribute = match as_str {
 				"constructor" => Constructor(span),
-				"private" => Private(span),
-				"public" => Public(span),
 				"get" => Get(span),
 				"set" => Set(span),
-				"static" => Static(span),
 
 				_ => unreachable!("Failed to parse function attributes: unknown attribute '{}'", as_str)
 			};
@@ -1143,8 +1179,52 @@ impl<'p> HasanParser<'p> {
 		arguments
 	}
 
-	fn parse_function_header(&self, pair: Pair<'p, Rule>) -> (Span, Vec<Expression>, Vec<FunctionArgument>, Option<Expression>) {
+	fn parse_general_modifiers(&self, pair: Pair<'p, Rule>) -> GeneralModifiers {
+		if pair.as_rule() != Rule::general_modifiers {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::general_modifiers, pair.as_rule());
+		}
+
+		let mut modifiers = GeneralModifiers::new(pair.as_span());
+		let mut pairs = pair.into_inner();
+
+		let mut met_modifiers: Vec<String> = Vec::new();
+
+		while let Some(pair) = pairs.next() {
+			let as_str = pair.as_str();
+			let span = pair.as_span();
+
+			let owned_str = as_str.clone().to_owned();
+
+			if met_modifiers.contains(&owned_str) {
+				error!(self, "found more than one '{}' modifier definition", span, as_str);
+			}
+
+			use GeneralModifier::*;
+
+			let modifier = match as_str {
+				"pub" => Public(span),
+				"static" => Static(span),
+
+				_ => unreachable!("Failed to parse modifiers: unknown modifier '{}'", as_str)
+			};
+
+			modifiers.modifiers.push(modifier);
+
+			// mark modifier as defined
+			met_modifiers.push(owned_str);
+		}
+
+		modifiers
+	}
+
+	fn parse_function_header(&self, pair: Pair<'p, Rule>) -> (GeneralModifiers, Span, Vec<Expression>, Vec<FunctionArgument>, Option<Expression>) {
 		let mut header_pairs = pair.into_inner();
+
+		let modifiers_pair = header_pairs
+			.next()
+			.expect("Failed to parse function header: modifiers are missing");
+
+		let modifiers = self.parse_general_modifiers(modifiers_pair);
 
 		let name = header_pairs
 			.next()
@@ -1164,7 +1244,7 @@ impl<'p> HasanParser<'p> {
 			}
 		}
 
-		(name.as_span(), generics, arguments, return_type)
+		(modifiers, name.as_span(), generics, arguments, return_type)
 	}
 
 	fn parse_function_declaration(&self, pair: Pair<'p, Rule>) -> Statement {
@@ -1179,8 +1259,8 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse function declaration: function header is missing");
 
-		let (name, generics, arguments, return_type) = self.parse_function_header(header_pair);
-		Statement::FunctionDeclaration { name, generics, arguments, return_type, span }
+		let (modifiers, name, generics, arguments, return_type) = self.parse_function_header(header_pair);
+		Statement::FunctionDeclaration { modifiers, name, generics, arguments, return_type, span }
 	}
 
 	fn parse_function_definition(&self, pair: Pair<'p, Rule>) -> Statement {
@@ -1192,7 +1272,7 @@ impl<'p> HasanParser<'p> {
 			.expect("Failed to parse function definition: function header is missing");
 
 		// parsing header
-		let (name, generics, arguments, return_type) = self.parse_function_header(header_pair);
+		let (modifiers, name, generics, arguments, return_type) = self.parse_function_header(header_pair);
 
 		let body_pairs = pairs
 			.next()
@@ -1200,6 +1280,7 @@ impl<'p> HasanParser<'p> {
 			.into_inner();
 
 		Statement::FunctionDefinition {
+			modifiers,
 			name,
 			generics,
 			arguments,
@@ -1279,6 +1360,12 @@ impl<'p> HasanParser<'p> {
 		let span = pair.as_span();
 		let mut inner_pairs = pair.into_inner();
 
+		let modifiers_pair = inner_pairs
+			.next()
+			.expect(&format!("Failed to parse class definition variable: expected '{:?}', got nothing", Rule::general_modifiers));
+
+		let modifiers = self.parse_general_modifiers(modifiers_pair);
+
 		let name = inner_pairs
 			.next()
 			.expect(&format!("Failed to parse class definition variable: expected '{:?}', got nothing", Rule::identifier));
@@ -1295,6 +1382,7 @@ impl<'p> HasanParser<'p> {
 		}
 
 		ClassDefinitionMember::Variable {
+			modifiers,
 			name: name.as_span(),
 			kind: self.parse_type(kind),
 			default_value,
@@ -1331,6 +1419,12 @@ impl<'p> HasanParser<'p> {
 		let span = pair.as_span();
 		let mut pairs = pair.into_inner();
 
+		let modifiers_pair = pairs
+			.next()
+			.expect("Failed to parse class definition: modifiers are missing");
+
+		let modifiers = self.parse_general_modifiers(modifiers_pair);
+
 		let name = pairs
 			.next()
 			.expect("Failed to parse class definition: class name is missing");
@@ -1345,6 +1439,7 @@ impl<'p> HasanParser<'p> {
 		// if the class is empty, return early
 		if next_pair_option.is_none() {
 			return Statement::ClassDefinition {
+				modifiers,
 				name: name.as_span(),
 				generics: Vec::new(),
 				members: Vec::new(),
@@ -1363,6 +1458,7 @@ impl<'p> HasanParser<'p> {
 			// if no class members are provided, return early
 			if pairs.peek().is_none() {
 				return Statement::ClassDefinition {
+					modifiers,
 					name: name.as_span(),
 					generics,
 					members: Vec::new(),
@@ -1381,6 +1477,7 @@ impl<'p> HasanParser<'p> {
 		}
 
 		Statement::ClassDefinition {
+			modifiers,
 			name: name.as_span(),
 			generics,
 			members,
@@ -1426,6 +1523,12 @@ impl<'p> HasanParser<'p> {
 		let span = pair.as_span();
 		let mut inner_pairs = pair.into_inner();
 
+		let modifiers_pair = inner_pairs
+			.next()
+			.expect(&format!("Failed to parse class declaration variable: expected rule '{:?}', got nothing", Rule::general_modifiers));
+
+		let modifiers = self.parse_general_modifiers(modifiers_pair);
+
 		let name = inner_pairs
 			.next()
 			.expect(&format!("Failed to parse class declaration variable: expected rule '{:?}', got nothing", Rule::identifier));
@@ -1435,6 +1538,7 @@ impl<'p> HasanParser<'p> {
 			.expect(&format!("Failed to parse class declaration variable: expected rule '{:?}', got nothing", Rule::r#type));
 
 		ClassDeclarationMember::Variable {
+			modifiers,
 			name: name.as_span(),
 			kind: self.parse_type(kind),
 			span
@@ -1470,6 +1574,12 @@ impl<'p> HasanParser<'p> {
 		let span = pair.as_span();
 		let mut pairs = pair.into_inner();
 
+		let modifiers_pair = pairs
+			.next()
+			.expect(&format!("Failed to parse class declaration variable: expected rule '{:?}', got nothing", Rule::general_modifiers));
+
+		let modifiers = self.parse_general_modifiers(modifiers_pair);
+
 		let name = pairs
 			.next()
 			.expect("Failed to parse class declaration: class name is missing");
@@ -1484,6 +1594,7 @@ impl<'p> HasanParser<'p> {
 		// if the class is empty, return early
 		if next_pair_option.is_none() {
 			return Statement::ClassDeclaration {
+				modifiers,
 				name: name.as_span(),
 				generics: Vec::new(),
 				members: Vec::new(),
@@ -1502,6 +1613,7 @@ impl<'p> HasanParser<'p> {
 			// if no class members are provided, return early
 			if pairs.peek().is_none() {
 				return Statement::ClassDeclaration {
+					modifiers,
 					name: name.as_span(),
 					generics,
 					members: Vec::new(),
@@ -1520,6 +1632,7 @@ impl<'p> HasanParser<'p> {
 		}
 
 		Statement::ClassDeclaration {
+			modifiers,
 			name: name.as_span(),
 			generics,
 			members,
@@ -1530,6 +1643,12 @@ impl<'p> HasanParser<'p> {
 	fn parse_variable_definition(&self, pair: Pair<'p, Rule>) -> Statement {
 		let span = pair.as_span();
 		let mut pairs = pair.into_inner();
+
+		let modifiers_pair = pairs
+			.next()
+			.expect(&format!("Failed to parse class declaration variable: expected rule '{:?}', got nothing", Rule::general_modifiers));
+
+		let modifiers = self.parse_general_modifiers(modifiers_pair);
 
 		let name = pairs
 			.next()
@@ -1559,6 +1678,7 @@ impl<'p> HasanParser<'p> {
 		}
 
 		Statement::VariableDefinition {
+			modifiers,
 			name: name.as_span(),
 			kind,
 			value,

@@ -1,5 +1,13 @@
 [
     VariableDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 0,
+                end: 0,
+            },
+        },
         name: Span {
             str: "a",
             start: 4,
@@ -21,6 +29,14 @@
         },
     },
     VariableDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 14,
+                end: 14,
+            },
+        },
         name: Span {
             str: "b",
             start: 18,

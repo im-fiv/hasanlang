@@ -1,5 +1,13 @@
 [
     VariableDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 0,
+                end: 0,
+            },
+        },
         name: Span {
             str: "pi",
             start: 4,
@@ -21,6 +29,14 @@
         },
     },
     VariableDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 60,
+                end: 60,
+            },
+        },
         name: Span {
             str: "meaning_of_life",
             start: 64,

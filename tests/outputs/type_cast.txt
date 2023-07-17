@@ -1,5 +1,13 @@
 [
     FunctionDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 0,
+                end: 0,
+            },
+        },
         name: Span {
             str: "cast",
             start: 5,
@@ -120,6 +128,14 @@
         },
     },
     VariableDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 68,
+                end: 68,
+            },
+        },
         name: Span {
             str: "long_cast",
             start: 72,

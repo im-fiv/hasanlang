@@ -53,6 +53,14 @@
         },
     },
     FunctionDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 93,
+                end: 93,
+            },
+        },
         name: Span {
             str: "asd",
             start: 98,

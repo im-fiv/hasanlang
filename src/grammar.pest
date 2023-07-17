@@ -22,14 +22,18 @@ statement = _{
 keywords = {
 	"type" | "var" | "return" | "func" |
 	"end" | "do" | "declare" | "class" |
-	"constructor" | "private" | "public" |
-	"get" | "set" | "static" | "as" |
-	"enum" | "and" | "or" | "not" | "if" |
-	"else" | "elseif" | "while" | "break" |
-	"true" | "false"
+	"constructor" | "pub" | "get" |
+	"set" | "static" | "as" | "enum" |
+	"and" | "or" | "not" | "if" | "else" |
+	"elseif" | "while" | "break" | "true" |
+	"false" | "then"
 }
 
 stmt_sep = _{ ";" }
+
+general_modifiers = { modifier_public? ~ modifier_static? }
+	modifier_public = { "pub" }
+	modifier_static = { "static" }
 
 //* statements *//
 return_stmt = { "return" ~ expression? ~ stmt_sep }
@@ -39,9 +43,9 @@ function_declaration_stmt = { function_header ~ stmt_sep }
 type_definition_stmt = { "type" ~ identifier ~ definition_generics? ~ "=" ~ type ~ stmt_sep }
 // class definition defined later //
 // class declaration defined later //
-variable_definition_stmt = { "var" ~ identifier ~ (":" ~ type)? ~ "=" ~ expression ~ stmt_sep }
+variable_definition_stmt = { general_modifiers ~ "var" ~ identifier ~ (":" ~ type)? ~ "=" ~ expression ~ stmt_sep }
 variable_assign_stmt = { (recursive_expression | expression) ~ "=" ~ expression ~ stmt_sep }
-enum_definition_stmt = { "enum" ~ identifier ~ (enum_variant ~ ("," ~ enum_variant)*)? ~ "end" }
+enum_definition_stmt = { general_modifiers ~ "enum" ~ identifier ~ (enum_variant ~ ("," ~ enum_variant)*)? ~ "end" }
 
 //* control flow *//
 if_stmt = { "if" ~ expression ~ "then" ~ statements ~ if_elseif* ~ if_else? ~ "end" }
@@ -52,7 +56,7 @@ while_stmt = { "while" ~ expression ~ do_block ~ stmt_sep? }
 break_stmt = { "break" ~ stmt_sep }
 
 //* functions *//
-function_header = { "func" ~ identifier ~ definition_generics? ~ "(" ~ function_arguments? ~ ")" ~ ("->" ~ type)? }
+function_header = { general_modifiers ~ "func" ~ identifier ~ definition_generics? ~ "(" ~ function_arguments? ~ ")" ~ ("->" ~ type)? }
 
 function_argument = { identifier ~ ":" ~ type }
 function_arguments = { function_argument ~ ("," ~ function_argument)* }
@@ -61,22 +65,22 @@ function_call_arguments = { expression ~ ("," ~ expression)* ~ ","? }
 do_block = { "do" ~ statement* ~ "end" }
 
 //* class declaration *//
-class_declaration = { "declare"? ~ "class" ~ identifier ~ definition_generics? ~ class_declaration_member* ~ "end" ~ stmt_sep? }
+class_declaration = { "declare" ~ general_modifiers ~ "class" ~ identifier ~ definition_generics? ~ class_declaration_member* ~ "end" ~ stmt_sep? }
 class_declaration_member = { class_declaration_function | class_declaration_variable }
 
 class_declaration_function = { attributes? ~ function_declaration_stmt }
-class_declaration_variable = { identifier ~ ":" ~ type ~ stmt_sep }
+class_declaration_variable = { general_modifiers ~ identifier ~ ":" ~ type ~ stmt_sep }
 
 //* class definition *//
-class_definition = { "class" ~ identifier ~ definition_generics? ~ class_definition_member* ~ "end" ~ stmt_sep? }
+class_definition = { general_modifiers ~ "class" ~ identifier ~ definition_generics? ~ class_definition_member* ~ "end" ~ stmt_sep? }
 class_definition_member = { class_definition_function | class_definition_variable }
 
 class_definition_function = { attributes? ~ function_definition_stmt ~ stmt_sep? }
-class_definition_variable = { identifier ~ ":" ~ type ~ ("=" ~ expression)? ~ stmt_sep }
+class_definition_variable = { general_modifiers ~ identifier ~ ":" ~ type ~ ("=" ~ expression)? ~ stmt_sep }
 
 // general class stuff //
 attributes = { "#[" ~ attribute_identifier ~ ("," ~ attribute_identifier)* ~ "]" }
-attribute_identifier = { "constructor" | "private" | "public" | "get" | "set" | "static" }
+attribute_identifier = { "constructor" | "get" | "set" }
 
 //* enums *//
 enum_variant = { identifier }
