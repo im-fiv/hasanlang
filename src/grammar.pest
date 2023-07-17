@@ -1,6 +1,6 @@
 program = { SOI ~ statement* ~ EOI }
 
-/// used for encapsulating statements into a single pair for some cases
+/// Used for encapsulating statements into a single pair for some cases
 statements = { statement* }
 
 statement = _{
@@ -35,19 +35,19 @@ general_modifiers = { modifier_public? ~ modifier_static? }
 	modifier_public = { "pub" }
 	modifier_static = { "static" }
 
-//* statements *//
+//* Statements *//
 return_stmt = { "return" ~ expression? ~ stmt_sep }
 function_call_stmt = { term_without_recursion ~ recursive_operator+ ~ stmt_sep } // this is wrong, but it will be handled inside the parser //
 function_definition_stmt = { function_header ~ do_block ~ stmt_sep? }
 function_declaration_stmt = { function_header ~ stmt_sep }
 type_definition_stmt = { "type" ~ identifier ~ definition_generics? ~ "=" ~ type ~ stmt_sep }
-// class definition defined later //
-// class declaration defined later //
+// Class definition is defined later //
+// Class declaration is defined later //
 variable_definition_stmt = { general_modifiers ~ "var" ~ identifier ~ (":" ~ type)? ~ "=" ~ expression ~ stmt_sep }
 variable_assign_stmt = { (recursive_expression | expression) ~ "=" ~ expression ~ stmt_sep }
 enum_definition_stmt = { general_modifiers ~ "enum" ~ identifier ~ (enum_variant ~ ("," ~ enum_variant)*)? ~ "end" }
 
-//* control flow *//
+//* Control flow *//
 if_stmt = { "if" ~ expression ~ "then" ~ statements ~ if_elseif* ~ if_else? ~ "end" }
 	if_elseif = { ("else if" | "elseif") ~ expression ~ "then" ~ statements }
 	if_else = { "else" ~ statements }
@@ -55,7 +55,7 @@ if_stmt = { "if" ~ expression ~ "then" ~ statements ~ if_elseif* ~ if_else? ~ "e
 while_stmt = { "while" ~ expression ~ do_block ~ stmt_sep? }
 break_stmt = { "break" ~ stmt_sep }
 
-//* functions *//
+//* Functions *//
 function_header = { general_modifiers ~ "func" ~ identifier ~ definition_generics? ~ "(" ~ function_arguments? ~ ")" ~ ("->" ~ type)? }
 
 function_argument = { identifier ~ ":" ~ type }
@@ -64,28 +64,28 @@ function_call_arguments = { expression ~ ("," ~ expression)* ~ ","? }
 
 do_block = { "do" ~ statement* ~ "end" }
 
-//* class declaration *//
+//* Class declaration *//
 class_declaration = { "declare" ~ general_modifiers ~ "class" ~ identifier ~ definition_generics? ~ class_declaration_member* ~ "end" ~ stmt_sep? }
 class_declaration_member = { class_declaration_function | class_declaration_variable }
 
 class_declaration_function = { attributes? ~ function_declaration_stmt }
 class_declaration_variable = { general_modifiers ~ identifier ~ ":" ~ type ~ stmt_sep }
 
-//* class definition *//
+//* Class definition *//
 class_definition = { general_modifiers ~ "class" ~ identifier ~ definition_generics? ~ class_definition_member* ~ "end" ~ stmt_sep? }
 class_definition_member = { class_definition_function | class_definition_variable }
 
 class_definition_function = { attributes? ~ function_definition_stmt ~ stmt_sep? }
 class_definition_variable = { general_modifiers ~ identifier ~ ":" ~ type ~ ("=" ~ expression)? ~ stmt_sep }
 
-// general class stuff //
+// Other class features //
 attributes = { "#[" ~ attribute_identifier ~ ("," ~ attribute_identifier)* ~ "]" }
 attribute_identifier = { "constructor" | "get" | "set" }
 
-//* enums *//
+//* Enums *//
 enum_variant = { identifier }
 
-//* types *//
+//* Types *//
 type = { raw_type | array_type | base_type }
 
 base_type = _{ identifier ~ definition_generics? }
@@ -95,22 +95,22 @@ raw_type = { (array_type | base_type) ~ "!" }
 definition_generics = { "<" ~ identifier ~ ("," ~ identifier)* ~ ">" }
 call_generics = { "<" ~ type ~ ("," ~ type)* ~ ">" }
 
-//* expressions *//
+//* Expressions *//
 expression = { anonymous_function | unary_expression | binary_expression | array_expression | recursive_expression | term }
 binary_operator = { "+" | "-" | "/" | "*" | "%" | "==" | "!=" | "and" | "or" | ">" | "<" | ">=" | "<=" }
 unary_operator = { "-" | "not" }
 
-// general expression stuff //
+// General expression features //
 anonymous_function = { "func" ~ definition_generics? ~ "(" ~ function_arguments? ~ ")" ~ ("->" ~ type)? ~ do_block }
 unary_expression = { unary_operator ~ term }
 binary_expression = { term ~ (binary_operator ~ term)+ }
 array_expression = { ("[" ~ "]") | ("[" ~ expression ~ ("," ~ expression)* ~ "]") }
 
-// terms //
+// Terms //
 term = _{ anonymous_function | unary_expression | array_expression | recursive_expression | term_without_recursion }
 term_without_recursion = _{ literal | identifier | "(" ~ expression ~ ")" }
 
-// recursive expressions //
+// Recursive expressions //
 recursive_operator = _{ recursive_call | recursive_array | recursive_dot | recursive_arrow | recursive_as }
 	recursive_call = { call_generics? ~ "(" ~ function_call_arguments? ~ ")" }
 	recursive_array = { "[" ~ expression ~ "]" }
@@ -120,7 +120,7 @@ recursive_operator = _{ recursive_call | recursive_array | recursive_dot | recur
 
 recursive_expression = { term_without_recursion ~ recursive_operator+ }
 
-//* literals and identifiers *//
+//* Literals and identifiers *//
 literal = _{ boolean_literal | string_literal | number_literal }
 
 string_literal = { "\"" ~ (!("\"") ~ ANY)* ~ "\"" }
@@ -129,7 +129,7 @@ boolean_literal = { "true" | "false" }
 
 identifier = @{ (ASCII_ALPHA | "_") ~ (ASCII_ALPHANUMERIC | "_")* ~ !keywords }
 
-//* to be ignored *//
+//* To be ignored *//
 line_comment = _{ "//" ~ (!"\n" ~ ANY)* ~ ("\n" | EOI) }
 block_comment = _{ "/*" ~ (!"*/" ~ ANY)* ~ "*/" }
 
