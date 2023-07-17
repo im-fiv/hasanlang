@@ -113,7 +113,7 @@ pub enum Statement<'p> {
 	
 	Break(Span<'p>),
 
-	// special statements that are not intended to be used traditionally
+	// Special statements that are not intended to be used traditionally
 	Unimplemented
 }
 
@@ -349,7 +349,7 @@ pub enum Expression<'p> {
 		base: Box<Expression<'p>>,
 		generics: Vec<Expression<'p>>,
 
-		// attributes
+		// Type attributes
 		array: bool,
 		raw: bool,
 
@@ -500,7 +500,7 @@ impl<'p> HasanParser<'p> {
 
 		let span = expression_pair.as_span();
 
-		// check if an iterator is empty
+		// Check if an iterator is empty
 		if pairs.len() < 1 {
 			return self.parse_term(expression_pair);
 		}
@@ -533,7 +533,7 @@ impl<'p> HasanParser<'p> {
 	
 				let operator = self.parse_operator(pair);
 				
-				// consume the operator and get the current end position at the same time
+				// Consume the operator and get the current end position at the same time
 				let rhs_start = pairs
 					.next()
 					.unwrap_or_else(|| unreachable!("Failed to parse expression: expected a pair, got nothing"))
@@ -868,12 +868,12 @@ impl<'p> HasanParser<'p> {
 		let mut generics: Vec<Expression> = Vec::new();
 		let mut arguments: Vec<Expression> = Vec::new();
 
-		// notify that incorrect generics are being passed to the function
+		// Notify that incorrect generics are being passed to the function
 		if next_pair.as_rule() == Rule::definition_generics {
 			error!(self, "definition generics were passed instead of call generics", next_pair.as_span());
 		}
 
-		// if the next pair is of type call_generics, parse them, and exit if there are no arguments
+		// If the next pair is of type call_generics, parse them, and exit if there are no arguments
 		if next_pair.as_rule() == Rule::call_generics {
 			generics = self.parse_generics_as_types(next_pair);
 
@@ -891,7 +891,7 @@ impl<'p> HasanParser<'p> {
 			next_pair = pair.unwrap();
 		}
 
-		// parse arguments
+		// Parse arguments
 		for arg_pair in next_pair.into_inner() {
 			// arg_pair is always wrapped in an expression in this case
 			let expression_pair = arg_pair
@@ -1067,7 +1067,7 @@ impl<'p> HasanParser<'p> {
 		let span = pair.as_span();
 		let mut inner_pairs = pair.into_inner();
 
-		// check if the type is an array type
+		// Check if the type is an array type
 		let mut next_pair = inner_pairs.peek().expect("Failed to parse type: everything is missing");
 
 		let is_raw_type = next_pair.as_rule() == Rule::raw_type;
@@ -1083,11 +1083,11 @@ impl<'p> HasanParser<'p> {
 			inner_pairs = next_pair.into_inner();
 		}
 		
-		// get type identifier
+		// Get type identifier
 		let name_pair = inner_pairs.next().expect("Failed to parse type: name is missing");
 		let mut generics: Vec<Expression> = Vec::new();
 
-		// check if there are generics present
+		// Check if there are generics present
 		if inner_pairs.len() > 0 {
 			let generics_pair = inner_pairs.next().unwrap_or_else(|| unreachable!("Failed to parse type: generics are missing"));
 			generics = self.parse_generics_as_identifiers(generics_pair);
@@ -1111,7 +1111,9 @@ impl<'p> HasanParser<'p> {
 		let mut inner = pair.into_inner();
 
 		let mut attributes = ClassFunctionAttributes::new(span);
-		let mut met_attributes: Vec<String> = Vec::new(); // keep track of which attributes have already been defined to prevent users from defining them twice
+
+		// Keeping track of which attributes have already been defined to prevent users from defining them twice
+		let mut met_attributes: Vec<String> = Vec::new();
 
 		while let Some(pair) = inner.next() {
 			let as_str = pair.as_str();
@@ -1120,7 +1122,7 @@ impl<'p> HasanParser<'p> {
 			let owned_str = as_str.clone().to_owned();
 
 			if met_attributes.contains(&owned_str) {
-				error!(self, "Found more than one '{}' attribute definition", span, as_str);
+				error!(self, "found more than one '{}' attribute definition", span, as_str);
 			}
 
 			use ClassFunctionAttribute::*;
@@ -1135,7 +1137,7 @@ impl<'p> HasanParser<'p> {
 
 			attributes.attributes.push(attribute);
 
-			// mark attribute as defined
+			// Mark the attribute as defined
 			met_attributes.push(owned_str);
 		}
 
@@ -1147,7 +1149,7 @@ impl<'p> HasanParser<'p> {
 			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::function_arguments, pair.as_rule());
 		}
 
-		// not needed yet
+		// Not needed yet
 		// let span = pair.as_span();
 		let mut pairs = pair.into_inner();
 
@@ -1210,7 +1212,7 @@ impl<'p> HasanParser<'p> {
 
 			modifiers.modifiers.push(modifier);
 
-			// mark modifier as defined
+			// Mark the modifier as defined
 			met_modifiers.push(owned_str);
 		}
 
@@ -1271,7 +1273,7 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse function definition: function header is missing");
 
-		// parsing header
+		// Parsing the header
 		let (modifiers, name, generics, arguments, return_type) = self.parse_function_header(header_pair);
 
 		let body_pairs = pairs
@@ -1323,7 +1325,7 @@ impl<'p> HasanParser<'p> {
 	}
 
 	fn parse_class_definition_function(&self, pair: Pair<'p, Rule>) -> ClassDefinitionMember {
-		// * NOTE: attributes are to be checked later by the optimization stage/compiler
+		//* NOTE: attributes are to be checked later by the optimization stage/compiler
 
 		if pair.as_rule() != Rule::class_definition_function {
 			panic!("Failed to parse a class definition function: expected rule '{:?}', got '{:?}'", Rule::class_definition_function, pair.as_rule());
@@ -1340,7 +1342,7 @@ impl<'p> HasanParser<'p> {
 		if next_pair.as_rule() == Rule::attributes {
 			attributes = Some(self.parse_class_function_attributes(next_pair));
 
-			// skip attributes if they exist
+			// Skip attributes if they exist
 			inner_pairs.next();
 		}
 
@@ -1436,7 +1438,7 @@ impl<'p> HasanParser<'p> {
 		let next_pair_option = pairs.peek();
 		let next_pair: Pair<Rule>;
 
-		// if the class is empty, return early
+		// If the class is empty beyond this point, return early
 		if next_pair_option.is_none() {
 			return Statement::ClassDefinition {
 				modifiers,
@@ -1447,15 +1449,15 @@ impl<'p> HasanParser<'p> {
 			};
 		}
 
-		// unwrap the next pair
+		// Unwrap the next pair
 		next_pair = next_pair_option.unwrap_or_else(|| unreachable!("Failed to parse class definition: unexpected end of pairs. Expected class members or generics, got nothing"));
 		let mut generics: Vec<Expression> = Vec::new();
 
-		// check if its definition_generics
+		// Check if the next pair is of rule definition_generics
 		if next_pair.as_rule() == Rule::definition_generics {
 			generics = self.parse_generics_as_identifiers(next_pair);
 
-			// if no class members are provided, return early
+			// If no class members are provided, return early
 			if pairs.peek().is_none() {
 				return Statement::ClassDefinition {
 					modifiers,
@@ -1466,7 +1468,7 @@ impl<'p> HasanParser<'p> {
 				};
 			}
 
-			// otherwise, skip the current pair
+			// Otherwise, skip the current pair
 			pairs.next();
 		}
 
@@ -1503,7 +1505,7 @@ impl<'p> HasanParser<'p> {
 		if next_pair.as_rule() == Rule::attributes {
 			attributes = Some(self.parse_class_function_attributes(next_pair));
 
-			// skip attributes if they exist
+			// Skip attributes if they exist
 			inner_pairs.next();
 		}
 
@@ -1591,7 +1593,7 @@ impl<'p> HasanParser<'p> {
 		let next_pair_option = pairs.peek();
 		let next_pair: Pair<Rule>;
 
-		// if the class is empty, return early
+		// If the class is empty beyond this point, return early
 		if next_pair_option.is_none() {
 			return Statement::ClassDeclaration {
 				modifiers,
@@ -1602,15 +1604,15 @@ impl<'p> HasanParser<'p> {
 			};
 		}
 
-		// unwrap the next pair
+		// Unwrap the next pair
 		next_pair = next_pair_option.unwrap_or_else(|| unreachable!("Failed to parse class declaration: expected generics or class members, got nothing"));
 		let mut generics: Vec<Expression> = Vec::new();
 
-		// check if its definition_generics
+		// Check if the next pair is of rule definition_generics
 		if next_pair.as_rule() == Rule::definition_generics {
 			generics = self.parse_generics_as_identifiers(next_pair);
 
-			// if no class members are provided, return early
+			// If no class members are provided, return early
 			if pairs.peek().is_none() {
 				return Statement::ClassDeclaration {
 					modifiers,
@@ -1621,7 +1623,7 @@ impl<'p> HasanParser<'p> {
 				};
 			}
 
-			// otherwise, skip the current pair
+			// Otherwise, skip the current pair
 			pairs.next();
 		}
 
@@ -1714,7 +1716,7 @@ impl<'p> HasanParser<'p> {
 			.last()
 			.unwrap_or_else(|| unreachable!("Failed to parse function call statement: pairs are empty"));
 
-		// check if the expression doesn't end with a function call "<...>(...)"
+		// Check if the expression doesn't end with a function call `<...>(...)`
 		if last_pair.as_rule() != Rule::recursive_call {
 			error!(self, "expression statement is not a function call", span);
 		}
