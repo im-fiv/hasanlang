@@ -47,7 +47,7 @@ fn parse_all_files() {
 
 		let match_filename = format!("./tests/outputs/{}.txt", filename_str);
 
-		// compile
+		// Compile the file
 		let contents = read_file(path.clone());
 		let parse_result = PestParser::parse(Rule::program, &contents);
 
@@ -70,7 +70,7 @@ fn parse_all_files() {
 		let ast = ast.unwrap();
 		assert_ne!(ast.len(), 0);
 
-		// confirm generated AST
+		// Confirm generated AST
 		let ast_string = format!("{:#?}", ast).replace("\r\n", "\n");
 		let expected_output = read_file(std::path::PathBuf::from(match_filename));
 
