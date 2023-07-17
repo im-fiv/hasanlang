@@ -42,6 +42,7 @@ fn compile(command: cli::CompileCommand) {
 	
 	fs::create_dir_all("./compiled").expect("Failed to create \"compiled\" directory");
 	
+	// Pest parsing stage
 	println!("Pest parsing...");
 	
 	let contents = read_file(&file_path);
@@ -61,6 +62,7 @@ fn compile(command: cli::CompileCommand) {
 	
 	write_file("./compiled/1_raw_ast.txt", format!("{:#?}", pairs));
 	
+	// Hasan parsing stage
 	println!("AST parsing...");
 	
 	let ast_parser = HasanParser::new(pairs);
