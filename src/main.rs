@@ -82,13 +82,13 @@ fn test_create(command: cli::CreateTestCommand) {
     // Construct source and destination file paths
     let source_path = PathBuf::from("./input.hsl");
     let mut destination_path = PathBuf::from("./tests/cases");
-	
+
     destination_path.push(format!("{}.hsl", name));
 
     // Copy the input file
     copy_file(&source_path, &destination_path);
 
-    // Compile the input file and update the output file
+    // Compile the copied file and update the output file
     let update_command = cli::UpdateTestCommand { name };
     test_update(update_command);
 }
@@ -97,8 +97,9 @@ fn test_update(command: cli::UpdateTestCommand) {
     let name = command.name;
 
     // Compile the input file
+    let file_path = format!("./tests/cases/{}.hsl", name);
     compile(cli::CompileCommand {
-        file_path: "./input.hsl".to_owned(),
+        file_path,
         debug: false
     });
 
