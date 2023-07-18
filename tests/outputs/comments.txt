@@ -2,20 +2,11 @@ Program {
     statements: [
         FunctionDefinition {
             modifiers: [],
-            name: Span {
-                str: "main",
-                start: 114,
-                end: 118,
-            },
+            name: "main",
             generics: [],
             arguments: [],
             return_type: None,
             statements: [],
-            span: Span {
-                str: "func main() do\n\t// Code here //////\nend",
-                start: 109,
-                end: 148,
-            },
         },
     ],
     module_info: None,

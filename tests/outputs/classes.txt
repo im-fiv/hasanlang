@@ -2,103 +2,50 @@ Program {
     statements: [
         ClassDefinition {
             modifiers: [],
-            name: Span {
-                str: "ClassDefinition",
-                start: 6,
-                end: 21,
-            },
+            name: "ClassDefinition",
             generics: [],
             members: [
                 Variable {
                     modifiers: [
                         Public,
                     ],
-                    name: Span {
-                        str: "a",
-                        start: 27,
-                        end: 28,
-                    },
+                    name: "a",
                     kind: Regular {
                         base: Identifier(
-                            Span {
-                                str: "int",
-                                start: 30,
-                                end: 33,
-                            },
+                            "int",
                         ),
                         generics: [],
                         raw: false,
                         array: true,
-                        span: Span {
-                            str: "int[]",
-                            start: 30,
-                            end: 35,
-                        },
                     },
                     default_value: String(
                         "default value",
-                        Span {
-                            str: "\"default value\"",
-                            start: 38,
-                            end: 53,
-                        },
                     ),
-                    span: Span {
-                        str: "pub a: int[] = \"default value\";",
-                        start: 23,
-                        end: 54,
-                    },
                 },
                 Variable {
                     modifiers: [
                         Public,
                     ],
-                    name: Span {
-                        str: "b",
-                        start: 60,
-                        end: 61,
-                    },
+                    name: "b",
                     kind: Regular {
                         base: Identifier(
-                            Span {
-                                str: "SomeType",
-                                start: 63,
-                                end: 71,
-                            },
+                            "SomeType",
                         ),
                         generics: [
                             Identifier(
-                                Span {
-                                    str: "int",
-                                    start: 72,
-                                    end: 75,
-                                },
+                                "int",
                             ),
                         ],
                         raw: false,
                         array: true,
-                        span: Span {
-                            str: "SomeType<int>[]",
-                            start: 63,
-                            end: 78,
-                        },
                     },
                     default_value: Empty,
-                    span: Span {
-                        str: "pub b: SomeType<int>[];",
-                        start: 56,
-                        end: 79,
-                    },
                 },
                 Function {
                     modifiers: [
                         Static,
                     ],
-                    name: Span {
-                        str: "some_function",
-                        start: 110,
-                        end: 123,
-                    },
+                    name: "some_function",
                     attributes: Some(
                         [
                             Constructor,
@@ -109,151 +56,70 @@ Program {
                     return_type: Some(
                         Regular {
                             base: Identifier(
-                                Span {
-                                    str: "bool",
-                                    start: 129,
-                                    end: 133,
-                                },
+                                "bool",
                             ),
                             generics: [],
                             raw: false,
                             array: false,
-                            span: Span {
-                                str: "bool ",
-                                start: 129,
-                                end: 134,
-                            },
                         },
                     ),
                     statements: [],
-                    span: Span {
-                        str: "static func some_function() -> bool do\n\t\t\n\tend;",
-                        start: 98,
-                        end: 145,
-                    },
                 },
                 Variable {
                     modifiers: [],
-                    name: Span {
-                        str: "c",
-                        start: 148,
-                        end: 149,
-                    },
+                    name: "c",
                     kind: Regular {
                         base: Identifier(
-                            Span {
-                                str: "bool",
-                                start: 151,
-                                end: 155,
-                            },
+                            "bool",
                         ),
                         generics: [],
                         raw: false,
                         array: false,
-                        span: Span {
-                            str: "bool",
-                            start: 151,
-                            end: 155,
-                        },
                     },
                     default_value: Empty,
-                    span: Span {
-                        str: "c: bool;",
-                        start: 148,
-                        end: 156,
-                    },
                 },
                 Function {
                     modifiers: [],
-                    name: Span {
-                        str: "another_function",
-                        start: 164,
-                        end: 180,
-                    },
+                    name: "another_function",
                     attributes: None,
                     generics: [],
                     arguments: [],
                     return_type: Some(
                         Regular {
                             base: Identifier(
-                                Span {
-                                    str: "int",
-                                    start: 186,
-                                    end: 189,
-                                },
+                                "int",
                             ),
                             generics: [],
                             raw: false,
                             array: false,
-                            span: Span {
-                                str: "int ",
-                                start: 186,
-                                end: 190,
-                            },
                         },
                     ),
                     statements: [],
-                    span: Span {
-                        str: "func another_function() -> int do\n\n\tend\n",
-                        start: 159,
-                        end: 199,
-                    },
                 },
             ],
-            span: Span {
-                str: "class ClassDefinition\n\tpub a: int[] = \"default value\";\n\tpub b: SomeType<int>[];\n\n\t#[constructor]\n\tstatic func some_function() -> bool do\n\t\t\n\tend;\n\n\tc: bool;\n\n\tfunc another_function() -> int do\n\n\tend\nend;",
-                start: 0,
-                end: 203,
-            },
         },
         ClassDeclaration {
             modifiers: [
                 Public,
             ],
-            name: Span {
-                str: "ClassDeclaraction",
-                start: 223,
-                end: 240,
-            },
+            name: "ClassDeclaraction",
             generics: [],
             members: [
                 Variable {
                     modifiers: [],
-                    name: Span {
-                        str: "a",
-                        start: 242,
-                        end: 243,
-                    },
+                    name: "a",
                     kind: Regular {
                         base: Identifier(
-                            Span {
-                                str: "int",
-                                start: 245,
-                                end: 248,
-                            },
+                            "int",
                         ),
                         generics: [],
                         raw: false,
                         array: false,
-                        span: Span {
-                            str: "int",
-                            start: 245,
-                            end: 248,
-                        },
-                    },
-                    span: Span {
-                        str: "a: int;",
-                        start: 242,
-                        end: 249,
                     },
                 },
                 Function {
                     modifiers: [],
-                    name: Span {
-                        str: "some_function",
-                        start: 273,
-                        end: 286,
-                    },
+                    name: "some_function",
                     attributes: Some(
                         [
                             Constructor,
@@ -264,98 +130,49 @@ Program {
                     return_type: Some(
                         Regular {
                             base: Identifier(
-                                Span {
-                                    str: "bool",
-                                    start: 292,
-                                    end: 296,
-                                },
+                                "bool",
                             ),
                             generics: [],
                             raw: false,
                             array: false,
-                            span: Span {
-                                str: "bool",
-                                start: 292,
-                                end: 296,
-                            },
                         },
                     ),
-                    span: Span {
-                        str: "func some_function() -> bool;",
-                        start: 268,
-                        end: 297,
-                    },
                 },
                 Function {
                     modifiers: [
                         Public,
                     ],
-                    name: Span {
-                        str: "other_function",
-                        start: 309,
-                        end: 323,
-                    },
+                    name: "other_function",
                     attributes: None,
                     generics: [],
                     arguments: [],
                     return_type: Some(
                         Regular {
                             base: Identifier(
-                                Span {
-                                    str: "int",
-                                    start: 329,
-                                    end: 332,
-                                },
+                                "int",
                             ),
                             generics: [],
                             raw: false,
                             array: false,
-                            span: Span {
-                                str: "int",
-                                start: 329,
-                                end: 332,
-                            },
                         },
                     ),
-                    span: Span {
-                        str: "pub func other_function() -> int;",
-                        start: 300,
-                        end: 333,
-                    },
                 },
             ],
-            span: Span {
-                str: "declare pub class ClassDeclaraction\n\ta: int;\n\n\t#[constructor]\n\tfunc some_function() -> bool;\n\n\tpub func other_function() -> int;\nend\n\n",
-                start: 205,
-                end: 339,
-            },
         },
         ClassDeclaration {
             modifiers: [
                 Static,
             ],
-            name: Span {
-                str: "Array",
-                start: 360,
-                end: 365,
-            },
+            name: "Array",
             generics: [
                 Identifier(
-                    Span {
-                        str: "T",
-                        start: 366,
-                        end: 367,
-                    },
+                    "T",
                 ),
             ],
             members: [
                 Function {
                     modifiers: [],
-                    name: Span {
-                        str: "length",
-                        start: 383,
-                        end: 389,
-                    },
+                    name: "length",
                     attributes: Some(
                         [
                             Get,
@@ -366,163 +183,76 @@ Program {
                     return_type: Some(
                         Regular {
                             base: Identifier(
-                                Span {
-                                    str: "int",
-                                    start: 395,
-                                    end: 398,
-                                },
+                                "int",
                             ),
                             generics: [],
                             raw: false,
                             array: false,
-                            span: Span {
-                                str: "int",
-                                start: 395,
-                                end: 398,
-                            },
                         },
                     ),
-                    span: Span {
-                        str: "func length() -> int;",
-                        start: 378,
-                        end: 399,
-                    },
                 },
                 Function {
                     modifiers: [
                         Static,
                     ],
-                    name: Span {
-                        str: "append",
-                        start: 414,
-                        end: 420,
-                    },
+                    name: "append",
                     attributes: None,
                     generics: [],
                     arguments: [
                         FunctionArgument {
-                            name: Identifier(
-                                Span {
-                                    str: "_elem",
-                                    start: 421,
-                                    end: 426,
-                                },
-                            ),
+                            name: "_elem",
                             kind: Regular {
                                 base: Identifier(
-                                    Span {
-                                        str: "T",
-                                        start: 428,
-                                        end: 429,
-                                    },
+                                    "T",
                                 ),
                                 generics: [],
                                 raw: false,
                                 array: false,
-                                span: Span {
-                                    str: "T",
-                                    start: 428,
-                                    end: 429,
-                                },
-                            },
-                            span: Span {
-                                str: "_elem: T",
-                                start: 421,
-                                end: 429,
                             },
                         },
                     ],
                     return_type: Some(
                         Regular {
                             base: Identifier(
-                                Span {
-                                    str: "void",
-                                    start: 434,
-                                    end: 438,
-                                },
+                                "void",
                             ),
                             generics: [],
                             raw: false,
                             array: false,
-                            span: Span {
-                                str: "void",
-                                start: 434,
-                                end: 438,
-                            },
                         },
                     ),
-                    span: Span {
-                        str: "static func append(_elem: T) -> void;",
-                        start: 402,
-                        end: 439,
-                    },
                 },
                 Function {
                     modifiers: [],
-                    name: Span {
-                        str: "copy",
-                        start: 446,
-                        end: 450,
-                    },
+                    name: "copy",
                     attributes: None,
                     generics: [],
                     arguments: [],
                     return_type: Some(
                         Regular {
                             base: Identifier(
-                                Span {
-                                    str: "this",
-                                    start: 456,
-                                    end: 460,
-                                },
+                                "this",
                             ),
                             generics: [],
                             raw: false,
                             array: false,
-                            span: Span {
-                                str: "this",
-                                start: 456,
-                                end: 460,
-                            },
                         },
                     ),
-                    span: Span {
-                        str: "func copy() -> this;",
-                        start: 441,
-                        end: 461,
-                    },
                 },
             ],
-            span: Span {
-                str: "declare static class Array<T>\n\t#[get]\n\tfunc length() -> int;\n\n\tstatic func append(_elem: T) -> void;\n\tfunc copy() -> this;\nend\n\n",
-                start: 339,
-                end: 467,
-            },
         },
         ClassDeclaration {
             modifiers: [],
-            name: Span {
-                str: "Array",
-                start: 481,
-                end: 486,
-            },
+            name: "Array",
             generics: [
                 Identifier(
-                    Span {
-                        str: "T",
-                        start: 487,
-                        end: 488,
-                    },
+                    "T",
                 ),
             ],
             members: [
                 Function {
                     modifiers: [],
-                    name: Span {
-                        str: "length",
-                        start: 504,
-                        end: 510,
-                    },
+                    name: "length",
                     attributes: Some(
                         [
                             Get,
@@ -533,138 +263,63 @@ Program {
                     return_type: Some(
                         Regular {
                             base: Identifier(
-                                Span {
-                                    str: "int",
-                                    start: 516,
-                                    end: 519,
-                                },
+                                "int",
                             ),
                             generics: [],
                             raw: false,
                             array: false,
-                            span: Span {
-                                str: "int",
-                                start: 516,
-                                end: 519,
-                            },
                         },
                     ),
-                    span: Span {
-                        str: "func length() -> int;",
-                        start: 499,
-                        end: 520,
-                    },
                 },
                 Function {
                     modifiers: [
                         Static,
                     ],
-                    name: Span {
-                        str: "append",
-                        start: 535,
-                        end: 541,
-                    },
+                    name: "append",
                     attributes: None,
                     generics: [],
                     arguments: [
                         FunctionArgument {
-                            name: Identifier(
-                                Span {
-                                    str: "_elem",
-                                    start: 542,
-                                    end: 547,
-                                },
-                            ),
+                            name: "_elem",
                             kind: Regular {
                                 base: Identifier(
-                                    Span {
-                                        str: "T",
-                                        start: 549,
-                                        end: 550,
-                                    },
+                                    "T",
                                 ),
                                 generics: [],
                                 raw: false,
                                 array: false,
-                                span: Span {
-                                    str: "T",
-                                    start: 549,
-                                    end: 550,
-                                },
-                            },
-                            span: Span {
-                                str: "_elem: T",
-                                start: 542,
-                                end: 550,
                             },
                         },
                     ],
                     return_type: Some(
                         Regular {
                             base: Identifier(
-                                Span {
-                                    str: "void",
-                                    start: 555,
-                                    end: 559,
-                                },
+                                "void",
                             ),
                             generics: [],
                             raw: false,
                             array: false,
-                            span: Span {
-                                str: "void",
-                                start: 555,
-                                end: 559,
-                            },
                         },
                     ),
-                    span: Span {
-                        str: "static func append(_elem: T) -> void;",
-                        start: 523,
-                        end: 560,
-                    },
                 },
                 Function {
                     modifiers: [],
-                    name: Span {
-                        str: "copy",
-                        start: 567,
-                        end: 571,
-                    },
+                    name: "copy",
                     attributes: None,
                     generics: [],
                     arguments: [],
                     return_type: Some(
                         Regular {
                             base: Identifier(
-                                Span {
-                                    str: "this",
-                                    start: 577,
-                                    end: 581,
-                                },
+                                "this",
                             ),
                             generics: [],
                             raw: false,
                             array: false,
-                            span: Span {
-                                str: "this",
-                                start: 577,
-                                end: 581,
-                            },
                         },
                     ),
-                    span: Span {
-                        str: "func copy() -> this;",
-                        start: 562,
-                        end: 582,
-                    },
                 },
             ],
-            span: Span {
-                str: "declare class Array<T>\n\t#[get]\n\tfunc length() -> int;\n\n\tstatic func append(_elem: T) -> void;\n\tfunc copy() -> this;\nend",
-                start: 467,
-                end: 586,
-            },
         },
     ],
     module_info: None,

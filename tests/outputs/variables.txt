@@ -2,111 +2,46 @@ Program {
     statements: [
         VariableDefinition {
             modifiers: [],
-            name: Span {
-                str: "hello",
-                start: 4,
-                end: 9,
-            },
+            name: "hello",
             kind: None,
             value: String(
                 "hello",
-                Span {
-                    str: "\"hello\"",
-                    start: 12,
-                    end: 19,
-                },
             ),
-            span: Span {
-                str: "var hello = \"hello\";",
-                start: 0,
-                end: 20,
-            },
         },
         VariableDefinition {
             modifiers: [],
-            name: Span {
-                str: "world",
-                start: 25,
-                end: 30,
-            },
+            name: "world",
             kind: Some(
                 Regular {
                     base: Identifier(
-                        Span {
-                            str: "string",
-                            start: 32,
-                            end: 38,
-                        },
+                        "string",
                     ),
                     generics: [],
                     raw: false,
                     array: false,
-                    span: Span {
-                        str: "string ",
-                        start: 32,
-                        end: 39,
-                    },
                 },
             ),
             value: String(
                 "world",
-                Span {
-                    str: "\"world\"",
-                    start: 41,
-                    end: 48,
-                },
             ),
-            span: Span {
-                str: "var world: string = \"world\";",
-                start: 21,
-                end: 49,
-            },
         },
-        Return {
-            value: Binary {
+        Return(
+            Binary {
                 lhs: Binary {
                     lhs: Identifier(
-                        Span {
-                            str: "hello",
-                            start: 58,
-                            end: 63,
-                        },
+                        "hello",
                     ),
                     operator: Plus,
                     rhs: String(
                         " ",
-                        Span {
-                            str: "\" \"",
-                            start: 66,
-                            end: 69,
-                        },
                     ),
-                    span: Span {
-                        str: "hello + \" \" + world",
-                        start: 58,
-                        end: 77,
-                    },
                 },
                 operator: Plus,
                 rhs: Identifier(
-                    Span {
-                        str: "world",
-                        start: 72,
-                        end: 77,
-                    },
+                    "world",
                 ),
-                span: Span {
-                    str: "hello + \" \" + world",
-                    start: 58,
-                    end: 77,
-                },
             },
-            span: Span {
-                str: "return hello + \" \" + world;",
-                start: 51,
-                end: 78,
-            },
-        },
+        ),
     ],
     module_info: None,
 }

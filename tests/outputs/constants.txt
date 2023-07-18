@@ -4,76 +4,30 @@ Program {
             modifiers: [
                 Constant,
             ],
-            name: Span {
-                str: "a",
-                start: 30,
-                end: 31,
-            },
+            name: "a",
             kind: None,
             value: Int(
                 5,
-                Span {
-                    str: "5",
-                    start: 34,
-                    end: 35,
-                },
             ),
-            span: Span {
-                str: "const var a = 5;",
-                start: 20,
-                end: 36,
-            },
         },
         VariableAssign {
             name: Identifier(
-                Span {
-                    str: "a",
-                    start: 59,
-                    end: 60,
-                },
+                "a",
             ),
             value: Int(
                 4,
-                Span {
-                    str: "4",
-                    start: 63,
-                    end: 64,
-                },
             ),
-            span: Span {
-                str: "a = 4;",
-                start: 59,
-                end: 65,
-            },
         },
         EnumDefinition {
             modifiers: [
                 Constant,
             ],
-            name: Span {
-                str: "Hello",
-                start: 107,
-                end: 112,
-            },
+            name: "Hello",
             variants: [
                 EnumVariant {
-                    name: Span {
-                        str: "World",
-                        start: 114,
-                        end: 119,
-                    },
-                    span: Span {
-                        str: "World",
-                        start: 114,
-                        end: 119,
-                    },
+                    name: "World",
                 },
             ],
-            span: Span {
-                str: "const enum Hello\n\tWorld\nend",
-                start: 96,
-                end: 123,
-            },
         },
     ],
     module_info: None,

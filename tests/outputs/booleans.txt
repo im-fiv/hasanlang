@@ -2,47 +2,19 @@ Program {
     statements: [
         VariableDefinition {
             modifiers: [],
-            name: Span {
-                str: "a",
-                start: 4,
-                end: 5,
-            },
+            name: "a",
             kind: None,
             value: Boolean(
                 true,
-                Span {
-                    str: "true",
-                    start: 8,
-                    end: 12,
-                },
             ),
-            span: Span {
-                str: "var a = true;",
-                start: 0,
-                end: 13,
-            },
         },
         VariableDefinition {
             modifiers: [],
-            name: Span {
-                str: "b",
-                start: 18,
-                end: 19,
-            },
+            name: "b",
             kind: None,
             value: Boolean(
                 false,
-                Span {
-                    str: "false",
-                    start: 22,
-                    end: 27,
-                },
             ),
-            span: Span {
-                str: "var b = false;",
-                start: 14,
-                end: 28,
-            },
         },
     ],
     module_info: None,
