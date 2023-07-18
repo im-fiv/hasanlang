@@ -191,35 +191,29 @@ pub enum InterfaceMember {
 
 		name: String,
 		generics: Vec<DefinitionType>,
-		arguments: Option<InterfaceFunctionArguments>,
+		arguments: Vec<Type>,
 		return_type: Type
 	}
 }
 
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct InterfaceFunctionArguments {
-	argument_types: Vec<Type>
-}
-
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
 pub struct ConditionBranch {
-	condition: Expression,
-	statements: Vec<Statement>
+	pub condition: Expression,
+	pub statements: Vec<Statement>
 }
 
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct EnumVariant {
-	name: String
+	pub name: String
 }
 
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct FunctionArgument {
-	name: String,
-	kind: Type
+	pub name: String,
+	pub kind: Type
 }
 
 impl FunctionArgument {
@@ -928,13 +922,12 @@ impl<'p> HasanParser<'p> {
 		}
 	}
 
-	fn parse_interface_function_arguments(&self, pair: Pair<Rule>) -> InterfaceFunctionArguments {
+	fn parse_interface_function_arguments(&self, pair: Pair<Rule>) -> Vec<Type> {
 		if pair.as_rule() != Rule::interface_function_arguments {
 			error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::interface_function_arguments, pair.as_rule());
 		}
 
 		let mut pairs = pair.into_inner();
-
 		let mut argument_types: Vec<Type> = Vec::new();
 
 		while let Some(pair) = pairs.next() {
@@ -945,7 +938,7 @@ impl<'p> HasanParser<'p> {
 			argument_types.push(self.parse_type(pair));
 		}
 
-		InterfaceFunctionArguments { argument_types }
+		argument_types
 	}
 
 	fn parse_interface_function(&self, pair: Pair<Rule>) -> InterfaceMember {
@@ -997,11 +990,11 @@ impl<'p> HasanParser<'p> {
 				.unwrap_or_else(|| unreachable!("Failed to parse interface function: arguments/return type pair is missing"));
 		}
 
-		let mut arguments: Option<InterfaceFunctionArguments> = None;
+		let mut arguments: Vec<Type> = Vec::new();
 
 		// If it's arguments, parse them as types and skip to the return type
 		if next_pair.as_rule() == Rule::interface_function_arguments {
-			arguments = Some(self.parse_interface_function_arguments(next_pair));
+			arguments = self.parse_interface_function_arguments(next_pair);
 
 			next_pair = pairs
 				.next()

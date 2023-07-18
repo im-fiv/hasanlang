@@ -60,28 +60,24 @@ Program {
                             "T",
                         ),
                     ],
-                    arguments: Some(
-                        InterfaceFunctionArguments {
-                            argument_types: [
-                                Regular {
-                                    base: Identifier(
-                                        "int",
-                                    ),
-                                    generics: [],
-                                    raw: false,
-                                    array: false,
-                                },
-                                Regular {
-                                    base: Identifier(
-                                        "int",
-                                    ),
-                                    generics: [],
-                                    raw: false,
-                                    array: false,
-                                },
-                            ],
+                    arguments: [
+                        Regular {
+                            base: Identifier(
+                                "int",
+                            ),
+                            generics: [],
+                            raw: false,
+                            array: false,
                         },
-                    ),
+                        Regular {
+                            base: Identifier(
+                                "int",
+                            ),
+                            generics: [],
+                            raw: false,
+                            array: false,
+                        },
+                    ],
                     return_type: Regular {
                         base: Identifier(
                             "int",
@@ -100,7 +96,7 @@ Program {
                             "A",
                         ),
                     ],
-                    arguments: None,
+                    arguments: [],
                     return_type: Regular {
                         base: Identifier(
                             "B",
@@ -115,7 +111,7 @@ Program {
                     attributes: None,
                     name: "test",
                     generics: [],
-                    arguments: None,
+                    arguments: [],
                     return_type: Function {
                         argument_types: [
                             Regular {
@@ -189,7 +185,7 @@ Program {
                     attributes: None,
                     name: "some_function",
                     generics: [],
-                    arguments: None,
+                    arguments: [],
                     return_type: Regular {
                         base: Identifier(
                             "void",
@@ -233,7 +229,7 @@ Program {
                     attributes: None,
                     name: "function",
                     generics: [],
-                    arguments: None,
+                    arguments: [],
                     return_type: Regular {
                         base: Identifier(
                             "int",
@@ -305,7 +301,7 @@ Program {
                     attributes: None,
                     name: "call",
                     generics: [],
-                    arguments: None,
+                    arguments: [],
                     return_type: Regular {
                         base: Identifier(
                             "void",
