@@ -1,7 +1,10 @@
-program = { SOI ~ statement* ~ EOI }
+program = { SOI ~ module_declaration_marker? ~ statement* ~ EOI }
 
 /// Used for encapsulating statements into a single pair for some cases
 statements = { statement* }
+
+/// If present, marks the file as a module
+module_declaration_marker = { "module" ~ identifier ~ stmt_sep }
 
 statement = _{
 	interface_stmt |

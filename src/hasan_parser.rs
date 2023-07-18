@@ -20,9 +20,16 @@ pub struct HasanParser<'p> {
 	pairs: Pairs<'p, Rule>
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct Program<'p> {
-	pub statements: Vec<Statement<'p>>
+	pub statements: Vec<Statement<'p>>,
+	pub module_info: Option<ModuleInfo<'p>>
+}
+
+#[derive(Debug, Clone)]
+pub struct ModuleInfo<'p> {
+	pub name: Span<'p>,
+	pub span: Span<'p>
 }
 
 #[derive(Debug, Clone)]
@@ -523,6 +530,7 @@ impl<'p> HasanParser<'p> {
 
 	pub fn parse(&self) -> Program {
 		let mut statements: Option<Vec<Statement>> = None;
+		let mut module_info: Option<ModuleInfo> = None;
 
 		for pair in self.pairs.clone() {
 			match pair.as_rule() {
@@ -531,17 +539,49 @@ impl<'p> HasanParser<'p> {
 				Rule::line_comment |
 				Rule::block_comment => (),
 
-				Rule::program => statements = Some(self.parse_program(pair.into_inner())),
+				Rule::program => {
+					// Check for module marker
+					let mut pairs = pair.into_inner();
+					let first_pair = pairs.peek();
+
+					if first_pair.is_some() {
+						let first_pair = first_pair.unwrap();
+
+						if first_pair.as_rule() == Rule::module_declaration_marker {
+							module_info = Some(self.parse_module_marker(first_pair));
+							pairs.next();
+						}
+
+						// Actually parse the statements
+						statements = Some(self.parse_statements(pairs));
+					}
+				},
 
 				rule => error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::program, rule)
 			}
 		}
 
-		let statements = statements.unwrap_or_else(|| unreachable!("Failed to parse program: no idea what went wrong"));
-		Program { statements }
+		let statements = statements.unwrap_or_else(|| unreachable!("Failed to parse file: program rule is missing"));
+		Program { statements, module_info }
 	}
 
-	fn parse_program(&self, pairs: Pairs<'p, Rule>) -> Vec<Statement> {
+	fn parse_module_marker(&self, pair: Pair<'p, Rule>) -> ModuleInfo {
+		if pair.as_rule() != Rule::module_declaration_marker {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::module_declaration_marker, pair.as_rule());
+		}
+
+		let span = pair.as_span();
+		let mut pairs = pair.into_inner();
+
+		let name = pairs
+			.next()
+			.expect("Failed to parse module marker: name pairs is missing")
+			.as_span();
+
+		ModuleInfo { name, span }
+	}
+
+	fn parse_statements(&self, pairs: Pairs<'p, Rule>) -> Vec<Statement> {
 		let mut statements: Vec<Statement> = Vec::new();
 
 		for pair in pairs {
@@ -1027,7 +1067,7 @@ impl<'p> HasanParser<'p> {
 
 		while let Some(pair) = pairs.next() {
 			match pair.as_rule() {
-				Rule::do_block => statements = self.parse_program(pair.into_inner()),
+				Rule::do_block => statements = self.parse_statements(pair.into_inner()),
 				Rule::r#type => return_type = Some(self.parse_type(pair)),
 				Rule::function_arguments => arguments = self.parse_function_arguments(pair),
 				Rule::definition_generics => generics = self.parse_generics_as_definition_types(pair),
@@ -1077,7 +1117,7 @@ impl<'p> HasanParser<'p> {
 
 		ConditionBranch {
 			condition: self.parse_expression(expression_pair),
-			statements: self.parse_program(statements_pair.into_inner()),
+			statements: self.parse_statements(statements_pair.into_inner()),
 			span
 		}
 	}
@@ -1100,7 +1140,7 @@ impl<'p> HasanParser<'p> {
 
 		ConditionBranch {
 			condition: Expression::Empty,
-			statements: self.parse_program(statements_pair.into_inner()),
+			statements: self.parse_statements(statements_pair.into_inner()),
 			span
 		}
 	}
@@ -1142,7 +1182,7 @@ impl<'p> HasanParser<'p> {
 
 		Statement::If {
 			condition: self.parse_expression(condition_pair),
-			statements: self.parse_program(statements_pair.into_inner()),
+			statements: self.parse_statements(statements_pair.into_inner()),
 			elseif_branches,
 			else_branch,
 			span
@@ -1167,7 +1207,7 @@ impl<'p> HasanParser<'p> {
 
 		Statement::While {
 			condition: self.parse_expression(expression_pair),
-			statements: self.parse_program(statements_pair.into_inner()),
+			statements: self.parse_statements(statements_pair.into_inner()),
 			span
 		}
 	}
@@ -1195,7 +1235,7 @@ impl<'p> HasanParser<'p> {
 		Statement::For {
 			left: self.parse_expression(left_pair),
 			right: self.parse_expression(right_pair),
-			statements: self.parse_program(statements_pair.into_inner()),
+			statements: self.parse_statements(statements_pair.into_inner()),
 			span
 		}
 	}
@@ -1829,7 +1869,7 @@ impl<'p> HasanParser<'p> {
 			generics,
 			arguments,
 			return_type,
-			statements: self.parse_program(body_pairs),
+			statements: self.parse_statements(body_pairs),
 			span
 		}
 	}

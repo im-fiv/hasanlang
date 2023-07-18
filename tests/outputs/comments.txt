@@ -1,26 +1,29 @@
-[
-    FunctionDefinition {
-        modifiers: GeneralModifiers {
-            modifiers: [],
+Program {
+    statements: [
+        FunctionDefinition {
+            modifiers: GeneralModifiers {
+                modifiers: [],
+                span: Span {
+                    str: "",
+                    start: 109,
+                    end: 109,
+                },
+            },
+            name: Span {
+                str: "main",
+                start: 114,
+                end: 118,
+            },
+            generics: [],
+            arguments: [],
+            return_type: None,
+            statements: [],
             span: Span {
-                str: "",
+                str: "func main() do\n\t// Code here //////\nend",
                 start: 109,
-                end: 109,
+                end: 148,
             },
         },
-        name: Span {
-            str: "main",
-            start: 114,
-            end: 118,
-        },
-        generics: [],
-        arguments: [],
-        return_type: None,
-        statements: [],
-        span: Span {
-            str: "func main() do\n\t// Code here //////\nend",
-            start: 109,
-            end: 148,
-        },
-    },
-]
+    ],
+    module_info: None,
+}

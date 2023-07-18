@@ -1,60 +1,63 @@
-[
-    VariableDefinition {
-        modifiers: GeneralModifiers {
-            modifiers: [],
+Program {
+    statements: [
+        VariableDefinition {
+            modifiers: GeneralModifiers {
+                modifiers: [],
+                span: Span {
+                    str: "",
+                    start: 0,
+                    end: 0,
+                },
+            },
+            name: Span {
+                str: "pi",
+                start: 4,
+                end: 6,
+            },
+            kind: None,
+            value: Float(
+                3.14159265359,
+                Span {
+                    str: "3.14159265359",
+                    start: 9,
+                    end: 22,
+                },
+            ),
             span: Span {
-                str: "",
+                str: "var pi = 3.14159265359;",
                 start: 0,
-                end: 0,
+                end: 23,
             },
         },
-        name: Span {
-            str: "pi",
-            start: 4,
-            end: 6,
-        },
-        kind: None,
-        value: Float(
-            3.14159265359,
-            Span {
-                str: "3.14159265359",
-                start: 9,
-                end: 22,
+        VariableDefinition {
+            modifiers: GeneralModifiers {
+                modifiers: [],
+                span: Span {
+                    str: "",
+                    start: 60,
+                    end: 60,
+                },
             },
-        ),
-        span: Span {
-            str: "var pi = 3.14159265359;",
-            start: 0,
-            end: 23,
-        },
-    },
-    VariableDefinition {
-        modifiers: GeneralModifiers {
-            modifiers: [],
+            name: Span {
+                str: "meaning_of_life",
+                start: 64,
+                end: 79,
+            },
+            kind: None,
+            value: Int(
+                42,
+                Span {
+                    str: "42",
+                    start: 82,
+                    end: 84,
+                },
+            ),
             span: Span {
-                str: "",
+                str: "var meaning_of_life = 42;",
                 start: 60,
-                end: 60,
+                end: 85,
             },
         },
-        name: Span {
-            str: "meaning_of_life",
-            start: 64,
-            end: 79,
-        },
-        kind: None,
-        value: Int(
-            42,
-            Span {
-                str: "42",
-                start: 82,
-                end: 84,
-            },
-        ),
-        span: Span {
-            str: "var meaning_of_life = 42;",
-            start: 60,
-            end: 85,
-        },
-    },
-]
+    ],
+    module_info: None,
+}

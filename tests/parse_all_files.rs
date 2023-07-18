@@ -67,8 +67,8 @@ fn parse_all_files() {
 			panic!("Failed to parse file {:?}", filename);
 		}
 
-		let ast = ast.unwrap().statements;
-		assert_ne!(ast.len(), 0);
+		let ast = ast.unwrap();
+		assert_ne!(ast.statements.len(), 0);
 
 		// Confirm generated AST
 		let ast_string = format!("{:#?}", ast).replace("\r\n", "\n");

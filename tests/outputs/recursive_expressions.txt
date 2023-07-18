@@ -1,115 +1,131 @@
-[
-    VariableDefinition {
-        modifiers: GeneralModifiers {
-            modifiers: [],
-            span: Span {
-                str: "",
-                start: 0,
-                end: 0,
-            },
-        },
-        name: Span {
-            str: "a",
-            start: 4,
-            end: 5,
-        },
-        kind: None,
-        value: Binary {
-            lhs: Int(
-                2,
-                Span {
-                    str: "2",
-                    start: 8,
-                    end: 9,
+Program {
+    statements: [
+        VariableDefinition {
+            modifiers: GeneralModifiers {
+                modifiers: [],
+                span: Span {
+                    str: "",
+                    start: 0,
+                    end: 0,
                 },
-            ),
-            operator: Plus,
-            rhs: Binary {
+            },
+            name: Span {
+                str: "a",
+                start: 4,
+                end: 5,
+            },
+            kind: None,
+            value: Binary {
                 lhs: Int(
                     2,
                     Span {
                         str: "2",
-                        start: 12,
-                        end: 13,
+                        start: 8,
+                        end: 9,
                     },
                 ),
-                operator: Times,
-                rhs: Int(
-                    2,
-                    Span {
-                        str: "2",
-                        start: 16,
-                        end: 17,
-                    },
-                ),
-                span: Span {
-                    str: " 2 * 2",
-                    start: 11,
-                    end: 17,
-                },
-            },
-            span: Span {
-                str: "2 + 2 * 2",
-                start: 8,
-                end: 17,
-            },
-        },
-        span: Span {
-            str: "var a = 2 + 2 * 2;",
-            start: 0,
-            end: 18,
-        },
-    },
-    VariableDefinition {
-        modifiers: GeneralModifiers {
-            modifiers: [],
-            span: Span {
-                str: "",
-                start: 20,
-                end: 20,
-            },
-        },
-        name: Span {
-            str: "b",
-            start: 24,
-            end: 25,
-        },
-        kind: None,
-        value: Binary {
-            lhs: FunctionCall {
-                callee: Identifier(
-                    Span {
-                        str: "some_func",
-                        start: 28,
-                        end: 37,
-                    },
-                ),
-                generics: [],
-                arguments: [],
-                span: Span {
-                    str: "()",
-                    start: 37,
-                    end: 39,
-                },
-            },
-            operator: Plus,
-            rhs: Binary {
-                lhs: Binary {
+                operator: Plus,
+                rhs: Binary {
                     lhs: Int(
                         2,
                         Span {
                             str: "2",
-                            start: 42,
-                            end: 43,
+                            start: 12,
+                            end: 13,
                         },
                     ),
-                    operator: Divide,
+                    operator: Times,
                     rhs: Int(
                         2,
                         Span {
                             str: "2",
-                            start: 46,
-                            end: 47,
+                            start: 16,
+                            end: 17,
+                        },
+                    ),
+                    span: Span {
+                        str: " 2 * 2",
+                        start: 11,
+                        end: 17,
+                    },
+                },
+                span: Span {
+                    str: "2 + 2 * 2",
+                    start: 8,
+                    end: 17,
+                },
+            },
+            span: Span {
+                str: "var a = 2 + 2 * 2;",
+                start: 0,
+                end: 18,
+            },
+        },
+        VariableDefinition {
+            modifiers: GeneralModifiers {
+                modifiers: [],
+                span: Span {
+                    str: "",
+                    start: 20,
+                    end: 20,
+                },
+            },
+            name: Span {
+                str: "b",
+                start: 24,
+                end: 25,
+            },
+            kind: None,
+            value: Binary {
+                lhs: FunctionCall {
+                    callee: Identifier(
+                        Span {
+                            str: "some_func",
+                            start: 28,
+                            end: 37,
+                        },
+                    ),
+                    generics: [],
+                    arguments: [],
+                    span: Span {
+                        str: "()",
+                        start: 37,
+                        end: 39,
+                    },
+                },
+                operator: Plus,
+                rhs: Binary {
+                    lhs: Binary {
+                        lhs: Int(
+                            2,
+                            Span {
+                                str: "2",
+                                start: 42,
+                                end: 43,
+                            },
+                        ),
+                        operator: Divide,
+                        rhs: Int(
+                            2,
+                            Span {
+                                str: "2",
+                                start: 46,
+                                end: 47,
+                            },
+                        ),
+                        span: Span {
+                            str: " 2 / 2 * (12312312)",
+                            start: 41,
+                            end: 60,
+                        },
+                    },
+                    operator: Times,
+                    rhs: Int(
+                        12312312,
+                        Span {
+                            str: "12312312",
+                            start: 51,
+                            end: 59,
                         },
                     ),
                     span: Span {
@@ -118,275 +134,125 @@
                         end: 60,
                     },
                 },
-                operator: Times,
-                rhs: Int(
-                    12312312,
-                    Span {
-                        str: "12312312",
-                        start: 51,
-                        end: 59,
-                    },
-                ),
                 span: Span {
-                    str: " 2 / 2 * (12312312)",
-                    start: 41,
+                    str: "some_func() + 2 / 2 * (12312312)",
+                    start: 28,
                     end: 60,
                 },
             },
             span: Span {
-                str: "some_func() + 2 / 2 * (12312312)",
-                start: 28,
-                end: 60,
+                str: "var b = some_func() + 2 / 2 * (12312312);",
+                start: 20,
+                end: 61,
             },
         },
-        span: Span {
-            str: "var b = some_func() + 2 / 2 * (12312312);",
-            start: 20,
-            end: 61,
-        },
-    },
-    VariableDefinition {
-        modifiers: GeneralModifiers {
-            modifiers: [],
-            span: Span {
-                str: "",
-                start: 63,
-                end: 63,
+        VariableDefinition {
+            modifiers: GeneralModifiers {
+                modifiers: [],
+                span: Span {
+                    str: "",
+                    start: 63,
+                    end: 63,
+                },
             },
-        },
-        name: Span {
-            str: "c",
-            start: 67,
-            end: 68,
-        },
-        kind: None,
-        value: Binary {
-            lhs: Binary {
-                lhs: FunctionCall {
-                    callee: FunctionCall {
+            name: Span {
+                str: "c",
+                start: 67,
+                end: 68,
+            },
+            kind: None,
+            value: Binary {
+                lhs: Binary {
+                    lhs: FunctionCall {
                         callee: FunctionCall {
                             callee: FunctionCall {
                                 callee: FunctionCall {
                                     callee: FunctionCall {
-                                        callee: Identifier(
-                                            Span {
-                                                str: "other_func",
-                                                start: 71,
-                                                end: 81,
+                                        callee: FunctionCall {
+                                            callee: Identifier(
+                                                Span {
+                                                    str: "other_func",
+                                                    start: 71,
+                                                    end: 81,
+                                                },
+                                            ),
+                                            generics: [],
+                                            arguments: [],
+                                            span: Span {
+                                                str: "()",
+                                                start: 81,
+                                                end: 83,
                                             },
-                                        ),
+                                        },
                                         generics: [],
                                         arguments: [],
                                         span: Span {
                                             str: "()",
-                                            start: 81,
-                                            end: 83,
+                                            start: 83,
+                                            end: 85,
                                         },
                                     },
                                     generics: [],
                                     arguments: [],
                                     span: Span {
                                         str: "()",
-                                        start: 83,
-                                        end: 85,
+                                        start: 85,
+                                        end: 87,
                                     },
                                 },
                                 generics: [],
                                 arguments: [],
                                 span: Span {
                                     str: "()",
-                                    start: 85,
-                                    end: 87,
+                                    start: 87,
+                                    end: 89,
                                 },
                             },
                             generics: [],
                             arguments: [],
                             span: Span {
                                 str: "()",
-                                start: 87,
-                                end: 89,
+                                start: 89,
+                                end: 91,
                             },
                         },
                         generics: [],
                         arguments: [],
                         span: Span {
                             str: "()",
-                            start: 89,
-                            end: 91,
+                            start: 91,
+                            end: 93,
                         },
                     },
-                    generics: [],
-                    arguments: [],
-                    span: Span {
-                        str: "()",
-                        start: 91,
-                        end: 93,
-                    },
-                },
-                operator: Plus,
-                rhs: Binary {
-                    lhs: Int(
-                        1337,
-                        Span {
-                            str: "1337",
-                            start: 96,
-                            end: 100,
-                        },
-                    ),
-                    operator: Times,
-                    rhs: Int(
-                        3232892,
-                        Span {
-                            str: "3232892",
-                            start: 103,
-                            end: 110,
-                        },
-                    ),
-                    span: Span {
-                        str: " 1337 * 3232892 - 1",
-                        start: 95,
-                        end: 114,
-                    },
-                },
-                span: Span {
-                    str: "other_func()()()()()() + 1337 * 3232892 - 1",
-                    start: 71,
-                    end: 114,
-                },
-            },
-            operator: Minus,
-            rhs: Int(
-                1,
-                Span {
-                    str: "1",
-                    start: 113,
-                    end: 114,
-                },
-            ),
-            span: Span {
-                str: "other_func()()()()()() + 1337 * 3232892 - 1",
-                start: 71,
-                end: 114,
-            },
-        },
-        span: Span {
-            str: "var c = other_func()()()()()() + 1337 * 3232892 - 1;",
-            start: 63,
-            end: 115,
-        },
-    },
-    VariableDefinition {
-        modifiers: GeneralModifiers {
-            modifiers: [],
-            span: Span {
-                str: "",
-                start: 117,
-                end: 117,
-            },
-        },
-        name: Span {
-            str: "d",
-            start: 121,
-            end: 122,
-        },
-        kind: None,
-        value: Binary {
-            lhs: Binary {
-                lhs: ArrayAccess {
-                    expression: ArrayAccess {
-                        expression: ArrayAccess {
-                            expression: ArrayAccess {
-                                expression: ArrayAccess {
-                                    expression: ArrayAccess {
-                                        expression: Identifier(
-                                            Span {
-                                                str: "array",
-                                                start: 125,
-                                                end: 130,
-                                            },
-                                        ),
-                                        accessor: Int(
-                                            0,
-                                            Span {
-                                                str: "0",
-                                                start: 131,
-                                                end: 132,
-                                            },
-                                        ),
-                                        span: Span {
-                                            str: "[0]",
-                                            start: 130,
-                                            end: 133,
-                                        },
-                                    },
-                                    accessor: Int(
-                                        1,
-                                        Span {
-                                            str: "1",
-                                            start: 134,
-                                            end: 135,
-                                        },
-                                    ),
-                                    span: Span {
-                                        str: "[1]",
-                                        start: 133,
-                                        end: 136,
-                                    },
-                                },
-                                accessor: Int(
-                                    2,
-                                    Span {
-                                        str: "2",
-                                        start: 137,
-                                        end: 138,
-                                    },
-                                ),
-                                span: Span {
-                                    str: "[2]",
-                                    start: 136,
-                                    end: 139,
-                                },
-                            },
-                            accessor: Int(
-                                3,
-                                Span {
-                                    str: "3",
-                                    start: 140,
-                                    end: 141,
-                                },
-                            ),
-                            span: Span {
-                                str: "[3]",
-                                start: 139,
-                                end: 142,
-                            },
-                        },
-                        accessor: Int(
-                            4,
+                    operator: Plus,
+                    rhs: Binary {
+                        lhs: Int(
+                            1337,
                             Span {
-                                str: "4",
-                                start: 143,
-                                end: 144,
+                                str: "1337",
+                                start: 96,
+                                end: 100,
+                            },
+                        ),
+                        operator: Times,
+                        rhs: Int(
+                            3232892,
+                            Span {
+                                str: "3232892",
+                                start: 103,
+                                end: 110,
                             },
                         ),
                         span: Span {
-                            str: "[4]",
-                            start: 142,
-                            end: 145,
+                            str: " 1337 * 3232892 - 1",
+                            start: 95,
+                            end: 114,
                         },
                     },
-                    accessor: Int(
-                        5,
-                        Span {
-                            str: "5",
-                            start: 146,
-                            end: 147,
-                        },
-                    ),
                     span: Span {
-                        str: "[5]",
-                        start: 145,
-                        end: 148,
+                        str: "other_func()()()()()() + 1337 * 3232892 - 1",
+                        start: 71,
+                        end: 114,
                     },
                 },
                 operator: Minus,
@@ -394,727 +260,1084 @@
                     1,
                     Span {
                         str: "1",
-                        start: 151,
-                        end: 152,
+                        start: 113,
+                        end: 114,
                     },
                 ),
+                span: Span {
+                    str: "other_func()()()()()() + 1337 * 3232892 - 1",
+                    start: 71,
+                    end: 114,
+                },
+            },
+            span: Span {
+                str: "var c = other_func()()()()()() + 1337 * 3232892 - 1;",
+                start: 63,
+                end: 115,
+            },
+        },
+        VariableDefinition {
+            modifiers: GeneralModifiers {
+                modifiers: [],
+                span: Span {
+                    str: "",
+                    start: 117,
+                    end: 117,
+                },
+            },
+            name: Span {
+                str: "d",
+                start: 121,
+                end: 122,
+            },
+            kind: None,
+            value: Binary {
+                lhs: Binary {
+                    lhs: ArrayAccess {
+                        expression: ArrayAccess {
+                            expression: ArrayAccess {
+                                expression: ArrayAccess {
+                                    expression: ArrayAccess {
+                                        expression: ArrayAccess {
+                                            expression: Identifier(
+                                                Span {
+                                                    str: "array",
+                                                    start: 125,
+                                                    end: 130,
+                                                },
+                                            ),
+                                            accessor: Int(
+                                                0,
+                                                Span {
+                                                    str: "0",
+                                                    start: 131,
+                                                    end: 132,
+                                                },
+                                            ),
+                                            span: Span {
+                                                str: "[0]",
+                                                start: 130,
+                                                end: 133,
+                                            },
+                                        },
+                                        accessor: Int(
+                                            1,
+                                            Span {
+                                                str: "1",
+                                                start: 134,
+                                                end: 135,
+                                            },
+                                        ),
+                                        span: Span {
+                                            str: "[1]",
+                                            start: 133,
+                                            end: 136,
+                                        },
+                                    },
+                                    accessor: Int(
+                                        2,
+                                        Span {
+                                            str: "2",
+                                            start: 137,
+                                            end: 138,
+                                        },
+                                    ),
+                                    span: Span {
+                                        str: "[2]",
+                                        start: 136,
+                                        end: 139,
+                                    },
+                                },
+                                accessor: Int(
+                                    3,
+                                    Span {
+                                        str: "3",
+                                        start: 140,
+                                        end: 141,
+                                    },
+                                ),
+                                span: Span {
+                                    str: "[3]",
+                                    start: 139,
+                                    end: 142,
+                                },
+                            },
+                            accessor: Int(
+                                4,
+                                Span {
+                                    str: "4",
+                                    start: 143,
+                                    end: 144,
+                                },
+                            ),
+                            span: Span {
+                                str: "[4]",
+                                start: 142,
+                                end: 145,
+                            },
+                        },
+                        accessor: Int(
+                            5,
+                            Span {
+                                str: "5",
+                                start: 146,
+                                end: 147,
+                            },
+                        ),
+                        span: Span {
+                            str: "[5]",
+                            start: 145,
+                            end: 148,
+                        },
+                    },
+                    operator: Minus,
+                    rhs: Int(
+                        1,
+                        Span {
+                            str: "1",
+                            start: 151,
+                            end: 152,
+                        },
+                    ),
+                    span: Span {
+                        str: "array[0][1][2][3][4][5] - 1 + another_function()",
+                        start: 125,
+                        end: 173,
+                    },
+                },
+                operator: Plus,
+                rhs: FunctionCall {
+                    callee: Identifier(
+                        Span {
+                            str: "another_function",
+                            start: 155,
+                            end: 171,
+                        },
+                    ),
+                    generics: [],
+                    arguments: [],
+                    span: Span {
+                        str: "()",
+                        start: 171,
+                        end: 173,
+                    },
+                },
                 span: Span {
                     str: "array[0][1][2][3][4][5] - 1 + another_function()",
                     start: 125,
                     end: 173,
                 },
             },
-            operator: Plus,
-            rhs: FunctionCall {
-                callee: Identifier(
-                    Span {
-                        str: "another_function",
-                        start: 155,
-                        end: 171,
-                    },
-                ),
-                generics: [],
-                arguments: [],
+            span: Span {
+                str: "var d = array[0][1][2][3][4][5] - 1 + another_function();",
+                start: 117,
+                end: 174,
+            },
+        },
+        VariableDefinition {
+            modifiers: GeneralModifiers {
+                modifiers: [],
                 span: Span {
-                    str: "()",
-                    start: 171,
-                    end: 173,
+                    str: "",
+                    start: 176,
+                    end: 176,
                 },
             },
-            span: Span {
-                str: "array[0][1][2][3][4][5] - 1 + another_function()",
-                start: 125,
-                end: 173,
+            name: Span {
+                str: "e",
+                start: 180,
+                end: 181,
             },
-        },
-        span: Span {
-            str: "var d = array[0][1][2][3][4][5] - 1 + another_function();",
-            start: 117,
-            end: 174,
-        },
-    },
-    VariableDefinition {
-        modifiers: GeneralModifiers {
-            modifiers: [],
-            span: Span {
-                str: "",
-                start: 176,
-                end: 176,
-            },
-        },
-        name: Span {
-            str: "e",
-            start: 180,
-            end: 181,
-        },
-        kind: None,
-        value: ArrayAccess {
-            expression: FunctionCall {
-                callee: FunctionCall {
-                    callee: ArrayAccess {
-                        expression: Identifier(
-                            Span {
-                                str: "array",
-                                start: 184,
-                                end: 189,
+            kind: None,
+            value: ArrayAccess {
+                expression: FunctionCall {
+                    callee: FunctionCall {
+                        callee: ArrayAccess {
+                            expression: Identifier(
+                                Span {
+                                    str: "array",
+                                    start: 184,
+                                    end: 189,
+                                },
+                            ),
+                            accessor: Int(
+                                0,
+                                Span {
+                                    str: "0",
+                                    start: 190,
+                                    end: 191,
+                                },
+                            ),
+                            span: Span {
+                                str: "[0]",
+                                start: 189,
+                                end: 192,
                             },
-                        ),
-                        accessor: Int(
-                            0,
-                            Span {
-                                str: "0",
-                                start: 190,
-                                end: 191,
+                        },
+                        generics: [],
+                        arguments: [
+                            Binary {
+                                lhs: String(
+                                    "hello, world!",
+                                    Span {
+                                        str: "\"hello, world!\"",
+                                        start: 193,
+                                        end: 208,
+                                    },
+                                ),
+                                operator: Plus,
+                                rhs: String(
+                                    "!",
+                                    Span {
+                                        str: "\"!\"",
+                                        start: 211,
+                                        end: 214,
+                                    },
+                                ),
+                                span: Span {
+                                    str: "\"hello, world!\" + \"!\"",
+                                    start: 193,
+                                    end: 214,
+                                },
                             },
-                        ),
+                        ],
                         span: Span {
-                            str: "[0]",
-                            start: 189,
-                            end: 192,
+                            str: "(\"hello, world!\" + \"!\")",
+                            start: 192,
+                            end: 215,
                         },
                     },
                     generics: [],
                     arguments: [
-                        Binary {
-                            lhs: String(
-                                "hello, world!",
-                                Span {
-                                    str: "\"hello, world!\"",
-                                    start: 193,
-                                    end: 208,
-                                },
-                            ),
-                            operator: Plus,
-                            rhs: String(
-                                "!",
-                                Span {
-                                    str: "\"!\"",
-                                    start: 211,
-                                    end: 214,
-                                },
-                            ),
-                            span: Span {
-                                str: "\"hello, world!\" + \"!\"",
-                                start: 193,
-                                end: 214,
+                        String(
+                            "asd",
+                            Span {
+                                str: "\"asd\"",
+                                start: 216,
+                                end: 221,
                             },
-                        },
+                        ),
                     ],
                     span: Span {
-                        str: "(\"hello, world!\" + \"!\")",
-                        start: 192,
-                        end: 215,
+                        str: "(\"asd\")",
+                        start: 215,
+                        end: 222,
                     },
                 },
-                generics: [],
-                arguments: [
-                    String(
-                        "asd",
+                accessor: Binary {
+                    lhs: Int(
+                        4,
                         Span {
-                            str: "\"asd\"",
-                            start: 216,
-                            end: 221,
+                            str: "4",
+                            start: 223,
+                            end: 224,
                         },
                     ),
-                ],
-                span: Span {
-                    str: "(\"asd\")",
-                    start: 215,
-                    end: 222,
-                },
-            },
-            accessor: Binary {
-                lhs: Int(
-                    4,
-                    Span {
-                        str: "4",
+                    operator: Minus,
+                    rhs: Int(
+                        2,
+                        Span {
+                            str: "2",
+                            start: 227,
+                            end: 228,
+                        },
+                    ),
+                    span: Span {
+                        str: "4 - 2",
                         start: 223,
-                        end: 224,
-                    },
-                ),
-                operator: Minus,
-                rhs: Int(
-                    2,
-                    Span {
-                        str: "2",
-                        start: 227,
                         end: 228,
                     },
-                ),
+                },
                 span: Span {
-                    str: "4 - 2",
-                    start: 223,
-                    end: 228,
+                    str: "[4 - 2]",
+                    start: 222,
+                    end: 229,
                 },
             },
             span: Span {
-                str: "[4 - 2]",
-                start: 222,
-                end: 229,
+                str: "var e = array[0](\"hello, world!\" + \"!\")(\"asd\")[4 - 2];",
+                start: 176,
+                end: 230,
             },
         },
-        span: Span {
-            str: "var e = array[0](\"hello, world!\" + \"!\")(\"asd\")[4 - 2];",
-            start: 176,
-            end: 230,
-        },
-    },
-    VariableDefinition {
-        modifiers: GeneralModifiers {
-            modifiers: [],
-            span: Span {
-                str: "",
-                start: 232,
-                end: 232,
-            },
-        },
-        name: Span {
-            str: "f",
-            start: 236,
-            end: 237,
-        },
-        kind: None,
-        value: Binary {
-            lhs: ArrowAccess {
-                expression: Identifier(
-                    Span {
-                        str: "some_class",
-                        start: 240,
-                        end: 250,
-                    },
-                ),
-                accessor: Identifier(
-                    Span {
-                        str: "some_property",
-                        start: 252,
-                        end: 265,
-                    },
-                ),
+        VariableDefinition {
+            modifiers: GeneralModifiers {
+                modifiers: [],
                 span: Span {
-                    str: "->some_property",
-                    start: 250,
-                    end: 265,
+                    str: "",
+                    start: 232,
+                    end: 232,
                 },
             },
-            operator: Plus,
-            rhs: FunctionCall {
-                callee: ArrowAccess {
+            name: Span {
+                str: "f",
+                start: 236,
+                end: 237,
+            },
+            kind: None,
+            value: Binary {
+                lhs: ArrowAccess {
                     expression: Identifier(
                         Span {
                             str: "some_class",
-                            start: 268,
-                            end: 278,
+                            start: 240,
+                            end: 250,
                         },
                     ),
                     accessor: Identifier(
                         Span {
-                            str: "some_function",
-                            start: 280,
-                            end: 293,
+                            str: "some_property",
+                            start: 252,
+                            end: 265,
                         },
                     ),
                     span: Span {
-                        str: "->some_function",
-                        start: 278,
-                        end: 293,
+                        str: "->some_property",
+                        start: 250,
+                        end: 265,
                     },
                 },
-                generics: [],
-                arguments: [],
+                operator: Plus,
+                rhs: FunctionCall {
+                    callee: ArrowAccess {
+                        expression: Identifier(
+                            Span {
+                                str: "some_class",
+                                start: 268,
+                                end: 278,
+                            },
+                        ),
+                        accessor: Identifier(
+                            Span {
+                                str: "some_function",
+                                start: 280,
+                                end: 293,
+                            },
+                        ),
+                        span: Span {
+                            str: "->some_function",
+                            start: 278,
+                            end: 293,
+                        },
+                    },
+                    generics: [],
+                    arguments: [],
+                    span: Span {
+                        str: "()",
+                        start: 293,
+                        end: 295,
+                    },
+                },
                 span: Span {
-                    str: "()",
-                    start: 293,
+                    str: "some_class->some_property + some_class->some_function()",
+                    start: 240,
                     end: 295,
                 },
             },
             span: Span {
-                str: "some_class->some_property + some_class->some_function()",
-                start: 240,
-                end: 295,
+                str: "var f = some_class->some_property + some_class->some_function();",
+                start: 232,
+                end: 296,
             },
         },
-        span: Span {
-            str: "var f = some_class->some_property + some_class->some_function();",
-            start: 232,
-            end: 296,
-        },
-    },
-    VariableDefinition {
-        modifiers: GeneralModifiers {
-            modifiers: [],
-            span: Span {
-                str: "",
-                start: 298,
-                end: 298,
-            },
-        },
-        name: Span {
-            str: "e",
-            start: 302,
-            end: 303,
-        },
-        kind: None,
-        value: Binary {
-            lhs: DotAccess {
-                expression: Identifier(
-                    Span {
-                        str: "something",
-                        start: 306,
-                        end: 315,
-                    },
-                ),
-                accessor: Identifier(
-                    Span {
-                        str: "something_else",
-                        start: 316,
-                        end: 330,
-                    },
-                ),
+        VariableDefinition {
+            modifiers: GeneralModifiers {
+                modifiers: [],
                 span: Span {
-                    str: ".something_else",
-                    start: 315,
-                    end: 330,
+                    str: "",
+                    start: 298,
+                    end: 298,
                 },
             },
-            operator: Divide,
-            rhs: FunctionCall {
-                callee: DotAccess {
+            name: Span {
+                str: "e",
+                start: 302,
+                end: 303,
+            },
+            kind: None,
+            value: Binary {
+                lhs: DotAccess {
                     expression: Identifier(
                         Span {
                             str: "something",
-                            start: 333,
-                            end: 342,
+                            start: 306,
+                            end: 315,
                         },
                     ),
                     accessor: Identifier(
                         Span {
-                            str: "something_more",
-                            start: 343,
-                            end: 357,
+                            str: "something_else",
+                            start: 316,
+                            end: 330,
                         },
                     ),
                     span: Span {
-                        str: ".something_more",
-                        start: 342,
-                        end: 357,
+                        str: ".something_else",
+                        start: 315,
+                        end: 330,
                     },
                 },
-                generics: [],
-                arguments: [],
+                operator: Divide,
+                rhs: FunctionCall {
+                    callee: DotAccess {
+                        expression: Identifier(
+                            Span {
+                                str: "something",
+                                start: 333,
+                                end: 342,
+                            },
+                        ),
+                        accessor: Identifier(
+                            Span {
+                                str: "something_more",
+                                start: 343,
+                                end: 357,
+                            },
+                        ),
+                        span: Span {
+                            str: ".something_more",
+                            start: 342,
+                            end: 357,
+                        },
+                    },
+                    generics: [],
+                    arguments: [],
+                    span: Span {
+                        str: "()",
+                        start: 357,
+                        end: 359,
+                    },
+                },
                 span: Span {
-                    str: "()",
-                    start: 357,
+                    str: "something.something_else / something.something_more()",
+                    start: 306,
                     end: 359,
                 },
             },
             span: Span {
-                str: "something.something_else / something.something_more()",
-                start: 306,
-                end: 359,
+                str: "var e = something.something_else / something.something_more();",
+                start: 298,
+                end: 360,
             },
         },
-        span: Span {
-            str: "var e = something.something_else / something.something_more();",
-            start: 298,
-            end: 360,
-        },
-    },
-    VariableDefinition {
-        modifiers: GeneralModifiers {
-            modifiers: [],
-            span: Span {
-                str: "",
-                start: 362,
-                end: 362,
+        VariableDefinition {
+            modifiers: GeneralModifiers {
+                modifiers: [],
+                span: Span {
+                    str: "",
+                    start: 362,
+                    end: 362,
+                },
             },
-        },
-        name: Span {
-            str: "type_cast",
-            start: 366,
-            end: 375,
-        },
-        kind: None,
-        value: TypeCast {
+            name: Span {
+                str: "type_cast",
+                start: 366,
+                end: 375,
+            },
+            kind: None,
             value: TypeCast {
                 value: TypeCast {
                     value: TypeCast {
                         value: TypeCast {
                             value: TypeCast {
                                 value: TypeCast {
-                                    value: Int(
-                                        3,
-                                        Span {
-                                            str: "3",
-                                            start: 378,
-                                            end: 379,
+                                    value: TypeCast {
+                                        value: Int(
+                                            3,
+                                            Span {
+                                                str: "3",
+                                                start: 378,
+                                                end: 379,
+                                            },
+                                        ),
+                                        kind: Regular {
+                                            base: Identifier(
+                                                Span {
+                                                    str: "a",
+                                                    start: 383,
+                                                    end: 384,
+                                                },
+                                            ),
+                                            generics: [],
+                                            raw: false,
+                                            array: false,
+                                            span: Span {
+                                                str: "a ",
+                                                start: 383,
+                                                end: 385,
+                                            },
                                         },
-                                    ),
+                                        span: Span {
+                                            str: "as a ",
+                                            start: 380,
+                                            end: 385,
+                                        },
+                                    },
                                     kind: Regular {
                                         base: Identifier(
                                             Span {
-                                                str: "a",
-                                                start: 383,
-                                                end: 384,
+                                                str: "b",
+                                                start: 388,
+                                                end: 389,
                                             },
                                         ),
                                         generics: [],
                                         raw: false,
                                         array: false,
                                         span: Span {
-                                            str: "a ",
-                                            start: 383,
-                                            end: 385,
+                                            str: "b ",
+                                            start: 388,
+                                            end: 390,
                                         },
                                     },
                                     span: Span {
-                                        str: "as a ",
-                                        start: 380,
-                                        end: 385,
+                                        str: "as b ",
+                                        start: 385,
+                                        end: 390,
                                     },
                                 },
                                 kind: Regular {
                                     base: Identifier(
                                         Span {
-                                            str: "b",
-                                            start: 388,
-                                            end: 389,
+                                            str: "c",
+                                            start: 393,
+                                            end: 394,
                                         },
                                     ),
                                     generics: [],
                                     raw: false,
                                     array: false,
                                     span: Span {
-                                        str: "b ",
-                                        start: 388,
-                                        end: 390,
+                                        str: "c ",
+                                        start: 393,
+                                        end: 395,
                                     },
                                 },
                                 span: Span {
-                                    str: "as b ",
-                                    start: 385,
-                                    end: 390,
+                                    str: "as c ",
+                                    start: 390,
+                                    end: 395,
                                 },
                             },
                             kind: Regular {
                                 base: Identifier(
                                     Span {
-                                        str: "c",
-                                        start: 393,
-                                        end: 394,
+                                        str: "d",
+                                        start: 398,
+                                        end: 399,
                                     },
                                 ),
                                 generics: [],
                                 raw: false,
                                 array: false,
                                 span: Span {
-                                    str: "c ",
-                                    start: 393,
-                                    end: 395,
+                                    str: "d ",
+                                    start: 398,
+                                    end: 400,
                                 },
                             },
                             span: Span {
-                                str: "as c ",
-                                start: 390,
-                                end: 395,
+                                str: "as d ",
+                                start: 395,
+                                end: 400,
                             },
                         },
                         kind: Regular {
                             base: Identifier(
                                 Span {
-                                    str: "d",
-                                    start: 398,
-                                    end: 399,
+                                    str: "e",
+                                    start: 403,
+                                    end: 404,
                                 },
                             ),
                             generics: [],
                             raw: false,
                             array: false,
                             span: Span {
-                                str: "d ",
-                                start: 398,
-                                end: 400,
+                                str: "e ",
+                                start: 403,
+                                end: 405,
                             },
                         },
                         span: Span {
-                            str: "as d ",
-                            start: 395,
-                            end: 400,
+                            str: "as e ",
+                            start: 400,
+                            end: 405,
                         },
                     },
                     kind: Regular {
                         base: Identifier(
                             Span {
-                                str: "e",
-                                start: 403,
-                                end: 404,
+                                str: "f",
+                                start: 408,
+                                end: 409,
                             },
                         ),
                         generics: [],
                         raw: false,
                         array: false,
                         span: Span {
-                            str: "e ",
-                            start: 403,
-                            end: 405,
+                            str: "f ",
+                            start: 408,
+                            end: 410,
                         },
                     },
                     span: Span {
-                        str: "as e ",
-                        start: 400,
-                        end: 405,
+                        str: "as f ",
+                        start: 405,
+                        end: 410,
                     },
                 },
                 kind: Regular {
                     base: Identifier(
                         Span {
-                            str: "f",
-                            start: 408,
-                            end: 409,
+                            str: "g",
+                            start: 413,
+                            end: 414,
                         },
                     ),
                     generics: [],
                     raw: false,
                     array: false,
                     span: Span {
-                        str: "f ",
-                        start: 408,
-                        end: 410,
-                    },
-                },
-                span: Span {
-                    str: "as f ",
-                    start: 405,
-                    end: 410,
-                },
-            },
-            kind: Regular {
-                base: Identifier(
-                    Span {
                         str: "g",
                         start: 413,
                         end: 414,
                     },
-                ),
-                generics: [],
-                raw: false,
-                array: false,
+                },
                 span: Span {
-                    str: "g",
-                    start: 413,
+                    str: "as g",
+                    start: 410,
                     end: 414,
                 },
             },
             span: Span {
-                str: "as g",
-                start: 410,
-                end: 414,
+                str: "var type_cast = 3 as a as b as c as d as e as f as g;",
+                start: 362,
+                end: 415,
             },
         },
-        span: Span {
-            str: "var type_cast = 3 as a as b as c as d as e as f as g;",
-            start: 362,
-            end: 415,
-        },
-    },
-    FunctionCall {
-        callee: Identifier(
-            Span {
-                str: "world",
-                start: 417,
-                end: 422,
-            },
-        ),
-        generics: [],
-        arguments: [
-            Int(
-                123,
+        FunctionCall {
+            callee: Identifier(
                 Span {
-                    str: "123",
-                    start: 423,
-                    end: 426,
+                    str: "world",
+                    start: 417,
+                    end: 422,
                 },
             ),
-        ],
-        span: Span {
-            str: "(123)",
-            start: 422,
-            end: 427,
-        },
-    },
-    VariableDefinition {
-        modifiers: GeneralModifiers {
-            modifiers: [],
-            span: Span {
-                str: "",
-                start: 430,
-                end: 430,
-            },
-        },
-        name: Span {
-            str: "arr",
-            start: 434,
-            end: 437,
-        },
-        kind: None,
-        value: FunctionCall {
-            callee: DotAccess {
-                expression: Identifier(
+            generics: [],
+            arguments: [
+                Int(
+                    123,
                     Span {
-                        str: "Array",
-                        start: 440,
-                        end: 445,
+                        str: "123",
+                        start: 423,
+                        end: 426,
                     },
                 ),
-                accessor: Identifier(
-                    Span {
-                        str: "new",
-                        start: 446,
+            ],
+            span: Span {
+                str: "(123)",
+                start: 422,
+                end: 427,
+            },
+        },
+        VariableDefinition {
+            modifiers: GeneralModifiers {
+                modifiers: [],
+                span: Span {
+                    str: "",
+                    start: 430,
+                    end: 430,
+                },
+            },
+            name: Span {
+                str: "arr",
+                start: 434,
+                end: 437,
+            },
+            kind: None,
+            value: FunctionCall {
+                callee: DotAccess {
+                    expression: Identifier(
+                        Span {
+                            str: "Array",
+                            start: 440,
+                            end: 445,
+                        },
+                    ),
+                    accessor: Identifier(
+                        Span {
+                            str: "new",
+                            start: 446,
+                            end: 449,
+                        },
+                    ),
+                    span: Span {
+                        str: ".new",
+                        start: 445,
                         end: 449,
+                    },
+                },
+                generics: [],
+                arguments: [],
+                span: Span {
+                    str: "()",
+                    start: 449,
+                    end: 451,
+                },
+            },
+            span: Span {
+                str: "var arr = Array.new();",
+                start: 430,
+                end: 452,
+            },
+        },
+        VariableDefinition {
+            modifiers: GeneralModifiers {
+                modifiers: [],
+                span: Span {
+                    str: "",
+                    start: 454,
+                    end: 454,
+                },
+            },
+            name: Span {
+                str: "var1",
+                start: 458,
+                end: 462,
+            },
+            kind: None,
+            value: Identifier(
+                Span {
+                    str: "random_variable_name",
+                    start: 465,
+                    end: 485,
+                },
+            ),
+            span: Span {
+                str: "var var1 = random_variable_name;",
+                start: 454,
+                end: 486,
+            },
+        },
+        VariableDefinition {
+            modifiers: GeneralModifiers {
+                modifiers: [],
+                span: Span {
+                    str: "",
+                    start: 488,
+                    end: 488,
+                },
+            },
+            name: Span {
+                str: "var2",
+                start: 492,
+                end: 496,
+            },
+            kind: None,
+            value: Binary {
+                lhs: Int(
+                    2,
+                    Span {
+                        str: "2",
+                        start: 499,
+                        end: 500,
+                    },
+                ),
+                operator: Plus,
+                rhs: Int(
+                    5,
+                    Span {
+                        str: "5",
+                        start: 503,
+                        end: 504,
                     },
                 ),
                 span: Span {
-                    str: ".new",
-                    start: 445,
-                    end: 449,
-                },
-            },
-            generics: [],
-            arguments: [],
-            span: Span {
-                str: "()",
-                start: 449,
-                end: 451,
-            },
-        },
-        span: Span {
-            str: "var arr = Array.new();",
-            start: 430,
-            end: 452,
-        },
-    },
-    VariableDefinition {
-        modifiers: GeneralModifiers {
-            modifiers: [],
-            span: Span {
-                str: "",
-                start: 454,
-                end: 454,
-            },
-        },
-        name: Span {
-            str: "var1",
-            start: 458,
-            end: 462,
-        },
-        kind: None,
-        value: Identifier(
-            Span {
-                str: "random_variable_name",
-                start: 465,
-                end: 485,
-            },
-        ),
-        span: Span {
-            str: "var var1 = random_variable_name;",
-            start: 454,
-            end: 486,
-        },
-    },
-    VariableDefinition {
-        modifiers: GeneralModifiers {
-            modifiers: [],
-            span: Span {
-                str: "",
-                start: 488,
-                end: 488,
-            },
-        },
-        name: Span {
-            str: "var2",
-            start: 492,
-            end: 496,
-        },
-        kind: None,
-        value: Binary {
-            lhs: Int(
-                2,
-                Span {
-                    str: "2",
+                    str: "2 + 5",
                     start: 499,
-                    end: 500,
-                },
-            ),
-            operator: Plus,
-            rhs: Int(
-                5,
-                Span {
-                    str: "5",
-                    start: 503,
                     end: 504,
                 },
-            ),
+            },
             span: Span {
-                str: "2 + 5",
-                start: 499,
-                end: 504,
+                str: "var var2 = 2 + 5;",
+                start: 488,
+                end: 505,
             },
         },
-        span: Span {
-            str: "var var2 = 2 + 5;",
-            start: 488,
-            end: 505,
-        },
-    },
-    VariableDefinition {
-        modifiers: GeneralModifiers {
-            modifiers: [],
-            span: Span {
-                str: "",
-                start: 506,
-                end: 506,
+        VariableDefinition {
+            modifiers: GeneralModifiers {
+                modifiers: [],
+                span: Span {
+                    str: "",
+                    start: 506,
+                    end: 506,
+                },
             },
-        },
-        name: Span {
-            str: "complex_expression",
-            start: 510,
-            end: 528,
-        },
-        kind: None,
-        value: Binary {
-            lhs: Binary {
+            name: Span {
+                str: "complex_expression",
+                start: 510,
+                end: 528,
+            },
+            kind: None,
+            value: Binary {
                 lhs: Binary {
                     lhs: Binary {
-                        lhs: Identifier(
-                            Span {
-                                str: "var2",
+                        lhs: Binary {
+                            lhs: Identifier(
+                                Span {
+                                    str: "var2",
+                                    start: 532,
+                                    end: 536,
+                                },
+                            ),
+                            operator: Times,
+                            rhs: Int(
+                                15,
+                                Span {
+                                    str: "15",
+                                    start: 539,
+                                    end: 541,
+                                },
+                            ),
+                            span: Span {
+                                str: "var2 * 15",
                                 start: 532,
-                                end: 536,
-                            },
-                        ),
-                        operator: Times,
-                        rhs: Int(
-                            15,
-                            Span {
-                                str: "15",
-                                start: 539,
                                 end: 541,
+                            },
+                        },
+                        operator: Divide,
+                        rhs: Int(
+                            3,
+                            Span {
+                                str: "3",
+                                start: 545,
+                                end: 546,
                             },
                         ),
                         span: Span {
-                            str: "var2 * 15",
-                            start: 532,
-                            end: 541,
+                            str: "(var2 * 15) / 3 + a[0].function(1, 2, 3, \"random string\", []) * a[0][1]->static_1->static_2.asd(123123123 * 2, []) + 2",
+                            start: 531,
+                            end: 649,
                         },
                     },
-                    operator: Divide,
-                    rhs: Int(
-                        3,
-                        Span {
-                            str: "3",
-                            start: 545,
-                            end: 546,
+                    operator: Plus,
+                    rhs: Binary {
+                        lhs: FunctionCall {
+                            callee: DotAccess {
+                                expression: ArrayAccess {
+                                    expression: Identifier(
+                                        Span {
+                                            str: "a",
+                                            start: 549,
+                                            end: 550,
+                                        },
+                                    ),
+                                    accessor: Int(
+                                        0,
+                                        Span {
+                                            str: "0",
+                                            start: 551,
+                                            end: 552,
+                                        },
+                                    ),
+                                    span: Span {
+                                        str: "[0]",
+                                        start: 550,
+                                        end: 553,
+                                    },
+                                },
+                                accessor: Identifier(
+                                    Span {
+                                        str: "function",
+                                        start: 554,
+                                        end: 562,
+                                    },
+                                ),
+                                span: Span {
+                                    str: ".function",
+                                    start: 553,
+                                    end: 562,
+                                },
+                            },
+                            generics: [],
+                            arguments: [
+                                Int(
+                                    1,
+                                    Span {
+                                        str: "1",
+                                        start: 563,
+                                        end: 564,
+                                    },
+                                ),
+                                Int(
+                                    2,
+                                    Span {
+                                        str: "2",
+                                        start: 566,
+                                        end: 567,
+                                    },
+                                ),
+                                Int(
+                                    3,
+                                    Span {
+                                        str: "3",
+                                        start: 569,
+                                        end: 570,
+                                    },
+                                ),
+                                String(
+                                    "random string",
+                                    Span {
+                                        str: "\"random string\"",
+                                        start: 572,
+                                        end: 587,
+                                    },
+                                ),
+                                Array(
+                                    [],
+                                    Span {
+                                        str: "[]",
+                                        start: 589,
+                                        end: 591,
+                                    },
+                                ),
+                            ],
+                            span: Span {
+                                str: "(1, 2, 3, \"random string\", [])",
+                                start: 562,
+                                end: 592,
+                            },
                         },
-                    ),
+                        operator: Times,
+                        rhs: FunctionCall {
+                            callee: DotAccess {
+                                expression: ArrowAccess {
+                                    expression: ArrowAccess {
+                                        expression: ArrayAccess {
+                                            expression: ArrayAccess {
+                                                expression: Identifier(
+                                                    Span {
+                                                        str: "a",
+                                                        start: 595,
+                                                        end: 596,
+                                                    },
+                                                ),
+                                                accessor: Int(
+                                                    0,
+                                                    Span {
+                                                        str: "0",
+                                                        start: 597,
+                                                        end: 598,
+                                                    },
+                                                ),
+                                                span: Span {
+                                                    str: "[0]",
+                                                    start: 596,
+                                                    end: 599,
+                                                },
+                                            },
+                                            accessor: Int(
+                                                1,
+                                                Span {
+                                                    str: "1",
+                                                    start: 600,
+                                                    end: 601,
+                                                },
+                                            ),
+                                            span: Span {
+                                                str: "[1]",
+                                                start: 599,
+                                                end: 602,
+                                            },
+                                        },
+                                        accessor: Identifier(
+                                            Span {
+                                                str: "static_1",
+                                                start: 604,
+                                                end: 612,
+                                            },
+                                        ),
+                                        span: Span {
+                                            str: "->static_1",
+                                            start: 602,
+                                            end: 612,
+                                        },
+                                    },
+                                    accessor: Identifier(
+                                        Span {
+                                            str: "static_2",
+                                            start: 614,
+                                            end: 622,
+                                        },
+                                    ),
+                                    span: Span {
+                                        str: "->static_2",
+                                        start: 612,
+                                        end: 622,
+                                    },
+                                },
+                                accessor: Identifier(
+                                    Span {
+                                        str: "asd",
+                                        start: 623,
+                                        end: 626,
+                                    },
+                                ),
+                                span: Span {
+                                    str: ".asd",
+                                    start: 622,
+                                    end: 626,
+                                },
+                            },
+                            generics: [],
+                            arguments: [
+                                Binary {
+                                    lhs: Int(
+                                        123123123,
+                                        Span {
+                                            str: "123123123",
+                                            start: 627,
+                                            end: 636,
+                                        },
+                                    ),
+                                    operator: Times,
+                                    rhs: Int(
+                                        2,
+                                        Span {
+                                            str: "2",
+                                            start: 639,
+                                            end: 640,
+                                        },
+                                    ),
+                                    span: Span {
+                                        str: "123123123 * 2",
+                                        start: 627,
+                                        end: 640,
+                                    },
+                                },
+                                Array(
+                                    [],
+                                    Span {
+                                        str: "[]",
+                                        start: 642,
+                                        end: 644,
+                                    },
+                                ),
+                            ],
+                            span: Span {
+                                str: "(123123123 * 2, [])",
+                                start: 626,
+                                end: 645,
+                            },
+                        },
+                        span: Span {
+                            str: " a[0].function(1, 2, 3, \"random string\", []) * a[0][1]->static_1->static_2.asd(123123123 * 2, []) + 2",
+                            start: 548,
+                            end: 649,
+                        },
+                    },
                     span: Span {
                         str: "(var2 * 15) / 3 + a[0].function(1, 2, 3, \"random string\", []) * a[0][1]->static_1->static_2.asd(123123123 * 2, []) + 2",
                         start: 531,
@@ -1122,276 +1345,56 @@
                     },
                 },
                 operator: Plus,
-                rhs: Binary {
-                    lhs: FunctionCall {
-                        callee: DotAccess {
-                            expression: ArrayAccess {
-                                expression: Identifier(
-                                    Span {
-                                        str: "a",
-                                        start: 549,
-                                        end: 550,
-                                    },
-                                ),
-                                accessor: Int(
-                                    0,
-                                    Span {
-                                        str: "0",
-                                        start: 551,
-                                        end: 552,
-                                    },
-                                ),
-                                span: Span {
-                                    str: "[0]",
-                                    start: 550,
-                                    end: 553,
-                                },
-                            },
-                            accessor: Identifier(
-                                Span {
-                                    str: "function",
-                                    start: 554,
-                                    end: 562,
-                                },
-                            ),
-                            span: Span {
-                                str: ".function",
-                                start: 553,
-                                end: 562,
-                            },
-                        },
-                        generics: [],
-                        arguments: [
-                            Int(
-                                1,
-                                Span {
-                                    str: "1",
-                                    start: 563,
-                                    end: 564,
-                                },
-                            ),
-                            Int(
-                                2,
-                                Span {
-                                    str: "2",
-                                    start: 566,
-                                    end: 567,
-                                },
-                            ),
-                            Int(
-                                3,
-                                Span {
-                                    str: "3",
-                                    start: 569,
-                                    end: 570,
-                                },
-                            ),
-                            String(
-                                "random string",
-                                Span {
-                                    str: "\"random string\"",
-                                    start: 572,
-                                    end: 587,
-                                },
-                            ),
-                            Array(
-                                [],
-                                Span {
-                                    str: "[]",
-                                    start: 589,
-                                    end: 591,
-                                },
-                            ),
-                        ],
-                        span: Span {
-                            str: "(1, 2, 3, \"random string\", [])",
-                            start: 562,
-                            end: 592,
-                        },
-                    },
-                    operator: Times,
-                    rhs: FunctionCall {
-                        callee: DotAccess {
-                            expression: ArrowAccess {
-                                expression: ArrowAccess {
-                                    expression: ArrayAccess {
-                                        expression: ArrayAccess {
-                                            expression: Identifier(
-                                                Span {
-                                                    str: "a",
-                                                    start: 595,
-                                                    end: 596,
-                                                },
-                                            ),
-                                            accessor: Int(
-                                                0,
-                                                Span {
-                                                    str: "0",
-                                                    start: 597,
-                                                    end: 598,
-                                                },
-                                            ),
-                                            span: Span {
-                                                str: "[0]",
-                                                start: 596,
-                                                end: 599,
-                                            },
-                                        },
-                                        accessor: Int(
-                                            1,
-                                            Span {
-                                                str: "1",
-                                                start: 600,
-                                                end: 601,
-                                            },
-                                        ),
-                                        span: Span {
-                                            str: "[1]",
-                                            start: 599,
-                                            end: 602,
-                                        },
-                                    },
-                                    accessor: Identifier(
-                                        Span {
-                                            str: "static_1",
-                                            start: 604,
-                                            end: 612,
-                                        },
-                                    ),
-                                    span: Span {
-                                        str: "->static_1",
-                                        start: 602,
-                                        end: 612,
-                                    },
-                                },
-                                accessor: Identifier(
-                                    Span {
-                                        str: "static_2",
-                                        start: 614,
-                                        end: 622,
-                                    },
-                                ),
-                                span: Span {
-                                    str: "->static_2",
-                                    start: 612,
-                                    end: 622,
-                                },
-                            },
-                            accessor: Identifier(
-                                Span {
-                                    str: "asd",
-                                    start: 623,
-                                    end: 626,
-                                },
-                            ),
-                            span: Span {
-                                str: ".asd",
-                                start: 622,
-                                end: 626,
-                            },
-                        },
-                        generics: [],
-                        arguments: [
-                            Binary {
-                                lhs: Int(
-                                    123123123,
-                                    Span {
-                                        str: "123123123",
-                                        start: 627,
-                                        end: 636,
-                                    },
-                                ),
-                                operator: Times,
-                                rhs: Int(
-                                    2,
-                                    Span {
-                                        str: "2",
-                                        start: 639,
-                                        end: 640,
-                                    },
-                                ),
-                                span: Span {
-                                    str: "123123123 * 2",
-                                    start: 627,
-                                    end: 640,
-                                },
-                            },
-                            Array(
-                                [],
-                                Span {
-                                    str: "[]",
-                                    start: 642,
-                                    end: 644,
-                                },
-                            ),
-                        ],
-                        span: Span {
-                            str: "(123123123 * 2, [])",
-                            start: 626,
-                            end: 645,
-                        },
-                    },
-                    span: Span {
-                        str: " a[0].function(1, 2, 3, \"random string\", []) * a[0][1]->static_1->static_2.asd(123123123 * 2, []) + 2",
-                        start: 548,
+                rhs: Int(
+                    2,
+                    Span {
+                        str: "2",
+                        start: 648,
                         end: 649,
                     },
-                },
+                ),
                 span: Span {
                     str: "(var2 * 15) / 3 + a[0].function(1, 2, 3, \"random string\", []) * a[0][1]->static_1->static_2.asd(123123123 * 2, []) + 2",
                     start: 531,
                     end: 649,
                 },
             },
-            operator: Plus,
-            rhs: Int(
-                2,
+            span: Span {
+                str: "var complex_expression = (var2 * 15) / 3 + a[0].function(1, 2, 3, \"random string\", []) * a[0][1]->static_1->static_2.asd(123123123 * 2, []) + 2;",
+                start: 506,
+                end: 650,
+            },
+        },
+        Return {
+            value: Array(
+                [
+                    Identifier(
+                        Span {
+                            str: "complex_expression",
+                            start: 660,
+                            end: 678,
+                        },
+                    ),
+                    Identifier(
+                        Span {
+                            str: "var2",
+                            start: 680,
+                            end: 684,
+                        },
+                    ),
+                ],
                 Span {
-                    str: "2",
-                    start: 648,
-                    end: 649,
+                    str: "[complex_expression, var2]",
+                    start: 659,
+                    end: 685,
                 },
             ),
             span: Span {
-                str: "(var2 * 15) / 3 + a[0].function(1, 2, 3, \"random string\", []) * a[0][1]->static_1->static_2.asd(123123123 * 2, []) + 2",
-                start: 531,
-                end: 649,
+                str: "return [complex_expression, var2];",
+                start: 652,
+                end: 686,
             },
         },
-        span: Span {
-            str: "var complex_expression = (var2 * 15) / 3 + a[0].function(1, 2, 3, \"random string\", []) * a[0][1]->static_1->static_2.asd(123123123 * 2, []) + 2;",
-            start: 506,
-            end: 650,
-        },
-    },
-    Return {
-        value: Array(
-            [
-                Identifier(
-                    Span {
-                        str: "complex_expression",
-                        start: 660,
-                        end: 678,
-                    },
-                ),
-                Identifier(
-                    Span {
-                        str: "var2",
-                        start: 680,
-                        end: 684,
-                    },
-                ),
-            ],
-            Span {
-                str: "[complex_expression, var2]",
-                start: 659,
-                end: 685,
-            },
-        ),
-        span: Span {
-            str: "return [complex_expression, var2];",
-            start: 652,
-            end: 686,
-        },
-    },
-]
+    ],
+    module_info: None,
+}

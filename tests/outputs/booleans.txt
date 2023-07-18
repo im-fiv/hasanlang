@@ -1,60 +1,63 @@
-[
-    VariableDefinition {
-        modifiers: GeneralModifiers {
-            modifiers: [],
+Program {
+    statements: [
+        VariableDefinition {
+            modifiers: GeneralModifiers {
+                modifiers: [],
+                span: Span {
+                    str: "",
+                    start: 0,
+                    end: 0,
+                },
+            },
+            name: Span {
+                str: "a",
+                start: 4,
+                end: 5,
+            },
+            kind: None,
+            value: Boolean(
+                true,
+                Span {
+                    str: "true",
+                    start: 8,
+                    end: 12,
+                },
+            ),
             span: Span {
-                str: "",
+                str: "var a = true;",
                 start: 0,
-                end: 0,
+                end: 13,
             },
         },
-        name: Span {
-            str: "a",
-            start: 4,
-            end: 5,
-        },
-        kind: None,
-        value: Boolean(
-            true,
-            Span {
-                str: "true",
-                start: 8,
-                end: 12,
+        VariableDefinition {
+            modifiers: GeneralModifiers {
+                modifiers: [],
+                span: Span {
+                    str: "",
+                    start: 14,
+                    end: 14,
+                },
             },
-        ),
-        span: Span {
-            str: "var a = true;",
-            start: 0,
-            end: 13,
-        },
-    },
-    VariableDefinition {
-        modifiers: GeneralModifiers {
-            modifiers: [],
+            name: Span {
+                str: "b",
+                start: 18,
+                end: 19,
+            },
+            kind: None,
+            value: Boolean(
+                false,
+                Span {
+                    str: "false",
+                    start: 22,
+                    end: 27,
+                },
+            ),
             span: Span {
-                str: "",
+                str: "var b = false;",
                 start: 14,
-                end: 14,
+                end: 28,
             },
         },
-        name: Span {
-            str: "b",
-            start: 18,
-            end: 19,
-        },
-        kind: None,
-        value: Boolean(
-            false,
-            Span {
-                str: "false",
-                start: 22,
-                end: 27,
-            },
-        ),
-        span: Span {
-            str: "var b = false;",
-            start: 14,
-            end: 28,
-        },
-    },
-]
+    ],
+    module_info: None,
+}

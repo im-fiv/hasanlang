@@ -50,7 +50,10 @@ pub enum TestCommand {
 	Update(UpdateTestCommand),
 
 	/// Delete a test case
-	Delete(DeleteTestCommand)
+	Delete(DeleteTestCommand),
+
+	/// Update all test cases
+	UpdateAll
 }
 
 #[derive(Debug, Args)]
