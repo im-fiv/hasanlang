@@ -48,7 +48,7 @@ With this, items are accessible using `<module name>.<item name>`.
 
 For importing all items from a module directly into the current namespace, use the wildcard syntax:
 ```
-use module <module name>::*;
+use module <module name>.*;
 ```
 
 ## Visibility

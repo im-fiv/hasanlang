@@ -149,6 +149,8 @@ pub enum Statement<'p> {
 
 		span: Span<'p>
 	},
+	
+	Break(Span<'p>),
 
 	Interface {
 		modifiers: GeneralModifiers<'p>,
@@ -169,11 +171,43 @@ pub enum Statement<'p> {
 
 		span: Span<'p>
 	},
-	
-	Break(Span<'p>),
+
+	UseModule {
+		path: Vec<Span<'p>>,
+		name: Span<'p>,
+
+		span: Span<'p>
+	},
+
+	UseModuleAll {
+		path: Vec<Span<'p>>,
+		name: Span<'p>,
+
+		span: Span<'p>
+	},
+
+	UseModuleItems {
+		path: Vec<Span<'p>>,
+		name: Span<'p>,
+		items: Vec<ModuleItem<'p>>,
+
+		span: Span<'p>
+	},
 
 	// Special statements that are not intended to be used traditionally
 	Unimplemented
+}
+
+#[derive(Debug, Clone)]
+pub enum ModuleItem<'p> {
+	Regular(Span<'p>),
+
+	Renamed {
+		from: Span<'p>,
+		to: Span<'p>,
+		
+		span: Span<'p>
+	}
 }
 
 #[derive(Debug, Clone)]
@@ -566,6 +600,21 @@ impl<'p> HasanParser<'p> {
 		Program { statements, module_info }
 	}
 
+	fn parse_module_path(&self, pair: Pair<'p, Rule>) -> Vec<Span> {
+		if pair.as_rule() != Rule::module_path {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::module_path, pair.as_rule());
+		}
+
+		let mut pairs = pair.into_inner();
+		let mut path: Vec<Span> = Vec::new();
+
+		while let Some(pair) = pairs.next() {
+			path.push(pair.as_span());
+		}
+
+		path
+	}
+
 	fn parse_module_marker(&self, pair: Pair<'p, Rule>) -> ModuleInfo {
 		if pair.as_rule() != Rule::module_declaration_marker {
 			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::module_declaration_marker, pair.as_rule());
@@ -581,11 +630,7 @@ impl<'p> HasanParser<'p> {
 		let mut path: Vec<Span> = Vec::new();
 
 		if next_pair.as_rule() == Rule::module_path {
-			let inner_pairs = next_pair.into_inner();
-
-			for pair in inner_pairs {
-				path.push(pair.as_span());
-			}
+			path = self.parse_module_path(next_pair);
 
 			next_pair = pairs
 				.next()
@@ -606,6 +651,10 @@ impl<'p> HasanParser<'p> {
 			}
 
 			let statement = match pair.as_rule() {
+				Rule::module_use_stmt => self.parse_module_use(pair),
+				Rule::module_use_all_stmt => self.parse_module_use_all(pair),
+				Rule::module_use_items_stmt => self.parse_module_use_items(pair),
+
 				Rule::function_definition_stmt => self.parse_function_definition(pair),
 				Rule::function_declaration_stmt => self.parse_function_declaration(pair),
 				Rule::type_alias_stmt => self.parse_type_alias(pair),
@@ -810,6 +859,141 @@ impl<'p> HasanParser<'p> {
 			Rule::r#type => Expression::Type(self.parse_type(pair)),
 
 			rule => error!(self, "invalid expression rule '{:?}'", pair.as_span(), rule)
+		}
+	}
+
+	fn parse_module_use(&self, pair: Pair<'p, Rule>) -> Statement {
+		if pair.as_rule() != Rule::module_use_stmt {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::module_use_stmt, pair.as_rule());
+		}
+
+		let span = pair.as_span();
+		let mut pairs = pair.into_inner();
+
+		let mut next_pair = pairs
+			.next()
+			.expect("Failed to parse use module statement: path/module name pair is missing");
+
+		let mut path: Vec<Span> = Vec::new();
+
+		if next_pair.as_rule() == Rule::module_path {
+			path = self.parse_module_path(next_pair);
+
+			next_pair = pairs
+				.next()
+				.expect("Failed to parse use module statement: module name pair is missing");
+		}
+
+		let name = next_pair.as_span();
+		
+		Statement::UseModule { path, name, span }
+	}
+
+	fn parse_module_use_all(&self, pair: Pair<'p, Rule>) -> Statement {
+		if pair.as_rule() != Rule::module_use_all_stmt {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::module_use_all_stmt, pair.as_rule());
+		}
+
+		let span = pair.as_span();
+		let mut pairs = pair.into_inner();
+
+		let mut next_pair = pairs
+			.next()
+			.expect("Failed to parse use module statement: path/module name pair is missing");
+
+		let mut path: Vec<Span> = Vec::new();
+
+		if next_pair.as_rule() == Rule::module_path {
+			path = self.parse_module_path(next_pair);
+
+			next_pair = pairs
+				.next()
+				.expect("Failed to parse use module statement: module name pair is missing");
+		}
+
+		let name = next_pair.as_span();
+		
+		Statement::UseModuleAll { path, name, span }
+	}
+
+	fn parse_module_use_items(&self, pair: Pair<'p, Rule>) -> Statement {
+		if pair.as_rule() != Rule::module_use_items_stmt {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::module_use_items_stmt, pair.as_rule());
+		}
+
+		let span = pair.as_span();
+		let mut pairs = pair.into_inner();
+
+		let mut next_pair = pairs
+			.next()
+			.expect("Failed to parse use module statement: path/module name pair is missing");
+
+		let mut path: Vec<Span> = Vec::new();
+
+		if next_pair.as_rule() == Rule::module_path {
+			path = self.parse_module_path(next_pair);
+
+			next_pair = pairs
+				.next()
+				.expect("Failed to parse use module statement: module name pair is missing");
+		}
+		
+		let name = next_pair.as_span();
+
+		let mut items_pair = pairs
+			.next()
+			.expect("Failed to parse use module statement: items pair is missing")
+			.into_inner();
+
+		let mut items: Vec<ModuleItem> = Vec::new();
+		
+		while let Some(item_pair) = items_pair.next() {
+			items.push(self.parse_module_item(item_pair));
+		}
+		
+		Statement::UseModuleItems { path, name, items, span }
+	}
+
+	fn parse_module_item(&self, pair: Pair<'p, Rule>) -> ModuleItem {
+		if !matches!(pair.as_rule(), Rule::module_item_rename | Rule::module_item_regular ) {
+			error!(
+				self,
+				"expected '{:?}' or '{:?}', got '{:?}'",
+				pair.as_span(),
+				
+				Rule::module_item_rename,
+				Rule::module_item_regular,
+				pair.as_rule()
+			);
+		}
+
+		let as_rule = pair.as_rule();
+		let span = pair.as_span();
+
+		let mut pairs = pair.into_inner();
+
+		let name = pairs
+			.next()
+			.expect("Failed to parse module import item: name pair is missing")
+			.as_span();
+
+		match as_rule {
+			Rule::module_item_rename => {
+				let new_name = pairs
+					.next()
+					.expect("Failed to parse module import item: new name pair is missing")
+					.as_span();
+
+				ModuleItem::Renamed {
+					from: name,
+					to: new_name,
+					span
+				}
+			},
+
+			Rule::module_item_regular => ModuleItem::Regular(name),
+
+			rule => unreachable!("Failed to parse module import item: got unexpected rule '{:?}'", rule)
 		}
 	}
 

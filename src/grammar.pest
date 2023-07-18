@@ -3,11 +3,25 @@ program = { SOI ~ module_declaration_marker? ~ statement* ~ EOI }
 /// Used for encapsulating statements into a single pair for some cases
 statements = { statement* }
 
-/// If present, marks the file as a module
-module_declaration_marker = { "module" ~ module_path? ~ identifier ~ stmt_sep }
-module_path = { (identifier ~ ".")+ }
+//* Modules *//
+module_use_items_stmt = { "use" ~ "module" ~ module_path? ~ identifier ~ module_use_items ~ "end" ~ stmt_sep }
+module_use_all_stmt = { "use" ~ "module" ~ module_path? ~ identifier ~ "." ~ "*" ~ stmt_sep }
+module_use_stmt = { "use" ~ "module" ~ module_path? ~ identifier ~ stmt_sep }
 
+/// If present, will mark the file as a module
+module_declaration_marker = { "module" ~ module_path? ~ identifier ~ stmt_sep }
+	module_path = { ( identifier ~ "." ~ !&"*")+ }
+
+module_use_items = { (module_use_item ~ ("," ~ module_use_item)*)? }
+	module_use_item = _{ module_item_rename | module_item_regular }
+		module_item_rename = { identifier ~ "as" ~ identifier }
+		module_item_regular = { identifier }
+
+//* Statements *//
 statement = _{
+	module_use_items_stmt |
+	module_use_all_stmt |
+	module_use_stmt |
 	interface_stmt |
 	interface_impl_stmt |
 	return_stmt |
@@ -46,17 +60,25 @@ general_modifiers = { modifier_public? ~ modifier_constant? ~ modifier_static? }
 	modifier_constant = { "const" }
 
 //* Statements *//
+// Module system is defined earlier //
+
 interface_stmt = { general_modifiers ~ "interface" ~ identifier ~ definition_generics? ~ interface_members ~ "end" ~ stmt_sep? }
 interface_impl_stmt = { "impl" ~ identifier ~ definition_generics? ~ "for" ~ identifier ~ class_definition_member* ~ "end" ~ stmt_sep? } // reusing class definition member
+
 return_stmt = { "return" ~ expression? ~ stmt_sep }
+
 function_call_stmt = { term_without_recursion ~ recursive_operator+ ~ stmt_sep } // this is wrong, but it will be handled inside the parser
 function_definition_stmt = { function_header ~ do_block ~ stmt_sep? }
 function_declaration_stmt = { function_header ~ stmt_sep }
+
 type_alias_stmt = { "type" ~ identifier ~ definition_generics? ~ "=" ~ type ~ stmt_sep }
+
 // Class definition is defined later //
 // Class declaration is defined later //
+
 variable_definition_stmt = { general_modifiers ~ "var" ~ identifier ~ (":" ~ type)? ~ "=" ~ expression ~ stmt_sep }
 variable_assign_stmt = { (recursive_expression | expression) ~ "=" ~ expression ~ stmt_sep }
+
 enum_definition_stmt = { general_modifiers ~ "enum" ~ identifier ~ (enum_variant ~ ("," ~ enum_variant)*)? ~ "end" }
 
 //* Interfaces *//

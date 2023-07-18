@@ -46,12 +46,8 @@ As I said before, this is my first time making a project as complex as this, so 
 Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 
 ## My current TODO list (Corrective Parser stage)
-- [ ] Module system
-  - [ ] Imports
-    - [ ] Entire module
-    - [ ] Specific items
-    - [ ] Wildcard imports
-    - [ ] `as` imports
+- [x] Module system
+  - [x] Imports *(entire module, specific items, wildcard imports, renamed imports)*
   - [x] Declarations
 - [x] Interfaces *(definitions, implementations, and type annotations)*
 - [x] Constants
