@@ -29,6 +29,7 @@ pub struct Program<'p> {
 #[derive(Debug, Clone)]
 pub struct ModuleInfo<'p> {
 	pub name: Span<'p>,
+	pub path: Vec<Span<'p>>,
 	pub span: Span<'p>
 }
 
@@ -573,12 +574,27 @@ impl<'p> HasanParser<'p> {
 		let span = pair.as_span();
 		let mut pairs = pair.into_inner();
 
-		let name = pairs
+		let mut next_pair = pairs
 			.next()
-			.expect("Failed to parse module marker: name pairs is missing")
-			.as_span();
+			.expect("Failed to parse module marker: path/module name pair is missing");
 
-		ModuleInfo { name, span }
+		let mut path: Vec<Span> = Vec::new();
+
+		if next_pair.as_rule() == Rule::module_path {
+			let inner_pairs = next_pair.into_inner();
+
+			for pair in inner_pairs {
+				path.push(pair.as_span());
+			}
+
+			next_pair = pairs
+				.next()
+				.expect("Failed to parse module marker: module name pair is missing");
+		}
+
+		let name = next_pair.as_span();
+
+		ModuleInfo { name, path, span }
 	}
 
 	fn parse_statements(&self, pairs: Pairs<'p, Rule>) -> Vec<Statement> {
