@@ -44,3 +44,23 @@ end
 In this example, `ExampleClass` implements `ExampleInterface` by providing `some_variable` and `some_function` as required. When implementing an interface, the types of variables and functions must match the definitions in the interface.
 
 **Note:** Future versions of the language may allow flexibility in not having to strictly specify types of variables and functions when implementing an interface.
+
+## Type Restriction with Interfaces
+
+Generics allow you to write code that is abstracted over types, meaning the same code can work with multiple types. With interfaces, you can restrict the types allowed in a generic function using the `impl` keyword:
+
+```
+func call_something<T: impl<ExampleInterface>>(something: T) do
+	something.call();
+end
+```
+
+In this example, the function `call_something` takes a generic parameter `T`, which must implement `ExampleInterface`. This means the argument something passed to the function must be of a type that implements `ExampleInterface`.
+
+You can also enforce that a type must implement multiple interfaces by listing them in the `impl` declaration:
+
+```
+<T: impl<Interface1, Interface2, Interface3, ...>>
+```
+
+This provides a powerful tool for controlling the behavior and characteristics of types in generic functions and classes.
