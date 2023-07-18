@@ -73,5 +73,4 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 
 ### Corrective Parser:
 - [ ] Fix spans of expressions
-- [ ] Allow for recursive parsing of types
 - [x] Rewrite `parse_type` function along with the grammar of types
