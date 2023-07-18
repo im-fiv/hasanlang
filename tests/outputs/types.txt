@@ -1,5 +1,5 @@
 [
-    TypeDefinition {
+    TypeAlias {
         name: Span {
             str: "AType",
             start: 5,
@@ -52,7 +52,7 @@
             end: 54,
         },
     },
-    TypeDefinition {
+    TypeAlias {
         name: Span {
             str: "Reg_T",
             start: 61,
@@ -82,7 +82,7 @@
             end: 73,
         },
     },
-    TypeDefinition {
+    TypeAlias {
         name: Span {
             str: "Reg_ArrayT",
             start: 79,
@@ -112,7 +112,7 @@
             end: 98,
         },
     },
-    TypeDefinition {
+    TypeAlias {
         name: Span {
             str: "Reg_GenericT",
             start: 104,
@@ -158,7 +158,7 @@
             end: 127,
         },
     },
-    TypeDefinition {
+    TypeAlias {
         name: Span {
             str: "Reg_GenericArrayT",
             start: 133,
@@ -204,7 +204,7 @@
             end: 163,
         },
     },
-    TypeDefinition {
+    TypeAlias {
         name: Span {
             str: "Raw_T",
             start: 170,
@@ -234,7 +234,7 @@
             end: 183,
         },
     },
-    TypeDefinition {
+    TypeAlias {
         name: Span {
             str: "Raw_ArrayT",
             start: 189,
@@ -264,7 +264,7 @@
             end: 209,
         },
     },
-    TypeDefinition {
+    TypeAlias {
         name: Span {
             str: "Raw_GenericT",
             start: 215,
@@ -310,7 +310,7 @@
             end: 239,
         },
     },
-    TypeDefinition {
+    TypeAlias {
         name: Span {
             str: "Raw_GenericArrayT",
             start: 245,
