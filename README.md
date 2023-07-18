@@ -73,5 +73,4 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 ## Side tasks
 
 ### Corrective Parser:
-- [ ] Fix spans of expressions
 - [x] Rewrite `parse_type` function along with the grammar of types

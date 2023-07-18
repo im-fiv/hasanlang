@@ -1,573 +1,249 @@
 Program {
     statements: [
         TypeAlias {
-            name: Span {
-                str: "AType",
-                start: 22,
-                end: 27,
-            },
+            name: "AType",
             generics: [
                 Identifier(
-                    Span {
-                        str: "Generic1",
-                        start: 28,
-                        end: 36,
-                    },
+                    "Generic1",
                 ),
                 Identifier(
-                    Span {
-                        str: "Generic2",
-                        start: 38,
-                        end: 46,
-                    },
+                    "Generic2",
                 ),
             ],
             definition: Regular {
                 base: Identifier(
-                    Span {
-                        str: "Generic1",
-                        start: 50,
-                        end: 58,
-                    },
+                    "Generic1",
                 ),
                 generics: [
                     Identifier(
-                        Span {
-                            str: "Generic2",
-                            start: 59,
-                            end: 67,
-                        },
+                        "Generic2",
                     ),
                 ],
                 raw: false,
                 array: true,
-                span: Span {
-                    str: "Generic1<Generic2>[]",
-                    start: 50,
-                    end: 70,
-                },
-            },
-            span: Span {
-                str: "type AType<Generic1, Generic2> = Generic1<Generic2>[];",
-                start: 17,
-                end: 71,
             },
         },
         TypeAlias {
-            name: Span {
-                str: "Reg_T",
-                start: 78,
-                end: 83,
-            },
+            name: "Reg_T",
             generics: [],
             definition: Regular {
                 base: Identifier(
-                    Span {
-                        str: "int",
-                        start: 86,
-                        end: 89,
-                    },
+                    "int",
                 ),
                 generics: [],
                 raw: false,
                 array: false,
-                span: Span {
-                    str: "int",
-                    start: 86,
-                    end: 89,
-                },
-            },
-            span: Span {
-                str: "type Reg_T = int;",
-                start: 73,
-                end: 90,
             },
         },
         TypeAlias {
-            name: Span {
-                str: "Reg_ArrayT",
-                start: 96,
-                end: 106,
-            },
+            name: "Reg_ArrayT",
             generics: [],
             definition: Regular {
                 base: Identifier(
-                    Span {
-                        str: "int",
-                        start: 109,
-                        end: 112,
-                    },
+                    "int",
                 ),
                 generics: [],
                 raw: false,
                 array: true,
-                span: Span {
-                    str: "int[]",
-                    start: 109,
-                    end: 114,
-                },
-            },
-            span: Span {
-                str: "type Reg_ArrayT = int[];",
-                start: 91,
-                end: 115,
             },
         },
         TypeAlias {
-            name: Span {
-                str: "Reg_GenericT",
-                start: 121,
-                end: 133,
-            },
+            name: "Reg_GenericT",
             generics: [
                 Identifier(
-                    Span {
-                        str: "A",
-                        start: 134,
-                        end: 135,
-                    },
+                    "A",
                 ),
             ],
             definition: Regular {
                 base: Identifier(
-                    Span {
-                        str: "A",
-                        start: 139,
-                        end: 140,
-                    },
+                    "A",
                 ),
                 generics: [
                     Identifier(
-                        Span {
-                            str: "A",
-                            start: 141,
-                            end: 142,
-                        },
+                        "A",
                     ),
                 ],
                 raw: false,
                 array: true,
-                span: Span {
-                    str: "A<A>",
-                    start: 139,
-                    end: 143,
-                },
-            },
-            span: Span {
-                str: "type Reg_GenericT<A> = A<A>;",
-                start: 116,
-                end: 144,
             },
         },
         TypeAlias {
-            name: Span {
-                str: "Reg_GenericArrayT",
-                start: 150,
-                end: 167,
-            },
+            name: "Reg_GenericArrayT",
             generics: [
                 Identifier(
-                    Span {
-                        str: "B",
-                        start: 168,
-                        end: 169,
-                    },
+                    "B",
                 ),
             ],
             definition: Regular {
                 base: Identifier(
-                    Span {
-                        str: "B",
-                        start: 173,
-                        end: 174,
-                    },
+                    "B",
                 ),
                 generics: [
                     Identifier(
-                        Span {
-                            str: "B",
-                            start: 175,
-                            end: 176,
-                        },
+                        "B",
                     ),
                 ],
                 raw: false,
                 array: true,
-                span: Span {
-                    str: "B<B>[]",
-                    start: 173,
-                    end: 179,
-                },
-            },
-            span: Span {
-                str: "type Reg_GenericArrayT<B> = B<B>[];",
-                start: 145,
-                end: 180,
             },
         },
         TypeAlias {
-            name: Span {
-                str: "Raw_T",
-                start: 200,
-                end: 205,
-            },
+            name: "Raw_T",
             generics: [],
             definition: Regular {
                 base: Identifier(
-                    Span {
-                        str: "int",
-                        start: 208,
-                        end: 211,
-                    },
+                    "int",
                 ),
                 generics: [],
                 raw: true,
                 array: false,
-                span: Span {
-                    str: "int!",
-                    start: 208,
-                    end: 212,
-                },
-            },
-            span: Span {
-                str: "type Raw_T = int!;",
-                start: 195,
-                end: 213,
             },
         },
         TypeAlias {
-            name: Span {
-                str: "Raw_ArrayT",
-                start: 219,
-                end: 229,
-            },
+            name: "Raw_ArrayT",
             generics: [],
             definition: Regular {
                 base: Identifier(
-                    Span {
-                        str: "int",
-                        start: 232,
-                        end: 235,
-                    },
+                    "int",
                 ),
                 generics: [],
                 raw: true,
                 array: true,
-                span: Span {
-                    str: "int![]",
-                    start: 232,
-                    end: 238,
-                },
-            },
-            span: Span {
-                str: "type Raw_ArrayT = int![];",
-                start: 214,
-                end: 239,
             },
         },
         TypeAlias {
-            name: Span {
-                str: "Raw_GenericT",
-                start: 245,
-                end: 257,
-            },
+            name: "Raw_GenericT",
             generics: [
                 Identifier(
-                    Span {
-                        str: "A",
-                        start: 258,
-                        end: 259,
-                    },
+                    "A",
                 ),
             ],
             definition: Regular {
                 base: Identifier(
-                    Span {
-                        str: "A",
-                        start: 263,
-                        end: 264,
-                    },
+                    "A",
                 ),
                 generics: [
                     Identifier(
-                        Span {
-                            str: "A",
-                            start: 266,
-                            end: 267,
-                        },
+                        "A",
                     ),
                 ],
                 raw: true,
                 array: true,
-                span: Span {
-                    str: "A!<A>",
-                    start: 263,
-                    end: 268,
-                },
-            },
-            span: Span {
-                str: "type Raw_GenericT<A> = A!<A>;",
-                start: 240,
-                end: 269,
             },
         },
         TypeAlias {
-            name: Span {
-                str: "Raw_GenericArrayT",
-                start: 275,
-                end: 292,
-            },
+            name: "Raw_GenericArrayT",
             generics: [
                 Identifier(
-                    Span {
-                        str: "B",
-                        start: 293,
-                        end: 294,
-                    },
+                    "B",
                 ),
             ],
             definition: Regular {
                 base: Identifier(
-                    Span {
-                        str: "B",
-                        start: 298,
-                        end: 299,
-                    },
+                    "B",
                 ),
                 generics: [
                     Identifier(
-                        Span {
-                            str: "B",
-                            start: 301,
-                            end: 302,
-                        },
+                        "B",
                     ),
                 ],
                 raw: true,
                 array: true,
-                span: Span {
-                    str: "B!<B>[]",
-                    start: 298,
-                    end: 305,
-                },
-            },
-            span: Span {
-                str: "type Raw_GenericArrayT<B> = B!<B>[];",
-                start: 270,
-                end: 306,
             },
         },
         FunctionDefinition {
             modifiers: [],
-            name: Span {
-                str: "_",
-                start: 350,
-                end: 351,
-            },
+            name: "_",
             generics: [
                 Identifier(
-                    Span {
-                        str: "Generic2",
-                        start: 352,
-                        end: 360,
-                    },
+                    "Generic2",
                 ),
             ],
             arguments: [],
             return_type: Some(
                 Regular {
                     base: Identifier(
-                        Span {
-                            str: "AType",
-                            start: 367,
-                            end: 372,
-                        },
+                        "AType",
                     ),
                     generics: [
                         Identifier(
-                            Span {
-                                str: "int",
-                                start: 373,
-                                end: 376,
-                            },
+                            "int",
                         ),
                         Identifier(
-                            Span {
-                                str: "Generic2",
-                                start: 378,
-                                end: 386,
-                            },
+                            "Generic2",
                         ),
                     ],
                     raw: false,
                     array: true,
-                    span: Span {
-                        str: "AType<int, Generic2> ",
-                        start: 367,
-                        end: 388,
-                    },
                 },
             ),
             statements: [
-                Return {
-                    value: Array(
+                Return(
+                    Array(
                         [
                             Int(
                                 5,
-                                Span {
-                                    str: "5",
-                                    start: 400,
-                                    end: 401,
-                                },
                             ),
                         ],
-                        Span {
-                            str: "[5]",
-                            start: 399,
-                            end: 402,
-                        },
                     ),
-                    span: Span {
-                        str: "return [5];",
-                        start: 392,
-                        end: 403,
-                    },
-                },
+                ),
             ],
-            span: Span {
-                str: "func _<Generic2>() -> AType<int, Generic2> do\n\treturn [5];\nend\n\n// Type casts\n",
-                start: 345,
-                end: 423,
-            },
         },
         FunctionDefinition {
             modifiers: [],
-            name: Span {
-                str: "cast",
-                start: 428,
-                end: 432,
-            },
+            name: "cast",
             generics: [
                 Identifier(
-                    Span {
-                        str: "From",
-                        start: 433,
-                        end: 437,
-                    },
+                    "From",
                 ),
                 Identifier(
-                    Span {
-                        str: "To",
-                        start: 439,
-                        end: 441,
-                    },
+                    "To",
                 ),
             ],
             arguments: [
                 FunctionArgument {
-                    name: Identifier(
-                        Span {
-                            str: "input",
-                            start: 443,
-                            end: 448,
-                        },
-                    ),
+                    name: "input",
                     kind: Regular {
                         base: Identifier(
-                            Span {
-                                str: "From",
-                                start: 450,
-                                end: 454,
-                            },
+                            "From",
                         ),
                         generics: [],
                         raw: false,
                         array: false,
-                        span: Span {
-                            str: "From",
-                            start: 450,
-                            end: 454,
-                        },
-                    },
-                    span: Span {
-                        str: "input: From",
-                        start: 443,
-                        end: 454,
                     },
                 },
             ],
             return_type: Some(
                 Regular {
                     base: Identifier(
-                        Span {
-                            str: "To",
-                            start: 459,
-                            end: 461,
-                        },
+                        "To",
                     ),
                     generics: [],
                     raw: false,
                     array: false,
-                    span: Span {
-                        str: "To ",
-                        start: 459,
-                        end: 462,
-                    },
                 },
             ),
             statements: [
-                Return {
-                    value: TypeCast {
+                Return(
+                    TypeCast {
                         value: Identifier(
-                            Span {
-                                str: "input",
-                                start: 473,
-                                end: 478,
-                            },
+                            "input",
                         ),
                         kind: Regular {
                             base: Identifier(
-                                Span {
-                                    str: "To",
-                                    start: 482,
-                                    end: 484,
-                                },
+                                "To",
                             ),
                             generics: [],
                             raw: false,
                             array: false,
-                            span: Span {
-                                str: "To",
-                                start: 482,
-                                end: 484,
-                            },
-                        },
-                        span: Span {
-                            str: "as To",
-                            start: 479,
-                            end: 484,
                         },
                     },
-                    span: Span {
-                        str: "return input as To;",
-                        start: 466,
-                        end: 485,
-                    },
-                },
+                ),
             ],
-            span: Span {
-                str: "func cast<From, To>(input: From) -> To do\n\treturn input as To;\nend\n\n",
-                start: 423,
-                end: 491,
-            },
         },
         VariableDefinition {
             modifiers: [],
-            name: Span {
-                str: "long_cast",
-                start: 495,
-                end: 504,
-            },
+            name: "long_cast",
             kind: None,
             value: TypeCast {
                 value: TypeCast {
@@ -578,246 +254,101 @@ Program {
                                     value: TypeCast {
                                         value: Int(
                                             3,
-                                            Span {
-                                                str: "3",
-                                                start: 507,
-                                                end: 508,
-                                            },
                                         ),
                                         kind: Regular {
                                             base: Identifier(
-                                                Span {
-                                                    str: "a",
-                                                    start: 512,
-                                                    end: 513,
-                                                },
+                                                "a",
                                             ),
                                             generics: [],
                                             raw: false,
                                             array: false,
-                                            span: Span {
-                                                str: "a ",
-                                                start: 512,
-                                                end: 514,
-                                            },
-                                        },
-                                        span: Span {
-                                            str: "as a ",
-                                            start: 509,
-                                            end: 514,
                                         },
                                     },
                                     kind: Regular {
                                         base: Identifier(
-                                            Span {
-                                                str: "b",
-                                                start: 517,
-                                                end: 518,
-                                            },
+                                            "b",
                                         ),
                                         generics: [],
                                         raw: false,
                                         array: false,
-                                        span: Span {
-                                            str: "b ",
-                                            start: 517,
-                                            end: 519,
-                                        },
-                                    },
-                                    span: Span {
-                                        str: "as b ",
-                                        start: 514,
-                                        end: 519,
                                     },
                                 },
                                 kind: Regular {
                                     base: Identifier(
-                                        Span {
-                                            str: "c",
-                                            start: 522,
-                                            end: 523,
-                                        },
+                                        "c",
                                     ),
                                     generics: [],
                                     raw: false,
                                     array: false,
-                                    span: Span {
-                                        str: "c ",
-                                        start: 522,
-                                        end: 524,
-                                    },
-                                },
-                                span: Span {
-                                    str: "as c ",
-                                    start: 519,
-                                    end: 524,
                                 },
                             },
                             kind: Regular {
                                 base: Identifier(
-                                    Span {
-                                        str: "d",
-                                        start: 527,
-                                        end: 528,
-                                    },
+                                    "d",
                                 ),
                                 generics: [],
                                 raw: false,
                                 array: false,
-                                span: Span {
-                                    str: "d ",
-                                    start: 527,
-                                    end: 529,
-                                },
-                            },
-                            span: Span {
-                                str: "as d ",
-                                start: 524,
-                                end: 529,
                             },
                         },
                         kind: Regular {
                             base: Identifier(
-                                Span {
-                                    str: "e",
-                                    start: 532,
-                                    end: 533,
-                                },
+                                "e",
                             ),
                             generics: [],
                             raw: false,
                             array: false,
-                            span: Span {
-                                str: "e ",
-                                start: 532,
-                                end: 534,
-                            },
-                        },
-                        span: Span {
-                            str: "as e ",
-                            start: 529,
-                            end: 534,
                         },
                     },
                     kind: Regular {
                         base: Identifier(
-                            Span {
-                                str: "f",
-                                start: 537,
-                                end: 538,
-                            },
+                            "f",
                         ),
                         generics: [],
                         raw: false,
                         array: false,
-                        span: Span {
-                            str: "f ",
-                            start: 537,
-                            end: 539,
-                        },
-                    },
-                    span: Span {
-                        str: "as f ",
-                        start: 534,
-                        end: 539,
                     },
                 },
                 kind: Regular {
                     base: Identifier(
-                        Span {
-                            str: "g",
-                            start: 542,
-                            end: 543,
-                        },
+                        "g",
                     ),
                     generics: [],
                     raw: false,
                     array: false,
-                    span: Span {
-                        str: "g",
-                        start: 542,
-                        end: 543,
-                    },
                 },
-                span: Span {
-                    str: "as g",
-                    start: 539,
-                    end: 543,
-                },
-            },
-            span: Span {
-                str: "var long_cast = 3 as a as b as c as d as e as f as g;",
-                start: 491,
-                end: 544,
             },
         },
-        Return {
-            value: FunctionCall {
+        Return(
+            FunctionCall {
                 callee: Identifier(
-                    Span {
-                        str: "cast",
-                        start: 553,
-                        end: 557,
-                    },
+                    "cast",
                 ),
                 generics: [
                     Regular {
                         base: Identifier(
-                            Span {
-                                str: "int",
-                                start: 558,
-                                end: 561,
-                            },
+                            "int",
                         ),
                         generics: [],
                         raw: false,
                         array: false,
-                        span: Span {
-                            str: "int",
-                            start: 558,
-                            end: 561,
-                        },
                     },
                     Regular {
                         base: Identifier(
-                            Span {
-                                str: "float",
-                                start: 563,
-                                end: 568,
-                            },
+                            "float",
                         ),
                         generics: [],
                         raw: false,
                         array: false,
-                        span: Span {
-                            str: "float",
-                            start: 563,
-                            end: 568,
-                        },
                     },
                 ],
                 arguments: [
                     Int(
                         5,
-                        Span {
-                            str: "5",
-                            start: 570,
-                            end: 571,
-                        },
                     ),
                 ],
-                span: Span {
-                    str: "<int, float>(5)",
-                    start: 557,
-                    end: 572,
-                },
             },
-            span: Span {
-                str: "return cast<int, float>(5);",
-                start: 546,
-                end: 573,
-            },
-        },
+        ),
     ],
     module_info: None,
 }

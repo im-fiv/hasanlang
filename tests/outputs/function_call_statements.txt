@@ -2,75 +2,29 @@ Program {
     statements: [
         VariableAssign {
             name: Identifier(
-                Span {
-                    str: "a",
-                    start: 0,
-                    end: 1,
-                },
+                "a",
             ),
             value: Int(
                 5,
-                Span {
-                    str: "5",
-                    start: 4,
-                    end: 5,
-                },
             ),
-            span: Span {
-                str: "a = 5;",
-                start: 0,
-                end: 6,
-            },
         },
         VariableAssign {
             name: DotAccess {
                 expression: DotAccess {
                     expression: Identifier(
-                        Span {
-                            str: "a",
-                            start: 7,
-                            end: 8,
-                        },
+                        "a",
                     ),
                     accessor: Identifier(
-                        Span {
-                            str: "b",
-                            start: 9,
-                            end: 10,
-                        },
+                        "b",
                     ),
-                    span: Span {
-                        str: ".b",
-                        start: 8,
-                        end: 10,
-                    },
                 },
                 accessor: Identifier(
-                    Span {
-                        str: "c",
-                        start: 11,
-                        end: 12,
-                    },
+                    "c",
                 ),
-                span: Span {
-                    str: ".c",
-                    start: 10,
-                    end: 12,
-                },
             },
             value: Int(
                 3,
-                Span {
-                    str: "3",
-                    start: 15,
-                    end: 16,
-                },
             ),
-            span: Span {
-                str: "a.b.c = 3;",
-                start: 7,
-                end: 17,
-            },
         },
         VariableAssign {
             name: ArrowAccess {
@@ -78,58 +32,22 @@ Program {
                     expression: FunctionCall {
                         callee: DotAccess {
                             expression: Identifier(
-                                Span {
-                                    str: "a",
-                                    start: 18,
-                                    end: 19,
-                                },
+                                "a",
                             ),
                             accessor: Identifier(
-                                Span {
-                                    str: "b",
-                                    start: 20,
-                                    end: 21,
-                                },
+                                "b",
                             ),
-                            span: Span {
-                                str: ".b",
-                                start: 19,
-                                end: 21,
-                            },
                         },
                         generics: [],
                         arguments: [],
-                        span: Span {
-                            str: "()",
-                            start: 21,
-                            end: 23,
-                        },
                     },
                     accessor: Identifier(
-                        Span {
-                            str: "d",
-                            start: 24,
-                            end: 25,
-                        },
+                        "d",
                     ),
-                    span: Span {
-                        str: ".d",
-                        start: 23,
-                        end: 25,
-                    },
                 },
                 accessor: Identifier(
-                    Span {
-                        str: "e",
-                        start: 27,
-                        end: 28,
-                    },
+                    "e",
                 ),
-                span: Span {
-                    str: "->e",
-                    start: 25,
-                    end: 28,
-                },
             },
             value: FunctionCall {
                 callee: ArrayAccess {
@@ -139,183 +57,76 @@ Program {
                                 expression: FunctionCall {
                                     callee: FunctionCall {
                                         callee: Identifier(
-                                            Span {
-                                                str: "f",
-                                                start: 31,
-                                                end: 32,
-                                            },
+                                            "f",
                                         ),
                                         generics: [],
                                         arguments: [],
-                                        span: Span {
-                                            str: "()",
-                                            start: 32,
-                                            end: 34,
-                                        },
                                     },
                                     generics: [],
                                     arguments: [],
-                                    span: Span {
-                                        str: "()",
-                                        start: 34,
-                                        end: 36,
-                                    },
                                 },
                                 accessor: Identifier(
-                                    Span {
-                                        str: "g",
-                                        start: 37,
-                                        end: 38,
-                                    },
+                                    "g",
                                 ),
-                                span: Span {
-                                    str: ".g",
-                                    start: 36,
-                                    end: 38,
-                                },
                             },
                             accessor: Identifier(
-                                Span {
-                                    str: "h",
-                                    start: 39,
-                                    end: 40,
-                                },
+                                "h",
                             ),
-                            span: Span {
-                                str: "[h]",
-                                start: 38,
-                                end: 41,
-                            },
                         },
                         generics: [],
                         arguments: [],
-                        span: Span {
-                            str: "()",
-                            start: 41,
-                            end: 43,
-                        },
                     },
                     accessor: Identifier(
-                        Span {
-                            str: "i",
-                            start: 44,
-                            end: 45,
-                        },
+                        "i",
                     ),
-                    span: Span {
-                        str: "[i]",
-                        start: 43,
-                        end: 46,
-                    },
                 },
                 generics: [],
                 arguments: [],
-                span: Span {
-                    str: "()",
-                    start: 46,
-                    end: 48,
-                },
-            },
-            span: Span {
-                str: "a.b().d->e = f()().g[h]()[i]();",
-                start: 18,
-                end: 49,
             },
         },
         FunctionCall {
             callee: Identifier(
-                Span {
-                    str: "a",
-                    start: 51,
-                    end: 52,
-                },
+                "a",
             ),
             generics: [],
             arguments: [],
-            span: Span {
-                str: "()",
-                start: 52,
-                end: 54,
-            },
         },
         FunctionCall {
             callee: FunctionCall {
                 callee: Identifier(
-                    Span {
-                        str: "a",
-                        start: 56,
-                        end: 57,
-                    },
+                    "a",
                 ),
                 generics: [
                     Regular {
                         base: Identifier(
-                            Span {
-                                str: "B",
-                                start: 58,
-                                end: 59,
-                            },
+                            "B",
                         ),
                         generics: [],
                         raw: true,
                         array: true,
-                        span: Span {
-                            str: "B![]",
-                            start: 58,
-                            end: 62,
-                        },
                     },
                 ],
                 arguments: [
                     String(
                         "asd",
-                        Span {
-                            str: "\"asd\"",
-                            start: 64,
-                            end: 69,
-                        },
                     ),
                 ],
-                span: Span {
-                    str: "<B![]>(\"asd\")",
-                    start: 57,
-                    end: 70,
-                },
             },
             generics: [
                 Regular {
                     base: Identifier(
-                        Span {
-                            str: "A",
-                            start: 71,
-                            end: 72,
-                        },
+                        "A",
                     ),
                     generics: [],
                     raw: false,
                     array: false,
-                    span: Span {
-                        str: "A",
-                        start: 71,
-                        end: 72,
-                    },
                 },
             ],
             arguments: [
                 Int(
                     1,
-                    Span {
-                        str: "1",
-                        start: 74,
-                        end: 75,
-                    },
                 ),
             ],
-            span: Span {
-                str: "<A>(1)",
-                start: 70,
-                end: 76,
-            },
         },
     ],
     module_info: None,

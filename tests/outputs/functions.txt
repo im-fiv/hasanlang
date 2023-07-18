@@ -2,585 +2,248 @@ Program {
     statements: [
         FunctionDefinition {
             modifiers: [],
-            name: Span {
-                str: "print_hello_world",
-                start: 5,
-                end: 22,
-            },
+            name: "print_hello_world",
             generics: [],
             arguments: [],
             return_type: Some(
                 Regular {
                     base: Identifier(
-                        Span {
-                            str: "void",
-                            start: 28,
-                            end: 32,
-                        },
+                        "void",
                     ),
                     generics: [],
                     raw: false,
                     array: false,
-                    span: Span {
-                        str: "void ",
-                        start: 28,
-                        end: 33,
-                    },
                 },
             ),
             statements: [
                 FunctionCall {
                     callee: Identifier(
-                        Span {
-                            str: "print",
-                            start: 37,
-                            end: 42,
-                        },
+                        "print",
                     ),
                     generics: [],
                     arguments: [
                         String(
                             "hello, world!",
-                            Span {
-                                str: "\"hello, world!\"",
-                                start: 43,
-                                end: 58,
-                            },
                         ),
                     ],
-                    span: Span {
-                        str: "(\"hello, world!\")",
-                        start: 42,
-                        end: 59,
-                    },
                 },
             ],
-            span: Span {
-                str: "func print_hello_world() -> void do\n\tprint(\"hello, world!\");\nend\n\n",
-                start: 0,
-                end: 66,
-            },
         },
         FunctionCall {
             callee: Identifier(
-                Span {
-                    str: "print_hello_world",
-                    start: 66,
-                    end: 83,
-                },
+                "print_hello_world",
             ),
             generics: [],
             arguments: [],
-            span: Span {
-                str: "()",
-                start: 83,
-                end: 85,
-            },
         },
         FunctionDefinition {
             modifiers: [],
-            name: Span {
-                str: "random_number",
-                start: 93,
-                end: 106,
-            },
+            name: "random_number",
             generics: [
                 Identifier(
-                    Span {
-                        str: "Type",
-                        start: 107,
-                        end: 111,
-                    },
+                    "Type",
                 ),
             ],
             arguments: [],
             return_type: Some(
                 Regular {
                     base: Identifier(
-                        Span {
-                            str: "Type",
-                            start: 118,
-                            end: 122,
-                        },
+                        "Type",
                     ),
                     generics: [],
                     raw: false,
                     array: false,
-                    span: Span {
-                        str: "Type ",
-                        start: 118,
-                        end: 123,
-                    },
                 },
             ),
             statements: [
-                Return {
-                    value: Int(
+                Return(
+                    Int(
                         5,
-                        Span {
-                            str: "5",
-                            start: 134,
-                            end: 135,
-                        },
                     ),
-                    span: Span {
-                        str: "return 5;",
-                        start: 127,
-                        end: 136,
-                    },
-                },
+                ),
             ],
-            span: Span {
-                str: "func random_number<Type>() -> Type do\n\treturn 5;\nend\n\n",
-                start: 88,
-                end: 142,
-            },
         },
         FunctionDefinition {
             modifiers: [],
-            name: Span {
-                str: "arguments",
-                start: 147,
-                end: 156,
-            },
+            name: "arguments",
             generics: [],
             arguments: [
                 FunctionArgument {
-                    name: Identifier(
-                        Span {
-                            str: "arg1",
-                            start: 157,
-                            end: 161,
-                        },
-                    ),
+                    name: "arg1",
                     kind: Regular {
                         base: Identifier(
-                            Span {
-                                str: "int",
-                                start: 163,
-                                end: 166,
-                            },
+                            "int",
                         ),
                         generics: [],
                         raw: false,
                         array: false,
-                        span: Span {
-                            str: "int",
-                            start: 163,
-                            end: 166,
-                        },
-                    },
-                    span: Span {
-                        str: "arg1: int",
-                        start: 157,
-                        end: 166,
                     },
                 },
                 FunctionArgument {
-                    name: Identifier(
-                        Span {
-                            str: "arg2",
-                            start: 168,
-                            end: 172,
-                        },
-                    ),
+                    name: "arg2",
                     kind: Regular {
                         base: Identifier(
-                            Span {
-                                str: "int",
-                                start: 174,
-                                end: 177,
-                            },
+                            "int",
                         ),
                         generics: [],
                         raw: false,
                         array: false,
-                        span: Span {
-                            str: "int",
-                            start: 174,
-                            end: 177,
-                        },
-                    },
-                    span: Span {
-                        str: "arg2: int",
-                        start: 168,
-                        end: 177,
                     },
                 },
                 FunctionArgument {
-                    name: Identifier(
-                        Span {
-                            str: "arg3",
-                            start: 179,
-                            end: 183,
-                        },
-                    ),
+                    name: "arg3",
                     kind: Regular {
                         base: Identifier(
-                            Span {
-                                str: "int",
-                                start: 185,
-                                end: 188,
-                            },
+                            "int",
                         ),
                         generics: [],
                         raw: false,
                         array: false,
-                        span: Span {
-                            str: "int",
-                            start: 185,
-                            end: 188,
-                        },
-                    },
-                    span: Span {
-                        str: "arg3: int",
-                        start: 179,
-                        end: 188,
                     },
                 },
             ],
             return_type: Some(
                 Regular {
                     base: Identifier(
-                        Span {
-                            str: "int",
-                            start: 193,
-                            end: 196,
-                        },
+                        "int",
                     ),
                     generics: [],
                     raw: false,
                     array: false,
-                    span: Span {
-                        str: "int ",
-                        start: 193,
-                        end: 197,
-                    },
                 },
             ),
             statements: [
-                Return {
-                    value: Binary {
+                Return(
+                    Binary {
                         lhs: Binary {
                             lhs: Identifier(
-                                Span {
-                                    str: "arg1",
-                                    start: 208,
-                                    end: 212,
-                                },
+                                "arg1",
                             ),
                             operator: Plus,
                             rhs: Identifier(
-                                Span {
-                                    str: "arg2",
-                                    start: 215,
-                                    end: 219,
-                                },
+                                "arg2",
                             ),
-                            span: Span {
-                                str: "arg1 + arg2 + arg3",
-                                start: 208,
-                                end: 226,
-                            },
                         },
                         operator: Plus,
                         rhs: Identifier(
-                            Span {
-                                str: "arg3",
-                                start: 222,
-                                end: 226,
-                            },
+                            "arg3",
                         ),
-                        span: Span {
-                            str: "arg1 + arg2 + arg3",
-                            start: 208,
-                            end: 226,
-                        },
                     },
-                    span: Span {
-                        str: "return arg1 + arg2 + arg3;",
-                        start: 201,
-                        end: 227,
-                    },
-                },
+                ),
             ],
-            span: Span {
-                str: "func arguments(arg1: int, arg2: int, arg3: int) -> int do\n\treturn arg1 + arg2 + arg3;\nend\n\n",
-                start: 142,
-                end: 233,
-            },
         },
         FunctionDefinition {
             modifiers: [],
-            name: Span {
-                str: "no_return_type",
-                start: 238,
-                end: 252,
-            },
+            name: "no_return_type",
             generics: [],
             arguments: [
                 FunctionArgument {
-                    name: Identifier(
-                        Span {
-                            str: "a",
-                            start: 253,
-                            end: 254,
-                        },
-                    ),
+                    name: "a",
                     kind: Regular {
                         base: Identifier(
-                            Span {
-                                str: "int",
-                                start: 256,
-                                end: 259,
-                            },
+                            "int",
                         ),
                         generics: [],
                         raw: false,
                         array: false,
-                        span: Span {
-                            str: "int",
-                            start: 256,
-                            end: 259,
-                        },
-                    },
-                    span: Span {
-                        str: "a: int",
-                        start: 253,
-                        end: 259,
                     },
                 },
             ],
             return_type: None,
             statements: [
-                Return {
-                    value: Identifier(
-                        Span {
-                            str: "a",
-                            start: 272,
-                            end: 273,
-                        },
+                Return(
+                    Identifier(
+                        "a",
                     ),
-                    span: Span {
-                        str: "return a;",
-                        start: 265,
-                        end: 274,
-                    },
-                },
+                ),
             ],
-            span: Span {
-                str: "func no_return_type(a: int) do\n\treturn a;\nend\n\n",
-                start: 233,
-                end: 280,
-            },
         },
         FunctionDefinition {
             modifiers: [],
-            name: Span {
-                str: "main",
-                start: 285,
-                end: 289,
-            },
+            name: "main",
             generics: [],
             arguments: [],
             return_type: None,
             statements: [
                 VariableDefinition {
                     modifiers: [],
-                    name: Span {
-                        str: "add",
-                        start: 300,
-                        end: 303,
-                    },
+                    name: "add",
                     kind: None,
                     value: Int(
                         2,
-                        Span {
-                            str: "2",
-                            start: 306,
-                            end: 307,
-                        },
                     ),
-                    span: Span {
-                        str: "var add = 2;",
-                        start: 296,
-                        end: 308,
-                    },
                 },
-                Return {
-                    value: Binary {
+                Return(
+                    Binary {
                         lhs: FunctionCall {
                             callee: Identifier(
-                                Span {
-                                    str: "random_number",
-                                    start: 317,
-                                    end: 330,
-                                },
+                                "random_number",
                             ),
                             generics: [
                                 Regular {
                                     base: Identifier(
-                                        Span {
-                                            str: "int",
-                                            start: 331,
-                                            end: 334,
-                                        },
+                                        "int",
                                     ),
                                     generics: [],
                                     raw: false,
                                     array: false,
-                                    span: Span {
-                                        str: "int",
-                                        start: 331,
-                                        end: 334,
-                                    },
                                 },
                             ],
                             arguments: [],
-                            span: Span {
-                                str: "<int>()",
-                                start: 330,
-                                end: 337,
-                            },
                         },
                         operator: Plus,
                         rhs: Identifier(
-                            Span {
-                                str: "add",
-                                start: 340,
-                                end: 343,
-                            },
+                            "add",
                         ),
-                        span: Span {
-                            str: "random_number<int>() + add",
-                            start: 317,
-                            end: 343,
-                        },
                     },
-                    span: Span {
-                        str: "return random_number<int>() + add;",
-                        start: 310,
-                        end: 344,
-                    },
-                },
+                ),
             ],
-            span: Span {
-                str: "func main() do\n\tvar add = 2;\n\treturn random_number<int>() + add;\nend\n\n",
-                start: 280,
-                end: 350,
-            },
         },
         FunctionDeclaration {
             modifiers: [],
-            name: Span {
-                str: "function_declaration",
-                start: 355,
-                end: 375,
-            },
+            name: "function_declaration",
             generics: [
                 Identifier(
-                    Span {
-                        str: "A",
-                        start: 376,
-                        end: 377,
-                    },
+                    "A",
                 ),
                 Identifier(
-                    Span {
-                        str: "B",
-                        start: 379,
-                        end: 380,
-                    },
+                    "B",
                 ),
             ],
             arguments: [
                 FunctionArgument {
-                    name: Identifier(
-                        Span {
-                            str: "first",
-                            start: 382,
-                            end: 387,
-                        },
-                    ),
+                    name: "first",
                     kind: Regular {
                         base: Identifier(
-                            Span {
-                                str: "A",
-                                start: 389,
-                                end: 390,
-                            },
+                            "A",
                         ),
                         generics: [],
                         raw: false,
                         array: false,
-                        span: Span {
-                            str: "A",
-                            start: 389,
-                            end: 390,
-                        },
-                    },
-                    span: Span {
-                        str: "first: A",
-                        start: 382,
-                        end: 390,
                     },
                 },
                 FunctionArgument {
-                    name: Identifier(
-                        Span {
-                            str: "second",
-                            start: 392,
-                            end: 398,
-                        },
-                    ),
+                    name: "second",
                     kind: Regular {
                         base: Identifier(
-                            Span {
-                                str: "this",
-                                start: 400,
-                                end: 404,
-                            },
+                            "this",
                         ),
                         generics: [],
                         raw: false,
                         array: false,
-                        span: Span {
-                            str: "this",
-                            start: 400,
-                            end: 404,
-                        },
-                    },
-                    span: Span {
-                        str: "second: this",
-                        start: 392,
-                        end: 404,
                     },
                 },
             ],
             return_type: Some(
                 Regular {
                     base: Identifier(
-                        Span {
-                            str: "B",
-                            start: 409,
-                            end: 410,
-                        },
+                        "B",
                     ),
                     generics: [],
                     raw: true,
                     array: false,
-                    span: Span {
-                        str: "B!",
-                        start: 409,
-                        end: 411,
-                    },
                 },
             ),
-            span: Span {
-                str: "func function_declaration<A, B>(first: A, second: this) -> B!;",
-                start: 350,
-                end: 412,
-            },
         },
     ],
     module_info: None,

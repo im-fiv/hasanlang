@@ -3,23 +3,23 @@ use anyhow::Error;
 use crate::hasan_parser::*;
 
 #[derive(Debug, Clone)]
-pub enum Node<'a> {
-	Program(Program<'a>),
-	Statement(Statement<'a>),
-	Expression(Expression<'a>)
+pub enum Node {
+	Program(Program),
+	Statement(Statement),
+	Expression(Expression)
 }
 
 #[allow(dead_code)]
 #[derive(Debug, Clone)]
-pub struct SemanticAnalyzer<'a> {
-	program: Program<'a>,
-	stack: Vec<Node<'a>>
+pub struct SemanticAnalyzer {
+	program: Program,
+	stack: Vec<Node>
 }
 
-type R<'a> = Result<(), Error>;
+type R = Result<(), Error>;
 
-impl<'a> SemanticAnalyzer<'a> {
-	pub fn new(program: Program<'a>) -> Self {
+impl SemanticAnalyzer {
+	pub fn new(program: Program) -> Self {
 		SemanticAnalyzer {
 			program,
 			stack: Vec::new()
