@@ -4,7 +4,8 @@ program = { SOI ~ module_declaration_marker? ~ statement* ~ EOI }
 statements = { statement* }
 
 /// If present, marks the file as a module
-module_declaration_marker = { "module" ~ identifier ~ stmt_sep }
+module_declaration_marker = { "module" ~ module_path? ~ identifier ~ stmt_sep }
+module_path = { (identifier ~ ".")+ }
 
 statement = _{
 	interface_stmt |
