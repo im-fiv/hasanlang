@@ -1,0 +1,12 @@
+module test.example;
+
+use module std;
+
+use module std.fs;
+
+use module std.io
+	print,
+	error as Error
+end;
+
+use module std.test.*;
