@@ -534,9 +534,264 @@
             },
         ],
         span: Span {
-            str: "interface SimpleInterface\n\tvar some_variable: int;\n\n\tfunc some_function() -> void;\nend\n\n// TODO: interface class implementations are to come soon",
+            str: "interface SimpleInterface\n\tvar some_variable: int;\n\n\tfunc some_function() -> void;\nend\n\n// Implementations\n",
             start: 236,
-            end: 381,
+            end: 343,
+        },
+    },
+    ClassDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 343,
+                end: 343,
+            },
+        },
+        name: Span {
+            str: "ExampleClass",
+            start: 349,
+            end: 361,
+        },
+        generics: [],
+        members: [],
+        span: Span {
+            str: "class ExampleClass\n\nend\n\n",
+            start: 343,
+            end: 368,
+        },
+    },
+    Interface {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 368,
+                end: 368,
+            },
+        },
+        name: Span {
+            str: "ExampleInterface",
+            start: 378,
+            end: 394,
+        },
+        generics: [
+            Identifier(
+                Span {
+                    str: "T",
+                    start: 395,
+                    end: 396,
+                },
+            ),
+        ],
+        members: [
+            Variable {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 399,
+                        end: 399,
+                    },
+                },
+                name: Span {
+                    str: "hello",
+                    start: 403,
+                    end: 408,
+                },
+                kind: Regular {
+                    base: Identifier(
+                        Span {
+                            str: "T",
+                            start: 410,
+                            end: 411,
+                        },
+                    ),
+                    generics: [],
+                    raw: false,
+                    array: false,
+                    span: Span {
+                        str: "T",
+                        start: 410,
+                        end: 411,
+                    },
+                },
+                span: Span {
+                    str: "var hello: T;",
+                    start: 399,
+                    end: 412,
+                },
+            },
+            Function {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 415,
+                        end: 415,
+                    },
+                },
+                attributes: None,
+                name: Span {
+                    str: "function",
+                    start: 420,
+                    end: 428,
+                },
+                generics: [],
+                arguments: None,
+                return_type: Regular {
+                    base: Identifier(
+                        Span {
+                            str: "int",
+                            start: 434,
+                            end: 437,
+                        },
+                    ),
+                    generics: [],
+                    raw: false,
+                    array: false,
+                    span: Span {
+                        str: "int",
+                        start: 434,
+                        end: 437,
+                    },
+                },
+                span: Span {
+                    str: "func function() -> int;",
+                    start: 415,
+                    end: 438,
+                },
+            },
+        ],
+        span: Span {
+            str: "interface ExampleInterface<T>\n\tvar hello: T;\n\n\tfunc function() -> int;\nend\n\n",
+            start: 368,
+            end: 444,
+        },
+    },
+    InterfaceImpl {
+        generics: [
+            Identifier(
+                Span {
+                    str: "world",
+                    start: 466,
+                    end: 471,
+                },
+            ),
+        ],
+        interface_name: Span {
+            str: "ExampleInterface",
+            start: 449,
+            end: 465,
+        },
+        class_name: Span {
+            str: "ExampleClass",
+            start: 477,
+            end: 489,
+        },
+        members: [
+            Variable {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 491,
+                        end: 491,
+                    },
+                },
+                name: Span {
+                    str: "hello",
+                    start: 491,
+                    end: 496,
+                },
+                kind: Regular {
+                    base: Identifier(
+                        Span {
+                            str: "world",
+                            start: 498,
+                            end: 503,
+                        },
+                    ),
+                    generics: [],
+                    raw: false,
+                    array: false,
+                    span: Span {
+                        str: "world",
+                        start: 498,
+                        end: 503,
+                    },
+                },
+                default_value: Empty,
+                span: Span {
+                    str: "hello: world;",
+                    start: 491,
+                    end: 504,
+                },
+            },
+            Function {
+                modifiers: GeneralModifiers {
+                    modifiers: [],
+                    span: Span {
+                        str: "",
+                        start: 507,
+                        end: 507,
+                    },
+                },
+                name: Span {
+                    str: "function",
+                    start: 512,
+                    end: 520,
+                },
+                attributes: None,
+                generics: [],
+                arguments: [],
+                return_type: Some(
+                    Regular {
+                        base: Identifier(
+                            Span {
+                                str: "int",
+                                start: 526,
+                                end: 529,
+                            },
+                        ),
+                        generics: [],
+                        raw: false,
+                        array: false,
+                        span: Span {
+                            str: "int ",
+                            start: 526,
+                            end: 530,
+                        },
+                    },
+                ),
+                statements: [
+                    Return {
+                        value: Int(
+                            5,
+                            Span {
+                                str: "5",
+                                start: 542,
+                                end: 543,
+                            },
+                        ),
+                        span: Span {
+                            str: "return 5;",
+                            start: 535,
+                            end: 544,
+                        },
+                    },
+                ],
+                span: Span {
+                    str: "func function() -> int do\n\t\treturn 5;\n\tend\n",
+                    start: 507,
+                    end: 550,
+                },
+            },
+        ],
+        span: Span {
+            str: "impl ExampleInterface<world> for ExampleClass\n\thello: world;\n\n\tfunc function() -> int do\n\t\treturn 5;\n\tend\nend",
+            start: 444,
+            end: 553,
         },
     },
 ]

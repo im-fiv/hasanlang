@@ -16,4 +16,21 @@ interface SimpleInterface
 	func some_function() -> void;
 end
 
-// TODO: interface class implementations are to come soon
+// Implementations
+class ExampleClass
+
+end
+
+interface ExampleInterface<T>
+	var hello: T;
+
+	func function() -> int;
+end
+
+impl ExampleInterface<world> for ExampleClass
+	hello: world;
+
+	func function() -> int do
+		return 5;
+	end
+end
