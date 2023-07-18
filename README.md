@@ -11,6 +11,7 @@ This project is in the early stages. The language specifications, parser, and ba
 ## Roadmap
 - [x] Pest Parser
 - [ ] Corrective Parser
+- [ ] Semantic Analysis
 - [ ] Compiler
 - [ ] Standard Library
 - [ ] Language Server
