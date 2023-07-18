@@ -36,7 +36,7 @@ pub struct ModuleInfo<'p> {
 #[derive(Debug, Clone)]
 pub enum Statement<'p> {
 	FunctionDefinition {
-		modifiers: GeneralModifiers<'p>,
+		modifiers: GeneralModifiers,
 
 		name: Span<'p>,
 		generics: Vec<DefinitionType<'p>>,
@@ -48,7 +48,7 @@ pub enum Statement<'p> {
 	},
 
 	FunctionDeclaration {
-		modifiers: GeneralModifiers<'p>,
+		modifiers: GeneralModifiers,
 
 		name: Span<'p>,
 		generics: Vec<DefinitionType<'p>>,
@@ -67,7 +67,7 @@ pub enum Statement<'p> {
 	},
 
 	ClassDefinition {
-		modifiers: GeneralModifiers<'p>,
+		modifiers: GeneralModifiers,
 
 		name: Span<'p>,
 		generics: Vec<DefinitionType<'p>>,
@@ -77,7 +77,7 @@ pub enum Statement<'p> {
 	},
 
 	ClassDeclaration {
-		modifiers: GeneralModifiers<'p>,
+		modifiers: GeneralModifiers,
 
 		name: Span<'p>,
 		generics: Vec<DefinitionType<'p>>,
@@ -87,7 +87,7 @@ pub enum Statement<'p> {
 	},
 
 	VariableDefinition {
-		modifiers: GeneralModifiers<'p>,
+		modifiers: GeneralModifiers,
 
 		name: Span<'p>,
 		kind: Option<Type<'p>>,
@@ -118,7 +118,7 @@ pub enum Statement<'p> {
 	},
 
 	EnumDefinition {
-		modifiers: GeneralModifiers<'p>,
+		modifiers: GeneralModifiers,
 
 		name: Span<'p>,
 		variants: Vec<EnumVariant<'p>>,
@@ -153,7 +153,7 @@ pub enum Statement<'p> {
 	Break(Span<'p>),
 
 	Interface {
-		modifiers: GeneralModifiers<'p>,
+		modifiers: GeneralModifiers,
 
 		name: Span<'p>,
 		generics: Vec<DefinitionType<'p>>,
@@ -213,7 +213,7 @@ pub enum ModuleItem<'p> {
 #[derive(Debug, Clone)]
 pub enum InterfaceMember<'p> {
 	Variable {
-		modifiers: GeneralModifiers<'p>,
+		modifiers: GeneralModifiers,
 
 		name: Span<'p>,
 		kind: Type<'p>,
@@ -222,8 +222,8 @@ pub enum InterfaceMember<'p> {
 	},
 
 	Function {
-		modifiers: GeneralModifiers<'p>,
-		attributes: Option<ClassFunctionAttributes<'p>>,
+		modifiers: GeneralModifiers,
+		attributes: Option<ClassFunctionAttributes>,
 
 		name: Span<'p>,
 		generics: Vec<DefinitionType<'p>>,
@@ -272,48 +272,48 @@ impl<'p> FunctionArgument<'p> {
 	}
 }
 
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct ClassFunctionAttributes<'p> {
-	attributes: Vec<ClassFunctionAttribute<'p>>,
-	span: Span<'p>
+pub type ClassFunctionAttributes = Vec<ClassFunctionAttribute>;
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum ClassFunctionAttribute {
+	Constructor,
+	Get,
+	Set
 }
 
-#[derive(Debug, Clone)]
-pub enum ClassFunctionAttribute<'p> {
-	Constructor(Span<'p>),
-	Get(Span<'p>),
-	Set(Span<'p>)
-}
+impl TryFrom<&str> for ClassFunctionAttribute {
+	type Error = String;
 
-impl<'p> ClassFunctionAttributes<'p> {
-	fn new(span: Span<'p>) -> Self {
-		ClassFunctionAttributes {
-			attributes: Vec::new(),
-			span
+	fn try_from(value: &str) -> Result<Self, Self::Error> {
+		match value {
+			"constructor" => Ok(Self::Constructor),
+			"get" => Ok(Self::Get),
+			"set" => Ok(Self::Set),
+
+			_ => Err(format!("Unknown class function attribute '{}'", value))
 		}
 	}
 }
 
-#[allow(dead_code)]
-#[derive(Debug, Clone)]
-pub struct GeneralModifiers<'p> {
-	modifiers: Vec<GeneralModifier<'p>>,
-	span: Span<'p>
+pub type GeneralModifiers = Vec<GeneralModifier>;
+
+#[derive(Debug, Clone, PartialEq)]
+pub enum GeneralModifier {
+	Public,
+	Constant,
+	Static
 }
 
-#[derive(Debug, Clone)]
-pub enum GeneralModifier<'p> {
-	Public(Span<'p>),
-	Constant(Span<'p>),
-	Static(Span<'p>)
-}
+impl TryFrom<&str> for GeneralModifier {
+	type Error = String;
 
-impl<'p> GeneralModifiers<'p> {
-	fn new(span: Span<'p>) -> Self {
-		GeneralModifiers {
-			modifiers: Vec::new(),
-			span
+	fn try_from(value: &str) -> Result<Self, Self::Error> {
+		match value {
+			"pub" => Ok(Self::Public),
+			"const" => Ok(Self::Constant),
+			"static" => Ok(Self::Static),
+
+			_ => Err(format!("Unknown modifier '{}'", value))
 		}
 	}
 }
@@ -321,7 +321,7 @@ impl<'p> GeneralModifiers<'p> {
 #[derive(Debug, Clone)]
 pub enum ClassDefinitionMember<'p> {
 	Variable {
-		modifiers: GeneralModifiers<'p>,
+		modifiers: GeneralModifiers,
 
 		name: Span<'p>,
 		kind: Type<'p>,
@@ -331,10 +331,10 @@ pub enum ClassDefinitionMember<'p> {
 	},
 
 	Function {
-		modifiers: GeneralModifiers<'p>,
+		modifiers: GeneralModifiers,
 
 		name: Span<'p>,
-		attributes: Option<ClassFunctionAttributes<'p>>,
+		attributes: Option<ClassFunctionAttributes>,
 		generics: Vec<DefinitionType<'p>>,
 		arguments: Vec<FunctionArgument<'p>>,
 		return_type: Option<Type<'p>>,
@@ -345,7 +345,7 @@ pub enum ClassDefinitionMember<'p> {
 }
 
 impl<'p> ClassDefinitionMember<'p> {
-	pub fn function_from_statement(statement: Statement<'p>, attributes: Option<ClassFunctionAttributes<'p>>) -> Self {
+	pub fn function_from_statement(statement: Statement<'p>, attributes: Option<ClassFunctionAttributes>) -> Self {
 		if let Statement::FunctionDefinition {
 			modifiers,
 			name,
@@ -374,25 +374,28 @@ impl<'p> ClassDefinitionMember<'p> {
 #[derive(Debug, Clone)]
 pub enum ClassDeclarationMember<'p> {
 	Variable {
-		modifiers: GeneralModifiers<'p>,
+		modifiers: GeneralModifiers,
+
 		name: Span<'p>,
 		kind: Type<'p>,
+
 		span: Span<'p>
 	},
 
 	Function {
-		modifiers: GeneralModifiers<'p>,
+		modifiers: GeneralModifiers,
 		name: Span<'p>,
-		attributes: Option<ClassFunctionAttributes<'p>>,
+		attributes: Option<ClassFunctionAttributes>,
 		generics: Vec<DefinitionType<'p>>,
 		arguments: Vec<FunctionArgument<'p>>,
 		return_type: Option<Type<'p>>,
+
 		span: Span<'p>
 	}
 }
 
 impl<'p> ClassDeclarationMember<'p> {
-	pub fn function_from_statement(statement: Statement<'p>, attributes: Option<ClassFunctionAttributes<'p>>) -> Self {
+	pub fn function_from_statement(statement: Statement<'p>, attributes: Option<ClassFunctionAttributes>) -> Self {
 		if let Statement::FunctionDeclaration {
 			modifiers,
 			name,
@@ -528,7 +531,7 @@ pub enum Expression<'p> {
 	Unimplemented
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum BinaryOperator {
 	Plus,
 	Minus,
@@ -545,7 +548,7 @@ pub enum BinaryOperator {
 	LessThanEqual
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum UnaryOperator {
 	Minus,
 	Not
@@ -1887,16 +1890,14 @@ impl<'p> HasanParser<'p> {
 		if pair.as_rule() != Rule::attributes {
 			panic!("Failed to parse function attributes: got an unexpected rule. Expected '{:?}', got '{:?}'", Rule::attributes, pair.as_rule());
 		}
-
-		let span = pair.as_span();
-		let mut inner = pair.into_inner();
-
-		let mut attributes = ClassFunctionAttributes::new(span);
+		
+		let mut pairs = pair.into_inner();
+		let mut attributes: ClassFunctionAttributes = Vec::new();
 
 		// Keeping track of which attributes have already been defined to prevent users from defining them twice
 		let mut met_attributes: Vec<String> = Vec::new();
 
-		while let Some(pair) = inner.next() {
+		while let Some(pair) = pairs.next() {
 			let as_str = pair.as_str();
 			let span = pair.as_span();
 
@@ -1906,17 +1907,8 @@ impl<'p> HasanParser<'p> {
 				error!(self, "found more than one '{}' attribute definition", span, as_str);
 			}
 
-			use ClassFunctionAttribute::*;
-
-			let attribute = match as_str {
-				"constructor" => Constructor(span),
-				"get" => Get(span),
-				"set" => Set(span),
-
-				_ => unreachable!("Failed to parse function attributes: unknown attribute '{}'", as_str)
-			};
-
-			attributes.attributes.push(attribute);
+			let attribute = ClassFunctionAttribute::try_from(as_str).unwrap();
+			attributes.push(attribute);
 
 			// Mark the attribute as defined
 			met_attributes.push(owned_str);
@@ -1930,8 +1922,6 @@ impl<'p> HasanParser<'p> {
 			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::function_arguments, pair.as_rule());
 		}
 
-		// Not needed yet
-		// let span = pair.as_span();
 		let mut pairs = pair.into_inner();
 
 		let mut arguments: Vec<FunctionArgument> = Vec::new();
@@ -1967,7 +1957,7 @@ impl<'p> HasanParser<'p> {
 			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::general_modifiers, pair.as_rule());
 		}
 
-		let mut modifiers = GeneralModifiers::new(pair.as_span());
+		let mut modifiers: GeneralModifiers = Vec::new();
 		let mut pairs = pair.into_inner();
 
 		let mut met_modifiers: Vec<String> = Vec::new();
@@ -1982,17 +1972,8 @@ impl<'p> HasanParser<'p> {
 				error!(self, "found more than one '{}' modifier definition", span, as_str);
 			}
 
-			use GeneralModifier::*;
-
-			let modifier = match as_str {
-				"pub" => Public(span),
-				"const" => Constant(span),
-				"static" => Static(span),
-
-				_ => unreachable!("Failed to parse modifiers: unknown modifier '{}'", as_str)
-			};
-
-			modifiers.modifiers.push(modifier);
+			let modifier = GeneralModifier::try_from(as_str).unwrap();
+			modifiers.push(modifier);
 
 			// Mark the modifier as defined
 			met_modifiers.push(owned_str);

@@ -1,22 +1,9 @@
 Program {
     statements: [
         VariableDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [
-                    Constant(
-                        Span {
-                            str: "const",
-                            start: 20,
-                            end: 25,
-                        },
-                    ),
-                ],
-                span: Span {
-                    str: "const ",
-                    start: 20,
-                    end: 26,
-                },
-            },
+            modifiers: [
+                Constant,
+            ],
             name: Span {
                 str: "a",
                 start: 30,
@@ -60,22 +47,9 @@ Program {
             },
         },
         EnumDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [
-                    Constant(
-                        Span {
-                            str: "const",
-                            start: 96,
-                            end: 101,
-                        },
-                    ),
-                ],
-                span: Span {
-                    str: "const ",
-                    start: 96,
-                    end: 102,
-                },
-            },
+            modifiers: [
+                Constant,
+            ],
             name: Span {
                 str: "Hello",
                 start: 107,

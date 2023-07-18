@@ -358,14 +358,7 @@ Program {
             },
         },
         FunctionDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 345,
-                    end: 345,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "_",
                 start: 350,
@@ -448,14 +441,7 @@ Program {
             },
         },
         FunctionDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 423,
-                    end: 423,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "cast",
                 start: 428,
@@ -576,14 +562,7 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 491,
-                    end: 491,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "long_cast",
                 start: 495,

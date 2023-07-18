@@ -1,14 +1,7 @@
 Program {
     statements: [
         EnumDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 0,
-                    end: 0,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "Light",
                 start: 5,
@@ -59,22 +52,9 @@ Program {
             },
         },
         EnumDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [
-                    Public(
-                        Span {
-                            str: "pub",
-                            start: 38,
-                            end: 41,
-                        },
-                    ),
-                ],
-                span: Span {
-                    str: "pub ",
-                    start: 38,
-                    end: 42,
-                },
-            },
+            modifiers: [
+                Public,
+            ],
             name: Span {
                 str: "Light",
                 start: 47,
@@ -125,14 +105,7 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 80,
-                    end: 80,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "current_light",
                 start: 84,

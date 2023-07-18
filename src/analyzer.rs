@@ -1,35 +1,34 @@
-use pest::error::{Error, ErrorVariant};
-use pest::Span;
+use anyhow::Error;
 
-use crate::pest_parser::Rule;
-use crate::hasan_parser::Program;
-
-macro_rules! error {
-	($self:ident, $msg:expr, $span:expr) => {
-		return Err($self.create_error($msg, $span));
-	};
-
-	($self:ident, $msg:expr, $span:expr, $($var_args:expr),*) => {
-		return Err($self.create_error(&format!($msg, $($var_args),*), $span));
-	};
-}
+use crate::hasan_parser::*;
 
 #[derive(Debug, Clone)]
-pub struct SemanticAnalyzer;
+pub enum Node<'a> {
+	Program(Program<'a>),
+	Statement(Statement<'a>),
+	Expression(Expression<'a>)
+}
 
-impl<'p> SemanticAnalyzer {
-	pub fn new() -> Self {
-		SemanticAnalyzer { }
+#[allow(dead_code)]
+#[derive(Debug, Clone)]
+pub struct SemanticAnalyzer<'a> {
+	program: Program<'a>,
+	stack: Vec<Node<'a>>
+}
+
+type R<'a> = Result<(), Error>;
+
+impl<'a> SemanticAnalyzer<'a> {
+	pub fn new(program: Program<'a>) -> Self {
+		SemanticAnalyzer {
+			program,
+			stack: Vec::new()
+		}
 	}
 
-	fn create_error(&self, message: &str, span: Span<'p>) -> Error<Rule> {
-		Error::new_from_span(
-			ErrorVariant::CustomError { message: message.to_owned() },
-			span
-		)
-	}
-
-	pub fn analyze(&self, program: Program) -> Result<(), Error<Rule>> {
+	pub fn analyze(&mut self) -> R {
+		// TODO: implement this
+		
 		Ok(())
 	}
 }
