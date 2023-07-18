@@ -11,6 +11,7 @@ This project is in the early stages. The language specifications, parser, and ba
 ## Roadmap
 - [x] Pest Parser
 - [ ] Corrective Parser
+- [ ] Semantic Analysis
 - [ ] Compiler
 - [ ] Standard Library
 - [ ] Language Server
@@ -63,7 +64,7 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 - [x] Implement booleans
 - [x] Implement enums
 - [x] Make tests check the generated AST
-- [x] Add raw types *(direct LLVM types, should not have any methods on them, intended for compiler usage only)* that can be denoted with an exclamation mark: `AType!`, `ArrayType[]!`, `GenericType<...>!`, `GenericArrType<...>[]!`
+- [x] Add raw types *(direct LLVM types, should not have any methods on them, intended for compiler usage only)* that can be denoted with an exclamation mark: `AType!`, `ArrayType![]`, `GenericType!<...>`, `GenericArrType!<...>[]`
 - [x] Add type cast operator to *recursive* expressions
 - [x] Fix *recursive* expressions
 - [x] Remove `inputX.hsl` code samples from root directory
