@@ -22,6 +22,7 @@ end
 ```
 
 With this, items are accessible from the current namespace.
+
 Alternatively, you can change the names of specific imports like so:
 ```
 use module <module name>
@@ -45,7 +46,8 @@ use module <module name>::*;
 ```
 
 ## Visibility
-By default, all module items are private. To make them public, prefix them with the `pub` keyword:
+
+In programming, visibility (also known as access control) refers to the scope in which a variable, function, or other code construct is accessible from within the code. By default, all module items in Hasanlang are private, meaning they can only be accessed within the module they're defined in. To make them public (accessible from other modules), prefix them with the `pub` keyword:
 
 ```
 module visibility;
