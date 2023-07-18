@@ -47,10 +47,7 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 
 ## My current TODO list (Corrective Parser stage)
 - [ ] Module system
-- [ ] Interfaces
-  - [ ] Type annotations
-  - [x] Implementations
-  - [x] Definitions
+- [x] Interfaces *(definitions, implementations, and type annotations)*
 - [x] Constants
 - [x] Implement `for` statements
 - [x] Separate `public`, `private`, and `static` from class function attributes

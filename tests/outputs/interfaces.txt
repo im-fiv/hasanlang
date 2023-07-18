@@ -789,9 +789,205 @@
             },
         ],
         span: Span {
-            str: "impl ExampleInterface<world> for ExampleClass\n\thello: world;\n\n\tfunc function() -> int do\n\t\treturn 5;\n\tend\nend",
+            str: "impl ExampleInterface<world> for ExampleClass\n\thello: world;\n\n\tfunc function() -> int do\n\t\treturn 5;\n\tend\nend\n\n// Constraints\n",
             start: 444,
-            end: 553,
+            end: 570,
+        },
+    },
+    Interface {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 570,
+                end: 570,
+            },
+        },
+        name: Span {
+            str: "Callable",
+            start: 580,
+            end: 588,
+        },
+        generics: [],
+        members: [
+            Function {
+                modifiers: GeneralModifiers {
+                    modifiers: [
+                        Public(
+                            Span {
+                                str: "pub",
+                                start: 590,
+                                end: 593,
+                            },
+                        ),
+                    ],
+                    span: Span {
+                        str: "pub ",
+                        start: 590,
+                        end: 594,
+                    },
+                },
+                attributes: None,
+                name: Span {
+                    str: "call",
+                    start: 599,
+                    end: 603,
+                },
+                generics: [],
+                arguments: None,
+                return_type: Regular {
+                    base: Identifier(
+                        Span {
+                            str: "void",
+                            start: 609,
+                            end: 613,
+                        },
+                    ),
+                    generics: [],
+                    raw: false,
+                    array: false,
+                    span: Span {
+                        str: "void",
+                        start: 609,
+                        end: 613,
+                    },
+                },
+                span: Span {
+                    str: "pub func call() -> void;",
+                    start: 590,
+                    end: 614,
+                },
+            },
+        ],
+        span: Span {
+            str: "interface Callable\n\tpub func call() -> void;\nend\n\n",
+            start: 570,
+            end: 620,
+        },
+    },
+    FunctionDefinition {
+        modifiers: GeneralModifiers {
+            modifiers: [],
+            span: Span {
+                str: "",
+                start: 620,
+                end: 620,
+            },
+        },
+        name: Span {
+            str: "call_anything",
+            start: 625,
+            end: 638,
+        },
+        generics: [
+            Constrained {
+                name: Span {
+                    str: "T",
+                    start: 639,
+                    end: 640,
+                },
+                implements: [
+                    Span {
+                        str: "Callable",
+                        start: 647,
+                        end: 655,
+                    },
+                ],
+                span: Span {
+                    str: "T: impl<Callable>",
+                    start: 639,
+                    end: 656,
+                },
+            },
+        ],
+        arguments: [
+            FunctionArgument {
+                name: Identifier(
+                    Span {
+                        str: "something",
+                        start: 658,
+                        end: 667,
+                    },
+                ),
+                kind: Regular {
+                    base: Identifier(
+                        Span {
+                            str: "T",
+                            start: 669,
+                            end: 670,
+                        },
+                    ),
+                    generics: [],
+                    raw: false,
+                    array: false,
+                    span: Span {
+                        str: "T",
+                        start: 669,
+                        end: 670,
+                    },
+                },
+                span: Span {
+                    str: "something: T",
+                    start: 658,
+                    end: 670,
+                },
+            },
+        ],
+        return_type: Some(
+            Regular {
+                base: Identifier(
+                    Span {
+                        str: "void",
+                        start: 675,
+                        end: 679,
+                    },
+                ),
+                generics: [],
+                raw: false,
+                array: false,
+                span: Span {
+                    str: "void ",
+                    start: 675,
+                    end: 680,
+                },
+            },
+        ),
+        statements: [
+            FunctionCall {
+                callee: DotAccess {
+                    expression: Identifier(
+                        Span {
+                            str: "something",
+                            start: 684,
+                            end: 693,
+                        },
+                    ),
+                    accessor: Identifier(
+                        Span {
+                            str: "call",
+                            start: 694,
+                            end: 698,
+                        },
+                    ),
+                    span: Span {
+                        str: ".call",
+                        start: 693,
+                        end: 698,
+                    },
+                },
+                generics: [],
+                arguments: [],
+                span: Span {
+                    str: "()",
+                    start: 698,
+                    end: 700,
+                },
+            },
+        ],
+        span: Span {
+            str: "func call_anything<T: impl<Callable>>(something: T) -> void do\n\tsomething.call();\nend",
+            start: 620,
+            end: 705,
         },
     },
 ]
