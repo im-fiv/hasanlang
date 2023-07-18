@@ -162,7 +162,7 @@ pub enum Statement {
 		items: Vec<ModuleItem>
 	},
 
-	// Special statements that are not intended to be used traditionally
+	/// Special statement that is only intended for testing use
 	Unimplemented
 }
 
@@ -1522,7 +1522,7 @@ impl<'p> HasanParser<'p> {
 		}
 
 		let inner_pairs = pair.into_inner();
-		let mut generics: Vec<DefinitionType> = Vec::new(); //* Expression::Identifier only
+		let mut generics: Vec<DefinitionType> = Vec::new();
 
 		for arg in inner_pairs {
 			if arg.as_rule() != Rule::definition_generics_type {
@@ -1923,8 +1923,6 @@ impl<'p> HasanParser<'p> {
 	}
 
 	fn parse_class_definition_function(&self, pair: Pair<Rule>) -> ClassDefinitionMember {
-		//* NOTE: attributes are to be checked later by the optimization stage/compiler
-
 		if pair.as_rule() != Rule::class_definition_function {
 			panic!("Failed to parse a class definition function: expected rule '{:?}', got '{:?}'", Rule::class_definition_function, pair.as_rule());
 		}
