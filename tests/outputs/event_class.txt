@@ -384,7 +384,7 @@
             end: 214,
         },
     },
-    TypeDefinition {
+    TypeAlias {
         name: Span {
             str: "FuncType",
             start: 219,

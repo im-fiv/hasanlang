@@ -50,7 +50,7 @@ pub enum Statement<'p> {
 		span: Span<'p>
 	},
 
-	TypeDefinition {
+	TypeAlias {
 		name: Span<'p>,
 		generics: Vec<Expression<'p>>,
 		definition: Type<'p>,
@@ -530,7 +530,7 @@ impl<'p> HasanParser<'p> {
 			let statement = match pair.as_rule() {
 				Rule::function_definition_stmt => self.parse_function_definition(pair),
 				Rule::function_declaration_stmt => self.parse_function_declaration(pair),
-				Rule::type_definition_stmt => self.parse_type_definition(pair),
+				Rule::type_alias_stmt => self.parse_type_alias(pair),
 				Rule::class_definition => self.parse_class_definition(pair),
 				Rule::class_declaration => self.parse_class_declaration(pair),
 				Rule::variable_definition_stmt => self.parse_variable_definition(pair),
@@ -1721,7 +1721,7 @@ impl<'p> HasanParser<'p> {
 		}
 	}
 
-	fn parse_type_definition(&self, pair: Pair<'p, Rule>) -> Statement {
+	fn parse_type_alias(&self, pair: Pair<'p, Rule>) -> Statement {
 		let span = pair.as_span();
 		let mut pairs = pair.into_inner();
 
@@ -1745,7 +1745,7 @@ impl<'p> HasanParser<'p> {
 
 		let type_expression = self.parse_type(next_pair);
 
-		Statement::TypeDefinition {
+		Statement::TypeAlias {
 			name: name_pair.as_span(),
 			generics,
 			definition: type_expression,
