@@ -1,14 +1,7 @@
 Program {
     statements: [
         VariableDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 0,
-                    end: 0,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "counter",
                 start: 4,

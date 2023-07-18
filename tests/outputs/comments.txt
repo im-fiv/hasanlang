@@ -1,14 +1,7 @@
 Program {
     statements: [
         FunctionDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 109,
-                    end: 109,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "main",
                 start: 114,

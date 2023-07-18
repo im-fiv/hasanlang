@@ -1,14 +1,7 @@
 Program {
     statements: [
         VariableDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 0,
-                    end: 0,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "a",
                 start: 4,
@@ -62,14 +55,7 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 20,
-                    end: 20,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "b",
                 start: 24,
@@ -147,14 +133,7 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 63,
-                    end: 63,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "c",
                 start: 67,
@@ -277,14 +256,7 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 117,
-                    end: 117,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "d",
                 start: 121,
@@ -435,14 +407,7 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 176,
-                    end: 176,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "e",
                 start: 180,
@@ -561,14 +526,7 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 232,
-                    end: 232,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "f",
                 start: 236,
@@ -641,14 +599,7 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 298,
-                    end: 298,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "e",
                 start: 302,
@@ -721,14 +672,7 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 362,
-                    end: 362,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "type_cast",
                 start: 366,
@@ -943,14 +887,7 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 430,
-                    end: 430,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "arr",
                 start: 434,
@@ -994,14 +931,7 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 454,
-                    end: 454,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "var1",
                 start: 458,
@@ -1022,14 +952,7 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 488,
-                    end: 488,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "var2",
                 start: 492,
@@ -1067,14 +990,7 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 506,
-                    end: 506,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "complex_expression",
                 start: 510,

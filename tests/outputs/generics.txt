@@ -1,14 +1,7 @@
 Program {
     statements: [
         FunctionDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 0,
-                    end: 0,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "generic_function",
                 start: 5,
@@ -107,14 +100,7 @@ Program {
             },
         },
         ClassDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 97,
-                    end: 97,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "generic_class",
                 start: 103,
@@ -131,14 +117,7 @@ Program {
             ],
             members: [
                 Variable {
-                    modifiers: GeneralModifiers {
-                        modifiers: [],
-                        span: Span {
-                            str: "",
-                            start: 121,
-                            end: 121,
-                        },
-                    },
+                    modifiers: [],
                     name: Span {
                         str: "inner_value",
                         start: 121,
@@ -169,36 +148,16 @@ Program {
                     },
                 },
                 Function {
-                    modifiers: GeneralModifiers {
-                        modifiers: [],
-                        span: Span {
-                            str: "",
-                            start: 147,
-                            end: 147,
-                        },
-                    },
+                    modifiers: [],
                     name: Span {
                         str: "value",
                         start: 152,
                         end: 157,
                     },
                     attributes: Some(
-                        ClassFunctionAttributes {
-                            attributes: [
-                                Get(
-                                    Span {
-                                        str: "get",
-                                        start: 141,
-                                        end: 144,
-                                    },
-                                ),
-                            ],
-                            span: Span {
-                                str: "#[get]",
-                                start: 139,
-                                end: 145,
-                            },
-                        },
+                        [
+                            Get,
+                        ],
                     ),
                     generics: [],
                     arguments: [],
@@ -265,14 +224,7 @@ Program {
             },
         },
         FunctionDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 205,
-                    end: 205,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "main",
                 start: 210,
@@ -283,14 +235,7 @@ Program {
             return_type: None,
             statements: [
                 VariableDefinition {
-                    modifiers: GeneralModifiers {
-                        modifiers: [],
-                        span: Span {
-                            str: "",
-                            start: 221,
-                            end: 221,
-                        },
-                    },
+                    modifiers: [],
                     name: Span {
                         str: "wrapped",
                         start: 225,

@@ -1,14 +1,7 @@
 Program {
     statements: [
         FunctionDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 0,
-                    end: 0,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "print_hello_world",
                 start: 5,
@@ -85,14 +78,7 @@ Program {
             },
         },
         FunctionDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 88,
-                    end: 88,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "random_number",
                 start: 93,
@@ -151,14 +137,7 @@ Program {
             },
         },
         FunctionDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 142,
-                    end: 142,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "arguments",
                 start: 147,
@@ -332,14 +311,7 @@ Program {
             },
         },
         FunctionDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 233,
-                    end: 233,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "no_return_type",
                 start: 238,
@@ -403,14 +375,7 @@ Program {
             },
         },
         FunctionDefinition {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 280,
-                    end: 280,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "main",
                 start: 285,
@@ -421,14 +386,7 @@ Program {
             return_type: None,
             statements: [
                 VariableDefinition {
-                    modifiers: GeneralModifiers {
-                        modifiers: [],
-                        span: Span {
-                            str: "",
-                            start: 296,
-                            end: 296,
-                        },
-                    },
+                    modifiers: [],
                     name: Span {
                         str: "add",
                         start: 300,
@@ -513,14 +471,7 @@ Program {
             },
         },
         FunctionDeclaration {
-            modifiers: GeneralModifiers {
-                modifiers: [],
-                span: Span {
-                    str: "",
-                    start: 350,
-                    end: 350,
-                },
-            },
+            modifiers: [],
             name: Span {
                 str: "function_declaration",
                 start: 355,
