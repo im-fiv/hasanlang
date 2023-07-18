@@ -31,7 +31,7 @@ pub enum Statement<'p> {
 		modifiers: GeneralModifiers<'p>,
 
 		name: Span<'p>,
-		generics: Vec<Expression<'p>>,
+		generics: Vec<DefinitionType<'p>>,
 		arguments: Vec<FunctionArgument<'p>>,
 		return_type: Option<Type<'p>>,
 		statements: Vec<Statement<'p>>,
@@ -43,7 +43,7 @@ pub enum Statement<'p> {
 		modifiers: GeneralModifiers<'p>,
 
 		name: Span<'p>,
-		generics: Vec<Expression<'p>>,
+		generics: Vec<DefinitionType<'p>>,
 		arguments: Vec<FunctionArgument<'p>>,
 		return_type: Option<Type<'p>>,
 
@@ -52,7 +52,7 @@ pub enum Statement<'p> {
 
 	TypeAlias {
 		name: Span<'p>,
-		generics: Vec<Expression<'p>>,
+		generics: Vec<DefinitionType<'p>>,
 		definition: Type<'p>,
 
 		span: Span<'p>
@@ -62,7 +62,7 @@ pub enum Statement<'p> {
 		modifiers: GeneralModifiers<'p>,
 
 		name: Span<'p>,
-		generics: Vec<Expression<'p>>,
+		generics: Vec<DefinitionType<'p>>,
 		members: Vec<ClassDefinitionMember<'p>>,
 
 		span: Span<'p>
@@ -72,7 +72,7 @@ pub enum Statement<'p> {
 		modifiers: GeneralModifiers<'p>,
 
 		name: Span<'p>,
-		generics: Vec<Expression<'p>>,
+		generics: Vec<DefinitionType<'p>>,
 		members: Vec<ClassDeclarationMember<'p>>,
 
 		span: Span<'p>
@@ -146,14 +146,14 @@ pub enum Statement<'p> {
 		modifiers: GeneralModifiers<'p>,
 
 		name: Span<'p>,
-		generics: Vec<Expression<'p>>,
+		generics: Vec<DefinitionType<'p>>,
 		members: Vec<InterfaceMember<'p>>,
 
 		span: Span<'p>
 	},
 
 	InterfaceImpl {
-		generics: Vec<Expression<'p>>,
+		generics: Vec<DefinitionType<'p>>,
 
 		interface_name: Span<'p>,
 		class_name: Span<'p>,
@@ -184,7 +184,7 @@ pub enum InterfaceMember<'p> {
 		attributes: Option<ClassFunctionAttributes<'p>>,
 
 		name: Span<'p>,
-		generics: Vec<Expression<'p>>,
+		generics: Vec<DefinitionType<'p>>,
 		arguments: Option<InterfaceFunctionArguments<'p>>,
 		return_type: Type<'p>,
 
@@ -293,7 +293,7 @@ pub enum ClassDefinitionMember<'p> {
 
 		name: Span<'p>,
 		attributes: Option<ClassFunctionAttributes<'p>>,
-		generics: Vec<Expression<'p>>,
+		generics: Vec<DefinitionType<'p>>,
 		arguments: Vec<FunctionArgument<'p>>,
 		return_type: Option<Type<'p>>,
 		statements: Vec<Statement<'p>>,
@@ -342,7 +342,7 @@ pub enum ClassDeclarationMember<'p> {
 		modifiers: GeneralModifiers<'p>,
 		name: Span<'p>,
 		attributes: Option<ClassFunctionAttributes<'p>>,
-		generics: Vec<Expression<'p>>,
+		generics: Vec<DefinitionType<'p>>,
 		arguments: Vec<FunctionArgument<'p>>,
 		return_type: Option<Type<'p>>,
 		span: Span<'p>
@@ -381,7 +381,7 @@ type FloatType = f64;
 pub enum Type<'p> {
 	Regular {
 		base: Box<Expression<'p>>,
-		generics: Vec<Expression<'p>>,
+		generics: Vec<DefinitionType<'p>>,
 
 		// Type attributes
 		raw: bool,
@@ -393,6 +393,18 @@ pub enum Type<'p> {
 	Function {
 		argument_types: Vec<Type<'p>>,
 		return_type: Box<Type<'p>>,
+
+		span: Span<'p>
+	}
+}
+
+#[derive(Debug, Clone)]
+pub enum DefinitionType<'p> {
+	Identifier(Span<'p>), //* Expression::Identifier
+
+	Constrained {
+		name: Span<'p>,
+		implements: Vec<Span<'p>>, //* Interface identifiers (Expression::Identifier)
 
 		span: Span<'p>
 	}
@@ -462,7 +474,7 @@ pub enum Expression<'p> {
 	},
 
 	AnonymousFunction {
-		generics: Vec<Expression<'p>>,
+		generics: Vec<DefinitionType<'p>>,
 		arguments: Vec<FunctionArgument<'p>>,
 		return_type: Box<Option<Type<'p>>>,
 		statements: Vec<Statement<'p>>,
@@ -836,11 +848,11 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse interface function: generics/arguments/return type pair is missing");
 
-		let mut generics: Vec<Expression> = Vec::new();
+		let mut generics: Vec<DefinitionType> = Vec::new();
 
 		// If it's generics, parse and go to the next pair
 		if next_pair.as_rule() == Rule::definition_generics {
-			generics = self.parse_generics_as_identifiers(next_pair);
+			generics = self.parse_generics_as_definition_types(next_pair);
 
 			next_pair = pairs
 				.next()
@@ -935,10 +947,10 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse interface statement: generics/members pair is missing");
 
-		let mut generics: Vec<Expression> = Vec::new();
+		let mut generics: Vec<DefinitionType> = Vec::new();
 
 		if next_pair.as_rule() == Rule::definition_generics {
-			generics = self.parse_generics_as_identifiers(next_pair);
+			generics = self.parse_generics_as_definition_types(next_pair);
 
 			// Next pair is guaranteed to be `interface_members`, even if there are no members
 			next_pair = pairs
@@ -968,10 +980,10 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse interface implementation statement: generics/class name pair is missing");
 
-		let mut generics: Vec<Expression> = Vec::new();
+		let mut generics: Vec<DefinitionType> = Vec::new();
 
 		if next_pair.as_rule() == Rule::definition_generics {
-			generics = self.parse_generics_as_identifiers(next_pair);
+			generics = self.parse_generics_as_definition_types(next_pair);
 
 			next_pair = pairs
 				.next()
@@ -1008,7 +1020,7 @@ impl<'p> HasanParser<'p> {
 		let span = pair.as_span();
 		let mut pairs = pair.into_inner();
 
-		let mut generics: Vec<Expression> = Vec::new();
+		let mut generics: Vec<DefinitionType> = Vec::new();
 		let mut arguments: Vec<FunctionArgument> = Vec::new();
 		let mut statements: Vec<Statement> = Vec::new();
 		let mut return_type: Option<Type> = None;
@@ -1018,7 +1030,7 @@ impl<'p> HasanParser<'p> {
 				Rule::do_block => statements = self.parse_program(pair.into_inner()),
 				Rule::r#type => return_type = Some(self.parse_type(pair)),
 				Rule::function_arguments => arguments = self.parse_function_arguments(pair),
-				Rule::definition_generics => generics = self.parse_generics_as_identifiers(pair),
+				Rule::definition_generics => generics = self.parse_generics_as_definition_types(pair),
 
 				rule => error!(
 					self,
@@ -1364,25 +1376,66 @@ impl<'p> HasanParser<'p> {
 		Expression::Array(items, span)
 	}
 
-	/// Used for **definition** statements. Parses generics **as identifiers** to later be substituted with proper types
+	/// Not to be confused with ~~type definition~~ type alias.
+	/// Parses type expressions inside definition generics:
+	/// ```plaintext
+	/// TypeName: impl<Interface1, Interface2, Interface3, ...>
+	/// ```
 	/// 
 	/// # Arguments
+	/// * `pair` - A pest.rs `Pair` of rule `definition_generics_type`
+	fn parse_definition_type(&self, pair: Pair<'p, Rule>) -> DefinitionType {
+		if pair.as_rule() != Rule::definition_generics_type {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::definition_generics_type, pair.as_rule());
+		}
+
+		let span = pair.as_span();
+		let mut pairs = pair.into_inner();
+
+		let name = pairs
+			.next()
+			.expect("Failed to parse definition generics type: name pair is missing")
+			.as_span();
+
+		let interfaces_pair = pairs.next();
+
+		if interfaces_pair.is_none() {
+			// Type doesn't have to implement any interfaces. Return a regular type
+			return DefinitionType::Identifier(name);
+		}
+
+		let mut interface_pairs = interfaces_pair.unwrap().into_inner();
+		let mut implements: Vec<Span> = Vec::new();
+
+		while let Some(pair) = interface_pairs.next() {
+			if pair.as_rule() != Rule::identifier {
+				error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::identifier, pair.as_rule());
+			}
+
+			implements.push(pair.as_span());
+		}
+
+		DefinitionType::Constrained { name, implements, span }
+	}
+
+	/// Used for **definition** statements. Parses generics **as definition types** to later be substituted with proper types
 	/// 
-	/// * `pair` - A Pest.rs parser pair with type Rule::definition_generics
-	fn parse_generics_as_identifiers(&self, pair: Pair<'p, Rule>) -> Vec<Expression> {
+	/// # Arguments
+	/// * `pair` - A pest.rs `Pair` of rule `definition_generics`
+	fn parse_generics_as_definition_types(&self, pair: Pair<'p, Rule>) -> Vec<DefinitionType> {
 		if pair.as_rule() != Rule::definition_generics {
 			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::definition_generics, pair.as_rule());
 		}
 
 		let inner_pairs = pair.into_inner();
-		let mut generics: Vec<Expression> = Vec::new(); //* Expression::Identifier only
+		let mut generics: Vec<DefinitionType> = Vec::new(); //* Expression::Identifier only
 
 		for arg in inner_pairs {
-			if arg.as_rule() != Rule::identifier {
-				error!(self, "expected '{:?}', got '{:?}'", arg.as_span(), Rule::identifier, arg.as_rule());
+			if arg.as_rule() != Rule::definition_generics_type {
+				error!(self, "expected '{:?}', got '{:?}'", arg.as_span(), Rule::definition_generics_type, arg.as_rule());
 			}
 
-			generics.push(self.parse_identifier(arg));
+			generics.push(self.parse_definition_type(arg));
 		}
 
 		generics
@@ -1391,8 +1444,7 @@ impl<'p> HasanParser<'p> {
 	/// Used for **call** statements. Parses generics **as parser expression types** to later be substituted with proper types
 	/// 
 	/// # Arguments
-	/// 
-	/// * `pair` - A Pest.rs parser pair with type Rule::call_generics
+	/// * `pair` - A pest.rs `Pair` of rule `call_generics`
 	fn parse_generics_as_types(&self, pair: Pair<'p, Rule>) -> Vec<Type> {
 		if pair.as_rule() != Rule::call_generics {
 			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::call_generics, pair.as_rule());
@@ -1501,7 +1553,7 @@ impl<'p> HasanParser<'p> {
 
 						output_type = Type::Regular {
 							base,
-							generics: self.parse_generics_as_identifiers(definition_pair),
+							generics: self.parse_generics_as_definition_types(definition_pair),
 							raw,
 							array: true,
 							span
@@ -1709,7 +1761,7 @@ impl<'p> HasanParser<'p> {
 		modifiers
 	}
 
-	fn parse_function_header(&self, pair: Pair<'p, Rule>) -> (GeneralModifiers, Span, Vec<Expression>, Vec<FunctionArgument>, Option<Type>) {
+	fn parse_function_header(&self, pair: Pair<'p, Rule>) -> (GeneralModifiers, Span, Vec<DefinitionType>, Vec<FunctionArgument>, Option<Type>) {
 		let mut header_pairs = pair.into_inner();
 
 		let modifiers_pair = header_pairs
@@ -1722,13 +1774,13 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse function header: function name is missing");
 
-		let mut generics: Vec<Expression> = Vec::new();
+		let mut generics: Vec<DefinitionType> = Vec::new();
 		let mut arguments: Vec<FunctionArgument> = Vec::new();
 		let mut return_type: Option<Type> = None;
 
 		while let Some(pair) = header_pairs.next() {
 			match pair.as_rule() {
-				Rule::definition_generics => generics = self.parse_generics_as_identifiers(pair),
+				Rule::definition_generics => generics = self.parse_generics_as_definition_types(pair),
 				Rule::function_arguments => arguments = self.parse_function_arguments(pair),
 				Rule::r#type => return_type = Some(self.parse_type(pair)),
 
@@ -1794,10 +1846,10 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse type definition: expected generics/type, got nothing");
 
-		let mut generics: Vec<Expression> = Vec::new();
+		let mut generics: Vec<DefinitionType> = Vec::new();
 
 		if next_pair.as_rule() == Rule::definition_generics {
-			generics = self.parse_generics_as_identifiers(next_pair);
+			generics = self.parse_generics_as_definition_types(next_pair);
 
 			next_pair = pairs
 				.next()
@@ -1941,11 +1993,11 @@ impl<'p> HasanParser<'p> {
 
 		// Unwrap the next pair
 		next_pair = next_pair_option.unwrap_or_else(|| unreachable!("Failed to parse class definition: unexpected end of pairs. Expected class members or generics, got nothing"));
-		let mut generics: Vec<Expression> = Vec::new();
+		let mut generics: Vec<DefinitionType> = Vec::new();
 
 		// Check if the next pair is of rule definition_generics
 		if next_pair.as_rule() == Rule::definition_generics {
-			generics = self.parse_generics_as_identifiers(next_pair);
+			generics = self.parse_generics_as_definition_types(next_pair);
 
 			// If no class members are provided, return early
 			if pairs.peek().is_none() {
@@ -2096,11 +2148,11 @@ impl<'p> HasanParser<'p> {
 
 		// Unwrap the next pair
 		next_pair = next_pair_option.unwrap_or_else(|| unreachable!("Failed to parse class declaration: expected generics or class members, got nothing"));
-		let mut generics: Vec<Expression> = Vec::new();
+		let mut generics: Vec<DefinitionType> = Vec::new();
 
 		// Check if the next pair is of rule definition_generics
 		if next_pair.as_rule() == Rule::definition_generics {
-			generics = self.parse_generics_as_identifiers(next_pair);
+			generics = self.parse_generics_as_definition_types(next_pair);
 
 			// If no class members are provided, return early
 			if pairs.peek().is_none() {

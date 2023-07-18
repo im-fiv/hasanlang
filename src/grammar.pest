@@ -115,7 +115,10 @@ regular_type = { identifier ~ type_operators }
 function_type = { "(" ~ function_type_arguments ~ ")" ~ "->" ~ type }
 	function_type_arguments = { (type ~ ("," ~ type)*)? }
 
-definition_generics = { "<" ~ identifier ~ ("," ~ identifier)* ~ ">" }
+definition_generics = { "<" ~ definition_generics_type ~ ("," ~ definition_generics_type)* ~ ">" }
+	definition_generics_type = { identifier ~ ":" ~ "impl" ~ "<" ~ definition_generics_interfaces ~ ">" | identifier }
+		definition_generics_interfaces = { (identifier ~ ("," ~ identifier)*)? }
+
 call_generics = { "<" ~ type ~ ("," ~ type)* ~ ">" }
 
 //* Expressions *//

@@ -34,3 +34,12 @@ impl ExampleInterface<world> for ExampleClass
 		return 5;
 	end
 end
+
+// Constraints
+interface Callable
+	pub func call() -> void;
+end
+
+func call_anything<T: impl<Callable>>(something: T) -> void do
+	something.call();
+end

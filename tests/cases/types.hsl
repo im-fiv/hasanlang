@@ -1,3 +1,4 @@
+// Generic types
 type AType<Generic1, Generic2> = Generic1<Generic2>[];
 
 type Reg_T = int;
@@ -5,12 +6,22 @@ type Reg_ArrayT = int[];
 type Reg_GenericT<A> = A<A>;
 type Reg_GenericArrayT<B> = B<B>[];
 
+// Raw types
 type Raw_T = int!;
 type Raw_ArrayT = int![];
 type Raw_GenericT<A> = A!<A>;
 type Raw_GenericArrayT<B> = B!<B>[];
 
 // This isn't supposed to make sense
-func asd<Generic2>() -> AType<int, Generic2> do
+func _<Generic2>() -> AType<int, Generic2> do
 	return [5];
 end
+
+// Type casts
+func cast<From, To>(input: From) -> To do
+	return input as To;
+end
+
+var long_cast = 3 as a as b as c as d as e as f as g;
+
+return cast<int, float>(5);
