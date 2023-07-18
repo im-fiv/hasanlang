@@ -22,6 +22,15 @@ end
 ```
 
 With this, items are accessible from the current namespace.
+Alternatively, you can change the names of specific imports like so:
+```
+use module <module name>
+	<item name> as <identifier>,
+	...
+end
+```
+
+This can be used to prevent name collisions when importing items with the same names from different modules.
 
 To import the entire module while maintaining its namespace, use:
 ```
