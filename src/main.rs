@@ -66,10 +66,10 @@ fn compile(command: cli::CompileCommand) {
 	println!("AST parsing...");
 	
 	let ast_parser = HasanParser::new(pairs);
-	let ast = ast_parser.parse().statements;
+	let ast = ast_parser.parse();
 	
 	if debug {
-		println!("Parsed AST ({}): {:?}", ast.len(), ast);
+		println!("Parsed AST ({}): {:?}", ast.statements.len(), ast);
 		println!();
 	}
 	
@@ -112,6 +112,44 @@ fn test_update(command: cli::UpdateTestCommand) {
     copy_file(&source_path, &destination_path);
 }
 
+fn test_update_all() {
+    let test_cases_path = PathBuf::from("./tests/cases");
+
+    let entries = match fs::read_dir(test_cases_path) {
+        Ok(entries) => entries,
+        Err(_) => return,
+    };
+
+    for entry in entries {
+        let entry = match entry {
+            Ok(entry) => entry,
+            Err(_) => continue,
+        };
+
+        let metadata = match entry.metadata() {
+            Ok(metadata) => metadata,
+            Err(_) => continue,
+        };
+
+        if metadata.is_dir() {
+            continue;
+        }
+
+        let path = entry.path();
+		
+        if path.extension().map_or(false, |ext| ext != "hsl") {
+            continue;
+        }
+
+        let filename = match path.file_stem().and_then(|stem| stem.to_str()) {
+            Some(filename) => filename,
+            None => continue,
+        };
+
+        test_update(cli::UpdateTestCommand { name: filename.to_string() });
+    }
+}
+
 fn test_delete(command: cli::DeleteTestCommand) {
 	let name = command.name;
 
@@ -140,7 +178,8 @@ fn test_subcommand(subcommand: cli::TestSubcommand) {
 	match subcommand.command {
 		cli::TestCommand::Create(command) => test_create(command),
 		cli::TestCommand::Update(command) => test_update(command),
-		cli::TestCommand::Delete(command) => test_delete(command)
+		cli::TestCommand::Delete(command) => test_delete(command),
+		cli::TestCommand::UpdateAll => test_update_all(),
 	}
 }
 

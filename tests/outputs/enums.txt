@@ -1,256 +1,259 @@
-[
-    EnumDefinition {
-        modifiers: GeneralModifiers {
-            modifiers: [],
-            span: Span {
-                str: "",
-                start: 0,
-                end: 0,
-            },
-        },
-        name: Span {
-            str: "Light",
-            start: 5,
-            end: 10,
-        },
-        variants: [
-            EnumVariant {
-                name: Span {
-                    str: "Green",
-                    start: 12,
-                    end: 17,
-                },
+Program {
+    statements: [
+        EnumDefinition {
+            modifiers: GeneralModifiers {
+                modifiers: [],
                 span: Span {
-                    str: "Green",
-                    start: 12,
-                    end: 17,
+                    str: "",
+                    start: 0,
+                    end: 0,
                 },
             },
-            EnumVariant {
-                name: Span {
-                    str: "Yellow",
-                    start: 20,
-                    end: 26,
-                },
-                span: Span {
-                    str: "Yellow",
-                    start: 20,
-                    end: 26,
-                },
+            name: Span {
+                str: "Light",
+                start: 5,
+                end: 10,
             },
-            EnumVariant {
-                name: Span {
-                    str: "Red",
-                    start: 29,
-                    end: 32,
-                },
-                span: Span {
-                    str: "Red",
-                    start: 29,
-                    end: 32,
-                },
-            },
-        ],
-        span: Span {
-            str: "enum Light\n\tGreen,\n\tYellow,\n\tRed\nend",
-            start: 0,
-            end: 36,
-        },
-    },
-    EnumDefinition {
-        modifiers: GeneralModifiers {
-            modifiers: [
-                Public(
-                    Span {
-                        str: "pub",
-                        start: 38,
-                        end: 41,
+            variants: [
+                EnumVariant {
+                    name: Span {
+                        str: "Green",
+                        start: 12,
+                        end: 17,
                     },
-                ),
+                    span: Span {
+                        str: "Green",
+                        start: 12,
+                        end: 17,
+                    },
+                },
+                EnumVariant {
+                    name: Span {
+                        str: "Yellow",
+                        start: 20,
+                        end: 26,
+                    },
+                    span: Span {
+                        str: "Yellow",
+                        start: 20,
+                        end: 26,
+                    },
+                },
+                EnumVariant {
+                    name: Span {
+                        str: "Red",
+                        start: 29,
+                        end: 32,
+                    },
+                    span: Span {
+                        str: "Red",
+                        start: 29,
+                        end: 32,
+                    },
+                },
             ],
             span: Span {
-                str: "pub ",
-                start: 38,
-                end: 42,
+                str: "enum Light\n\tGreen,\n\tYellow,\n\tRed\nend",
+                start: 0,
+                end: 36,
             },
         },
-        name: Span {
-            str: "Light",
-            start: 47,
-            end: 52,
-        },
-        variants: [
-            EnumVariant {
-                name: Span {
-                    str: "Green",
-                    start: 54,
-                    end: 59,
-                },
+        EnumDefinition {
+            modifiers: GeneralModifiers {
+                modifiers: [
+                    Public(
+                        Span {
+                            str: "pub",
+                            start: 38,
+                            end: 41,
+                        },
+                    ),
+                ],
                 span: Span {
-                    str: "Green",
-                    start: 54,
-                    end: 59,
+                    str: "pub ",
+                    start: 38,
+                    end: 42,
                 },
             },
-            EnumVariant {
-                name: Span {
-                    str: "Yellow",
-                    start: 62,
-                    end: 68,
-                },
-                span: Span {
-                    str: "Yellow",
-                    start: 62,
-                    end: 68,
-                },
+            name: Span {
+                str: "Light",
+                start: 47,
+                end: 52,
             },
-            EnumVariant {
-                name: Span {
-                    str: "Red",
-                    start: 71,
-                    end: 74,
+            variants: [
+                EnumVariant {
+                    name: Span {
+                        str: "Green",
+                        start: 54,
+                        end: 59,
+                    },
+                    span: Span {
+                        str: "Green",
+                        start: 54,
+                        end: 59,
+                    },
                 },
-                span: Span {
-                    str: "Red",
-                    start: 71,
-                    end: 74,
+                EnumVariant {
+                    name: Span {
+                        str: "Yellow",
+                        start: 62,
+                        end: 68,
+                    },
+                    span: Span {
+                        str: "Yellow",
+                        start: 62,
+                        end: 68,
+                    },
                 },
-            },
-        ],
-        span: Span {
-            str: "pub enum Light\n\tGreen,\n\tYellow,\n\tRed\nend",
-            start: 38,
-            end: 78,
-        },
-    },
-    VariableDefinition {
-        modifiers: GeneralModifiers {
-            modifiers: [],
+                EnumVariant {
+                    name: Span {
+                        str: "Red",
+                        start: 71,
+                        end: 74,
+                    },
+                    span: Span {
+                        str: "Red",
+                        start: 71,
+                        end: 74,
+                    },
+                },
+            ],
             span: Span {
-                str: "",
-                start: 80,
-                end: 80,
+                str: "pub enum Light\n\tGreen,\n\tYellow,\n\tRed\nend",
+                start: 38,
+                end: 78,
             },
         },
-        name: Span {
-            str: "current_light",
-            start: 84,
-            end: 97,
-        },
-        kind: Some(
-            Regular {
-                base: Identifier(
+        VariableDefinition {
+            modifiers: GeneralModifiers {
+                modifiers: [],
+                span: Span {
+                    str: "",
+                    start: 80,
+                    end: 80,
+                },
+            },
+            name: Span {
+                str: "current_light",
+                start: 84,
+                end: 97,
+            },
+            kind: Some(
+                Regular {
+                    base: Identifier(
+                        Span {
+                            str: "Light",
+                            start: 99,
+                            end: 104,
+                        },
+                    ),
+                    generics: [],
+                    raw: false,
+                    array: false,
+                    span: Span {
+                        str: "Light ",
+                        start: 99,
+                        end: 105,
+                    },
+                },
+            ),
+            value: DotAccess {
+                expression: Identifier(
                     Span {
                         str: "Light",
-                        start: 99,
-                        end: 104,
+                        start: 107,
+                        end: 112,
                     },
                 ),
-                generics: [],
-                raw: false,
-                array: false,
+                accessor: Identifier(
+                    Span {
+                        str: "Green",
+                        start: 113,
+                        end: 118,
+                    },
+                ),
                 span: Span {
-                    str: "Light ",
-                    start: 99,
-                    end: 105,
-                },
-            },
-        ),
-        value: DotAccess {
-            expression: Identifier(
-                Span {
-                    str: "Light",
-                    start: 107,
-                    end: 112,
-                },
-            ),
-            accessor: Identifier(
-                Span {
-                    str: "Green",
-                    start: 113,
+                    str: ".Green",
+                    start: 112,
                     end: 118,
                 },
-            ),
+            },
             span: Span {
-                str: ".Green",
-                start: 112,
-                end: 118,
+                str: "var current_light: Light = Light.Green;",
+                start: 80,
+                end: 119,
             },
         },
-        span: Span {
-            str: "var current_light: Light = Light.Green;",
-            start: 80,
-            end: 119,
-        },
-    },
-    VariableAssign {
-        name: Identifier(
-            Span {
-                str: "current_light",
-                start: 120,
-                end: 133,
-            },
-        ),
-        value: DotAccess {
-            expression: Identifier(
+        VariableAssign {
+            name: Identifier(
                 Span {
-                    str: "Light",
-                    start: 136,
-                    end: 141,
+                    str: "current_light",
+                    start: 120,
+                    end: 133,
                 },
             ),
-            accessor: Identifier(
-                Span {
-                    str: "Yellow",
-                    start: 142,
+            value: DotAccess {
+                expression: Identifier(
+                    Span {
+                        str: "Light",
+                        start: 136,
+                        end: 141,
+                    },
+                ),
+                accessor: Identifier(
+                    Span {
+                        str: "Yellow",
+                        start: 142,
+                        end: 148,
+                    },
+                ),
+                span: Span {
+                    str: ".Yellow",
+                    start: 141,
                     end: 148,
                 },
-            ),
+            },
             span: Span {
-                str: ".Yellow",
-                start: 141,
-                end: 148,
+                str: "current_light = Light.Yellow;",
+                start: 120,
+                end: 149,
             },
         },
-        span: Span {
-            str: "current_light = Light.Yellow;",
-            start: 120,
-            end: 149,
-        },
-    },
-    VariableAssign {
-        name: Identifier(
-            Span {
-                str: "current_light",
-                start: 150,
-                end: 163,
-            },
-        ),
-        value: DotAccess {
-            expression: Identifier(
+        VariableAssign {
+            name: Identifier(
                 Span {
-                    str: "Light",
-                    start: 166,
-                    end: 171,
+                    str: "current_light",
+                    start: 150,
+                    end: 163,
                 },
             ),
-            accessor: Identifier(
-                Span {
-                    str: "Red",
-                    start: 172,
+            value: DotAccess {
+                expression: Identifier(
+                    Span {
+                        str: "Light",
+                        start: 166,
+                        end: 171,
+                    },
+                ),
+                accessor: Identifier(
+                    Span {
+                        str: "Red",
+                        start: 172,
+                        end: 175,
+                    },
+                ),
+                span: Span {
+                    str: ".Red",
+                    start: 171,
                     end: 175,
                 },
-            ),
+            },
             span: Span {
-                str: ".Red",
-                start: 171,
-                end: 175,
+                str: "current_light = Light.Red;",
+                start: 150,
+                end: 176,
             },
         },
-        span: Span {
-            str: "current_light = Light.Red;",
-            start: 150,
-            end: 176,
-        },
-    },
-]
+    ],
+    module_info: None,
+}

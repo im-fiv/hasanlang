@@ -1,97 +1,112 @@
-[
-    VariableDefinition {
-        modifiers: GeneralModifiers {
-            modifiers: [],
-            span: Span {
-                str: "",
-                start: 0,
-                end: 0,
-            },
-        },
-        name: Span {
-            str: "hello",
-            start: 4,
-            end: 9,
-        },
-        kind: None,
-        value: String(
-            "hello",
-            Span {
-                str: "\"hello\"",
-                start: 12,
-                end: 19,
-            },
-        ),
-        span: Span {
-            str: "var hello = \"hello\";",
-            start: 0,
-            end: 20,
-        },
-    },
-    VariableDefinition {
-        modifiers: GeneralModifiers {
-            modifiers: [],
-            span: Span {
-                str: "",
-                start: 21,
-                end: 21,
-            },
-        },
-        name: Span {
-            str: "world",
-            start: 25,
-            end: 30,
-        },
-        kind: Some(
-            Regular {
-                base: Identifier(
-                    Span {
-                        str: "string",
-                        start: 32,
-                        end: 38,
-                    },
-                ),
-                generics: [],
-                raw: false,
-                array: false,
+Program {
+    statements: [
+        VariableDefinition {
+            modifiers: GeneralModifiers {
+                modifiers: [],
                 span: Span {
-                    str: "string ",
-                    start: 32,
-                    end: 39,
+                    str: "",
+                    start: 0,
+                    end: 0,
                 },
             },
-        ),
-        value: String(
-            "world",
-            Span {
-                str: "\"world\"",
-                start: 41,
-                end: 48,
+            name: Span {
+                str: "hello",
+                start: 4,
+                end: 9,
             },
-        ),
-        span: Span {
-            str: "var world: string = \"world\";",
-            start: 21,
-            end: 49,
+            kind: None,
+            value: String(
+                "hello",
+                Span {
+                    str: "\"hello\"",
+                    start: 12,
+                    end: 19,
+                },
+            ),
+            span: Span {
+                str: "var hello = \"hello\";",
+                start: 0,
+                end: 20,
+            },
         },
-    },
-    Return {
-        value: Binary {
-            lhs: Binary {
-                lhs: Identifier(
-                    Span {
-                        str: "hello",
-                        start: 58,
-                        end: 63,
+        VariableDefinition {
+            modifiers: GeneralModifiers {
+                modifiers: [],
+                span: Span {
+                    str: "",
+                    start: 21,
+                    end: 21,
+                },
+            },
+            name: Span {
+                str: "world",
+                start: 25,
+                end: 30,
+            },
+            kind: Some(
+                Regular {
+                    base: Identifier(
+                        Span {
+                            str: "string",
+                            start: 32,
+                            end: 38,
+                        },
+                    ),
+                    generics: [],
+                    raw: false,
+                    array: false,
+                    span: Span {
+                        str: "string ",
+                        start: 32,
+                        end: 39,
                     },
-                ),
+                },
+            ),
+            value: String(
+                "world",
+                Span {
+                    str: "\"world\"",
+                    start: 41,
+                    end: 48,
+                },
+            ),
+            span: Span {
+                str: "var world: string = \"world\";",
+                start: 21,
+                end: 49,
+            },
+        },
+        Return {
+            value: Binary {
+                lhs: Binary {
+                    lhs: Identifier(
+                        Span {
+                            str: "hello",
+                            start: 58,
+                            end: 63,
+                        },
+                    ),
+                    operator: Plus,
+                    rhs: String(
+                        " ",
+                        Span {
+                            str: "\" \"",
+                            start: 66,
+                            end: 69,
+                        },
+                    ),
+                    span: Span {
+                        str: "hello + \" \" + world",
+                        start: 58,
+                        end: 77,
+                    },
+                },
                 operator: Plus,
-                rhs: String(
-                    " ",
+                rhs: Identifier(
                     Span {
-                        str: "\" \"",
-                        start: 66,
-                        end: 69,
+                        str: "world",
+                        start: 72,
+                        end: 77,
                     },
                 ),
                 span: Span {
@@ -100,24 +115,12 @@
                     end: 77,
                 },
             },
-            operator: Plus,
-            rhs: Identifier(
-                Span {
-                    str: "world",
-                    start: 72,
-                    end: 77,
-                },
-            ),
             span: Span {
-                str: "hello + \" \" + world",
-                start: 58,
-                end: 77,
+                str: "return hello + \" \" + world;",
+                start: 51,
+                end: 78,
             },
         },
-        span: Span {
-            str: "return hello + \" \" + world;",
-            start: 51,
-            end: 78,
-        },
-    },
-]
+    ],
+    module_info: None,
+}
