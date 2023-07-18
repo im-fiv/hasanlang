@@ -6,9 +6,11 @@ use std::path::PathBuf;
 
 use pest::Parser;
 
-use hasan::{cli, pest_parser, hasan_parser};
+use hasan::{cli, pest_parser, hasan_parser, analyzer};
+
 use pest_parser::{PestParser, Rule};
 use hasan_parser::HasanParser;
+use analyzer::SemanticAnalyzer;
 
 //* Helper functions *//
 fn read_file(path: &str) -> String {
@@ -49,7 +51,7 @@ fn compile(command: cli::CompileCommand) {
 	let result = PestParser::parse(Rule::program, &contents);
 	
 	if let Err(e) = result {
-		println!("{}", e);
+		eprintln!("{}", e);
 		return;
 	}
 	
@@ -74,6 +76,17 @@ fn compile(command: cli::CompileCommand) {
 	}
 	
 	write_file("./compiled/2_hasan_ast.txt", format!("{:#?}", ast));
+
+    // Semantic analysis stage
+    println!("Analyzing...");
+    
+    let analyzer = SemanticAnalyzer::new();
+    let result = analyzer.analyze(ast);
+
+    if result.is_err() {
+        eprintln!("{}", result.err().unwrap());
+        return;
+    }
 }
 
 fn test_create(command: cli::CreateTestCommand) {
