@@ -49,6 +49,7 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 - [ ] Module system
 - [ ] Interfaces
   - [ ] Implementations
+  - [ ] Type annotations
   - [x] Definitions
 - [x] Constants
 - [x] Implement `for` statements
