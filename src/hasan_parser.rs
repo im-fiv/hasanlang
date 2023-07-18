@@ -151,6 +151,16 @@ pub enum Statement<'p> {
 
 		span: Span<'p>
 	},
+
+	InterfaceImpl {
+		generics: Vec<Expression<'p>>,
+
+		interface_name: Span<'p>,
+		class_name: Span<'p>,
+		members: Vec<ClassDefinitionMember<'p>>,
+
+		span: Span<'p>
+	},
 	
 	Break(Span<'p>),
 
@@ -538,7 +548,9 @@ impl<'p> HasanParser<'p> {
 				Rule::function_call_stmt => self.parse_function_call(pair),
 				Rule::return_stmt => self.parse_return(pair),
 				Rule::enum_definition_stmt => self.parse_enum_definition(pair),
+
 				Rule::interface_stmt => self.parse_interface(pair),
+				Rule::interface_impl_stmt => self.parse_interface_impl(pair),
 
 				Rule::if_stmt => self.parse_if(pair),
 				Rule::while_stmt => self.parse_while(pair),
@@ -937,6 +949,55 @@ impl<'p> HasanParser<'p> {
 		let members = self.parse_interface_members(next_pair);
 
 		Statement::Interface { modifiers, name, generics, members, span }
+	}
+
+	fn parse_interface_impl(&self, pair: Pair<'p, Rule>) -> Statement {
+		if pair.as_rule() != Rule::interface_impl_stmt {
+			error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::interface_impl_stmt, pair.as_rule());
+		}
+
+		let span = pair.as_span();
+		let mut pairs = pair.into_inner();
+
+		let interface_name = pairs
+			.next()
+			.expect("Failed to parse interface implementation statement: interface name pair is missing")
+			.as_span();
+
+		let mut next_pair = pairs
+			.next()
+			.expect("Failed to parse interface implementation statement: generics/class name pair is missing");
+
+		let mut generics: Vec<Expression> = Vec::new();
+
+		if next_pair.as_rule() == Rule::definition_generics {
+			generics = self.parse_generics_as_identifiers(next_pair);
+
+			next_pair = pairs
+				.next()
+				.expect("Failed to parse interface implementation statement: class name pair is missing");
+		}
+
+		let class_name = next_pair.as_span();
+		let mut members: Vec<ClassDefinitionMember> = Vec::new();
+
+		while let Some(pair) = pairs.next() {
+			if pair.as_rule() != Rule::class_definition_member {
+				error!(self, "expected '{:?}', got '{:?}'", pair.as_span(), Rule::class_definition_member, pair.as_rule());
+			}
+
+			members.push(self.parse_class_definition_member(pair));
+		}
+
+		Statement::InterfaceImpl {
+			generics,
+
+			interface_name,
+			class_name,
+			members,
+
+			span
+		}
 	}
 
 	fn parse_anonymous_function(&self, pair: Pair<'p, Rule>) -> Expression {

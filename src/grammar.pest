@@ -5,6 +5,7 @@ statements = { statement* }
 
 statement = _{
 	interface_stmt |
+	interface_impl_stmt |
 	return_stmt |
 	if_stmt |
 	while_stmt |
@@ -42,6 +43,7 @@ general_modifiers = { modifier_public? ~ modifier_constant? ~ modifier_static? }
 
 //* Statements *//
 interface_stmt = { general_modifiers ~ "interface" ~ identifier ~ definition_generics? ~ interface_members ~ "end" ~ stmt_sep? }
+interface_impl_stmt = { "impl" ~ identifier ~ definition_generics? ~ "for" ~ identifier ~ class_definition_member* ~ "end" ~ stmt_sep? } // reusing class definition member
 return_stmt = { "return" ~ expression? ~ stmt_sep }
 function_call_stmt = { term_without_recursion ~ recursive_operator+ ~ stmt_sep } // this is wrong, but it will be handled inside the parser
 function_definition_stmt = { function_header ~ do_block ~ stmt_sep? }
