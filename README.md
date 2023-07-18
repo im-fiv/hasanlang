@@ -45,7 +45,13 @@ As I said before, this is my first time making a project as complex as this, so 
 ## License
 Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 
-## My current TODO list (Corrective Parser stage)
+## My current TODO list
+
+### Semantic Analysis:
+- [ ] Figure out the structure
+
+### Corrective Parser:
+
 - [x] Module system
   - [x] Imports *(entire module, specific items, wildcard imports, renamed imports)*
   - [x] Declarations
@@ -73,4 +79,5 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 ## Side tasks
 
 ### Corrective Parser:
+- [ ] Add spans for better semantic analysis error reporting
 - [x] Rewrite `parse_type` function along with the grammar of types
