@@ -80,15 +80,20 @@ fn compile(command: cli::CompileCommand) {
     // Semantic analysis stage
     println!("Analyzing...");
     
-    let mut analyzer = SemanticAnalyzer::new(ast);
-    let result = analyzer.analyze();
+    let mut analyzer = SemanticAnalyzer::new();
+    let result = analyzer.analyze(ast);
 
     if result.is_err() {
         eprintln!("Error: {:?}", result.err().unwrap());
         return;
     }
 
-    println!("Done...");
+    if debug {
+		println!("Analysis data: {:?}", result.unwrap());
+		println!();
+	}
+
+    println!("Done!");
 }
 
 fn test_create(command: cli::CreateTestCommand) {

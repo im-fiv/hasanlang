@@ -48,7 +48,24 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 ## My current TODO list
 
 ### Semantic Analysis:
-- [ ] Figure out the structure
+- [ ] Modifiers validation
+- [ ] Type resolving
+  - [ ] Variables
+  - [ ] Expressions
+  - [ ] Function returns
+- [ ] Class function attributes validation
+- [ ] Interface collisions for types
+- [ ] Generics substitution
+- [ ] Function call arguments validation
+- [ ] Identifier resolving
+- [ ] Break statement validation
+- [ ] Return statement validation
+- [ ] Type compatibility validation
+- [ ] Scope checking
+- [ ] Variable redefinition
+- [ ] Reassignment to non-existing variable
+- [ ] Interface members redeclaration
+- [ ] Class members redefinition
 
 ### Corrective Parser:
 
@@ -65,7 +82,6 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 - [x] Implement anonymous functions
 - [x] Add more unary operators
 - [x] Implement error reporting
-- [x] Store a span in every AST node for error reporting
 - [x] Implement `if` and `while` statements
 - [x] Implement booleans
 - [x] Implement enums
