@@ -50,13 +50,13 @@ impl Scope {
 		Ok(self.variables.borrow().get(name).unwrap().to_owned())
 	}
 
-	pub fn insert_variable(&'static self, name: String, value: Expression, kind: SemanticType) {
+	pub fn insert_variable(&self, name: String, value: Expression, kind: SemanticType) {
 		let mut variables = self.variables.borrow_mut();
 
 		variables.insert(name, Variable {
 			value,
 			kind,
-			scope: self
+			scope: RefCell::new(self.to_owned())
 		});
 	}
 
@@ -73,14 +73,14 @@ impl Scope {
 		Ok(self.types.borrow().get(name).unwrap().to_owned())
 	}
 
-	pub fn insert_type(&'static self, name: String, enum_type: Type, interfaces_implemented: Vec<Interface>) {
+	pub fn insert_type(&self, name: String, enum_type: Type, interfaces_implemented: Vec<Interface>) {
 		let mut types = self.types.borrow_mut();
 
 		types.insert(name.clone(), SemanticType {
 			name,
 			enum_type,
 			interfaces_implemented,
-			scope: self
+			scope: RefCell::new(self.to_owned())
 		});
 	}
 }
@@ -91,7 +91,7 @@ pub struct SemanticType {
 	enum_type: Type,
 	interfaces_implemented: Vec<Interface>,
 
-	scope: &'static Scope
+	scope: RefCell<Scope>
 }
 
 impl PartialEq for SemanticType {
@@ -101,7 +101,7 @@ impl PartialEq for SemanticType {
 }
 
 impl SemanticType {
-	pub fn implements(&self, interface_name: &'static str) -> bool {
+	pub fn implements(&self, interface_name: &str) -> bool {
 		let found = self.get_interface(interface_name);
 
 		if found.is_ok() {
@@ -111,7 +111,7 @@ impl SemanticType {
 		false
 	}
 
-	pub fn get_interface(&self, interface_name: &'static str) -> S<Interface> {
+	pub fn get_interface(&self, interface_name: &str) -> S<Interface> {
 		let found = self.interfaces_implemented
 			.iter()
 			.find(|interface| &interface.name == interface_name);
@@ -130,7 +130,7 @@ pub struct Interface {
 	// TODO: add variables here
 	pub functions: Vec<InterfaceFunction>,
 
-	scope: &'static Scope
+	scope: RefCell<Scope>
 }
 
 impl Interface {
@@ -161,7 +161,10 @@ impl PartialEq for Interface {
 	fn eq(&self, other: &Self) -> bool {
 		use std::ptr;
 
-		(self.name == other.name) && ptr::eq(self.scope, other.scope)
+		let self_scope = self.scope.as_ptr();
+		let other_scope = other.scope.as_ptr();
+
+		(self.name == other.name) && ptr::eq(self_scope, other_scope)
 	}
 }
 
@@ -173,7 +176,7 @@ pub struct InterfaceFunction {
 	pub return_type: SemanticType
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Copy, PartialEq)]
 pub enum BuiltinOperatorInterface {
 	Add,
 	Subtract,
@@ -233,12 +236,31 @@ impl<'a> BuiltinOperatorInterface {
 	}
 }
 
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum BuiltinType {
+	Int,
+	Float,
+	String,
+	Boolean
+}
+
+impl BuiltinType {
+	pub fn as_str(&self) -> &'static str {
+		match self {
+			Self::Int => "int",
+			Self::Float => "float",
+			Self::String => "string",
+			Self::Boolean => "bool"
+		}
+	}
+}
+
 #[derive(Debug, Clone)]
 pub struct Variable {
 	value: Expression,
 	kind: SemanticType,
 
-	scope: &'static Scope
+	scope: RefCell<Scope>
 }
 
 #[derive(Debug, Clone)]
@@ -273,7 +295,7 @@ impl SemanticAnalyzer {
 		}
 	}
 
-	fn get_program(&'static self) -> S<Program> {
+	fn get_program(&self) -> S<Program> {
 		let stack = self.stack.borrow();
 		let first_node = stack.first();
 
@@ -288,7 +310,7 @@ impl SemanticAnalyzer {
 		bail!("No program node has been found on the stack");
 	}
 
-	fn stack_parent(&'static self) -> S<Node> {
+	fn stack_parent(&self) -> S<Node> {
 		let stack = self.stack.borrow();
 		let parent = stack.get(stack.len() - 1 - 1);
 
@@ -299,7 +321,7 @@ impl SemanticAnalyzer {
 		Ok(parent.unwrap().to_owned())
 	}
 
-	pub fn analyze(&'static mut self, program: Program) -> S<SemanticData> {
+	pub fn analyze(&mut self, program: Program) -> S<SemanticData> {
 		let program_scope = Scope::new();
 
 		self.stack.borrow_mut().push(Node::Program(program.clone()));
@@ -313,7 +335,7 @@ impl SemanticAnalyzer {
 		Ok(self.semantic_data.clone())
 	}
 
-	pub fn analyze_statements(&'static self, statements: Vec<Statement>) -> R {
+	pub fn analyze_statements(&self, statements: Vec<Statement>) -> R {
 		for statement in statements {
 			self.stack.borrow_mut().push(Node::Statement(statement.clone()));
 
@@ -329,23 +351,23 @@ impl SemanticAnalyzer {
 		Ok(())
 	}
 
-	fn resolve_semantic_type_from_type(&'static self, kind: Type) -> S<SemanticType> {
+	fn resolve_semantic_type_from_type(&self, kind: Type) -> S<SemanticType> {
 		println!("kind = {:?}\n", kind);
 
 		Ok(SemanticType {
 			name: "int".to_owned(),
 			enum_type: kind,
 			interfaces_implemented: Vec::new(),
-			scope: &self.scope
+			scope: RefCell::new(Scope::new())
 		})
 	}
 
-	fn resolve_type_of_expression(&'static self, node: Expression) -> S<SemanticType> {
+	fn resolve_type_of_expression(&self, node: Expression) -> S<SemanticType> {
 		match node {
-			// Expression::Int(_) => self.semantic_data.global_scope.get_type(&"int".to_owned()),
-			// Expression::Float(_) => self.semantic_data.global_scope.get_type(&"float".to_owned()),
-			// Expression::String(_) => self.semantic_data.global_scope.get_type(&"string".to_owned()),
-			// Expression::Boolean(_) => self.semantic_data.global_scope.get_type(&"bool".to_owned()),
+			Expression::Int(_) => self.semantic_data.global_scope.get_type(&BuiltinType::Int.as_str().to_owned()),
+			Expression::Float(_) => self.semantic_data.global_scope.get_type(&BuiltinType::Float.as_str().to_owned()),
+			Expression::String(_) => self.semantic_data.global_scope.get_type(&BuiltinType::String.as_str().to_owned()),
+			Expression::Boolean(_) => self.semantic_data.global_scope.get_type(&BuiltinType::Boolean.as_str().to_owned()),
 
 			Expression::Unary { operator: _, operand } => self.resolve_type_of_expression(*operand),
 
@@ -367,7 +389,7 @@ impl SemanticAnalyzer {
 		}
 	}
 
-	fn check_binary_operation(&'static self, left_type: SemanticType, operator: BinaryOperator, right_type: SemanticType) -> S<SemanticType> {
+	fn check_binary_operation(&self, left_type: SemanticType, operator: BinaryOperator, right_type: SemanticType) -> S<SemanticType> {
 		if left_type != right_type {
 			bail!("Cannot perform binary operation `{}` on `{}` and `{}`", operator.as_str(), left_type.name, right_type.name);
 		}
@@ -416,7 +438,7 @@ impl SemanticAnalyzer {
 		Ok(())
 	}
 
-	fn analyze_variable_definition(&'static self, modifiers: GeneralModifiers, name: String, kind: Option<Type>, value: Expression) -> R {
+	fn analyze_variable_definition(&self, modifiers: GeneralModifiers, name: String, kind: Option<Type>, value: Expression) -> R {
 		let program = self.get_program()?;
 
 		if modifiers.contains(&GeneralModifier::Public) {
