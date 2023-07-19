@@ -66,6 +66,7 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 - [ ] Reassignment to non-existing variable
 - [ ] Interface members redeclaration
 - [ ] Class members redefinition
+- [ ] Expressions validation
 
 ### Corrective Parser:
 

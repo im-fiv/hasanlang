@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::cell::Cell;
 use anyhow::{Error, bail};
 
 use crate::hasan_parser::*;
@@ -11,13 +12,14 @@ pub enum Node {
 }
 
 #[derive(Debug, Clone)]
-pub struct Scope {
-	parent: Option<Box<Scope>>,
-	variables: HashMap<String, Symbol>,
-	types: HashMap<String, SemanticType>
+pub struct Scope<'a> {
+	parent: Option<Box<Scope<'a>>>,
+
+	variables: HashMap<String, Variable<'a>>,
+	types: HashMap<String, SemanticType<'a>>
 }
 
-impl Scope {
+impl<'a> Scope<'a> {
 	pub fn new() -> Self {
 		Self {
 			parent: None,
@@ -34,55 +36,212 @@ impl Scope {
 		bail!("Scope has no parent scope")
 	}
 
+	//* Variables *//
 	pub fn variable_exists(&self, name: &String) -> bool {
 		self.variables.contains_key(name)
 	}
 
-	pub fn insert_variable(&mut self, name: String, value: Node, kind: Type) {
-		self.variables.insert(name, Symbol::Variable(value, kind));
+	pub fn get_variable(&self, name: &String) -> S<Variable> {
+		if !self.variable_exists(name) {
+			bail!("Scope has no variable named `{}`", name)
+		}
+
+		Ok(self.variables.get(name).unwrap().to_owned())
+	}
+
+	pub fn insert_variable(&'a mut self, name: String, value: Expression, kind: SemanticType<'a>) {
+		self.variables.insert(name, Variable {
+			value,
+			kind,
+			scope: self
+		});
+	}
+
+	//* Types *//
+	pub fn type_exists(&self, name: &String) -> bool {
+		self.types.contains_key(name)
 	}
 
 	pub fn get_type(&self, name: &String) -> S<SemanticType> {
-		let value = self.types.get(name);
-
-		if value.is_none() {
-			bail!("Type `{}` not found", name)
+		if !self.type_exists(name) {
+			bail!("Scope has no type named `{}`", name)
 		}
 
-		Ok(value.unwrap().to_owned())
+		Ok(self.types.get(name).unwrap().to_owned())
+	}
+
+	pub fn insert_type(&mut self, name: String, enum_type: Type, interfaces_implemented: Vec<Interface>) {
+		self.types.insert(name, SemanticType {
+			name,
+			enum_type,
+			interfaces_implemented,
+			scope: self
+		});
 	}
 }
 
 #[derive(Debug, Clone)]
-pub struct SemanticType {
-	pub kind: Type,
-	pub imlements: Vec<String> //* Names of interfaces
+pub struct SemanticType<'a> {
+	name: String,
+	enum_type: Type,
+	interfaces_implemented: Vec<Interface<'a>>,
+
+	scope: &'a Scope<'a>
+}
+
+impl<'a> PartialEq for SemanticType<'a> {
+	fn eq(&self, other: &Self) -> bool {
+		self.name == other.name
+	}
+}
+
+impl<'a> SemanticType<'a> {
+	pub fn implements(&self, interface_name: &String) -> bool {
+		let found = self.get_interface(interface_name);
+
+		if found.is_ok() {
+			return true;
+		}
+
+		false
+	}
+
+	pub fn get_interface(&self, interface_name: &String) -> S<Interface> {
+		let found = self.interfaces_implemented
+			.iter()
+			.find(|&&interface| &interface.name == interface_name);
+
+		if found.is_none() {
+			bail!("Type `{}` does not implement interface `{}`", self.name, interface_name);
+		}
+
+		Ok(found.unwrap().to_owned())
+	}
 }
 
 #[derive(Debug, Clone)]
-pub enum Symbol {
-	Variable(Node, Type)
+pub struct Interface<'a> {
+	pub name: String,
+
+	// TODO: add variables here
+	pub functions: Vec<InterfaceFunction<'a>>,
+
+	scope: &'a Scope<'a>
+}
+
+impl<'a> Interface<'a> {
+	pub fn contains_function(&self, function_name: &String) -> bool {
+		let found = self.get_function(function_name);
+
+		if found.is_ok() {
+			return true;
+		}
+
+		false
+	}
+
+	pub fn get_function(&self, function_name: &String) -> S<InterfaceFunction> {
+		let found = self.functions
+			.iter()
+			.find(|&&function| &function.name == function_name);
+
+		if found.is_none() {
+			bail!("Interface `{}` does not declare function `{}`", self.name, function_name);
+		}
+
+		Ok(found.unwrap().to_owned())
+	}
+}
+
+impl<'a> PartialEq for Interface<'a> {
+	fn eq(&self, other: &Self) -> bool {
+		use std::ptr;
+
+		(self.name == other.name) && ptr::eq(self.scope, other.scope)
+	}
 }
 
 #[derive(Debug, Clone)]
-pub enum BuiltinInterface {
-	Add
+pub struct InterfaceFunction<'a> {
+	// TODO: implement the rest of the fields
+
+	pub name: String,
+	pub return_type: SemanticType<'a>
 }
 
-impl BuiltinInterface {
+pub enum BuiltinOperatorInterface {
+	Add,
+	Subtract,
+	Divide,
+	Multiply,
+	Modulo,
+
+	Equal,
+
+	LogicAnd,
+	LogicOr,
+
+	Compare
+}
+
+impl BuiltinOperatorInterface {
 	pub fn as_str(&self) -> &'static str {
 		match self {
-			BuiltinInterface::Add => "Add"
+			Self::Add => "Add",
+			Self::Subtract => "Subtract",
+			Self::Divide => "Divide",
+			Self::Multiply => "Multiply",
+			Self::Modulo => "Modulo",
+
+			Self::Equal => "Equal",
+
+			Self::LogicAnd => "LogicAnd",
+			Self::LogicOr => "LogicOr",
+
+			Self::Compare => "Compare"
 		}
+	}
+
+	pub fn function_name(&self, operator: &BinaryOperator) -> S<String> {
+		use BinaryOperator::*;
+
+		Ok(match (self, operator) {
+			(Self::Add, Add) => "add",
+			(Self::Subtract, Minus) => "subtract",
+			(Self::Divide, Divide) => "divide",
+			(Self::Multiply, Times) => "multiply",
+			(Self::Modulo, Modulo) => "modulo",
+
+			(Self::Equal, Equals) => "equals",
+			(Self::Equal, NotEquals) => "not_equals",
+
+			(Self::LogicAnd, And) => "logic_and",
+			(Self::LogicOr, Or) => "logic_or",
+
+			(Self::Compare, GreaterThan) => "gt",
+			(Self::Compare, LessThan) => "lt",
+			(Self::Compare, GreaterThanEqual) => "gte",
+			(Self::Compare, LessThanEqual) => "lte",
+
+			(interface, operator) => bail!("Interface `{}` does not support binary operator `{}`", interface.as_str(), operator.as_str())
+		}.to_owned())
 	}
 }
 
 #[derive(Debug, Clone)]
-pub struct SemanticData {
-	global_scope: Scope
+pub struct Variable<'a> {
+	value: Expression,
+	kind: SemanticType<'a>,
+
+	scope: &'a Scope<'a>
 }
 
-impl SemanticData {
+#[derive(Debug, Clone)]
+pub struct SemanticData<'a> {
+	global_scope: Scope<'a>
+}
+
+impl<'a> SemanticData<'a> {
 	pub fn new() -> Self {
 		Self {
 			global_scope: Scope::new()
@@ -91,16 +250,16 @@ impl SemanticData {
 }
 
 #[derive(Debug, Clone)]
-pub struct SemanticAnalyzer {
-	semantic_data: SemanticData,
-	scope: Scope,
+pub struct SemanticAnalyzer<'a> {
+	semantic_data: SemanticData<'a>,
+	scope: Scope<'a>,
 	stack: Vec<Node>
 }
 
 type R = Result<(), Error>;
 type S<T> = Result<T, Error>;
 
-impl SemanticAnalyzer {
+impl<'a> SemanticAnalyzer<'a> {
 	pub fn new() -> Self {
 		Self {
 			semantic_data: SemanticData::new(),
@@ -163,33 +322,81 @@ impl SemanticAnalyzer {
 		Ok(())
 	}
 
-	fn resolve_type(&mut self, node: Expression) -> S<Type> {
-		let result = match node {
-			Expression::Int(_) => self.semantic_data.global_scope.get_type(&"int".to_owned())?.kind,
-			Expression::Float(_) => self.semantic_data.global_scope.get_type(&"float".to_owned())?.kind,
-			Expression::String(_) => self.semantic_data.global_scope.get_type(&"string".to_owned())?.kind,
-			Expression::Boolean(_) => self.semantic_data.global_scope.get_type(&"bool".to_owned())?.kind,
+	fn resolve_semantic_type_from_type(&mut self, kind: Type) -> S<SemanticType> {
+		println!("kind = {:?}\n", kind);
 
-			Expression::Unary { operator: _, operand } => self.resolve_type(*operand)?,
+		Ok(SemanticType {
+			name: "int".to_owned(),
+			enum_type: kind,
+			interfaces_implemented: Vec::new(),
+			scope: &self.scope
+		})
+	}
+
+	fn resolve_type_of_expression(&mut self, node: Expression) -> S<SemanticType> {
+		match node {
+			// Expression::Int(_) => self.semantic_data.global_scope.get_type(&"int".to_owned()),
+			// Expression::Float(_) => self.semantic_data.global_scope.get_type(&"float".to_owned()),
+			// Expression::String(_) => self.semantic_data.global_scope.get_type(&"string".to_owned()),
+			// Expression::Boolean(_) => self.semantic_data.global_scope.get_type(&"bool".to_owned()),
+
+			Expression::Unary { operator: _, operand } => self.resolve_type_of_expression(*operand),
 
 			Expression::Binary { lhs, operator, rhs } => {
-				let left_type = self.resolve_type(*lhs)?;
-				let right_type = self.resolve_type(*rhs)?;
+				let left_type = self.resolve_type_of_expression(*lhs)?;
+				let right_type = self.resolve_type_of_expression(*rhs)?;
 
-				self.check_binary_operation(left_type, operator, right_type)?
+				self.check_binary_operation(left_type, operator, right_type)
 			},
 
 			_ => bail!("Encountered unsupported expression")
+		}
+	}
+
+	fn check_binary_operation(&'a mut self, left_type: SemanticType<'a>, operator: BinaryOperator, right_type: SemanticType<'a>) -> S<SemanticType> {
+		if left_type != right_type {
+			bail!("Cannot perform binary operation `{}` on `{}` and `{}`", operator.as_str(), left_type.name, right_type.name);
+		}
+
+		use BinaryOperator::*;
+
+		let interface = match operator {
+			Plus => BuiltinOperatorInterface::Add,
+			Minus => BuiltinOperatorInterface::Subtract,
+			Divide => BuiltinOperatorInterface::Divide,
+			Times => BuiltinOperatorInterface::Multiply,
+			Modulo => BuiltinOperatorInterface::Modulo,
+
+			Equals | NotEquals => BuiltinOperatorInterface::Equal,
+
+			And => BuiltinOperatorInterface::LogicAnd,
+			Or => BuiltinOperatorInterface::LogicOr,
+
+			GreaterThan |
+			LessThan |
+			GreaterThanEqual |
+			LessThanEqual => BuiltinOperatorInterface::Compare
 		};
 
-		Ok(result)
+		let interface_name = interface.as_str().to_owned();
+
+		if !left_type.implements(&interface_name) {
+			bail!("Type `{}` does not implement the `{}` interface which is used by operator `{}`", left_type.name, interface_name, operator.as_str());
+		}
+
+		if !right_type.implements(&interface_name) {
+			bail!("Type `{}` does not implement the `{}` interface which is used by operator `{}`", right_type.name, interface_name, operator.as_str());
+		}
+
+		let return_type = left_type
+			.get_interface(&interface_name)?
+			.get_function(&interface.function_name(&operator)?)?
+			.return_type;
+
+		Ok(return_type.clone())
 	}
 
-	fn check_binary_operation(&self, left_type: Type, operator: BinaryOperator, right_type: Type) -> S<Type> {
-		
-	}
-
-	fn check_type(&mut self, kind: &Type, value: &Expression) -> R {
+	fn check_type(&self, kind: &SemanticType, value: &Expression) -> R {
 		Ok(())
 	}
 
@@ -213,21 +420,15 @@ impl SemanticAnalyzer {
 		}
 
 		let kind_resolved;
-		let mut needs_checking = true;
 
 		if kind.is_none() {
-			// Variable type should be correctly verified here, so there's no need to check it twice
-			kind_resolved = self.resolve_type(value.clone())?;
-			needs_checking = false;
+			kind_resolved = self.resolve_type_of_expression(value.clone())?;
 		} else {
-			kind_resolved = kind.unwrap();
+			kind_resolved = self.resolve_semantic_type_from_type(kind.unwrap())?;
 		}
 
-		if needs_checking {
-			self.check_type(&kind_resolved, &value)?;
-		}
-
-		self.scope.insert_variable(name, Node::Expression(value), kind_resolved);
+		self.check_type(&kind_resolved, &value)?;
+		self.scope.insert_variable(name, value, kind_resolved);
 		
 		Ok(())
 	}
