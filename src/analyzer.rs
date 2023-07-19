@@ -1,5 +1,5 @@
 use std::collections::HashMap;
-use std::cell::Cell;
+use std::cell::RefCell;
 use anyhow::{Error, bail};
 
 use crate::hasan_parser::*;
@@ -15,20 +15,20 @@ pub enum Node {
 pub struct Scope<'a> {
 	parent: Option<Box<Scope<'a>>>,
 
-	variables: HashMap<String, Variable<'a>>,
-	types: HashMap<String, SemanticType<'a>>
+	variables: RefCell<HashMap<String, Variable<'a>>>,
+	types: RefCell<HashMap<String, SemanticType<'a>>>
 }
 
 impl<'a> Scope<'a> {
 	pub fn new() -> Self {
 		Self {
 			parent: None,
-			variables: HashMap::new(),
-			types: HashMap::new()
+			variables: RefCell::new(HashMap::new()),
+			types: RefCell::new(HashMap::new())
 		}
 	}
 
-	pub fn parent(&self) -> S<Scope> {
+	pub fn parent(&'a self) -> S<Scope> {
 		if self.parent.is_some() {
 			return Ok(*self.parent.clone().unwrap());
 		}
@@ -38,19 +38,21 @@ impl<'a> Scope<'a> {
 
 	//* Variables *//
 	pub fn variable_exists(&self, name: &String) -> bool {
-		self.variables.contains_key(name)
+		self.variables.borrow().contains_key(name)
 	}
 
-	pub fn get_variable(&self, name: &String) -> S<Variable> {
+	pub fn get_variable(&'a self, name: &String) -> S<Variable> {
 		if !self.variable_exists(name) {
 			bail!("Scope has no variable named `{}`", name)
 		}
 
-		Ok(self.variables.get(name).unwrap().to_owned())
+		Ok(self.variables.borrow().get(name).unwrap().to_owned())
 	}
 
-	pub fn insert_variable(&'a mut self, name: String, value: Expression, kind: SemanticType<'a>) {
-		self.variables.insert(name, Variable {
+	pub fn insert_variable(&'a self, name: String, value: Expression, kind: SemanticType<'a>) {
+		let mut variables = self.variables.borrow_mut();
+
+		variables.insert(name, Variable {
 			value,
 			kind,
 			scope: self
@@ -59,19 +61,21 @@ impl<'a> Scope<'a> {
 
 	//* Types *//
 	pub fn type_exists(&self, name: &String) -> bool {
-		self.types.contains_key(name)
+		self.types.borrow().contains_key(name)
 	}
 
-	pub fn get_type(&self, name: &String) -> S<SemanticType> {
+	pub fn get_type(&'a self, name: &String) -> S<SemanticType> {
 		if !self.type_exists(name) {
 			bail!("Scope has no type named `{}`", name)
 		}
 
-		Ok(self.types.get(name).unwrap().to_owned())
+		Ok(self.types.borrow().get(name).unwrap().to_owned())
 	}
 
-	pub fn insert_type(&mut self, name: String, enum_type: Type, interfaces_implemented: Vec<Interface>) {
-		self.types.insert(name, SemanticType {
+	pub fn insert_type(&'a self, name: String, enum_type: Type, interfaces_implemented: Vec<Interface<'a>>) {
+		let mut types = self.types.borrow_mut();
+
+		types.insert(name.clone(), SemanticType {
 			name,
 			enum_type,
 			interfaces_implemented,
@@ -96,7 +100,7 @@ impl<'a> PartialEq for SemanticType<'a> {
 }
 
 impl<'a> SemanticType<'a> {
-	pub fn implements(&self, interface_name: &String) -> bool {
+	pub fn implements(&'a self, interface_name: &String) -> bool {
 		let found = self.get_interface(interface_name);
 
 		if found.is_ok() {
@@ -106,10 +110,10 @@ impl<'a> SemanticType<'a> {
 		false
 	}
 
-	pub fn get_interface(&self, interface_name: &String) -> S<Interface> {
+	pub fn get_interface(&'a self, interface_name: &String) -> S<Interface> {
 		let found = self.interfaces_implemented
 			.iter()
-			.find(|&&interface| &interface.name == interface_name);
+			.find(|interface| &interface.name == interface_name);
 
 		if found.is_none() {
 			bail!("Type `{}` does not implement interface `{}`", self.name, interface_name);
@@ -130,7 +134,7 @@ pub struct Interface<'a> {
 }
 
 impl<'a> Interface<'a> {
-	pub fn contains_function(&self, function_name: &String) -> bool {
+	pub fn contains_function(&'a self, function_name: &String) -> bool {
 		let found = self.get_function(function_name);
 
 		if found.is_ok() {
@@ -140,10 +144,10 @@ impl<'a> Interface<'a> {
 		false
 	}
 
-	pub fn get_function(&self, function_name: &String) -> S<InterfaceFunction> {
+	pub fn get_function(&'a self, function_name: &String) -> S<InterfaceFunction> {
 		let found = self.functions
 			.iter()
-			.find(|&&function| &function.name == function_name);
+			.find(|function| &function.name == function_name);
 
 		if found.is_none() {
 			bail!("Interface `{}` does not declare function `{}`", self.name, function_name);
@@ -206,7 +210,7 @@ impl BuiltinOperatorInterface {
 		use BinaryOperator::*;
 
 		Ok(match (self, operator) {
-			(Self::Add, Add) => "add",
+			(Self::Add, Plus) => "add",
 			(Self::Subtract, Minus) => "subtract",
 			(Self::Divide, Divide) => "divide",
 			(Self::Multiply, Times) => "multiply",
@@ -253,7 +257,7 @@ impl<'a> SemanticData<'a> {
 pub struct SemanticAnalyzer<'a> {
 	semantic_data: SemanticData<'a>,
 	scope: Scope<'a>,
-	stack: Vec<Node>
+	stack: RefCell<Vec<Node>>
 }
 
 type R = Result<(), Error>;
@@ -264,12 +268,13 @@ impl<'a> SemanticAnalyzer<'a> {
 		Self {
 			semantic_data: SemanticData::new(),
 			scope: Scope::new(),
-			stack: Vec::new()
+			stack: RefCell::new(Vec::new())
 		}
 	}
 
 	fn get_program(&self) -> S<Program> {
-		let first_node = self.stack.first();
+		let stack = self.stack.borrow();
+		let first_node = stack.first();
 
 		if first_node.is_none() {
 			bail!("No program node has been found on the stack");
@@ -283,7 +288,8 @@ impl<'a> SemanticAnalyzer<'a> {
 	}
 
 	fn stack_parent(&self) -> S<Node> {
-		let parent = self.stack.get(self.stack.len() - 1 - 1);
+		let stack = self.stack.borrow();
+		let parent = stack.get(stack.len() - 1 - 1);
 
 		if parent.is_none() {
 			bail!("No parent found on the stack");
@@ -292,23 +298,23 @@ impl<'a> SemanticAnalyzer<'a> {
 		Ok(parent.unwrap().to_owned())
 	}
 
-	pub fn analyze(&mut self, program: Program) -> S<SemanticData> {
+	pub fn analyze(&'a mut self, program: Program) -> S<SemanticData> {
 		let program_scope = Scope::new();
 
-		self.stack.push(Node::Program(program.clone()));
-		self.scope = program_scope;
+		self.stack.borrow_mut().push(Node::Program(program.clone()));
+		self.scope = program_scope.clone();
 
 		self.analyze_statements(program.statements)?;
 
-		self.stack.pop();
-		self.semantic_data.global_scope = self.scope.clone();
+		self.stack.borrow_mut().pop();
+		// self.semantic_data.global_scope = self.scope.clone();
 
 		Ok(self.semantic_data.clone())
 	}
 
-	pub fn analyze_statements(&mut self, statements: Vec<Statement>) -> R {
+	pub fn analyze_statements(&'a self, statements: Vec<Statement>) -> R {
 		for statement in statements {
-			self.stack.push(Node::Statement(statement.clone()));
+			self.stack.borrow_mut().push(Node::Statement(statement.clone()));
 
 			match statement {
 				Statement::VariableDefinition { modifiers, name, kind, value } => self.analyze_variable_definition(modifiers, name, kind, value),
@@ -316,13 +322,13 @@ impl<'a> SemanticAnalyzer<'a> {
 				_ => Ok(())
 			}?;
 
-			self.stack.pop();
+			self.stack.borrow_mut().pop();
 		}
 
 		Ok(())
 	}
 
-	fn resolve_semantic_type_from_type(&mut self, kind: Type) -> S<SemanticType> {
+	fn resolve_semantic_type_from_type(&'a self, kind: Type) -> S<SemanticType> {
 		println!("kind = {:?}\n", kind);
 
 		Ok(SemanticType {
@@ -333,7 +339,7 @@ impl<'a> SemanticAnalyzer<'a> {
 		})
 	}
 
-	fn resolve_type_of_expression(&mut self, node: Expression) -> S<SemanticType> {
+	fn resolve_type_of_expression(&self, node: Expression) -> S<SemanticType<'a>> {
 		match node {
 			// Expression::Int(_) => self.semantic_data.global_scope.get_type(&"int".to_owned()),
 			// Expression::Float(_) => self.semantic_data.global_scope.get_type(&"float".to_owned()),
@@ -346,39 +352,39 @@ impl<'a> SemanticAnalyzer<'a> {
 				let left_type = self.resolve_type_of_expression(*lhs)?;
 				let right_type = self.resolve_type_of_expression(*rhs)?;
 
-				self.check_binary_operation(left_type, operator, right_type)
+				Ok(self.check_binary_operation(&left_type, operator, &right_type)?)
 			},
 
 			_ => bail!("Encountered unsupported expression")
 		}
 	}
 
-	fn check_binary_operation(&'a mut self, left_type: SemanticType<'a>, operator: BinaryOperator, right_type: SemanticType<'a>) -> S<SemanticType> {
+	fn check_binary_operation(&self, left_type: &'a SemanticType<'a>, operator: BinaryOperator, right_type: &'a SemanticType<'a>) -> S<SemanticType> {
 		if left_type != right_type {
 			bail!("Cannot perform binary operation `{}` on `{}` and `{}`", operator.as_str(), left_type.name, right_type.name);
 		}
 
-		use BinaryOperator::*;
+		use BuiltinOperatorInterface::*;
 
-		let interface = match operator {
-			Plus => BuiltinOperatorInterface::Add,
-			Minus => BuiltinOperatorInterface::Subtract,
-			Divide => BuiltinOperatorInterface::Divide,
-			Times => BuiltinOperatorInterface::Multiply,
-			Modulo => BuiltinOperatorInterface::Modulo,
+		let builtin_interface = match operator {
+			BinaryOperator::Plus => Add,
+			BinaryOperator::Minus => Subtract,
+			BinaryOperator::Divide => Divide,
+			BinaryOperator::Times => Multiply,
+			BinaryOperator::Modulo => Modulo,
 
-			Equals | NotEquals => BuiltinOperatorInterface::Equal,
+			BinaryOperator::Equals | BinaryOperator::NotEquals => Equal,
 
-			And => BuiltinOperatorInterface::LogicAnd,
-			Or => BuiltinOperatorInterface::LogicOr,
+			BinaryOperator::And => LogicAnd,
+			BinaryOperator::Or => LogicOr,
 
-			GreaterThan |
-			LessThan |
-			GreaterThanEqual |
-			LessThanEqual => BuiltinOperatorInterface::Compare
+			BinaryOperator::GreaterThan |
+			BinaryOperator::LessThan |
+			BinaryOperator::GreaterThanEqual |
+			BinaryOperator::LessThanEqual => Compare
 		};
 
-		let interface_name = interface.as_str().to_owned();
+		let interface_name = builtin_interface.as_str().to_owned();
 
 		if !left_type.implements(&interface_name) {
 			bail!("Type `{}` does not implement the `{}` interface which is used by operator `{}`", left_type.name, interface_name, operator.as_str());
@@ -388,19 +394,19 @@ impl<'a> SemanticAnalyzer<'a> {
 			bail!("Type `{}` does not implement the `{}` interface which is used by operator `{}`", right_type.name, interface_name, operator.as_str());
 		}
 
-		let return_type = left_type
-			.get_interface(&interface_name)?
-			.get_function(&interface.function_name(&operator)?)?
-			.return_type;
+		let interface = left_type.get_interface(&interface_name)?;
+		let function_name = &builtin_interface.function_name(&operator)?;
+		let function = interface.get_function(function_name)?;
+		let return_type = function.return_type.clone();
 
-		Ok(return_type.clone())
+		Ok(return_type)
 	}
 
-	fn check_type(&self, kind: &SemanticType, value: &Expression) -> R {
+	fn check_type(&self, _kind: &SemanticType, _value: &Expression) -> R {
 		Ok(())
 	}
 
-	fn analyze_variable_definition(&mut self, modifiers: GeneralModifiers, name: String, kind: Option<Type>, value: Expression) -> R {
+	fn analyze_variable_definition(&'a self, modifiers: GeneralModifiers, name: String, kind: Option<Type>, value: Expression) -> R {
 		let program = self.get_program()?;
 
 		if modifiers.contains(&GeneralModifier::Public) {
