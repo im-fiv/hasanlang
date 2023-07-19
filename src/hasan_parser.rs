@@ -464,10 +464,39 @@ pub enum BinaryOperator {
 	LessThanEqual
 }
 
+impl BinaryOperator {
+	pub fn as_str(&self) -> &'static str {
+		match self {
+			Self::Plus => "+",
+			Self::Minus => "-",
+			Self::Divide => "/",
+			Self::Times => "*",
+			Self::Modulo => "%",
+			Self::Equals => "==",
+			Self::NotEquals => "!=",
+			Self::And => "and",
+			Self::Or => "or",
+			Self::GreaterThan => ">",
+			Self::LessThan => "<",
+			Self::GreaterThanEqual => ">=",
+			Self::LessThanEqual => "<="
+		}
+	}
+}
+
 #[derive(Debug, Clone, PartialEq)]
 pub enum UnaryOperator {
 	Minus,
 	Not
+}
+
+impl UnaryOperator {
+	pub fn as_str(&self) -> &'static str {
+		match self {
+			Self::Minus => "-",
+			Self::Not => "not"
+		}
+	}
 }
 
 impl<'p> HasanParser<'p> {
