@@ -71,7 +71,7 @@ function_call_stmt = { term_without_recursion ~ recursive_operator+ ~ stmt_sep }
 function_definition_stmt = { function_header ~ do_block ~ stmt_sep? }
 function_declaration_stmt = { function_header ~ stmt_sep }
 
-type_alias_stmt = { "type" ~ identifier ~ definition_generics? ~ "=" ~ type ~ stmt_sep }
+type_alias_stmt = { general_modifiers ~ "type" ~ identifier ~ definition_generics? ~ "=" ~ type ~ stmt_sep }
 
 // Class definition is defined later //
 // Class declaration is defined later //
