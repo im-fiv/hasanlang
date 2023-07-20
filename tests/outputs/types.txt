@@ -1,6 +1,7 @@
 Program {
     statements: [
         TypeAlias {
+            modifiers: [],
             name: "AType",
             generics: [
                 Identifier(
@@ -24,6 +25,7 @@ Program {
             },
         },
         TypeAlias {
+            modifiers: [],
             name: "Reg_T",
             generics: [],
             definition: Regular {
@@ -36,6 +38,7 @@ Program {
             },
         },
         TypeAlias {
+            modifiers: [],
             name: "Reg_ArrayT",
             generics: [],
             definition: Regular {
@@ -48,6 +51,7 @@ Program {
             },
         },
         TypeAlias {
+            modifiers: [],
             name: "Reg_GenericT",
             generics: [
                 Identifier(
@@ -68,6 +72,7 @@ Program {
             },
         },
         TypeAlias {
+            modifiers: [],
             name: "Reg_GenericArrayT",
             generics: [
                 Identifier(
@@ -88,6 +93,7 @@ Program {
             },
         },
         TypeAlias {
+            modifiers: [],
             name: "Raw_T",
             generics: [],
             definition: Regular {
@@ -100,6 +106,7 @@ Program {
             },
         },
         TypeAlias {
+            modifiers: [],
             name: "Raw_ArrayT",
             generics: [],
             definition: Regular {
@@ -112,6 +119,7 @@ Program {
             },
         },
         TypeAlias {
+            modifiers: [],
             name: "Raw_GenericT",
             generics: [
                 Identifier(
@@ -132,6 +140,7 @@ Program {
             },
         },
         TypeAlias {
+            modifiers: [],
             name: "Raw_GenericArrayT",
             generics: [
                 Identifier(

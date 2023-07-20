@@ -142,6 +142,7 @@ Program {
             ],
         },
         TypeAlias {
+            modifiers: [],
             name: "FuncType",
             generics: [],
             definition: Function {
