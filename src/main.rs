@@ -88,10 +88,14 @@ fn compile(command: cli::CompileCommand) {
         return;
     }
 
+    let data = result.unwrap();
+
     if debug {
-		println!("Analysis data: {:?}", result.unwrap());
+		println!("Analysis data: {:?}", data);
 		println!();
 	}
+
+    write_file("./compiled/3_semantic_analysis.txt", format!("{:#?}", data));
 
     println!("Done!");
 }
@@ -204,7 +208,14 @@ fn test_subcommand(subcommand: cli::TestSubcommand) {
 }
 
 fn main() {
-	let args = cli::CLI::parse_custom();
+	// let args = cli::CLI::parse_custom();
+
+    let args = cli::CLI {
+        subcommand: cli::CLISubcommand::Compile(cli::CompileCommand {
+            file_path: "./input.hsl".to_owned(),
+            debug: true
+        })
+    };
 	
 	match args.subcommand {
 		cli::CLISubcommand::Compile(command) => compile(command),

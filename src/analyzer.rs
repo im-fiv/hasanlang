@@ -55,8 +55,7 @@ impl Scope {
 
 		variables.insert(name, Variable {
 			value,
-			kind,
-			scope: RefCell::new(self.to_owned())
+			kind
 		});
 	}
 
@@ -79,8 +78,7 @@ impl Scope {
 		types.insert(name.clone(), SemanticType {
 			name,
 			enum_type,
-			interfaces_implemented,
-			scope: RefCell::new(self.to_owned())
+			interfaces_implemented
 		});
 	}
 }
@@ -89,9 +87,7 @@ impl Scope {
 pub struct SemanticType {
 	name: String,
 	enum_type: Type,
-	interfaces_implemented: Vec<Interface>,
-
-	scope: RefCell<Scope>
+	interfaces_implemented: Vec<Interface>
 }
 
 impl PartialEq for SemanticType {
@@ -128,9 +124,7 @@ pub struct Interface {
 	pub name: String,
 
 	// TODO: add variables here
-	pub functions: Vec<InterfaceFunction>,
-
-	scope: RefCell<Scope>
+	pub functions: Vec<InterfaceFunction>
 }
 
 impl Interface {
@@ -159,12 +153,7 @@ impl Interface {
 
 impl PartialEq for Interface {
 	fn eq(&self, other: &Self) -> bool {
-		use std::ptr;
-
-		let self_scope = self.scope.as_ptr();
-		let other_scope = other.scope.as_ptr();
-
-		(self.name == other.name) && ptr::eq(self_scope, other_scope)
+		self.name == other.name
 	}
 }
 
@@ -258,9 +247,7 @@ impl BuiltinType {
 #[derive(Debug, Clone)]
 pub struct Variable {
 	value: Expression,
-	kind: SemanticType,
-
-	scope: RefCell<Scope>
+	kind: SemanticType
 }
 
 #[derive(Debug, Clone)]
@@ -330,7 +317,7 @@ impl SemanticAnalyzer {
 		self.analyze_statements(program.statements)?;
 
 		self.stack.borrow_mut().pop();
-		// self.semantic_data.global_scope = self.scope.clone();
+		self.semantic_data.global_scope = self.scope.clone();
 
 		Ok(self.semantic_data.clone())
 	}
@@ -341,6 +328,7 @@ impl SemanticAnalyzer {
 
 			match statement {
 				Statement::VariableDefinition { modifiers, name, kind, value } => self.analyze_variable_definition(modifiers, name, kind, value),
+				Statement::ClassDefinition { modifiers, name, generics, members } => self.analyze_class_definition(modifiers, name, generics, members),
 
 				_ => Ok(())
 			}?;
@@ -352,13 +340,10 @@ impl SemanticAnalyzer {
 	}
 
 	fn resolve_semantic_type_from_type(&self, kind: Type) -> S<SemanticType> {
-		println!("kind = {:?}\n", kind);
-
 		Ok(SemanticType {
 			name: "int".to_owned(),
 			enum_type: kind,
-			interfaces_implemented: Vec::new(),
-			scope: RefCell::new(Scope::new())
+			interfaces_implemented: Vec::new()
 		})
 	}
 
@@ -468,6 +453,30 @@ impl SemanticAnalyzer {
 
 		self.check_type(&kind_resolved, &value)?;
 		self.scope.insert_variable(name, value, kind_resolved);
+		
+		Ok(())
+	}
+
+	fn analyze_class_definition(&self, modifiers: GeneralModifiers, name: String, generics: Vec<DefinitionType>, members: Vec<ClassDefinitionMember>) -> R {
+		let program = self.get_program()?;
+
+		if modifiers.contains(&GeneralModifier::Public) {
+			if program.module_info.is_none() {
+				bail!("Cannot use `pub` modifier outside of modules");
+			}
+		}
+
+		if modifiers.contains(&GeneralModifier::Static) {
+			bail!("Classes cannot use `static` modifiers");
+		}
+
+		if self.scope.type_exists(&name) {
+			bail!("Attempt to redefine a type `{}`", name);
+		}
+
+		// TODO: validate generics
+
+		// TODO: validate members
 		
 		Ok(())
 	}
