@@ -198,20 +198,17 @@ pub enum InterfaceMember {
 	}
 }
 
-#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct ConditionBranch {
 	pub condition: Expression,
 	pub statements: Vec<Statement>
 }
 
-#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct EnumVariant {
 	pub name: String
 }
 
-#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct FunctionArgument {
 	pub name: String,
