@@ -6,7 +6,12 @@ use std::path::PathBuf;
 
 use pest::Parser;
 
-use hasanlang::{cli, pest_parser, hasan_parser, analyzer};
+use hasanlang::{
+    cli,
+    pest_parser,
+    hasan_parser,
+    analyzer::analyzer
+};
 
 use pest_parser::{PestParser, Rule};
 use hasan_parser::HasanParser;
