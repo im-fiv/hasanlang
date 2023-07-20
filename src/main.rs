@@ -208,14 +208,7 @@ fn test_subcommand(subcommand: cli::TestSubcommand) {
 }
 
 fn main() {
-	// let args = cli::CLI::parse_custom();
-
-    let args = cli::CLI {
-        subcommand: cli::CLISubcommand::Compile(cli::CompileCommand {
-            file_path: "./input.hsl".to_owned(),
-            debug: true
-        })
-    };
+	let args = cli::CLI::parse_custom();
 	
 	match args.subcommand {
 		cli::CLISubcommand::Compile(command) => compile(command),
