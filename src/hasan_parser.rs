@@ -61,6 +61,8 @@ pub enum Statement {
 	},
 
 	TypeAlias {
+		modifiers: GeneralModifiers,
+
 		name: String,
 		generics: Vec<DefinitionType>,
 		definition: Type
@@ -1924,6 +1926,12 @@ impl<'p> HasanParser<'p> {
 	fn parse_type_alias(&self, pair: Pair<Rule>) -> Statement {
 		let mut pairs = pair.into_inner();
 
+		let modifiers_pair = pairs
+			.next()
+			.expect("Failed to parse type definition: expected modifiers, got nothing");
+
+		let modifiers = self.parse_general_modifiers(modifiers_pair);
+
 		let name_pair = pairs
 			.next()
 			.expect("Failed to parse type definition: expected an identifier as a type name, got nothing");
@@ -1945,6 +1953,7 @@ impl<'p> HasanParser<'p> {
 		let type_expression = self.parse_type(next_pair);
 
 		Statement::TypeAlias {
+			modifiers,
 			name: self.pair_str(name_pair),
 			generics,
 			definition: type_expression

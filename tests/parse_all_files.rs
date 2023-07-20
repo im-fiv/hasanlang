@@ -5,7 +5,7 @@ use std::io::prelude::*;
 
 use pest::Parser;
 
-use hasan::{
+use hasanlang::{
 	pest_parser::{PestParser, Rule},
 	hasan_parser::HasanParser
 };
