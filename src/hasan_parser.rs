@@ -1,10 +1,12 @@
 use std::iter::Peekable;
 
-use crate::pest_parser::Rule;
-
 use pest::error::{Error, ErrorVariant};
 use pest::iterators::{Pair, Pairs};
 use pest::Span;
+
+use strum_macros::Display;
+
+use crate::pest_parser::Rule;
 
 macro_rules! error {
 	($msg:expr, $span:expr) => {
@@ -39,7 +41,7 @@ pub struct ModuleInfo {
 	pub path: Vec<String>
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Display)]
 pub enum Statement {
 	FunctionDefinition {
 		modifiers: GeneralModifiers,
@@ -141,9 +143,8 @@ pub enum Statement {
 	},
 
 	InterfaceImpl {
-		generics: Vec<DefinitionType>,
-
 		interface_name: String,
+		generics: Vec<DefinitionType>,
 		class_name: String,
 		members: Vec<ClassDefinitionMember>
 	},
@@ -278,10 +279,10 @@ pub enum ClassDefinitionMember {
 	},
 
 	Function {
+		attributes: Option<ClassFunctionAttributes>,
 		modifiers: GeneralModifiers,
 
 		name: String,
-		attributes: Option<ClassFunctionAttributes>,
 		generics: Vec<DefinitionType>,
 		arguments: Vec<FunctionArgument>,
 		return_type: Option<Type>,
@@ -324,9 +325,10 @@ pub enum ClassDeclarationMember {
 	},
 
 	Function {
-		modifiers: GeneralModifiers,
-		name: String,
 		attributes: Option<ClassFunctionAttributes>,
+		modifiers: GeneralModifiers,
+
+		name: String,
 		generics: Vec<DefinitionType>,
 		arguments: Vec<FunctionArgument>,
 		return_type: Option<Type>
@@ -343,9 +345,10 @@ impl ClassDeclarationMember {
 			return_type
 		} = statement {
 			return ClassDeclarationMember::Function {
-				modifiers,
-				name,
 				attributes,
+				modifiers,
+				
+				name,
 				generics,
 				arguments,
 				return_type
@@ -376,7 +379,7 @@ pub enum Type {
 	}
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum DefinitionType {
 	Identifier(String),
 
@@ -386,7 +389,7 @@ pub enum DefinitionType {
 	}
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Display)]
 pub enum Expression {
 	Int(IntType),
 	Float(FloatType),
@@ -1158,9 +1161,8 @@ impl<'p> HasanParser<'p> {
 		}
 
 		Statement::InterfaceImpl {
-			generics,
-
 			interface_name,
+			generics,
 			class_name,
 			members
 		}

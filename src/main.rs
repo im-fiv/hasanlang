@@ -100,8 +100,8 @@ fn compile(command: cli::CompileCommand) {
         println!("Analyzing...");
     }
     
-    let mut analyzer = SemanticAnalyzer::new();
-    let result = analyzer.analyze(ast);
+    let mut analyzer = SemanticAnalyzer::new(ast);
+    let result = analyzer.analyze();
 
     if result.is_err() {
         eprintln!("Error: {:?}", result.err().unwrap());
