@@ -138,7 +138,7 @@ regular_type = { identifier ~ type_operators }
 		type_operator_generics = { definition_generics }
 		type_operator_array = { "[" ~ "]" }
 
-function_type = { "(" ~ function_type_arguments ~ ")" ~ "->" ~ type }
+function_type = { definition_generics? ~ "(" ~ function_type_arguments ~ ")" ~ "->" ~ type }
 	function_type_arguments = { (type ~ ("," ~ type)*)? }
 
 definition_generics = { "<" ~ definition_generics_type ~ ("," ~ definition_generics_type)* ~ ">" }

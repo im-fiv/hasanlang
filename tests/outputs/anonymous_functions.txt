@@ -197,12 +197,14 @@ Program {
             kind: None,
             value: AnonymousFunction {
                 generics: [
-                    Identifier(
-                        "A",
-                    ),
-                    Identifier(
-                        "B",
-                    ),
+                    DefinitionType {
+                        name: "A",
+                        requires_implementations: [],
+                    },
+                    DefinitionType {
+                        name: "B",
+                        requires_implementations: [],
+                    },
                 ],
                 arguments: [
                     FunctionArgument {

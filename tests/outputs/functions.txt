@@ -40,9 +40,10 @@ Program {
             modifiers: [],
             name: "random_number",
             generics: [
-                Identifier(
-                    "Type",
-                ),
+                DefinitionType {
+                    name: "Type",
+                    requires_implementations: [],
+                },
             ],
             arguments: [],
             return_type: Some(
@@ -203,12 +204,14 @@ Program {
             modifiers: [],
             name: "function_declaration",
             generics: [
-                Identifier(
-                    "A",
-                ),
-                Identifier(
-                    "B",
-                ),
+                DefinitionType {
+                    name: "A",
+                    requires_implementations: [],
+                },
+                DefinitionType {
+                    name: "B",
+                    requires_implementations: [],
+                },
             ],
             arguments: [
                 FunctionArgument {

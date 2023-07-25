@@ -8,15 +8,18 @@ Program {
             ],
             name: "ComplexInterface",
             generics: [
-                Identifier(
-                    "A",
-                ),
-                Identifier(
-                    "B",
-                ),
-                Identifier(
-                    "C",
-                ),
+                DefinitionType {
+                    name: "A",
+                    requires_implementations: [],
+                },
+                DefinitionType {
+                    name: "B",
+                    requires_implementations: [],
+                },
+                DefinitionType {
+                    name: "C",
+                    requires_implementations: [],
+                },
             ],
             members: [
                 Variable {
@@ -46,21 +49,22 @@ Program {
                     },
                 },
                 Function {
-                    modifiers: [
-                        Public,
-                    ],
                     attributes: Some(
                         [
                             Constructor,
                         ],
                     ),
+                    modifiers: [
+                        Public,
+                    ],
                     name: "world",
                     generics: [
-                        Identifier(
-                            "T",
-                        ),
+                        DefinitionType {
+                            name: "T",
+                            requires_implementations: [],
+                        },
                     ],
-                    arguments: [
+                    argument_types: [
                         Regular {
                             base: Identifier(
                                 "int",
@@ -88,15 +92,16 @@ Program {
                     },
                 },
                 Function {
-                    modifiers: [],
                     attributes: None,
+                    modifiers: [],
                     name: "bye",
                     generics: [
-                        Identifier(
-                            "A",
-                        ),
+                        DefinitionType {
+                            name: "A",
+                            requires_implementations: [],
+                        },
                     ],
-                    arguments: [],
+                    argument_types: [],
                     return_type: Regular {
                         base: Identifier(
                             "B",
@@ -107,12 +112,13 @@ Program {
                     },
                 },
                 Function {
-                    modifiers: [],
                     attributes: None,
+                    modifiers: [],
                     name: "test",
                     generics: [],
-                    arguments: [],
+                    argument_types: [],
                     return_type: Function {
+                        generics: [],
                         argument_types: [
                             Regular {
                                 base: Identifier(
@@ -132,6 +138,7 @@ Program {
                             },
                         ],
                         return_type: Function {
+                            generics: [],
                             argument_types: [
                                 Regular {
                                     base: Identifier(
@@ -181,11 +188,11 @@ Program {
                     },
                 },
                 Function {
-                    modifiers: [],
                     attributes: None,
+                    modifiers: [],
                     name: "some_function",
                     generics: [],
-                    arguments: [],
+                    argument_types: [],
                     return_type: Regular {
                         base: Identifier(
                             "void",
@@ -207,9 +214,10 @@ Program {
             modifiers: [],
             name: "ExampleInterface",
             generics: [
-                Identifier(
-                    "T",
-                ),
+                DefinitionType {
+                    name: "T",
+                    requires_implementations: [],
+                },
             ],
             members: [
                 Variable {
@@ -225,11 +233,11 @@ Program {
                     },
                 },
                 Function {
-                    modifiers: [],
                     attributes: None,
+                    modifiers: [],
                     name: "function",
                     generics: [],
-                    arguments: [],
+                    argument_types: [],
                     return_type: Regular {
                         base: Identifier(
                             "int",
@@ -242,12 +250,13 @@ Program {
             ],
         },
         InterfaceImpl {
-            generics: [
-                Identifier(
-                    "world",
-                ),
-            ],
             interface_name: "ExampleInterface",
+            generics: [
+                DefinitionType {
+                    name: "world",
+                    requires_implementations: [],
+                },
+            ],
             class_name: "ExampleClass",
             members: [
                 Variable {
@@ -264,9 +273,9 @@ Program {
                     default_value: Empty,
                 },
                 Function {
+                    attributes: None,
                     modifiers: [],
                     name: "function",
-                    attributes: None,
                     generics: [],
                     arguments: [],
                     return_type: Some(
@@ -295,13 +304,13 @@ Program {
             generics: [],
             members: [
                 Function {
+                    attributes: None,
                     modifiers: [
                         Public,
                     ],
-                    attributes: None,
                     name: "call",
                     generics: [],
-                    arguments: [],
+                    argument_types: [],
                     return_type: Regular {
                         base: Identifier(
                             "void",
@@ -317,9 +326,9 @@ Program {
             modifiers: [],
             name: "call_anything",
             generics: [
-                Constrained {
+                DefinitionType {
                     name: "T",
-                    implements: [
+                    requires_implementations: [
                         "Callable",
                     ],
                 },

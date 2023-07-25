@@ -32,13 +32,13 @@ Program {
                     default_value: Empty,
                 },
                 Function {
-                    modifiers: [],
-                    name: "new",
                     attributes: Some(
                         [
                             Constructor,
                         ],
                     ),
+                    modifiers: [],
+                    name: "new",
                     generics: [],
                     arguments: [
                         FunctionArgument {
@@ -104,9 +104,9 @@ Program {
                     ],
                 },
                 Function {
+                    attributes: None,
                     modifiers: [],
                     name: "disconnect",
-                    attributes: None,
                     generics: [],
                     arguments: [],
                     return_type: None,
@@ -146,6 +146,7 @@ Program {
             name: "FuncType",
             generics: [],
             definition: Function {
+                generics: [],
                 argument_types: [],
                 return_type: Regular {
                     base: Identifier(
@@ -189,13 +190,13 @@ Program {
                     default_value: Empty,
                 },
                 Function {
-                    modifiers: [],
-                    name: "new",
                     attributes: Some(
                         [
                             Constructor,
                         ],
                     ),
+                    modifiers: [],
+                    name: "new",
                     generics: [],
                     arguments: [
                         FunctionArgument {
@@ -237,9 +238,9 @@ Program {
                     ],
                 },
                 Function {
+                    attributes: None,
                     modifiers: [],
                     name: "connect",
-                    attributes: None,
                     generics: [],
                     arguments: [
                         FunctionArgument {
@@ -328,9 +329,9 @@ Program {
                     ],
                 },
                 Function {
+                    attributes: None,
                     modifiers: [],
                     name: "_disconnect",
-                    attributes: None,
                     generics: [],
                     arguments: [
                         FunctionArgument {
@@ -371,9 +372,9 @@ Program {
                     ],
                 },
                 Function {
+                    attributes: None,
                     modifiers: [],
                     name: "fire",
-                    attributes: None,
                     generics: [],
                     arguments: [],
                     return_type: None,

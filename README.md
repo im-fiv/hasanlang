@@ -48,25 +48,7 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 ## My current TODO list
 
 ### Semantic Analysis:
-- [ ] Modifiers validation
-- [ ] Type resolving
-  - [ ] Variables
-  - [ ] Expressions
-  - [ ] Function returns
-- [ ] Class function attributes validation
-- [ ] Interface collisions for types
-- [ ] Generics substitution
-- [ ] Function call arguments validation
-- [ ] Identifier resolving
-- [ ] Break statement validation
-- [ ] Return statement validation
-- [ ] Type compatibility validation
-- [ ] Scope checking
-- [ ] Variable redefinition
-- [ ] Reassignment to non-existing variable
-- [ ] Interface members redeclaration
-- [ ] Class members redefinition
-- [ ] Expressions validation
+- [ ] Get to it
 
 ### Corrective Parser:
 
@@ -96,6 +78,6 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 ## Side tasks
 
 ### Corrective Parser:
-- [ ] Allow for generics in function type annotation
 - [ ] Add spans for better semantic analysis error reporting
+- [x] Allow for generics in function type annotation
 - [x] Rewrite `parse_type` function along with the grammar of types

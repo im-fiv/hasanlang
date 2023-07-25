@@ -374,6 +374,7 @@ pub enum Type {
 	},
 
 	Function {
+		generics: Vec<DefinitionType>,
 		argument_types: Vec<Type>,
 		return_type: Box<Type>
 	}
@@ -1705,6 +1706,17 @@ impl<'p> HasanParser<'p> {
 
 		let mut pairs = pair.into_inner();
 
+		let next_pair = pairs
+			.peek()
+			.expect("Failed to parse function type: generics/arguments pair is missing");
+
+		let mut generics: Vec<DefinitionType> = Vec::new();
+
+		if next_pair.as_rule() == Rule::definition_generics {
+			generics = self.parse_generics_as_definition_types(next_pair);
+			pairs.next();
+		}
+
 		let mut arguments_pairs = pairs
 			.next()
 			.expect("Failed to parse function type: arguments pair is missing")
@@ -1727,6 +1739,7 @@ impl<'p> HasanParser<'p> {
 		let return_type = Box::new(self.parse_type(return_type_pair));
 
 		Type::Function {
+			generics,
 			argument_types,
 			return_type
 		}
