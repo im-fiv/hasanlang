@@ -4,21 +4,24 @@ Program {
             modifiers: [],
             name: "AType",
             generics: [
-                Identifier(
-                    "Generic1",
-                ),
-                Identifier(
-                    "Generic2",
-                ),
+                DefinitionType {
+                    name: "Generic1",
+                    requires_implementations: [],
+                },
+                DefinitionType {
+                    name: "Generic2",
+                    requires_implementations: [],
+                },
             ],
             definition: Regular {
                 base: Identifier(
                     "Generic1",
                 ),
                 generics: [
-                    Identifier(
-                        "Generic2",
-                    ),
+                    DefinitionType {
+                        name: "Generic2",
+                        requires_implementations: [],
+                    },
                 ],
                 raw: false,
                 array: true,
@@ -54,18 +57,20 @@ Program {
             modifiers: [],
             name: "Reg_GenericT",
             generics: [
-                Identifier(
-                    "A",
-                ),
+                DefinitionType {
+                    name: "A",
+                    requires_implementations: [],
+                },
             ],
             definition: Regular {
                 base: Identifier(
                     "A",
                 ),
                 generics: [
-                    Identifier(
-                        "A",
-                    ),
+                    DefinitionType {
+                        name: "A",
+                        requires_implementations: [],
+                    },
                 ],
                 raw: false,
                 array: true,
@@ -75,18 +80,20 @@ Program {
             modifiers: [],
             name: "Reg_GenericArrayT",
             generics: [
-                Identifier(
-                    "B",
-                ),
+                DefinitionType {
+                    name: "B",
+                    requires_implementations: [],
+                },
             ],
             definition: Regular {
                 base: Identifier(
                     "B",
                 ),
                 generics: [
-                    Identifier(
-                        "B",
-                    ),
+                    DefinitionType {
+                        name: "B",
+                        requires_implementations: [],
+                    },
                 ],
                 raw: false,
                 array: true,
@@ -122,18 +129,20 @@ Program {
             modifiers: [],
             name: "Raw_GenericT",
             generics: [
-                Identifier(
-                    "A",
-                ),
+                DefinitionType {
+                    name: "A",
+                    requires_implementations: [],
+                },
             ],
             definition: Regular {
                 base: Identifier(
                     "A",
                 ),
                 generics: [
-                    Identifier(
-                        "A",
-                    ),
+                    DefinitionType {
+                        name: "A",
+                        requires_implementations: [],
+                    },
                 ],
                 raw: true,
                 array: true,
@@ -143,18 +152,20 @@ Program {
             modifiers: [],
             name: "Raw_GenericArrayT",
             generics: [
-                Identifier(
-                    "B",
-                ),
+                DefinitionType {
+                    name: "B",
+                    requires_implementations: [],
+                },
             ],
             definition: Regular {
                 base: Identifier(
                     "B",
                 ),
                 generics: [
-                    Identifier(
-                        "B",
-                    ),
+                    DefinitionType {
+                        name: "B",
+                        requires_implementations: [],
+                    },
                 ],
                 raw: true,
                 array: true,
@@ -164,9 +175,10 @@ Program {
             modifiers: [],
             name: "_",
             generics: [
-                Identifier(
-                    "Generic2",
-                ),
+                DefinitionType {
+                    name: "Generic2",
+                    requires_implementations: [],
+                },
             ],
             arguments: [],
             return_type: Some(
@@ -175,12 +187,14 @@ Program {
                         "AType",
                     ),
                     generics: [
-                        Identifier(
-                            "int",
-                        ),
-                        Identifier(
-                            "Generic2",
-                        ),
+                        DefinitionType {
+                            name: "int",
+                            requires_implementations: [],
+                        },
+                        DefinitionType {
+                            name: "Generic2",
+                            requires_implementations: [],
+                        },
                     ],
                     raw: false,
                     array: true,
@@ -202,12 +216,14 @@ Program {
             modifiers: [],
             name: "cast",
             generics: [
-                Identifier(
-                    "From",
-                ),
-                Identifier(
-                    "To",
-                ),
+                DefinitionType {
+                    name: "From",
+                    requires_implementations: [],
+                },
+                DefinitionType {
+                    name: "To",
+                    requires_implementations: [],
+                },
             ],
             arguments: [
                 FunctionArgument {

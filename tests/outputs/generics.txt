@@ -4,9 +4,10 @@ Program {
             modifiers: [],
             name: "generic_function",
             generics: [
-                Identifier(
-                    "T",
-                ),
+                DefinitionType {
+                    name: "T",
+                    requires_implementations: [],
+                },
             ],
             arguments: [
                 FunctionArgument {
@@ -47,9 +48,10 @@ Program {
             modifiers: [],
             name: "generic_class",
             generics: [
-                Identifier(
-                    "T",
-                ),
+                DefinitionType {
+                    name: "T",
+                    requires_implementations: [],
+                },
             ],
             members: [
                 Variable {
@@ -66,13 +68,13 @@ Program {
                     default_value: Empty,
                 },
                 Function {
-                    modifiers: [],
-                    name: "value",
                     attributes: Some(
                         [
                             Get,
                         ],
                     ),
+                    modifiers: [],
+                    name: "value",
                     generics: [],
                     arguments: [],
                     return_type: Some(

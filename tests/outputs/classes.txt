@@ -32,9 +32,10 @@ Program {
                             "SomeType",
                         ),
                         generics: [
-                            Identifier(
-                                "int",
-                            ),
+                            DefinitionType {
+                                name: "int",
+                                requires_implementations: [],
+                            },
                         ],
                         raw: false,
                         array: true,
@@ -42,15 +43,15 @@ Program {
                     default_value: Empty,
                 },
                 Function {
-                    modifiers: [
-                        Static,
-                    ],
-                    name: "some_function",
                     attributes: Some(
                         [
                             Constructor,
                         ],
                     ),
+                    modifiers: [
+                        Static,
+                    ],
+                    name: "some_function",
                     generics: [],
                     arguments: [],
                     return_type: Some(
@@ -79,9 +80,9 @@ Program {
                     default_value: Empty,
                 },
                 Function {
+                    attributes: None,
                     modifiers: [],
                     name: "another_function",
-                    attributes: None,
                     generics: [],
                     arguments: [],
                     return_type: Some(
@@ -118,13 +119,13 @@ Program {
                     },
                 },
                 Function {
-                    modifiers: [],
-                    name: "some_function",
                     attributes: Some(
                         [
                             Constructor,
                         ],
                     ),
+                    modifiers: [],
+                    name: "some_function",
                     generics: [],
                     arguments: [],
                     return_type: Some(
@@ -139,11 +140,11 @@ Program {
                     ),
                 },
                 Function {
+                    attributes: None,
                     modifiers: [
                         Public,
                     ],
                     name: "other_function",
-                    attributes: None,
                     generics: [],
                     arguments: [],
                     return_type: Some(
@@ -165,19 +166,20 @@ Program {
             ],
             name: "Array",
             generics: [
-                Identifier(
-                    "T",
-                ),
+                DefinitionType {
+                    name: "T",
+                    requires_implementations: [],
+                },
             ],
             members: [
                 Function {
-                    modifiers: [],
-                    name: "length",
                     attributes: Some(
                         [
                             Get,
                         ],
                     ),
+                    modifiers: [],
+                    name: "length",
                     generics: [],
                     arguments: [],
                     return_type: Some(
@@ -192,11 +194,11 @@ Program {
                     ),
                 },
                 Function {
+                    attributes: None,
                     modifiers: [
                         Static,
                     ],
                     name: "append",
-                    attributes: None,
                     generics: [],
                     arguments: [
                         FunctionArgument {
@@ -223,9 +225,9 @@ Program {
                     ),
                 },
                 Function {
+                    attributes: None,
                     modifiers: [],
                     name: "copy",
-                    attributes: None,
                     generics: [],
                     arguments: [],
                     return_type: Some(
@@ -245,19 +247,20 @@ Program {
             modifiers: [],
             name: "Array",
             generics: [
-                Identifier(
-                    "T",
-                ),
+                DefinitionType {
+                    name: "T",
+                    requires_implementations: [],
+                },
             ],
             members: [
                 Function {
-                    modifiers: [],
-                    name: "length",
                     attributes: Some(
                         [
                             Get,
                         ],
                     ),
+                    modifiers: [],
+                    name: "length",
                     generics: [],
                     arguments: [],
                     return_type: Some(
@@ -272,11 +275,11 @@ Program {
                     ),
                 },
                 Function {
+                    attributes: None,
                     modifiers: [
                         Static,
                     ],
                     name: "append",
-                    attributes: None,
                     generics: [],
                     arguments: [
                         FunctionArgument {
@@ -303,9 +306,9 @@ Program {
                     ),
                 },
                 Function {
+                    attributes: None,
                     modifiers: [],
                     name: "copy",
-                    attributes: None,
                     generics: [],
                     arguments: [],
                     return_type: Some(
