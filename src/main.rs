@@ -10,7 +10,7 @@ use hasanlang::{
     cli,
     pest_parser,
     hasan_parser,
-    analyzer::analyzer
+    analyzer
 };
 
 use pest_parser::{PestParser, Rule};
@@ -100,7 +100,7 @@ fn compile(command: cli::CompileCommand) {
         println!("Analyzing...");
     }
     
-    let mut analyzer = SemanticAnalyzer::new(ast);
+    let analyzer = SemanticAnalyzer::new(ast);
     let result = analyzer.analyze();
 
     if result.is_err() {
