@@ -136,7 +136,7 @@ impl PartialEq for Class {
 		(self.name == other.name) &&
 		(self.generics == other.generics) &&
 		// (self.members == other.members) &&
-		(self.members.len() == other.members.len()) && // TODO: implement a working solution
+		(self.members.len() == other.members.len()) && // TODO: Implement a working solution
 		(self.implements_interfaces == other.implements_interfaces)
 	}
 }
@@ -146,32 +146,31 @@ pub struct Interface {
 	pub modifiers: P::GeneralModifiers,
 
 	pub name: String,
-	pub generics: Vec<String>,
+	pub generics: Vec<P::DefinitionType>,
 	pub members: Vec<InterfaceMember>
 }
 
 #[derive(Debug, Clone)]
 pub enum InterfaceMember {
-	Variable {
-		modifiers: P::GeneralModifiers,
-
-		name: String,
-		kind: Class
-	},
-
-	Function {
-		attributes: P::ClassFunctionAttributes,
-		modifiers: P::GeneralModifiers,
-
-		name: String,
-		generics: Vec<DefinitionGenericType>,
-		argument_types: Vec<Class>,
-		return_type: Class
-	}
+	Variable(InterfaceVariable),
+	Function(InterfaceFunction)
 }
 
 #[derive(Debug, Clone)]
-pub struct DefinitionGenericType {
+pub struct InterfaceVariable {
+	pub modifiers: P::GeneralModifiers,
+	
 	pub name: String,
-	pub requires_implementations: Vec<String>
+	pub kind: Class
+}
+
+#[derive(Debug, Clone)]
+pub struct InterfaceFunction {
+	pub attributes: P::ClassFunctionAttributes,
+	pub modifiers: P::GeneralModifiers,
+
+	pub name: String,
+	pub generics: Vec<P::DefinitionType>,
+	pub argument_types: Vec<Class>,
+	pub return_type: Class
 }

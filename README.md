@@ -96,5 +96,6 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 ## Side tasks
 
 ### Corrective Parser:
+- [ ] Allow for generics in function type annotation
 - [ ] Add spans for better semantic analysis error reporting
 - [x] Rewrite `parse_type` function along with the grammar of types

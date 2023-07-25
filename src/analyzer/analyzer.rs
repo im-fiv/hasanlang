@@ -2,7 +2,7 @@ use std::collections::HashMap;
 use strum_macros::Display;
 use anyhow::{Error, bail};
 
-use crate::hasan_parser::{Program, Statement, GeneralModifiers, GeneralModifier, Type, Expression, DefinitionType, ClassDeclarationMember, BinaryOperator, ClassDefinitionMember};
+use crate::hasan_parser::{Program, Statement, GeneralModifiers, GeneralModifier, Type, Expression, DefinitionType, ClassDeclarationMember, BinaryOperator, ClassDefinitionMember, InterfaceMember};
 use crate::analyzer::types;
 
 pub type DataResult<T> = Result<T, Error>;
@@ -38,6 +38,13 @@ impl Scope {
 		}
 
 		self.symbol_table.insert(name, value);
+		Ok(())
+	}
+
+	pub fn update_symbol(&mut self, name: String, value: Symbol) -> EmptyResult {
+		self.get_symbol(&name)?;
+		self.symbol_table.insert(name, value);
+
 		Ok(())
 	}
 }
@@ -95,6 +102,11 @@ impl BuiltinType {
 }
 
 #[derive(Debug, Clone, Display)]
+pub enum BuiltinInterface {
+	Function
+}
+
+#[derive(Debug, Clone, Display)]
 pub enum BuiltinBinaryInterface {
 	Add,
 	Subtract,
@@ -111,10 +123,6 @@ pub enum BuiltinBinaryInterface {
 }
 
 impl BuiltinBinaryInterface {
-	pub fn as_str(&self) -> String {
-		self.to_string()
-	}
-
 	pub fn from_operator(operator: &BinaryOperator) -> DataResult<Self> {
 		use BinaryOperator::*;
 
@@ -189,6 +197,7 @@ impl SemanticAnalyzer {
 				VariableDefinition { modifiers, name, kind, value } => self.analyze_variable_definition(modifiers, name, kind, value)?,
 				ClassDeclaration { modifiers, name, generics, members } => self.analyze_class_declaration(modifiers, name, generics, members)?,
 				InterfaceImpl { interface_name, generics, class_name, members } => self.analyze_interface_impl(interface_name, generics, class_name, members)?,
+				Interface { modifiers, name, generics, members } => self.analyze_interface_definition(modifiers, name, generics, members)?,
 
 				_ => bail!("Encountered unsupported statement `{}`", statement.to_string())
 			}
@@ -198,6 +207,8 @@ impl SemanticAnalyzer {
 	}
 
 	fn resolve_type_of_expression(&mut self, value: Expression) -> DataResult<types::Class> {
+		// TODO: Implement all expressions
+
 		use Expression::*;
 		
 		match value {
@@ -213,7 +224,7 @@ impl SemanticAnalyzer {
 				}
 
 				let interface = BuiltinBinaryInterface::from_operator(&operator)?;
-				let interface_name = interface.as_str();
+				let interface_name = interface.to_string();
 
 				if !lhs_type.implements(&interface_name) {
 					bail!("Type `{}` does not implement interface `{}`", lhs_type.name, interface_name);
@@ -260,26 +271,106 @@ impl SemanticAnalyzer {
 		}
 	}
 
-	fn resolve_type_from_type(&self, kind: Type) -> DataResult<types::Class> {
-		// TODO: correctly implement this function
+	fn resolve_type_from_type(&mut self, kind: Type) -> DataResult<types::Class> {
+		if let Type::Regular { base, generics, raw, array } = kind {
+			let base = *base.clone();
+			
+			let name: String;
 
-		let mut name: Option<String> = None;
-
-		if let Type::Regular { base, generics: _, raw: _, array: _ } = kind {
-			if let Expression::Identifier(identifier) = *base {
-				name = Some(identifier);
+			if let Expression::Identifier(str) = base {
+				name = str;
+			} else {
+				bail!("Failed to get type name");
 			}
+
+			// TODO: Deal with generics
+
+			// TODO: Check `raw` and `array`
+
+			let formatted_generics = generics
+				.clone()
+				.iter()
+				.map(|generic| generic.clone().name)
+				.collect::<Vec<_>>()
+				.join("_");
+
+			let mut formatted_attributes = String::new();
+
+			if raw { formatted_attributes.push('r') }
+			if array { formatted_attributes.push('a') }
+
+			let formatted_name = format!(
+				"type__{}__{}__{}",
+				name,
+				formatted_generics,
+				formatted_attributes
+			);
+
+			println!("{}", formatted_name);
+
+			// TODO: Apply `raw` and `array` modifiers
+
+			let as_class = types::Class {
+				modifiers: Vec::new(),
+
+				name: name.clone(),
+				generics,
+				members: Vec::new(),
+				implements_interfaces: Vec::new()
+			};
+
+			let as_symbol = Symbol::Class(as_class.clone());
+
+			if let Ok(as_symbol) = self.scope.get_symbol(&name) {
+				if let Ok(as_class) = as_symbol.as_class() {
+					return Ok(as_class);
+				}
+			} else {
+				self.scope.insert_symbol(name, as_symbol)?;
+			}
+
+			return Ok(as_class);
+		} else if let Type::Function { argument_types, return_type } = kind {
+			let mut converted_arguments = Vec::new();
+
+			for argument in argument_types {
+				converted_arguments.push(self.resolve_type_from_type(argument)?);
+			}
+
+			let return_type = self.resolve_type_from_type(*return_type)?;
+
+			let tostring_converted = converted_arguments
+				.clone()
+				.iter()
+				.map(|argument_type| argument_type.clone().name)
+				.collect::<Vec<_>>()
+				.join("_");
+
+			let name = format!(
+				"func_type__{}__{}",
+				tostring_converted,
+				return_type.name
+			);
+
+			let as_class = types::Class {
+				modifiers: Vec::new(),
+
+				name: name.clone(),
+				generics: Vec::new(),
+				members: Vec::new(),
+				implements_interfaces: vec![BuiltinInterface::Function.to_string()]
+			};
+
+			let as_symbol = Symbol::Class(as_class.clone());
+			let _ = self.scope.insert_symbol(name, as_symbol);
+
+			return Ok(as_class);
 		}
 
-		let name = name.expect("Failed to parse type");
-
-		let resolved = self.scope.get_symbol(&name)?;
-		let as_type = resolved.as_class()?;
-
-		Ok(as_type)
+		unreachable!();
 	}
 
-	fn convert_class_declaration_members(&self, members: Vec<ClassDeclarationMember>) -> DataResult<Vec<types::ClassMember>> {
+	fn convert_class_declaration_members(&mut self, members: Vec<ClassDeclarationMember>) -> DataResult<Vec<types::ClassMember>> {
 		let mut result = Vec::new();
 		
 		for member in members {
@@ -372,10 +463,10 @@ impl SemanticAnalyzer {
 		}
 
 		if modifiers.contains(&GeneralModifier::Static) {
-			bail!("`static` modifiers for variables are not permitted for classes");
+			bail!("`static` modifiers for variables are not permitted outside of classes");
 		}
 
-		// TODO: deal with members
+		// TODO: Deal with members
 
 		let class = types::Class {
 			modifiers,
@@ -391,8 +482,176 @@ impl SemanticAnalyzer {
 		Ok(())
 	}
 
-	fn analyze_interface_impl(&mut self, interface_name: String, generics: Vec<DefinitionType>, class_name: String, members: Vec<ClassDefinitionMember>) -> EmptyResult {
-		// TODO: implement this
+	fn convert_class_definition_members(&mut self, members: Vec<ClassDefinitionMember>) -> DataResult<Vec<types::ClassMember>> {
+		let mut converted_members: Vec<types::ClassMember> = Vec::new();
+
+		for member in members {
+			let mut converted_member: Option<types::ClassMember> = None;
+
+			if let ClassDefinitionMember::Variable {
+				modifiers: member_modifiers,
+				name: member_name,
+				kind: member_kind,
+				default_value: member_default_value
+			} = member {
+				let temp = types::ClassVariable {
+					modifiers: member_modifiers,
+
+					name: member_name,
+					kind: self.resolve_type_from_type(member_kind)?,
+					default_value: Some(member_default_value)
+				};
+
+				converted_member = Some(types::ClassMember::Variable(temp));
+			} else if let ClassDefinitionMember::Function {
+				attributes: member_attributes,
+				modifiers: member_modifiers,
+				name: member_name,
+				generics: member_generics,
+				arguments: member_arguments,
+				return_type: member_return_type,
+				statements: _
+			} = member {
+				// Arguments
+				let mut converted_arguments = Vec::new();
+
+				for argument in member_arguments {
+					converted_arguments.push(types::FunctionArgument {
+						name: argument.name,
+						kind: self.resolve_type_from_type(argument.kind)?
+					});
+				}
+
+				// Return type
+				let return_type = if member_return_type.is_some() {
+					let resolved = self.resolve_type_from_type(member_return_type.unwrap())?;
+					Some(resolved)
+				} else {
+					None
+				};
+
+				// Creating converted member
+				let temp = types::ClassFunction {
+					attributes: member_attributes,
+					modifiers: member_modifiers,
+
+					name: member_name,
+					generics: member_generics,
+					arguments: converted_arguments,
+					return_type
+				};
+
+				converted_member = Some(types::ClassMember::Function(temp));
+			}
+
+			let converted_member = converted_member.unwrap();
+			converted_members.push(converted_member);
+		}
+
+		Ok(converted_members)
+	}
+
+	fn check_interface_impl(&mut self, _interface: &types::Interface, _members: &Vec<types::ClassMember>) -> EmptyResult {
+		Ok(())
+	}
+
+	fn analyze_interface_impl(&mut self, interface_name: String, _generics: Vec<DefinitionType>, class_name: String, members: Vec<ClassDefinitionMember>) -> EmptyResult {
+		let mut class = self.scope
+			.get_symbol(&class_name)?
+			.as_class()?;
+
+		let interface = self.scope
+			.get_symbol(&interface_name)?
+			.as_interface()?;
+
+		// TODO: Deal with generics
+
+		let converted_members = self.convert_class_definition_members(members)?;
+		self.check_interface_impl(&interface, &converted_members)?;
+
+		class.implements_interfaces.push(interface_name);
+
+		self.scope.update_symbol(class_name, Symbol::Class(class))?;
+		Ok(())
+	}
+
+	pub fn verify_interface_members(&self, _members: &Vec<InterfaceMember>) -> EmptyResult {
+		// TODO: Implement this
+		// Check for duplicate functions and variables, validate generics, etc.
+
+		Ok(())
+	}
+
+	pub fn convert_interface_definition_members(&mut self, members: Vec<InterfaceMember>) -> DataResult<Vec<types::InterfaceMember>> {
+		let mut converted = Vec::new();
+
+		for member in members {
+			let mut converted_member: Option<types::InterfaceMember> = None;
+
+			if let InterfaceMember::Variable { modifiers, name, kind } = member {
+				let temp = types::InterfaceVariable {
+					modifiers,
+					name,
+					kind: self.resolve_type_from_type(kind)?
+				};
+
+				converted_member = Some(types::InterfaceMember::Variable(temp));
+			} else if let InterfaceMember::Function { attributes, modifiers, name, generics, argument_types, return_type } = member {
+				let mut converted_argument_types = Vec::new();
+
+				for argument in argument_types {
+					converted_argument_types.push(self.resolve_type_from_type(argument)?);
+				}
+				
+				let temp = types::InterfaceFunction {
+					attributes: attributes.unwrap_or(Vec::new()),
+					modifiers,
+
+					name,
+					generics,
+					argument_types: converted_argument_types,
+					return_type: self.resolve_type_from_type(return_type)?
+				};
+
+				converted_member = Some(types::InterfaceMember::Function(temp));
+			}
+
+			converted.push(converted_member.unwrap());
+		}
+
+		Ok(converted)
+	}
+
+	pub fn analyze_interface_definition(&mut self, modifiers: GeneralModifiers, name: String, generics: Vec<DefinitionType>, members: Vec<InterfaceMember>) -> EmptyResult {
+		if modifiers.contains(&GeneralModifier::Public) {
+			if self.ast.module_info.is_none() {
+				bail!("`pub` modifiers are not permitted outside of modules");
+			}
+		}
+
+		if modifiers.contains(&GeneralModifier::Static) {
+			bail!("`static` modifiers for interfaces are not permitted");
+		}
+
+		if modifiers.contains(&GeneralModifier::Constant) {
+			bail!("`const` modifiers for interfaces are not permitted");
+		}
+
+		// TODO: Deal with generics
+
+		self.verify_interface_members(&members)?;
+		let members = self.convert_interface_definition_members(members)?;
+
+		let interface = types::Interface {
+			modifiers,
+
+			name: name.clone(),
+			generics,
+			members
+		};
+
+		self.scope.insert_symbol(name, Symbol::Interface(interface))?;
+		
 		Ok(())
 	}
 }

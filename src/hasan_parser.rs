@@ -189,12 +189,12 @@ pub enum InterfaceMember {
 	},
 
 	Function {
-		modifiers: GeneralModifiers,
 		attributes: Option<ClassFunctionAttributes>,
+		modifiers: GeneralModifiers,
 
 		name: String,
 		generics: Vec<DefinitionType>,
-		arguments: Vec<Type>,
+		argument_types: Vec<Type>,
 		return_type: Type
 	}
 }
@@ -380,13 +380,9 @@ pub enum Type {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub enum DefinitionType {
-	Identifier(String),
-
-	Constrained {
-		name: String,
-		implements: Vec<String>
-	}
+pub struct DefinitionType {
+	pub name: String,
+	pub requires_implementations: Vec<String>
 }
 
 #[derive(Debug, Clone, Display)]
@@ -1046,7 +1042,7 @@ impl<'p> HasanParser<'p> {
 
 			name,
 			generics,
-			arguments,
+			argument_types: arguments,
 			return_type
 		}
 	}
@@ -1525,21 +1521,24 @@ impl<'p> HasanParser<'p> {
 
 		if interfaces_pair.is_none() {
 			// Type doesn't have to implement any interfaces. Return a regular type
-			return DefinitionType::Identifier(name);
+			return DefinitionType {
+				name,
+				requires_implementations: Vec::new()
+			};
 		}
 
 		let mut interface_pairs = interfaces_pair.unwrap().into_inner();
-		let mut implements: Vec<String> = Vec::new();
+		let mut requires_implementations: Vec<String> = Vec::new();
 
 		while let Some(pair) = interface_pairs.next() {
 			if pair.as_rule() != Rule::identifier {
 				error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::identifier, pair.as_rule());
 			}
 
-			implements.push(self.pair_str(pair));
+			requires_implementations.push(self.pair_str(pair));
 		}
 
-		DefinitionType::Constrained { name, implements }
+		DefinitionType { name, requires_implementations }
 	}
 
 	/// Used for **definition** statements. Parses generics **as definition types** to later be substituted with proper types
