@@ -18,7 +18,7 @@ macro_rules! error {
 	};
 }
 
-fn create_error<'p>(message: &str, span: Span<'p>) -> Error<Rule> {
+fn create_error(message: &str, span: Span<'_>) -> Error<Rule> {
 	Error::new_from_span(
 		ErrorVariant::CustomError { message: message.to_owned() },
 		span
@@ -53,15 +53,6 @@ pub enum Statement {
 		statements: Vec<Statement>
 	},
 
-	FunctionDeclaration {
-		modifiers: GeneralModifiers,
-
-		name: String,
-		generics: Vec<DefinitionType>,
-		arguments: Vec<FunctionArgument>,
-		return_type: Option<Type>
-	},
-
 	TypeAlias {
 		modifiers: GeneralModifiers,
 
@@ -76,14 +67,6 @@ pub enum Statement {
 		name: String,
 		generics: Vec<DefinitionType>,
 		members: Vec<ClassDefinitionMember>
-	},
-
-	ClassDeclaration {
-		modifiers: GeneralModifiers,
-
-		name: String,
-		generics: Vec<DefinitionType>,
-		members: Vec<ClassDeclarationMember>
 	},
 
 	VariableDefinition {
@@ -300,7 +283,7 @@ impl ClassDefinitionMember {
 			return_type,
 			statements
 		} = statement {
-			return ClassDefinitionMember::Function {
+			ClassDefinitionMember::Function {
 				modifiers,
 				name,
 				attributes,
@@ -308,51 +291,7 @@ impl ClassDefinitionMember {
 				arguments,
 				return_type,
 				statements
-			};
-		} else {
-			panic!("Failed to convert invalid statement into a ClassDefinitionMember::Function");
-		}
-	}
-}
-
-#[derive(Debug, Clone)]
-pub enum ClassDeclarationMember {
-	Variable {
-		modifiers: GeneralModifiers,
-
-		name: String,
-		kind: Type
-	},
-
-	Function {
-		attributes: Option<ClassFunctionAttributes>,
-		modifiers: GeneralModifiers,
-
-		name: String,
-		generics: Vec<DefinitionType>,
-		arguments: Vec<FunctionArgument>,
-		return_type: Option<Type>
-	}
-}
-
-impl ClassDeclarationMember {
-	pub fn function_from_statement(statement: Statement, attributes: Option<ClassFunctionAttributes>) -> Self {
-		if let Statement::FunctionDeclaration {
-			modifiers,
-			name,
-			generics,
-			arguments,
-			return_type
-		} = statement {
-			return ClassDeclarationMember::Function {
-				attributes,
-				modifiers,
-				
-				name,
-				generics,
-				arguments,
-				return_type
-			};
+			}
 		} else {
 			panic!("Failed to convert invalid statement into a ClassDefinitionMember::Function");
 		}
@@ -519,9 +458,7 @@ impl<'p> HasanParser<'p> {
 					let mut pairs = pair.into_inner();
 					let first_pair = pairs.peek();
 
-					if first_pair.is_some() {
-						let first_pair = first_pair.unwrap();
-
+					if let Some(first_pair) = first_pair {
 						if first_pair.as_rule() == Rule::module_declaration_marker {
 							module_info = Some(self.parse_module_marker(first_pair));
 							pairs.next();
@@ -545,10 +482,10 @@ impl<'p> HasanParser<'p> {
 			error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::module_path, pair.as_rule());
 		}
 
-		let mut pairs = pair.into_inner();
+		let pairs = pair.into_inner();
 		let mut path: Vec<String> = Vec::new();
 
-		while let Some(pair) = pairs.next() {
+		for pair in pairs {
 			path.push(self.pair_str(pair));
 		}
 
@@ -595,10 +532,8 @@ impl<'p> HasanParser<'p> {
 				Rule::module_use_items_stmt => self.parse_module_use_items(pair),
 
 				Rule::function_definition_stmt => self.parse_function_definition(pair),
-				Rule::function_declaration_stmt => self.parse_function_declaration(pair),
 				Rule::type_alias_stmt => self.parse_type_alias(pair),
 				Rule::class_definition => self.parse_class_definition(pair),
-				Rule::class_declaration => self.parse_class_declaration(pair),
 				Rule::variable_definition_stmt => self.parse_variable_definition(pair),
 				Rule::variable_assign_stmt => self.parse_variable_assign(pair),
 				Rule::function_call_stmt => self.parse_function_call(pair),
@@ -740,15 +675,13 @@ impl<'p> HasanParser<'p> {
 	fn parse_number_literal(&self, pair: Pair<Rule>) -> Expression {
 		let string = pair.as_str().to_owned();
 
-		let literal = match string.parse::<IntType>() {
+		match string.parse::<IntType>() {
 			Ok(i) => Expression::Int(i),
 			Err(_) => match string.parse::<FloatType>() {
 				Ok(f) => Expression::Float(f),
 				Err(_) => error!("failed to parse number literal '{}'", pair.as_span(), string),
 			},
-		};
-
-		literal
+		}
 	}
 
 	fn parse_string_literal(&self, pair: Pair<Rule>) -> Expression {
@@ -864,14 +797,14 @@ impl<'p> HasanParser<'p> {
 		
 		let name = self.pair_str(next_pair);
 
-		let mut items_pair = pairs
+		let items_pair = pairs
 			.next()
 			.expect("Failed to parse use module statement: items pair is missing")
 			.into_inner();
 
 		let mut items: Vec<ModuleItem> = Vec::new();
 		
-		while let Some(item_pair) = items_pair.next() {
+		for item_pair in items_pair {
 			items.push(self.parse_module_item(item_pair));
 		}
 		
@@ -955,10 +888,10 @@ impl<'p> HasanParser<'p> {
 			error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::interface_function_arguments, pair.as_rule());
 		}
 
-		let mut pairs = pair.into_inner();
+		let pairs = pair.into_inner();
 		let mut argument_types: Vec<Type> = Vec::new();
 
-		while let Some(pair) = pairs.next() {
+		for pair in pairs {
 			if pair.as_rule() != Rule::r#type {
 				error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::r#type, pair.as_rule());
 			}
@@ -1055,11 +988,11 @@ impl<'p> HasanParser<'p> {
 
 		// Not needed yet
 		// let span = pair.as_span();
-		let mut pairs = pair.into_inner();
+		let pairs = pair.into_inner();
 
 		let mut members = Vec::new();
 
-		while let Some(pair) = pairs.next() {
+		for pair in pairs {
 			let member = match pair.as_rule() {
 				Rule::interface_variable => self.parse_interface_variable(pair),
 				Rule::interface_function => self.parse_interface_function(pair),
@@ -1149,7 +1082,7 @@ impl<'p> HasanParser<'p> {
 		let class_name = self.pair_str(next_pair);
 		let mut members: Vec<ClassDefinitionMember> = Vec::new();
 
-		while let Some(pair) = pairs.next() {
+		for pair in pairs {
 			if pair.as_rule() != Rule::class_definition_member {
 				error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::class_definition_member, pair.as_rule());
 			}
@@ -1170,14 +1103,14 @@ impl<'p> HasanParser<'p> {
 			error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::anonymous_function, pair.as_rule());
 		}
 
-		let mut pairs = pair.into_inner();
+		let pairs = pair.into_inner();
 
 		let mut generics: Vec<DefinitionType> = Vec::new();
 		let mut arguments: Vec<FunctionArgument> = Vec::new();
 		let mut statements: Vec<Statement> = Vec::new();
 		let mut return_type: Option<Type> = None;
 
-		while let Some(pair) = pairs.next() {
+		for pair in pairs {
 			match pair.as_rule() {
 				Rule::do_block => statements = self.parse_statements(pair.into_inner()),
 				Rule::r#type => return_type = Some(self.parse_type(pair)),
@@ -1273,7 +1206,7 @@ impl<'p> HasanParser<'p> {
 		let mut elseif_branches: Vec<ConditionBranch> = Vec::new();
 		let mut else_branch: Option<ConditionBranch> = None;
 
-		while let Some(pair) = pairs.next() {
+		for pair in pairs {
 			if !matches!(pair.as_rule(), Rule::if_elseif | Rule::if_else) {
 				error!("expected '{:?}' or '{:?}', got '{:?}'", pair.as_span(), Rule::if_elseif, Rule::if_else, pair.as_rule());
 			}
@@ -1366,12 +1299,16 @@ impl<'p> HasanParser<'p> {
 		let mut pairs = pairs.clone();
 
 		if pairs.len() == 1 {
-			return self.parse_expression(pairs.next().unwrap_or_else(|| unreachable!("Failed to parse a recursive expression: pairs are empty")));
+			let next_pair = pairs
+				.next()
+				.unwrap_or_else(|| unreachable!("Failed to parse a recursive expression: pairs are empty"));
+			
+			return self.parse_expression(next_pair);
 		}
 
 		let mut current_expression = Expression::Empty;
-
-		while let Some(pair) = pairs.next() {
+		
+		for pair in pairs {
 			current_expression = match pair.as_rule() {
 				Rule::identifier => self.parse_identifier(pair),
 				Rule::number_literal | Rule::string_literal => self.parse_literal(pair),
@@ -1486,10 +1423,10 @@ impl<'p> HasanParser<'p> {
 	}
 
 	fn parse_array_expression(&self, pair: Pair<Rule>) -> Expression {
-		let mut pairs = pair.into_inner();
+		let pairs = pair.into_inner();
 		let mut items: Vec<Expression> = Vec::new();
 
-		while let Some(pair) = pairs.next() {
+		for pair in pairs {
 			let parsed_pair = self.parse_expression(pair);
 			items.push(parsed_pair);
 		}
@@ -1528,10 +1465,10 @@ impl<'p> HasanParser<'p> {
 			};
 		}
 
-		let mut interface_pairs = interfaces_pair.unwrap().into_inner();
+		let interface_pairs = interfaces_pair.unwrap().into_inner();
 		let mut requires_implementations: Vec<String> = Vec::new();
 
-		while let Some(pair) = interface_pairs.next() {
+		for pair in interface_pairs {
 			if pair.as_rule() != Rule::identifier {
 				error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::identifier, pair.as_rule());
 			}
@@ -1617,7 +1554,7 @@ impl<'p> HasanParser<'p> {
 
 		let mut variants: Vec<EnumVariant> = Vec::new();
 
-		while let Some(pair) = pairs.next() {
+		for pair in pairs {
 			if pair.as_rule() != Rule::enum_variant {
 				error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::enum_variant, pair.as_rule());
 			}
@@ -1643,7 +1580,7 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse type: operators pair is missing");
 
-		let mut operator_pairs = operators_pair.into_inner();
+		let operator_pairs = operators_pair.into_inner();
 
 		let mut output_type = Type::Regular {
 			base: Box::new(self.parse_expression(type_pair)),
@@ -1652,7 +1589,7 @@ impl<'p> HasanParser<'p> {
 			array: false
 		};
 
-		while let Some(pair) = operator_pairs.next() {
+		for pair in operator_pairs {
 			match pair.as_rule() {
 				Rule::type_operator_raw => {
 					if let Type::Regular { base, generics, raw: _, array } = output_type {
@@ -1717,7 +1654,7 @@ impl<'p> HasanParser<'p> {
 			pairs.next();
 		}
 
-		let mut arguments_pairs = pairs
+		let arguments_pairs = pairs
 			.next()
 			.expect("Failed to parse function type: arguments pair is missing")
 			.into_inner();
@@ -1728,7 +1665,7 @@ impl<'p> HasanParser<'p> {
 
 		let mut argument_types: Vec<Type> = Vec::new();
 
-		while let Some(pair) = arguments_pairs.next() {
+		for pair in arguments_pairs {
 			if pair.as_rule() != Rule::r#type {
 				error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::r#type, pair.as_rule());
 			}
@@ -1776,17 +1713,17 @@ impl<'p> HasanParser<'p> {
 			panic!("Failed to parse function attributes: got an unexpected rule. Expected '{:?}', got '{:?}'", Rule::attributes, pair.as_rule());
 		}
 		
-		let mut pairs = pair.into_inner();
+		let pairs = pair.into_inner();
 		let mut attributes: ClassFunctionAttributes = Vec::new();
 
 		// Keeping track of which attributes have already been defined to prevent users from defining them twice
 		let mut met_attributes: Vec<String> = Vec::new();
 
-		while let Some(pair) = pairs.next() {
+		for pair in pairs {
 			let as_str = pair.as_str();
 			let span = pair.as_span();
 
-			let owned_str = as_str.clone().to_owned();
+			let owned_str = (*as_str).to_owned();
 
 			if met_attributes.contains(&owned_str) {
 				error!("found more than one '{}' attribute definition", span, as_str);
@@ -1807,11 +1744,11 @@ impl<'p> HasanParser<'p> {
 			error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::function_arguments, pair.as_rule());
 		}
 
-		let mut pairs = pair.into_inner();
+		let pairs = pair.into_inner();
 
 		let mut arguments: Vec<FunctionArgument> = Vec::new();
 
-		while let Some(pair) = pairs.next() {
+		for pair in pairs {
 			if pair.as_rule() != Rule::function_argument {
 				error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::function_argument, pair.as_rule());
 			}
@@ -1841,15 +1778,15 @@ impl<'p> HasanParser<'p> {
 		}
 
 		let mut modifiers: GeneralModifiers = Vec::new();
-		let mut pairs = pair.into_inner();
+		let pairs = pair.into_inner();
 
 		let mut met_modifiers: Vec<String> = Vec::new();
 
-		while let Some(pair) = pairs.next() {
+		for pair in pairs {
 			let as_str = pair.as_str();
 			let span = pair.as_span();
 
-			let owned_str = as_str.clone().to_owned();
+			let owned_str = (*as_str).to_owned();
 
 			if met_modifiers.contains(&owned_str) {
 				error!("found more than one '{}' modifier definition", span, as_str);
@@ -1882,7 +1819,7 @@ impl<'p> HasanParser<'p> {
 		let mut arguments: Vec<FunctionArgument> = Vec::new();
 		let mut return_type: Option<Type> = None;
 
-		while let Some(pair) = header_pairs.next() {
+		for pair in header_pairs {
 			match pair.as_rule() {
 				Rule::definition_generics => generics = self.parse_generics_as_definition_types(pair),
 				Rule::function_arguments => arguments = self.parse_function_arguments(pair),
@@ -1893,20 +1830,6 @@ impl<'p> HasanParser<'p> {
 		}
 
 		(modifiers, self.pair_str(name), generics, arguments, return_type)
-	}
-
-	fn parse_function_declaration(&self, pair: Pair<Rule>) -> Statement {
-		if pair.as_rule() != Rule::function_declaration_stmt {
-			panic!("Failed to parse function declaration: got an unexpected rule. Expected '{:?}', got '{:?}'", Rule::function_declaration_stmt, pair.as_rule());
-		}
-
-		let header_pair = pair
-			.into_inner()
-			.next()
-			.expect("Failed to parse function declaration: function header is missing");
-
-		let (modifiers, name, generics, arguments, return_type) = self.parse_function_header(header_pair);
-		Statement::FunctionDeclaration { modifiers, name, generics, arguments, return_type }
 	}
 
 	fn parse_function_definition(&self, pair: Pair<Rule>) -> Statement {
@@ -1980,7 +1903,7 @@ impl<'p> HasanParser<'p> {
 
 		let next_pair = inner_pairs
 			.peek()
-			.expect(&format!("Failed to parse a class definition function: expected '{:?}' or '{:?}', got nothing", Rule::function_definition_stmt, Rule::attributes));
+			.unwrap_or_else(|| panic!("Failed to parse a class definition function: expected '{:?}' or '{:?}', got nothing", Rule::function_definition_stmt, Rule::attributes));
 		
 		let mut attributes: Option<ClassFunctionAttributes> = None;
 
@@ -1993,7 +1916,7 @@ impl<'p> HasanParser<'p> {
 
 		let statement_pair = inner_pairs
 			.next()
-			.expect(&format!("Failed to parse a class definition function: expected rule '{:?}', got nothing", Rule::function_definition_stmt));
+			.unwrap_or_else(|| panic!("Failed to parse a class definition function: expected rule '{:?}', got nothing", Rule::function_definition_stmt));
 
 		let function_statement = self.parse_function_definition(statement_pair);
 		ClassDefinitionMember::function_from_statement(function_statement, attributes)
@@ -2008,17 +1931,17 @@ impl<'p> HasanParser<'p> {
 
 		let modifiers_pair = inner_pairs
 			.next()
-			.expect(&format!("Failed to parse class definition variable: expected '{:?}', got nothing", Rule::general_modifiers));
+			.unwrap_or_else(|| panic!("Failed to parse class definition variable: expected '{:?}', got nothing", Rule::general_modifiers));
 
 		let modifiers = self.parse_general_modifiers(modifiers_pair);
 
 		let name = inner_pairs
 			.next()
-			.expect(&format!("Failed to parse class definition variable: expected '{:?}', got nothing", Rule::identifier));
+			.unwrap_or_else(|| panic!("Failed to parse class definition variable: expected '{:?}', got nothing", Rule::identifier));
 
 		let kind = inner_pairs
 			.next()
-			.expect(&format!("Failed to parse class definition variable: expected '{:?}', got nothing", Rule::r#type));
+			.unwrap_or_else(|| panic!("Failed to parse class definition variable: expected '{:?}', got nothing", Rule::r#type));
 
 		let default_value_option = inner_pairs.next();
 		let mut default_value = Expression::Empty;
@@ -2078,7 +2001,6 @@ impl<'p> HasanParser<'p> {
 		}
 
 		let next_pair_option = pairs.peek();
-		let next_pair: Pair<Rule>;
 
 		// If the class is empty beyond this point, return early
 		if next_pair_option.is_none() {
@@ -2091,7 +2013,9 @@ impl<'p> HasanParser<'p> {
 		}
 
 		// Unwrap the next pair
-		next_pair = next_pair_option.unwrap_or_else(|| unreachable!("Failed to parse class definition: unexpected end of pairs. Expected class members or generics, got nothing"));
+		let next_pair = next_pair_option
+			.unwrap_or_else(|| unreachable!("Failed to parse class definition: unexpected end of pairs. Expected class members or generics, got nothing"));
+
 		let mut generics: Vec<DefinitionType> = Vec::new();
 
 		// Check if the next pair is of rule definition_generics
@@ -2114,159 +2038,11 @@ impl<'p> HasanParser<'p> {
 
 		let mut members: Vec<ClassDefinitionMember> = Vec::new();
 
-		while let Some(pair) = pairs.next() {
+		for pair in pairs {
 			members.push(self.parse_class_definition_member(pair));
 		}
 
 		Statement::ClassDefinition {
-			modifiers,
-			name: self.pair_str(name),
-			generics,
-			members
-		}
-	}
-
-	fn parse_class_declaration_function(&self, pair: Pair<Rule>) -> ClassDeclarationMember {
-		// * NOTE: attributes are to be checked later by the optimization stage/compiler
-
-		if pair.as_rule() != Rule::class_declaration_function {
-			panic!("Got an unexpected rule as a class declaration member: expected rule '{:?}', got '{:?}'", Rule::class_declaration_function, pair.as_rule());
-		}
-
-		let mut inner_pairs = pair.into_inner();
-
-		let next_pair = inner_pairs
-			.peek()
-			.expect(&format!("Failed to parse a class declaration function: expected '{:?}' or '{:?}', got nothing", Rule::class_declaration_function, Rule::attributes));
-		
-		let mut attributes: Option<ClassFunctionAttributes> = None;
-
-		if next_pair.as_rule() == Rule::attributes {
-			attributes = Some(self.parse_class_function_attributes(next_pair));
-
-			// Skip attributes if they exist
-			inner_pairs.next();
-		}
-
-		let function_pair = inner_pairs
-			.next()
-			.expect(&format!("Failed to parse a class declaration function: expected rule '{:?}', got nothing", Rule::function_definition_stmt));
-
-		let function_statement = self.parse_function_declaration(function_pair);
-		ClassDeclarationMember::function_from_statement(function_statement, attributes)
-	}
-
-	fn parse_class_declaration_variable(&self, pair: Pair<Rule>) -> ClassDeclarationMember {
-		if pair.as_rule() != Rule::class_declaration_variable {
-			panic!("Failed to parse class declaration member: got an unexpected rule. Expected rule '{:?}', got '{:?}'", Rule::class_declaration_variable, pair.as_rule());
-		}
-
-		let mut inner_pairs = pair.into_inner();
-
-		let modifiers_pair = inner_pairs
-			.next()
-			.expect(&format!("Failed to parse class declaration variable: expected rule '{:?}', got nothing", Rule::general_modifiers));
-
-		let modifiers = self.parse_general_modifiers(modifiers_pair);
-
-		let name = inner_pairs
-			.next()
-			.expect(&format!("Failed to parse class declaration variable: expected rule '{:?}', got nothing", Rule::identifier));
-
-		let kind = inner_pairs
-			.next()
-			.expect(&format!("Failed to parse class declaration variable: expected rule '{:?}', got nothing", Rule::r#type));
-
-		ClassDeclarationMember::Variable {
-			modifiers,
-			name: self.pair_str(name),
-			kind: self.parse_type(kind)
-		}
-	}
-
-	fn parse_class_declaration_member(&self, pair: Pair<Rule>) -> ClassDeclarationMember {
-		if pair.as_rule() != Rule::class_declaration_member {
-			panic!("Failed to parse class declaration member: got an unexpected rule. Expected rule '{:?}', got '{:?}'", Rule::class_declaration_member, pair.as_rule());
-		}
-
-		let inner = pair
-			.into_inner()
-			.next()
-			.unwrap_or_else(|| unreachable!("Failed to parse class declaration member: pairs are empty"));
-
-		match inner.as_rule() {
-			Rule::class_declaration_variable => self.parse_class_declaration_variable(inner),
-			Rule::class_declaration_function => self.parse_class_declaration_function(inner),
-
-			rule => error!(
-				"expected '{:?}' or '{:?}', got '{:?}'",
-				inner.as_span(),
-				Rule::class_declaration_variable,
-				Rule::class_declaration_function,
-				rule
-			)
-		}
-	}
-
-	fn parse_class_declaration(&self, pair: Pair<Rule>) -> Statement {
-		let mut pairs = pair.into_inner();
-
-		let modifiers_pair = pairs
-			.next()
-			.expect(&format!("Failed to parse class declaration variable: expected rule '{:?}', got nothing", Rule::general_modifiers));
-
-		let modifiers = self.parse_general_modifiers(modifiers_pair);
-
-		let name = pairs
-			.next()
-			.expect("Failed to parse class declaration: class name is missing");
-
-		if name.as_rule() != Rule::identifier {
-			error!("expected '{:?}', got '{:?}'", name.as_span(), Rule::identifier, name.as_rule());
-		}
-
-		let next_pair_option = pairs.peek();
-		let next_pair: Pair<Rule>;
-
-		// If the class is empty beyond this point, return early
-		if next_pair_option.is_none() {
-			return Statement::ClassDeclaration {
-				modifiers,
-				name: self.pair_str(name),
-				generics: Vec::new(),
-				members: Vec::new()
-			};
-		}
-
-		// Unwrap the next pair
-		next_pair = next_pair_option.unwrap_or_else(|| unreachable!("Failed to parse class declaration: expected generics or class members, got nothing"));
-		let mut generics: Vec<DefinitionType> = Vec::new();
-
-		// Check if the next pair is of rule definition_generics
-		if next_pair.as_rule() == Rule::definition_generics {
-			generics = self.parse_generics_as_definition_types(next_pair);
-
-			// If no class members are provided, return early
-			if pairs.peek().is_none() {
-				return Statement::ClassDeclaration {
-					modifiers,
-					name: self.pair_str(name),
-					generics,
-					members: Vec::new()
-				};
-			}
-
-			// Otherwise, skip the current pair
-			pairs.next();
-		}
-
-		let mut members: Vec<ClassDeclarationMember> = Vec::new();
-
-		while let Some(pair) = pairs.next() {
-			members.push(self.parse_class_declaration_member(pair));
-		}
-
-		Statement::ClassDeclaration {
 			modifiers,
 			name: self.pair_str(name),
 			generics,
@@ -2279,7 +2055,7 @@ impl<'p> HasanParser<'p> {
 
 		let modifiers_pair = pairs
 			.next()
-			.expect(&format!("Failed to parse class declaration variable: expected rule '{:?}', got nothing", Rule::general_modifiers));
+			.unwrap_or_else(|| panic!("Failed to parse variable definition: expected rule '{:?}', got nothing", Rule::general_modifiers));
 
 		let modifiers = self.parse_general_modifiers(modifiers_pair);
 
@@ -2292,7 +2068,6 @@ impl<'p> HasanParser<'p> {
 			.expect("Failed to parse variable definition: expected type/value, got nothing");
 
 		let mut kind = None;
-		let value: Expression;
 
 		if next_pair.as_rule() == Rule::r#type {
 			kind = Some(self.parse_type(next_pair));
@@ -2302,11 +2077,11 @@ impl<'p> HasanParser<'p> {
 				.expect("Failed to parse variable definition: variable value is missing");
 		}
 		
-		if next_pair.as_rule() == Rule::expression {
-			value = self.parse_expression(next_pair);
+		let value = if next_pair.as_rule() == Rule::expression {
+			self.parse_expression(next_pair)
 		} else {
 			error!("expected expression, got '{:?}'", next_pair.as_span(), next_pair.as_rule());
-		}
+		};
 
 		Statement::VariableDefinition {
 			modifiers,

@@ -14,27 +14,27 @@ class ClassDefinition
 	end
 end;
 
-declare pub class ClassDeclaraction
+pub class ClassDeclaraction
 	a: int;
 
 	#[constructor]
-	func some_function() -> bool;
+	func some_function() -> bool do end
 
-	pub func other_function() -> int;
+	pub func other_function() -> int do end
 end
 
-declare static class Array<T>
+static class Array<T>
 	#[get]
-	func length() -> int;
+	func length() -> int do end
 
-	static func append(_elem: T) -> void;
-	func copy() -> this;
+	static func append(_elem: T) -> void do end
+	func copy() -> this do end;
 end
 
-declare class Array<T>
+class Array<T>
 	#[get]
-	func length() -> int;
+	func length() -> int do end
 
-	static func append(_elem: T) -> void;
-	func copy() -> this;
+	static func append(_elem: T) -> void do end
+	func copy() -> this do end
 end
