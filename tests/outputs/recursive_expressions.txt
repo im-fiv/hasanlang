@@ -270,68 +270,82 @@ Program {
                                         value: Int(
                                             3,
                                         ),
-                                        kind: Regular {
+                                        kind: Regular(
+                                            RegularType {
+                                                base: Identifier(
+                                                    "a",
+                                                ),
+                                                generics: [],
+                                                raw: false,
+                                                array: false,
+                                            },
+                                        ),
+                                    },
+                                    kind: Regular(
+                                        RegularType {
                                             base: Identifier(
-                                                "a",
+                                                "b",
                                             ),
                                             generics: [],
                                             raw: false,
                                             array: false,
                                         },
-                                    },
-                                    kind: Regular {
+                                    ),
+                                },
+                                kind: Regular(
+                                    RegularType {
                                         base: Identifier(
-                                            "b",
+                                            "c",
                                         ),
                                         generics: [],
                                         raw: false,
                                         array: false,
                                     },
-                                },
-                                kind: Regular {
+                                ),
+                            },
+                            kind: Regular(
+                                RegularType {
                                     base: Identifier(
-                                        "c",
+                                        "d",
                                     ),
                                     generics: [],
                                     raw: false,
                                     array: false,
                                 },
-                            },
-                            kind: Regular {
+                            ),
+                        },
+                        kind: Regular(
+                            RegularType {
                                 base: Identifier(
-                                    "d",
+                                    "e",
                                 ),
                                 generics: [],
                                 raw: false,
                                 array: false,
                             },
-                        },
-                        kind: Regular {
+                        ),
+                    },
+                    kind: Regular(
+                        RegularType {
                             base: Identifier(
-                                "e",
+                                "f",
                             ),
                             generics: [],
                             raw: false,
                             array: false,
                         },
-                    },
-                    kind: Regular {
+                    ),
+                },
+                kind: Regular(
+                    RegularType {
                         base: Identifier(
-                            "f",
+                            "g",
                         ),
                         generics: [],
                         raw: false,
                         array: false,
                     },
-                },
-                kind: Regular {
-                    base: Identifier(
-                        "g",
-                    ),
-                    generics: [],
-                    raw: false,
-                    array: false,
-                },
+                ),
             },
         },
         FunctionCall {

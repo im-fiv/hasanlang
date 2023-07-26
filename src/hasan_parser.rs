@@ -303,20 +303,25 @@ type FloatType = f64;
 
 #[derive(Debug, Clone)]
 pub enum Type {
-	Regular {
-		base: Box<Expression>,
-		generics: Vec<DefinitionType>,
+	Regular(RegularType),
+	Function(FunctionType)
+}
 
-		// Type attributes
-		raw: bool,
-		array: bool
-	},
+#[derive(Debug, Clone)]
+pub struct RegularType {
+	pub base: Box<Expression>,
+	pub generics: Vec<DefinitionType>,
 
-	Function {
-		generics: Vec<DefinitionType>,
-		argument_types: Vec<Type>,
-		return_type: Box<Type>
-	}
+	// Type attributes
+	pub raw: bool,
+	pub array: bool
+}
+
+#[derive(Debug, Clone)]
+pub struct FunctionType {
+	pub generics: Vec<DefinitionType>,
+	pub argument_types: Vec<Type>,
+	pub return_type: Box<Type>
 }
 
 #[derive(Debug, Clone, PartialEq)]
@@ -1582,50 +1587,44 @@ impl<'p> HasanParser<'p> {
 
 		let operator_pairs = operators_pair.into_inner();
 
-		let mut output_type = Type::Regular {
+		let mut output_type = Type::Regular(RegularType {
 			base: Box::new(self.parse_expression(type_pair)),
 			generics: Vec::new(),
 			raw: false,
 			array: false
-		};
+		});
 
 		for pair in operator_pairs {
 			match pair.as_rule() {
 				Rule::type_operator_raw => {
-					if let Type::Regular { base, generics, raw: _, array } = output_type {
-						output_type = Type::Regular {
-							base,
-							generics,
-							raw: true,
-							array
-						};
+					if let Type::Regular(regular_type) = output_type {
+						let mut regular_type = regular_type.clone();
+						regular_type.raw = true;
+
+						output_type = Type::Regular(regular_type);
 					}
 				},
 
 				Rule::type_operator_generics => {
-					if let Type::Regular { base, generics: _, raw, array: _ } = output_type {
+					if let Type::Regular(regular_type) = output_type {
 						let definition_pair = pair
 							.into_inner()
 							.next()
 							.unwrap_or_else(|| unreachable!("Failed to parse type: generics pair is missing"));
 
-						output_type = Type::Regular {
-							base,
-							generics: self.parse_generics_as_definition_types(definition_pair),
-							raw,
-							array: true
-						};
+						let mut regular_type = regular_type.clone();
+						regular_type.generics = self.parse_generics_as_definition_types(definition_pair);
+
+						output_type = Type::Regular(regular_type);
 					}
 				},
 
 				Rule::type_operator_array => {
-					if let Type::Regular { base, generics, raw, array: _ } = output_type {
-						output_type = Type::Regular {
-							base,
-							generics,
-							raw,
-							array: true
-						};
+					if let Type::Regular(regular_type) = output_type {
+						let mut regular_type = regular_type.clone();
+						regular_type.array = true;
+
+						output_type = Type::Regular(regular_type);
 					}
 				},
 
@@ -1675,11 +1674,11 @@ impl<'p> HasanParser<'p> {
 
 		let return_type = Box::new(self.parse_type(return_type_pair));
 
-		Type::Function {
+		Type::Function(FunctionType {
 			generics,
 			argument_types,
 			return_type
-		}
+		})
 	}
 
 	fn parse_type(&self, pair: Pair<Rule>) -> Type {

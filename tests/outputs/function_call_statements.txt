@@ -97,14 +97,16 @@ Program {
                     "a",
                 ),
                 generics: [
-                    Regular {
-                        base: Identifier(
-                            "B",
-                        ),
-                        generics: [],
-                        raw: true,
-                        array: true,
-                    },
+                    Regular(
+                        RegularType {
+                            base: Identifier(
+                                "B",
+                            ),
+                            generics: [],
+                            raw: true,
+                            array: true,
+                        },
+                    ),
                 ],
                 arguments: [
                     String(
@@ -113,14 +115,16 @@ Program {
                 ],
             },
             generics: [
-                Regular {
-                    base: Identifier(
-                        "A",
-                    ),
-                    generics: [],
-                    raw: false,
-                    array: false,
-                },
+                Regular(
+                    RegularType {
+                        base: Identifier(
+                            "A",
+                        ),
+                        generics: [],
+                        raw: false,
+                        array: false,
+                    },
+                ),
             ],
             arguments: [
                 Int(

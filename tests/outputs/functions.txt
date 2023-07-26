@@ -6,14 +6,16 @@ Program {
             generics: [],
             arguments: [],
             return_type: Some(
-                Regular {
-                    base: Identifier(
-                        "void",
-                    ),
-                    generics: [],
-                    raw: false,
-                    array: false,
-                },
+                Regular(
+                    RegularType {
+                        base: Identifier(
+                            "void",
+                        ),
+                        generics: [],
+                        raw: false,
+                        array: false,
+                    },
+                ),
             ),
             statements: [
                 FunctionCall {
@@ -47,14 +49,16 @@ Program {
             ],
             arguments: [],
             return_type: Some(
-                Regular {
-                    base: Identifier(
-                        "Type",
-                    ),
-                    generics: [],
-                    raw: false,
-                    array: false,
-                },
+                Regular(
+                    RegularType {
+                        base: Identifier(
+                            "Type",
+                        ),
+                        generics: [],
+                        raw: false,
+                        array: false,
+                    },
+                ),
             ),
             statements: [
                 Return(
@@ -71,29 +75,47 @@ Program {
             arguments: [
                 FunctionArgument {
                     name: "arg1",
-                    kind: Regular {
-                        base: Identifier(
-                            "int",
-                        ),
-                        generics: [],
-                        raw: false,
-                        array: false,
-                    },
+                    kind: Regular(
+                        RegularType {
+                            base: Identifier(
+                                "int",
+                            ),
+                            generics: [],
+                            raw: false,
+                            array: false,
+                        },
+                    ),
                 },
                 FunctionArgument {
                     name: "arg2",
-                    kind: Regular {
-                        base: Identifier(
-                            "int",
-                        ),
-                        generics: [],
-                        raw: false,
-                        array: false,
-                    },
+                    kind: Regular(
+                        RegularType {
+                            base: Identifier(
+                                "int",
+                            ),
+                            generics: [],
+                            raw: false,
+                            array: false,
+                        },
+                    ),
                 },
                 FunctionArgument {
                     name: "arg3",
-                    kind: Regular {
+                    kind: Regular(
+                        RegularType {
+                            base: Identifier(
+                                "int",
+                            ),
+                            generics: [],
+                            raw: false,
+                            array: false,
+                        },
+                    ),
+                },
+            ],
+            return_type: Some(
+                Regular(
+                    RegularType {
                         base: Identifier(
                             "int",
                         ),
@@ -101,17 +123,7 @@ Program {
                         raw: false,
                         array: false,
                     },
-                },
-            ],
-            return_type: Some(
-                Regular {
-                    base: Identifier(
-                        "int",
-                    ),
-                    generics: [],
-                    raw: false,
-                    array: false,
-                },
+                ),
             ),
             statements: [
                 Return(
@@ -140,14 +152,16 @@ Program {
             arguments: [
                 FunctionArgument {
                     name: "a",
-                    kind: Regular {
-                        base: Identifier(
-                            "int",
-                        ),
-                        generics: [],
-                        raw: false,
-                        array: false,
-                    },
+                    kind: Regular(
+                        RegularType {
+                            base: Identifier(
+                                "int",
+                            ),
+                            generics: [],
+                            raw: false,
+                            array: false,
+                        },
+                    ),
                 },
             ],
             return_type: None,
@@ -181,14 +195,16 @@ Program {
                                 "random_number",
                             ),
                             generics: [
-                                Regular {
-                                    base: Identifier(
-                                        "int",
-                                    ),
-                                    generics: [],
-                                    raw: false,
-                                    array: false,
-                                },
+                                Regular(
+                                    RegularType {
+                                        base: Identifier(
+                                            "int",
+                                        ),
+                                        generics: [],
+                                        raw: false,
+                                        array: false,
+                                    },
+                                ),
                             ],
                             arguments: [],
                         },
