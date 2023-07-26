@@ -31,10 +31,8 @@ statement = _{
 	for_in_stmt |
 	function_call_stmt |
 	function_definition_stmt |
-	function_declaration_stmt |
 	type_alias_stmt |
 	class_definition |
-	class_declaration |
 	variable_definition_stmt |
 	variable_assign_stmt |
 	enum_definition_stmt
@@ -42,14 +40,13 @@ statement = _{
 
 keywords = {
 	"type" | "var" | "return" | "func" |
-	"end" | "do" | "declare" | "class" |
+	"end" | "do" | "class" | "impl" |
 	"constructor" | "pub" | "get" |
 	"set" | "static" | "as" | "enum" |
 	"and" | "or" | "not" | "if" | "else" |
 	"elseif" | "while" | "break" | "true" |
 	"false" | "then" | "for" | "in" |
-	"use" | "module" | "interface" | "const" |
-	"impl"
+	"use" | "module" | "interface" | "const"
 }
 
 stmt_sep = _{ ";" }
@@ -69,12 +66,10 @@ return_stmt = { "return" ~ expression? ~ stmt_sep }
 
 function_call_stmt = { term_without_recursion ~ recursive_operator+ ~ stmt_sep } // this is wrong, but it will be handled inside the parser
 function_definition_stmt = { function_header ~ do_block ~ stmt_sep? }
-function_declaration_stmt = { function_header ~ stmt_sep }
 
 type_alias_stmt = { general_modifiers ~ "type" ~ identifier ~ definition_generics? ~ "=" ~ type ~ stmt_sep }
 
 // Class definition is defined later //
-// Class declaration is defined later //
 
 variable_definition_stmt = { general_modifiers ~ "var" ~ identifier ~ (":" ~ type)? ~ "=" ~ expression ~ stmt_sep }
 variable_assign_stmt = { (recursive_expression | expression) ~ "=" ~ expression ~ stmt_sep }
@@ -107,13 +102,6 @@ function_arguments = { function_argument ~ ("," ~ function_argument)* }
 function_call_arguments = { expression ~ ("," ~ expression)* ~ ","? }
 
 do_block = { "do" ~ statement* ~ "end" }
-
-//* Class declaration *//
-class_declaration = { "declare" ~ general_modifiers ~ "class" ~ identifier ~ definition_generics? ~ class_declaration_member* ~ "end" ~ stmt_sep? }
-class_declaration_member = { class_declaration_function | class_declaration_variable }
-
-class_declaration_function = { attributes? ~ function_declaration_stmt }
-class_declaration_variable = { general_modifiers ~ identifier ~ ":" ~ type ~ stmt_sep }
 
 //* Class definition *//
 class_definition = { general_modifiers ~ "class" ~ identifier ~ definition_generics? ~ class_definition_member* ~ "end" ~ stmt_sep? }

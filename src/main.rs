@@ -19,25 +19,32 @@ use analyzer::SemanticAnalyzer;
 
 //* Helper functions *//
 fn read_file(path: &str) -> String {
-	let file = File::open(path).expect(&format!("Failed to open file `{}` (read)", path));
+	let file = File::open(path)
+        .unwrap_or_else(|_| panic!("Failed to open file `{}` (read)", path));
 	
 	let mut reader = BufReader::new(file);
 	let mut contents = String::new();
 	
-	reader.read_to_string(&mut contents).expect(&format!("Failed to read from file `{}`", path));
+	reader
+        .read_to_string(&mut contents)
+        .unwrap_or_else(|_| panic!("Failed to read from file `{}`", path));
+
 	contents.replace("\r\n", "\n")
 }
 
 fn write_file(path: &str, contents: String) {
-	let mut file = File::create(path).expect(&format!("Failed to open file `{}` (write)", path));
-	file.write_all(contents.as_bytes()).expect(&format!("Failed to write to file `{}`", path));
+	let mut file = File::create(path)
+        .unwrap_or_else(|_| panic!("Failed to open file `{}` (write)", path));
+
+	file
+        .write_all(contents.as_bytes())
+        .unwrap_or_else(|_| panic!("Failed to write to file `{}`", path))
 }
 
 fn copy_file(source: &PathBuf, destination: &PathBuf) {
     // Copy file
     if let Err(e) = fs::copy(source, destination) {
         eprintln!("Failed to copy file from `{}` to `{}`: {}", source.display(), destination.display(), e);
-        return;
     }
 }
 //* Helper functions *//
@@ -204,7 +211,6 @@ fn test_delete(command: cli::DeleteTestCommand) {
     // Delete file
     if let Err(e) = fs::remove_file(&file_path) {
         eprintln!("Failed to delete file `{}`: {}", file_path.display(), e);
-        return;
     }
 
     // Construct file path
@@ -214,7 +220,6 @@ fn test_delete(command: cli::DeleteTestCommand) {
     // Delete file
     if let Err(e) = fs::remove_file(&file_path) {
         eprintln!("Failed to delete file `{}`: {}", file_path.display(), e);
-        return;
     }
 }
 

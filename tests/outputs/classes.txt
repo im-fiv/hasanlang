@@ -99,7 +99,7 @@ Program {
                 },
             ],
         },
-        ClassDeclaration {
+        ClassDefinition {
             modifiers: [
                 Public,
             ],
@@ -117,6 +117,7 @@ Program {
                         raw: false,
                         array: false,
                     },
+                    default_value: Empty,
                 },
                 Function {
                     attributes: Some(
@@ -138,6 +139,7 @@ Program {
                             array: false,
                         },
                     ),
+                    statements: [],
                 },
                 Function {
                     attributes: None,
@@ -157,10 +159,11 @@ Program {
                             array: false,
                         },
                     ),
+                    statements: [],
                 },
             ],
         },
-        ClassDeclaration {
+        ClassDefinition {
             modifiers: [
                 Static,
             ],
@@ -192,6 +195,7 @@ Program {
                             array: false,
                         },
                     ),
+                    statements: [],
                 },
                 Function {
                     attributes: None,
@@ -223,6 +227,7 @@ Program {
                             array: false,
                         },
                     ),
+                    statements: [],
                 },
                 Function {
                     attributes: None,
@@ -240,10 +245,11 @@ Program {
                             array: false,
                         },
                     ),
+                    statements: [],
                 },
             ],
         },
-        ClassDeclaration {
+        ClassDefinition {
             modifiers: [],
             name: "Array",
             generics: [
@@ -273,6 +279,7 @@ Program {
                             array: false,
                         },
                     ),
+                    statements: [],
                 },
                 Function {
                     attributes: None,
@@ -304,6 +311,7 @@ Program {
                             array: false,
                         },
                     ),
+                    statements: [],
                 },
                 Function {
                     attributes: None,
@@ -321,6 +329,7 @@ Program {
                             array: false,
                         },
                     ),
+                    statements: [],
                 },
             ],
         },
