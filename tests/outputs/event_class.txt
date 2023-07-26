@@ -8,27 +8,31 @@ Program {
                 Variable {
                     modifiers: [],
                     name: "event",
-                    kind: Regular {
-                        base: Identifier(
-                            "Event",
-                        ),
-                        generics: [],
-                        raw: false,
-                        array: false,
-                    },
+                    kind: Regular(
+                        RegularType {
+                            base: Identifier(
+                                "Event",
+                            ),
+                            generics: [],
+                            raw: false,
+                            array: false,
+                        },
+                    ),
                     default_value: Empty,
                 },
                 Variable {
                     modifiers: [],
                     name: "id",
-                    kind: Regular {
-                        base: Identifier(
-                            "int",
-                        ),
-                        generics: [],
-                        raw: false,
-                        array: false,
-                    },
+                    kind: Regular(
+                        RegularType {
+                            base: Identifier(
+                                "int",
+                            ),
+                            generics: [],
+                            raw: false,
+                            array: false,
+                        },
+                    ),
                     default_value: Empty,
                 },
                 Function {
@@ -43,36 +47,42 @@ Program {
                     arguments: [
                         FunctionArgument {
                             name: "event",
-                            kind: Regular {
-                                base: Identifier(
-                                    "Event",
-                                ),
-                                generics: [],
-                                raw: false,
-                                array: false,
-                            },
+                            kind: Regular(
+                                RegularType {
+                                    base: Identifier(
+                                        "Event",
+                                    ),
+                                    generics: [],
+                                    raw: false,
+                                    array: false,
+                                },
+                            ),
                         },
                         FunctionArgument {
                             name: "id",
-                            kind: Regular {
+                            kind: Regular(
+                                RegularType {
+                                    base: Identifier(
+                                        "int",
+                                    ),
+                                    generics: [],
+                                    raw: false,
+                                    array: false,
+                                },
+                            ),
+                        },
+                    ],
+                    return_type: Some(
+                        Regular(
+                            RegularType {
                                 base: Identifier(
-                                    "int",
+                                    "this",
                                 ),
                                 generics: [],
                                 raw: false,
                                 array: false,
                             },
-                        },
-                    ],
-                    return_type: Some(
-                        Regular {
-                            base: Identifier(
-                                "this",
-                            ),
-                            generics: [],
-                            raw: false,
-                            array: false,
-                        },
+                        ),
                     ),
                     statements: [
                         VariableAssign {
@@ -145,18 +155,22 @@ Program {
             modifiers: [],
             name: "FuncType",
             generics: [],
-            definition: Function {
-                generics: [],
-                argument_types: [],
-                return_type: Regular {
-                    base: Identifier(
-                        "void",
-                    ),
+            definition: Function(
+                FunctionType {
                     generics: [],
-                    raw: true,
-                    array: false,
+                    argument_types: [],
+                    return_type: Regular(
+                        RegularType {
+                            base: Identifier(
+                                "void",
+                            ),
+                            generics: [],
+                            raw: true,
+                            array: false,
+                        },
+                    ),
                 },
-            },
+            ),
         },
         ClassDefinition {
             modifiers: [],
@@ -166,27 +180,31 @@ Program {
                 Variable {
                     modifiers: [],
                     name: "name",
-                    kind: Regular {
-                        base: Identifier(
-                            "string",
-                        ),
-                        generics: [],
-                        raw: false,
-                        array: false,
-                    },
+                    kind: Regular(
+                        RegularType {
+                            base: Identifier(
+                                "string",
+                            ),
+                            generics: [],
+                            raw: false,
+                            array: false,
+                        },
+                    ),
                     default_value: Empty,
                 },
                 Variable {
                     modifiers: [],
                     name: "functions",
-                    kind: Regular {
-                        base: Identifier(
-                            "FuncType",
-                        ),
-                        generics: [],
-                        raw: false,
-                        array: true,
-                    },
+                    kind: Regular(
+                        RegularType {
+                            base: Identifier(
+                                "FuncType",
+                            ),
+                            generics: [],
+                            raw: false,
+                            array: true,
+                        },
+                    ),
                     default_value: Empty,
                 },
                 Function {
@@ -201,25 +219,29 @@ Program {
                     arguments: [
                         FunctionArgument {
                             name: "name",
-                            kind: Regular {
+                            kind: Regular(
+                                RegularType {
+                                    base: Identifier(
+                                        "string",
+                                    ),
+                                    generics: [],
+                                    raw: false,
+                                    array: false,
+                                },
+                            ),
+                        },
+                    ],
+                    return_type: Some(
+                        Regular(
+                            RegularType {
                                 base: Identifier(
-                                    "string",
+                                    "this",
                                 ),
                                 generics: [],
                                 raw: false,
                                 array: false,
                             },
-                        },
-                    ],
-                    return_type: Some(
-                        Regular {
-                            base: Identifier(
-                                "this",
-                            ),
-                            generics: [],
-                            raw: false,
-                            array: false,
-                        },
+                        ),
                     ),
                     statements: [
                         VariableAssign {
@@ -245,25 +267,29 @@ Program {
                     arguments: [
                         FunctionArgument {
                             name: "function",
-                            kind: Regular {
+                            kind: Regular(
+                                RegularType {
+                                    base: Identifier(
+                                        "FuncType",
+                                    ),
+                                    generics: [],
+                                    raw: false,
+                                    array: false,
+                                },
+                            ),
+                        },
+                    ],
+                    return_type: Some(
+                        Regular(
+                            RegularType {
                                 base: Identifier(
-                                    "FuncType",
+                                    "Connection",
                                 ),
                                 generics: [],
                                 raw: false,
                                 array: false,
                             },
-                        },
-                    ],
-                    return_type: Some(
-                        Regular {
-                            base: Identifier(
-                                "Connection",
-                            ),
-                            generics: [],
-                            raw: false,
-                            array: false,
-                        },
+                        ),
                     ),
                     statements: [
                         VariableDefinition {
@@ -336,14 +362,16 @@ Program {
                     arguments: [
                         FunctionArgument {
                             name: "id",
-                            kind: Regular {
-                                base: Identifier(
-                                    "int",
-                                ),
-                                generics: [],
-                                raw: false,
-                                array: false,
-                            },
+                            kind: Regular(
+                                RegularType {
+                                    base: Identifier(
+                                        "int",
+                                    ),
+                                    generics: [],
+                                    raw: false,
+                                    array: false,
+                                },
+                            ),
                         },
                     ],
                     return_type: None,
@@ -400,14 +428,16 @@ Program {
                                     arguments: [
                                         FunctionArgument {
                                             name: "function",
-                                            kind: Regular {
-                                                base: Identifier(
-                                                    "FuncType",
-                                                ),
-                                                generics: [],
-                                                raw: false,
-                                                array: false,
-                                            },
+                                            kind: Regular(
+                                                RegularType {
+                                                    base: Identifier(
+                                                        "FuncType",
+                                                    ),
+                                                    generics: [],
+                                                    raw: false,
+                                                    array: false,
+                                                },
+                                            ),
                                         },
                                     ],
                                     return_type: None,

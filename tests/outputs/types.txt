@@ -13,45 +13,51 @@ Program {
                     requires_implementations: [],
                 },
             ],
-            definition: Regular {
-                base: Identifier(
-                    "Generic1",
-                ),
-                generics: [
-                    DefinitionType {
-                        name: "Generic2",
-                        requires_implementations: [],
-                    },
-                ],
-                raw: false,
-                array: true,
-            },
+            definition: Regular(
+                RegularType {
+                    base: Identifier(
+                        "Generic1",
+                    ),
+                    generics: [
+                        DefinitionType {
+                            name: "Generic2",
+                            requires_implementations: [],
+                        },
+                    ],
+                    raw: false,
+                    array: true,
+                },
+            ),
         },
         TypeAlias {
             modifiers: [],
             name: "Reg_T",
             generics: [],
-            definition: Regular {
-                base: Identifier(
-                    "int",
-                ),
-                generics: [],
-                raw: false,
-                array: false,
-            },
+            definition: Regular(
+                RegularType {
+                    base: Identifier(
+                        "int",
+                    ),
+                    generics: [],
+                    raw: false,
+                    array: false,
+                },
+            ),
         },
         TypeAlias {
             modifiers: [],
             name: "Reg_ArrayT",
             generics: [],
-            definition: Regular {
-                base: Identifier(
-                    "int",
-                ),
-                generics: [],
-                raw: false,
-                array: true,
-            },
+            definition: Regular(
+                RegularType {
+                    base: Identifier(
+                        "int",
+                    ),
+                    generics: [],
+                    raw: false,
+                    array: true,
+                },
+            ),
         },
         TypeAlias {
             modifiers: [],
@@ -62,19 +68,21 @@ Program {
                     requires_implementations: [],
                 },
             ],
-            definition: Regular {
-                base: Identifier(
-                    "A",
-                ),
-                generics: [
-                    DefinitionType {
-                        name: "A",
-                        requires_implementations: [],
-                    },
-                ],
-                raw: false,
-                array: true,
-            },
+            definition: Regular(
+                RegularType {
+                    base: Identifier(
+                        "A",
+                    ),
+                    generics: [
+                        DefinitionType {
+                            name: "A",
+                            requires_implementations: [],
+                        },
+                    ],
+                    raw: false,
+                    array: false,
+                },
+            ),
         },
         TypeAlias {
             modifiers: [],
@@ -85,45 +93,51 @@ Program {
                     requires_implementations: [],
                 },
             ],
-            definition: Regular {
-                base: Identifier(
-                    "B",
-                ),
-                generics: [
-                    DefinitionType {
-                        name: "B",
-                        requires_implementations: [],
-                    },
-                ],
-                raw: false,
-                array: true,
-            },
+            definition: Regular(
+                RegularType {
+                    base: Identifier(
+                        "B",
+                    ),
+                    generics: [
+                        DefinitionType {
+                            name: "B",
+                            requires_implementations: [],
+                        },
+                    ],
+                    raw: false,
+                    array: true,
+                },
+            ),
         },
         TypeAlias {
             modifiers: [],
             name: "Raw_T",
             generics: [],
-            definition: Regular {
-                base: Identifier(
-                    "int",
-                ),
-                generics: [],
-                raw: true,
-                array: false,
-            },
+            definition: Regular(
+                RegularType {
+                    base: Identifier(
+                        "int",
+                    ),
+                    generics: [],
+                    raw: true,
+                    array: false,
+                },
+            ),
         },
         TypeAlias {
             modifiers: [],
             name: "Raw_ArrayT",
             generics: [],
-            definition: Regular {
-                base: Identifier(
-                    "int",
-                ),
-                generics: [],
-                raw: true,
-                array: true,
-            },
+            definition: Regular(
+                RegularType {
+                    base: Identifier(
+                        "int",
+                    ),
+                    generics: [],
+                    raw: true,
+                    array: true,
+                },
+            ),
         },
         TypeAlias {
             modifiers: [],
@@ -134,19 +148,21 @@ Program {
                     requires_implementations: [],
                 },
             ],
-            definition: Regular {
-                base: Identifier(
-                    "A",
-                ),
-                generics: [
-                    DefinitionType {
-                        name: "A",
-                        requires_implementations: [],
-                    },
-                ],
-                raw: true,
-                array: true,
-            },
+            definition: Regular(
+                RegularType {
+                    base: Identifier(
+                        "A",
+                    ),
+                    generics: [
+                        DefinitionType {
+                            name: "A",
+                            requires_implementations: [],
+                        },
+                    ],
+                    raw: true,
+                    array: false,
+                },
+            ),
         },
         TypeAlias {
             modifiers: [],
@@ -157,19 +173,21 @@ Program {
                     requires_implementations: [],
                 },
             ],
-            definition: Regular {
-                base: Identifier(
-                    "B",
-                ),
-                generics: [
-                    DefinitionType {
-                        name: "B",
-                        requires_implementations: [],
-                    },
-                ],
-                raw: true,
-                array: true,
-            },
+            definition: Regular(
+                RegularType {
+                    base: Identifier(
+                        "B",
+                    ),
+                    generics: [
+                        DefinitionType {
+                            name: "B",
+                            requires_implementations: [],
+                        },
+                    ],
+                    raw: true,
+                    array: true,
+                },
+            ),
         },
         FunctionDefinition {
             modifiers: [],
@@ -182,23 +200,25 @@ Program {
             ],
             arguments: [],
             return_type: Some(
-                Regular {
-                    base: Identifier(
-                        "AType",
-                    ),
-                    generics: [
-                        DefinitionType {
-                            name: "int",
-                            requires_implementations: [],
-                        },
-                        DefinitionType {
-                            name: "Generic2",
-                            requires_implementations: [],
-                        },
-                    ],
-                    raw: false,
-                    array: true,
-                },
+                Regular(
+                    RegularType {
+                        base: Identifier(
+                            "AType",
+                        ),
+                        generics: [
+                            DefinitionType {
+                                name: "int",
+                                requires_implementations: [],
+                            },
+                            DefinitionType {
+                                name: "Generic2",
+                                requires_implementations: [],
+                            },
+                        ],
+                        raw: false,
+                        array: false,
+                    },
+                ),
             ),
             statements: [
                 Return(
@@ -228,25 +248,29 @@ Program {
             arguments: [
                 FunctionArgument {
                     name: "input",
-                    kind: Regular {
+                    kind: Regular(
+                        RegularType {
+                            base: Identifier(
+                                "From",
+                            ),
+                            generics: [],
+                            raw: false,
+                            array: false,
+                        },
+                    ),
+                },
+            ],
+            return_type: Some(
+                Regular(
+                    RegularType {
                         base: Identifier(
-                            "From",
+                            "To",
                         ),
                         generics: [],
                         raw: false,
                         array: false,
                     },
-                },
-            ],
-            return_type: Some(
-                Regular {
-                    base: Identifier(
-                        "To",
-                    ),
-                    generics: [],
-                    raw: false,
-                    array: false,
-                },
+                ),
             ),
             statements: [
                 Return(
@@ -254,14 +278,16 @@ Program {
                         value: Identifier(
                             "input",
                         ),
-                        kind: Regular {
-                            base: Identifier(
-                                "To",
-                            ),
-                            generics: [],
-                            raw: false,
-                            array: false,
-                        },
+                        kind: Regular(
+                            RegularType {
+                                base: Identifier(
+                                    "To",
+                                ),
+                                generics: [],
+                                raw: false,
+                                array: false,
+                            },
+                        ),
                     },
                 ),
             ],
@@ -280,68 +306,82 @@ Program {
                                         value: Int(
                                             3,
                                         ),
-                                        kind: Regular {
+                                        kind: Regular(
+                                            RegularType {
+                                                base: Identifier(
+                                                    "a",
+                                                ),
+                                                generics: [],
+                                                raw: false,
+                                                array: false,
+                                            },
+                                        ),
+                                    },
+                                    kind: Regular(
+                                        RegularType {
                                             base: Identifier(
-                                                "a",
+                                                "b",
                                             ),
                                             generics: [],
                                             raw: false,
                                             array: false,
                                         },
-                                    },
-                                    kind: Regular {
+                                    ),
+                                },
+                                kind: Regular(
+                                    RegularType {
                                         base: Identifier(
-                                            "b",
+                                            "c",
                                         ),
                                         generics: [],
                                         raw: false,
                                         array: false,
                                     },
-                                },
-                                kind: Regular {
+                                ),
+                            },
+                            kind: Regular(
+                                RegularType {
                                     base: Identifier(
-                                        "c",
+                                        "d",
                                     ),
                                     generics: [],
                                     raw: false,
                                     array: false,
                                 },
-                            },
-                            kind: Regular {
+                            ),
+                        },
+                        kind: Regular(
+                            RegularType {
                                 base: Identifier(
-                                    "d",
+                                    "e",
                                 ),
                                 generics: [],
                                 raw: false,
                                 array: false,
                             },
-                        },
-                        kind: Regular {
+                        ),
+                    },
+                    kind: Regular(
+                        RegularType {
                             base: Identifier(
-                                "e",
+                                "f",
                             ),
                             generics: [],
                             raw: false,
                             array: false,
                         },
-                    },
-                    kind: Regular {
+                    ),
+                },
+                kind: Regular(
+                    RegularType {
                         base: Identifier(
-                            "f",
+                            "g",
                         ),
                         generics: [],
                         raw: false,
                         array: false,
                     },
-                },
-                kind: Regular {
-                    base: Identifier(
-                        "g",
-                    ),
-                    generics: [],
-                    raw: false,
-                    array: false,
-                },
+                ),
             },
         },
         Return(
@@ -350,22 +390,26 @@ Program {
                     "cast",
                 ),
                 generics: [
-                    Regular {
-                        base: Identifier(
-                            "int",
-                        ),
-                        generics: [],
-                        raw: false,
-                        array: false,
-                    },
-                    Regular {
-                        base: Identifier(
-                            "float",
-                        ),
-                        generics: [],
-                        raw: false,
-                        array: false,
-                    },
+                    Regular(
+                        RegularType {
+                            base: Identifier(
+                                "int",
+                            ),
+                            generics: [],
+                            raw: false,
+                            array: false,
+                        },
+                    ),
+                    Regular(
+                        RegularType {
+                            base: Identifier(
+                                "float",
+                            ),
+                            generics: [],
+                            raw: false,
+                            array: false,
+                        },
+                    ),
                 ],
                 arguments: [
                     Int(

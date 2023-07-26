@@ -12,14 +12,16 @@ Program {
             modifiers: [],
             name: "world",
             kind: Some(
-                Regular {
-                    base: Identifier(
-                        "string",
-                    ),
-                    generics: [],
-                    raw: false,
-                    array: false,
-                },
+                Regular(
+                    RegularType {
+                        base: Identifier(
+                            "string",
+                        ),
+                        generics: [],
+                        raw: false,
+                        array: false,
+                    },
+                ),
             ),
             value: String(
                 "world",

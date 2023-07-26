@@ -36,14 +36,16 @@ Program {
             modifiers: [],
             name: "current_light",
             kind: Some(
-                Regular {
-                    base: Identifier(
-                        "Light",
-                    ),
-                    generics: [],
-                    raw: false,
-                    array: false,
-                },
+                Regular(
+                    RegularType {
+                        base: Identifier(
+                            "Light",
+                        ),
+                        generics: [],
+                        raw: false,
+                        array: false,
+                    },
+                ),
             ),
             value: DotAccess {
                 expression: Identifier(
