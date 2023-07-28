@@ -225,7 +225,6 @@ dependencies = [
  "anyhow",
  "clap",
  "inkwell",
- "llvm-sys",
  "pest",
  "pest_derive",
  "strum",

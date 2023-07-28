@@ -8,8 +8,7 @@ edition = "2021"
 [dependencies]
 anyhow = "1.0.72"
 clap = { version = "4.3.12", features = ["derive"] }
-inkwell = { git = "https://github.com/TheDan64/inkwell", branch = "master", features = ["llvm15-0"] }
-llvm-sys = "150.1.0"
+inkwell = { git = "https://github.com/TheDan64/inkwell", branch = "master", features = ["llvm15-0", "target-x86"] }
 pest = "2.7.0"
 pest_derive = { version = "2.7", features = ["grammar-extras"] }
 strum = "0.25.0"

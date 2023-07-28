@@ -4,18 +4,22 @@ use std::io::BufReader;
 use std::io::prelude::*;
 use std::path::PathBuf;
 
+use inkwell::values::AnyValue;
+use inkwell::values::AsValueRef;
 use pest::Parser;
 
 use hasanlang::{
     cli,
     pest_parser,
     hasan_parser,
-    analyzer
+    analyzer,
+    compiler
 };
 
 use pest_parser::{PestParser, Rule};
 use hasan_parser::HasanParser;
 use analyzer::SemanticAnalyzer;
+use compiler::Compiler;
 
 //* Helper functions *//
 fn read_file(path: &str) -> String {
@@ -107,24 +111,72 @@ fn compile(command: cli::CompileCommand) {
         println!("Analyzing...");
     }
     
-    let analyzer = SemanticAnalyzer::new(ast);
-    let result = analyzer.analyze();
+    let analyzer = SemanticAnalyzer::new(ast.clone());
+    let analysis = analyzer.analyze();
 
-    if result.is_err() {
-        eprintln!("Error: {:?}", result.err().unwrap());
+    if analysis.is_err() {
+        eprintln!("Error: {:?}", analysis.err().unwrap());
         return;
     }
 
-    let data = result.unwrap();
+    let analysis_data = analysis.unwrap();
 
     if debug {
-		println!("Analysis data: {:?}", data);
+		println!("Analysis data: {:?}", analysis_data);
 		println!();
 	}
 
-    write_file("./compiled/3_semantic_analysis.txt", format!("{:#?}", data));
+    write_file("./compiled/3_semantic_analysis.txt", format!("{:#?}", analysis_data));
 
-    println!("Done!");
+    // Compilation stage
+    if debug {
+        println!("Compiling...");
+    }
+
+    // Initialize the compiler
+    use inkwell::context::Context;
+    use inkwell::passes::PassManager;
+
+    let context = Context::create();
+    let module = context.create_module("program");
+    let builder = context.create_builder();
+
+    let fpm = PassManager::create(&module);
+
+    fpm.add_instruction_combining_pass();
+    fpm.add_reassociate_pass();
+    fpm.add_gvn_pass();
+    fpm.add_cfg_simplification_pass();
+    fpm.add_basic_alias_analysis_pass();
+    fpm.add_promote_memory_to_register_pass();
+    fpm.add_instruction_combining_pass();
+    fpm.add_reassociate_pass();
+    
+    fpm.initialize();
+
+    let mut compiler = Compiler::new(&context, &builder, &fpm, &module);
+    let codegen = compiler.compile(&ast);
+
+    if codegen.is_err() {
+        eprintln!("Error: {:?}", codegen.err().unwrap());
+        return;
+    }
+
+    let codegen_data = codegen
+        .unwrap()
+        .print_to_string()
+        .to_string();
+
+    if debug {
+		println!("Codegen data: {:?}", codegen_data);
+		println!();
+	}
+
+    write_file("./compiled/4_llvm_ir.ll", codegen_data);
+
+    if debug {
+        println!("Done!");
+    }
 }
 
 fn test_create(command: cli::CreateTestCommand) {

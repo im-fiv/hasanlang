@@ -3,7 +3,6 @@ use std::iter::Peekable;
 use pest::error::{Error, ErrorVariant};
 use pest::iterators::{Pair, Pairs};
 use pest::Span;
-
 use strum_macros::Display;
 
 use crate::pest_parser::Rule;
@@ -25,9 +24,12 @@ fn create_error(message: &str, span: Span<'_>) -> Error<Rule> {
 	)
 }
 
-pub struct HasanParser<'p> {
-	pairs: Pairs<'p, Rule>
-}
+pub type ClassFunctionAttributes = Vec<ClassFunctionAttribute>;
+pub type GeneralModifiers = Vec<GeneralModifier>;
+pub type FunctionBody = Option<Vec<Statement>>;
+
+pub type IntType = i64;
+pub type FloatType = f64;
 
 #[derive(Debug, Clone)]
 pub struct Program {
@@ -41,17 +43,25 @@ pub struct ModuleInfo {
 	pub path: Vec<String>
 }
 
+#[derive(Debug, Clone)]
+pub struct FunctionPrototype {
+	pub modifiers: GeneralModifiers,
+
+	pub name: String,
+	pub generics: Vec<DefinitionType>,
+	pub arguments: Vec<FunctionArgument>,
+	pub return_type: Option<Type>
+}
+
+#[derive(Debug, Clone)]
+pub struct Function {
+	pub prototype: FunctionPrototype,
+	pub body: FunctionBody
+}
+
 #[derive(Debug, Clone, Display)]
 pub enum Statement {
-	FunctionDefinition {
-		modifiers: GeneralModifiers,
-
-		name: String,
-		generics: Vec<DefinitionType>,
-		arguments: Vec<FunctionArgument>,
-		return_type: Option<Type>,
-		statements: Vec<Statement>
-	},
+	FunctionDefinition(Function),
 
 	TypeAlias {
 		modifiers: GeneralModifiers,
@@ -164,22 +174,32 @@ pub enum ModuleItem {
 
 #[derive(Debug, Clone)]
 pub enum InterfaceMember {
-	Variable {
-		modifiers: GeneralModifiers,
+	Variable(InterfaceVariable),
+	Function(InterfaceFunction)
+}
 
-		name: String,
-		kind: Type
-	},
+#[derive(Debug, Clone)]
+pub struct InterfaceVariable {
+	pub modifiers: GeneralModifiers,
 
-	Function {
-		attributes: Option<ClassFunctionAttributes>,
-		modifiers: GeneralModifiers,
+	pub name: String,
+	pub kind: Type
+}
 
-		name: String,
-		generics: Vec<DefinitionType>,
-		argument_types: Vec<Type>,
-		return_type: Type
-	}
+#[derive(Debug, Clone)]
+pub struct InterfaceFunction {
+	pub attributes: Option<ClassFunctionAttributes>,
+	pub prototype: InterfaceFunctionPrototype
+}
+
+#[derive(Debug, Clone)]
+pub struct InterfaceFunctionPrototype {
+	pub modifiers: GeneralModifiers,
+
+	pub name: String,
+	pub generics: Vec<DefinitionType>,
+	pub argument_types: Vec<Type>,
+	pub return_type: Type
 }
 
 #[derive(Debug, Clone)]
@@ -205,31 +225,6 @@ impl FunctionArgument {
 	}
 }
 
-pub type ClassFunctionAttributes = Vec<ClassFunctionAttribute>;
-
-#[derive(Debug, Clone, PartialEq)]
-pub enum ClassFunctionAttribute {
-	Constructor,
-	Get,
-	Set
-}
-
-impl TryFrom<&str> for ClassFunctionAttribute {
-	type Error = String;
-
-	fn try_from(value: &str) -> Result<Self, Self::Error> {
-		match value {
-			"constructor" => Ok(Self::Constructor),
-			"get" => Ok(Self::Get),
-			"set" => Ok(Self::Set),
-
-			_ => Err(format!("Unknown class function attribute '{}'", value))
-		}
-	}
-}
-
-pub type GeneralModifiers = Vec<GeneralModifier>;
-
 #[derive(Debug, Clone, PartialEq)]
 pub enum GeneralModifier {
 	Public,
@@ -253,53 +248,57 @@ impl TryFrom<&str> for GeneralModifier {
 
 #[derive(Debug, Clone)]
 pub enum ClassDefinitionMember {
-	Variable {
-		modifiers: GeneralModifiers,
-
-		name: String,
-		kind: Type,
-		default_value: Expression
-	},
-
-	Function {
-		attributes: Option<ClassFunctionAttributes>,
-		modifiers: GeneralModifiers,
-
-		name: String,
-		generics: Vec<DefinitionType>,
-		arguments: Vec<FunctionArgument>,
-		return_type: Option<Type>,
-		statements: Vec<Statement>
-	}
+	Variable(ClassDefinitionVariable),
+	Function(ClassDefinitionFunction)
 }
 
-impl ClassDefinitionMember {
-	pub fn function_from_statement(statement: Statement, attributes: Option<ClassFunctionAttributes>) -> Self {
-		if let Statement::FunctionDefinition {
-			modifiers,
-			name,
-			generics,
-			arguments,
-			return_type,
-			statements
-		} = statement {
-			ClassDefinitionMember::Function {
-				modifiers,
-				name,
-				attributes,
-				generics,
-				arguments,
-				return_type,
-				statements
-			}
+#[derive(Debug, Clone)]
+pub struct ClassDefinitionVariable {
+	pub modifiers: GeneralModifiers,
+
+	pub name: String,
+	pub kind: Type,
+	pub default_value: Expression
+}
+
+#[derive(Debug, Clone)]
+pub struct ClassDefinitionFunction {
+	pub attributes: Option<ClassFunctionAttributes>,
+	pub prototype: FunctionPrototype,
+	pub body: FunctionBody
+}
+
+impl ClassDefinitionFunction {
+	pub fn from_statement(statement: Statement, attributes: Option<ClassFunctionAttributes>) -> Self {
+		if let Statement::FunctionDefinition(function) = statement {
+			let Function { prototype, body } = function;
+			ClassDefinitionFunction { attributes, prototype, body }
 		} else {
 			panic!("Failed to convert invalid statement into a ClassDefinitionMember::Function");
 		}
 	}
 }
 
-type IntType = i64;
-type FloatType = f64;
+#[derive(Debug, Clone, PartialEq)]
+pub enum ClassFunctionAttribute {
+	Constructor,
+	Get,
+	Set
+}
+
+impl TryFrom<&str> for ClassFunctionAttribute {
+	type Error = String;
+
+	fn try_from(value: &str) -> Result<Self, Self::Error> {
+		match value {
+			"constructor" => Ok(Self::Constructor),
+			"get" => Ok(Self::Get),
+			"set" => Ok(Self::Set),
+
+			_ => Err(format!("Unknown class function attribute '{}'", value))
+		}
+	}
+}
 
 #[derive(Debug, Clone)]
 pub enum Type {
@@ -442,6 +441,10 @@ impl UnaryOperator {
 	}
 }
 
+pub struct HasanParser<'p> {
+	pairs: Pairs<'p, Rule>
+}
+
 impl<'p> HasanParser<'p> {
 	pub fn new(pairs: Pairs<'p, Rule>) -> Self {
 		HasanParser { pairs }
@@ -562,6 +565,7 @@ impl<'p> HasanParser<'p> {
 		statements
 	}
 
+	#[inline]
 	pub fn pair_str(&self, pair: Pair<Rule>) -> String {
 		pair.as_str().to_owned()
 	}
@@ -858,7 +862,7 @@ impl<'p> HasanParser<'p> {
 		}
 	}
 
-	fn parse_interface_variable(&self, pair: Pair<Rule>) -> InterfaceMember {
+	fn parse_interface_variable(&self, pair: Pair<Rule>) -> InterfaceVariable {
 		if pair.as_rule() != Rule::interface_variable {
 			error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::interface_variable, pair.as_rule());
 		}
@@ -881,7 +885,7 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse interface variable: type pair is missing");
 
-		InterfaceMember::Variable {
+		InterfaceVariable {
 			modifiers,
 			name,
 			kind: self.parse_type(type_pair)
@@ -907,7 +911,7 @@ impl<'p> HasanParser<'p> {
 		argument_types
 	}
 
-	fn parse_interface_function(&self, pair: Pair<Rule>) -> InterfaceMember {
+	fn parse_interface_function(&self, pair: Pair<Rule>) -> InterfaceFunction {
 		if pair.as_rule() != Rule::interface_function {
 			error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::interface_function, pair.as_rule());
 		}
@@ -975,15 +979,15 @@ impl<'p> HasanParser<'p> {
 		// Parse the return type
 		let return_type = self.parse_type(next_pair);
 
-		InterfaceMember::Function {
+		let prototype = InterfaceFunctionPrototype {
 			modifiers,
-			attributes,
-
 			name,
 			generics,
 			argument_types: arguments,
 			return_type
-		}
+		};
+
+		InterfaceFunction { attributes, prototype }
 	}
 
 	fn parse_interface_members(&self, pair: Pair<Rule>) -> Vec<InterfaceMember> {
@@ -999,8 +1003,8 @@ impl<'p> HasanParser<'p> {
 
 		for pair in pairs {
 			let member = match pair.as_rule() {
-				Rule::interface_variable => self.parse_interface_variable(pair),
-				Rule::interface_function => self.parse_interface_function(pair),
+				Rule::interface_variable => InterfaceMember::Variable(self.parse_interface_variable(pair)),
+				Rule::interface_function => InterfaceMember::Function(self.parse_interface_function(pair)),
 
 				rule => error!(
 					"expected '{:?}' or '{:?}', got '{:?}'",
@@ -1801,18 +1805,18 @@ impl<'p> HasanParser<'p> {
 		modifiers
 	}
 
-	fn parse_function_header(&self, pair: Pair<Rule>) -> (GeneralModifiers, String, Vec<DefinitionType>, Vec<FunctionArgument>, Option<Type>) {
+	fn parse_function_prototype(&self, pair: Pair<Rule>) -> FunctionPrototype {
 		let mut header_pairs = pair.into_inner();
 
 		let modifiers_pair = header_pairs
 			.next()
-			.expect("Failed to parse function header: modifiers are missing");
+			.expect("Failed to parse function prototype: modifiers are missing");
 
 		let modifiers = self.parse_general_modifiers(modifiers_pair);
 
 		let name = header_pairs
 			.next()
-			.expect("Failed to parse function header: function name is missing");
+			.expect("Failed to parse function prototype: function name is missing");
 
 		let mut generics: Vec<DefinitionType> = Vec::new();
 		let mut arguments: Vec<FunctionArgument> = Vec::new();
@@ -1828,7 +1832,13 @@ impl<'p> HasanParser<'p> {
 			}
 		}
 
-		(modifiers, self.pair_str(name), generics, arguments, return_type)
+		FunctionPrototype {
+			modifiers,
+			name: self.pair_str(name),
+			generics,
+			arguments,
+			return_type
+		}
 	}
 
 	fn parse_function_definition(&self, pair: Pair<Rule>) -> Statement {
@@ -1839,21 +1849,19 @@ impl<'p> HasanParser<'p> {
 			.expect("Failed to parse function definition: function header is missing");
 
 		// Parsing the header
-		let (modifiers, name, generics, arguments, return_type) = self.parse_function_header(header_pair);
+		let prototype = self.parse_function_prototype(header_pair);
 
 		let body_pairs = pairs
 			.next()
 			.expect("Failed to parse function definition: function body is missing")
 			.into_inner();
 
-		Statement::FunctionDefinition {
-			modifiers,
-			name,
-			generics,
-			arguments,
-			return_type,
-			statements: self.parse_statements(body_pairs)
-		}
+		let function = Function {
+			prototype,
+			body: Some(self.parse_statements(body_pairs))
+		};
+
+		Statement::FunctionDefinition(function)
 	}
 
 	fn parse_type_alias(&self, pair: Pair<Rule>) -> Statement {
@@ -1893,7 +1901,7 @@ impl<'p> HasanParser<'p> {
 		}
 	}
 
-	fn parse_class_definition_function(&self, pair: Pair<Rule>) -> ClassDefinitionMember {
+	fn parse_class_definition_function(&self, pair: Pair<Rule>) -> ClassDefinitionFunction {
 		if pair.as_rule() != Rule::class_definition_function {
 			panic!("Failed to parse a class definition function: expected rule '{:?}', got '{:?}'", Rule::class_definition_function, pair.as_rule());
 		}
@@ -1918,10 +1926,10 @@ impl<'p> HasanParser<'p> {
 			.unwrap_or_else(|| panic!("Failed to parse a class definition function: expected rule '{:?}', got nothing", Rule::function_definition_stmt));
 
 		let function_statement = self.parse_function_definition(statement_pair);
-		ClassDefinitionMember::function_from_statement(function_statement, attributes)
+		ClassDefinitionFunction::from_statement(function_statement, attributes)
 	}
 
-	fn parse_class_definition_variable(&self, pair: Pair<Rule>) -> ClassDefinitionMember {
+	fn parse_class_definition_variable(&self, pair: Pair<Rule>) -> ClassDefinitionVariable {
 		if pair.as_rule() != Rule::class_definition_variable {
 			panic!("Failed to parse class definiton variable: expected rule '{:?}', got '{:?}'", Rule::class_definition_variable, pair.as_rule());
 		}
@@ -1949,7 +1957,7 @@ impl<'p> HasanParser<'p> {
 			default_value = self.parse_expression(default_value_option.unwrap_or_else(|| unreachable!("Failed to parse class definition variable: default value pair is missing")));
 		}
 
-		ClassDefinitionMember::Variable {
+		ClassDefinitionVariable {
 			modifiers,
 			name: self.pair_str(name),
 			kind: self.parse_type(kind),
@@ -1968,8 +1976,8 @@ impl<'p> HasanParser<'p> {
 			.expect("Failed to parse class definition member: pairs are empty");
 
 		match inner.as_rule() {
-			Rule::class_definition_variable => self.parse_class_definition_variable(inner),
-			Rule::class_definition_function => self.parse_class_definition_function(inner),
+			Rule::class_definition_variable => ClassDefinitionMember::Variable(self.parse_class_definition_variable(inner)),
+			Rule::class_definition_function => ClassDefinitionMember::Function(self.parse_class_definition_function(inner)),
 
 			rule => error!(
 				"expected '{:?}' or '{:?}', got '{:?}'",
