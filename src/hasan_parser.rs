@@ -308,7 +308,7 @@ pub enum Type {
 
 #[derive(Debug, Clone)]
 pub struct RegularType {
-	pub base: Box<Expression>,
+	pub base: String,
 	pub generics: Vec<DefinitionType>,
 
 	// Type attributes
@@ -1592,7 +1592,7 @@ impl<'p> HasanParser<'p> {
 		let operator_pairs = operators_pair.into_inner();
 
 		let mut output_type = Type::Regular(RegularType {
-			base: Box::new(self.parse_expression(type_pair)),
+			base: self.pair_str(type_pair),
 			generics: Vec::new(),
 			raw: false,
 			array: false

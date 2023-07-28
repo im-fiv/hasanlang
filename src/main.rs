@@ -4,7 +4,6 @@ use std::io::BufReader;
 use std::io::prelude::*;
 use std::path::PathBuf;
 
-use inkwell::values::AnyValue;
 use pest::Parser;
 
 use hasanlang::{
@@ -135,10 +134,23 @@ fn compile(command: cli::CompileCommand) {
     // Initialize the compiler
     use inkwell::context::Context;
     use inkwell::passes::PassManager;
+    use inkwell::targets::{InitializationConfig, Target, TargetMachine};
+    
+    Target::initialize_native(&InitializationConfig::default())
+        .expect("Failed to initialize native target");
 
     let context = Context::create();
     let module = context.create_module("program");
     let builder = context.create_builder();
+
+    let execution_engine = module
+        .create_execution_engine()
+        .expect("Failed to create execution engine");
+
+    let target_data = execution_engine.get_target_data();
+
+    module.set_triple(&TargetMachine::get_default_triple());
+    module.set_data_layout(&target_data.get_data_layout());
 
     let fpm = PassManager::create(&module);
 
@@ -161,8 +173,7 @@ fn compile(command: cli::CompileCommand) {
         return;
     }
 
-    let codegen_data = codegen
-        .unwrap()
+    let codegen_data = module
         .print_to_string()
         .to_string();
 
