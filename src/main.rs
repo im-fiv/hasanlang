@@ -5,7 +5,6 @@ use std::io::prelude::*;
 use std::path::PathBuf;
 
 use inkwell::values::AnyValue;
-use inkwell::values::AsValueRef;
 use pest::Parser;
 
 use hasanlang::{
