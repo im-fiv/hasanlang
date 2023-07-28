@@ -3,7 +3,7 @@ use inkwell::builder::Builder;
 use inkwell::passes::PassManager;
 use inkwell::module::Module;
 use inkwell::types::{BasicMetadataTypeEnum, BasicTypeEnum};
-use inkwell::values::{FunctionValue, PointerValue, IntValue, FloatValue, AnyValue, BasicValue};
+use inkwell::values::{FunctionValue, PointerValue, IntValue, FloatValue, BasicValue};
 
 use std::collections::HashMap;
 use strum_macros::Display;
