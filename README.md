@@ -3,7 +3,7 @@
 ![Language](https://img.shields.io/badge/Language-Rust-orange)
 ![Contributions](https://img.shields.io/badge/Contributions-Welcome-brightgreen)
 
-Hasanlang is a work-in-progress programming language, made for fun, that aims to be a self-hosted. The goal of this project is to extend my knowledge about compilers, programming languages, and how they are made. Currently, this is my primary project.
+Hasanlang is a work-in-progress programming language, made for fun, that aims to be self-hosted. The goal of this project is to extend my knowledge about compilers, programming languages, and how they are made. Currently, this is my primary project.
 
 ## Project Status
 This project is in the early stages. The language specifications, parser, and basic compiler are under active development. Plans to become self-hosted are underway. I'm not certain whether I will have the will to finish this, but as it seeems, the likelihood of giving up is relatively low.
