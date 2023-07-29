@@ -98,7 +98,7 @@ pub enum Statement {
 		arguments: Vec<Expression>
 	},
 
-	Return(Expression),
+	Return(Option<Expression>),
 
 	EnumDefinition {
 		modifiers: GeneralModifiers,
@@ -2154,9 +2154,9 @@ impl<'p> HasanParser<'p> {
 				.peek()
 				.expect("Failed to parse function call expression as a statement");
 
-			return Statement::Return(self.parse_expression(expression_pair));
+			return Statement::Return(Some(self.parse_expression(expression_pair)));
 		}
 
-		Statement::Return(Expression::Empty)
+		Statement::Return(None)
 	}
 }
