@@ -14,9 +14,7 @@ Program {
             kind: Some(
                 Regular(
                     RegularType {
-                        base: Identifier(
-                            "string",
-                        ),
+                        base: "string",
                         generics: [],
                         raw: false,
                         array: false,
@@ -28,21 +26,23 @@ Program {
             ),
         },
         Return(
-            Binary {
-                lhs: Binary {
-                    lhs: Identifier(
-                        "hello",
-                    ),
+            Some(
+                Binary {
+                    lhs: Binary {
+                        lhs: Identifier(
+                            "hello",
+                        ),
+                        operator: Plus,
+                        rhs: String(
+                            " ",
+                        ),
+                    },
                     operator: Plus,
-                    rhs: String(
-                        " ",
+                    rhs: Identifier(
+                        "world",
                     ),
                 },
-                operator: Plus,
-                rhs: Identifier(
-                    "world",
-                ),
-            },
+            ),
         ),
     ],
     module_info: None,

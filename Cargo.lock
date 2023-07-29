@@ -230,17 +230,54 @@ dependencies = [
 ]
 
 [[package]]
-name = "hasanlang"
-version = "0.2.0"
+name = "hasan_compiler"
+version = "0.0.0"
 dependencies = [
  "anyhow",
- "clap",
+ "hasan_parser",
  "inkwell",
- "pest",
- "pest_derive",
  "rand",
  "strum",
  "strum_macros",
+]
+
+[[package]]
+name = "hasan_parser"
+version = "0.0.0"
+dependencies = [
+ "hasan_pest_parser",
+ "pest",
+ "strum",
+ "strum_macros",
+]
+
+[[package]]
+name = "hasan_pest_parser"
+version = "0.0.0"
+dependencies = [
+ "pest",
+ "pest_derive",
+]
+
+[[package]]
+name = "hasan_semantic_analyzer"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "hasan_parser",
+]
+
+[[package]]
+name = "hasanlang"
+version = "0.2.0"
+dependencies = [
+ "clap",
+ "hasan_compiler",
+ "hasan_parser",
+ "hasan_pest_parser",
+ "hasan_semantic_analyzer",
+ "inkwell",
+ "pest",
 ]
 
 [[package]]

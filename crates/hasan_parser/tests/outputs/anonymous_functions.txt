@@ -12,8 +12,10 @@ Program {
                 return_type: None,
                 statements: [
                     Return(
-                        Int(
-                            5,
+                        Some(
+                            Int(
+                                5,
+                            ),
                         ),
                     ),
                 ],
@@ -29,9 +31,7 @@ Program {
                 return_type: Some(
                     Regular(
                         RegularType {
-                            base: Identifier(
-                                "int",
-                            ),
+                            base: "int",
                             generics: [],
                             raw: false,
                             array: false,
@@ -40,15 +40,17 @@ Program {
                 ),
                 statements: [
                     Return(
-                        Binary {
-                            lhs: Int(
-                                2,
-                            ),
-                            operator: Plus,
-                            rhs: Int(
-                                2,
-                            ),
-                        },
+                        Some(
+                            Binary {
+                                lhs: Int(
+                                    2,
+                                ),
+                                operator: Plus,
+                                rhs: Int(
+                                    2,
+                                ),
+                            },
+                        ),
                     ),
                 ],
             },
@@ -64,9 +66,7 @@ Program {
                         name: "a",
                         kind: Regular(
                             RegularType {
-                                base: Identifier(
-                                    "int",
-                                ),
+                                base: "int",
                                 generics: [],
                                 raw: false,
                                 array: false,
@@ -77,9 +77,7 @@ Program {
                         name: "b",
                         kind: Regular(
                             RegularType {
-                                base: Identifier(
-                                    "int",
-                                ),
+                                base: "int",
                                 generics: [],
                                 raw: false,
                                 array: false,
@@ -90,15 +88,17 @@ Program {
                 return_type: None,
                 statements: [
                     Return(
-                        Binary {
-                            lhs: Identifier(
-                                "a",
-                            ),
-                            operator: Plus,
-                            rhs: Identifier(
-                                "b",
-                            ),
-                        },
+                        Some(
+                            Binary {
+                                lhs: Identifier(
+                                    "a",
+                                ),
+                                operator: Plus,
+                                rhs: Identifier(
+                                    "b",
+                                ),
+                            },
+                        ),
                     ),
                 ],
             },
@@ -129,9 +129,7 @@ Program {
                         name: "a",
                         kind: Regular(
                             RegularType {
-                                base: Identifier(
-                                    "int",
-                                ),
+                                base: "int",
                                 generics: [],
                                 raw: false,
                                 array: false,
@@ -156,9 +154,7 @@ Program {
                         name: "a",
                         kind: Regular(
                             RegularType {
-                                base: Identifier(
-                                    "int",
-                                ),
+                                base: "int",
                                 generics: [],
                                 raw: false,
                                 array: false,
@@ -169,9 +165,7 @@ Program {
                 return_type: Some(
                     Regular(
                         RegularType {
-                            base: Identifier(
-                                "int",
-                            ),
+                            base: "int",
                             generics: [],
                             raw: false,
                             array: false,
@@ -193,9 +187,7 @@ Program {
                 return_type: Some(
                     Regular(
                         RegularType {
-                            base: Identifier(
-                                "int",
-                            ),
+                            base: "int",
                             generics: [],
                             raw: false,
                             array: false,
@@ -225,9 +217,7 @@ Program {
                         name: "a",
                         kind: Regular(
                             RegularType {
-                                base: Identifier(
-                                    "A",
-                                ),
+                                base: "A",
                                 generics: [],
                                 raw: false,
                                 array: false,
@@ -238,9 +228,7 @@ Program {
                         name: "b",
                         kind: Regular(
                             RegularType {
-                                base: Identifier(
-                                    "B",
-                                ),
+                                base: "B",
                                 generics: [],
                                 raw: false,
                                 array: false,
@@ -251,15 +239,17 @@ Program {
                 return_type: None,
                 statements: [
                     Return(
-                        Binary {
-                            lhs: Identifier(
-                                "a",
-                            ),
-                            operator: Plus,
-                            rhs: Identifier(
-                                "b",
-                            ),
-                        },
+                        Some(
+                            Binary {
+                                lhs: Identifier(
+                                    "a",
+                                ),
+                                operator: Plus,
+                                rhs: Identifier(
+                                    "b",
+                                ),
+                            },
+                        ),
                     ),
                 ],
             },
@@ -275,8 +265,10 @@ Program {
                     return_type: None,
                     statements: [
                         Return(
-                            Int(
-                                2,
+                            Some(
+                                Int(
+                                    2,
+                                ),
                             ),
                         ),
                     ],
@@ -293,9 +285,7 @@ Program {
                         name: "input",
                         kind: Regular(
                             RegularType {
-                                base: Identifier(
-                                    "string",
-                                ),
+                                base: "string",
                                 generics: [],
                                 raw: false,
                                 array: false,
@@ -339,9 +329,7 @@ Program {
                         generics: [
                             Regular(
                                 RegularType {
-                                    base: Identifier(
-                                        "int",
-                                    ),
+                                    base: "int",
                                     generics: [],
                                     raw: false,
                                     array: false,
@@ -349,9 +337,7 @@ Program {
                             ),
                             Regular(
                                 RegularType {
-                                    base: Identifier(
-                                        "int",
-                                    ),
+                                    base: "int",
                                     generics: [],
                                     raw: false,
                                     array: false,

@@ -5,10 +5,8 @@ use std::io::prelude::*;
 
 use pest::Parser;
 
-use hasanlang::{
-	pest_parser::{PestParser, Rule},
-	hasan_parser::HasanParser
-};
+use hasan_pest_parser::{PestParser, Rule};
+use hasan_parser::HasanParser;
 
 fn read_file(path: std::path::PathBuf) -> String {
 	let path_clone = path.clone();

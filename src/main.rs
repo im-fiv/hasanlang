@@ -1,23 +1,16 @@
+mod cli;
+
 use std::fs;
 use std::fs::File;
 use std::io::BufReader;
 use std::io::prelude::*;
-use std::path::PathBuf;
 
 use pest::Parser;
 
-use hasanlang::{
-    cli,
-    pest_parser,
-    hasan_parser,
-    analyzer,
-    compiler
-};
-
-use pest_parser::{PestParser, Rule};
+use hasan_pest_parser::{PestParser, Rule};
 use hasan_parser::HasanParser;
-use analyzer::SemanticAnalyzer;
-use compiler::Compiler;
+use hasan_semantic_analyzer::SemanticAnalyzer;
+use hasan_compiler::Compiler;
 
 //* Helper functions *//
 fn read_file(path: &str) -> String {
@@ -41,13 +34,6 @@ fn write_file(path: &str, contents: String) {
 	file
         .write_all(contents.as_bytes())
         .unwrap_or_else(|_| panic!("Failed to write to file `{}`", path))
-}
-
-fn copy_file(source: &PathBuf, destination: &PathBuf) {
-    // Copy file
-    if let Err(e) = fs::copy(source, destination) {
-        eprintln!("Failed to copy file from `{}` to `{}`: {}", source.display(), destination.display(), e);
-    }
 }
 //* Helper functions *//
 
@@ -190,117 +176,10 @@ fn compile(command: cli::CompileCommand) {
     }
 }
 
-fn test_create(command: cli::CreateTestCommand) {
-    let name = command.name;
-
-    // Construct source and destination file paths
-    let source_path = PathBuf::from("./input.hsl");
-    let mut destination_path = PathBuf::from("./tests/cases");
-
-    destination_path.push(format!("{}.hsl", name));
-
-    // Copy the input file
-    copy_file(&source_path, &destination_path);
-
-    // Compile the copied file and update the output file
-    let update_command = cli::UpdateTestCommand { name };
-    test_update(update_command);
-}
-
-fn test_update(command: cli::UpdateTestCommand) {
-    let name = command.name;
-
-    // Compile the input file
-    let file_path = format!("./tests/cases/{}.hsl", name);
-    compile(cli::CompileCommand {
-        file_path,
-        debug: false,
-        no_opt: false
-    });
-
-    // Construct source and destination file paths
-    let source_path = PathBuf::from("./compiled/2_hasan_ast.txt");
-    let mut destination_path = PathBuf::from("./tests/outputs");
-    destination_path.push(format!("{}.txt", name));
-
-    // Copy the output file
-    copy_file(&source_path, &destination_path);
-}
-
-fn test_update_all() {
-    let test_cases_path = PathBuf::from("./tests/cases");
-
-    let entries = match fs::read_dir(test_cases_path) {
-        Ok(entries) => entries,
-        Err(_) => return,
-    };
-
-    for entry in entries {
-        let entry = match entry {
-            Ok(entry) => entry,
-            Err(_) => continue,
-        };
-
-        let metadata = match entry.metadata() {
-            Ok(metadata) => metadata,
-            Err(_) => continue,
-        };
-
-        if metadata.is_dir() {
-            continue;
-        }
-
-        let path = entry.path();
-		
-        if path.extension().map_or(false, |ext| ext != "hsl") {
-            continue;
-        }
-
-        let filename = match path.file_stem().and_then(|stem| stem.to_str()) {
-            Some(filename) => filename,
-            None => continue,
-        };
-
-        test_update(cli::UpdateTestCommand { name: filename.to_string() });
-    }
-}
-
-fn test_delete(command: cli::DeleteTestCommand) {
-	let name = command.name;
-
-	// Construct file path
-    let mut file_path = PathBuf::from("./tests/cases");
-    file_path.push(format!("{}.hsl", name));
-
-    // Delete file
-    if let Err(e) = fs::remove_file(&file_path) {
-        eprintln!("Failed to delete file `{}`: {}", file_path.display(), e);
-    }
-
-    // Construct file path
-    let mut file_path = PathBuf::from("./tests/outputs");
-    file_path.push(format!("{}.txt", name));
-
-    // Delete file
-    if let Err(e) = fs::remove_file(&file_path) {
-        eprintln!("Failed to delete file `{}`: {}", file_path.display(), e);
-    }
-}
-
-fn test_subcommand(subcommand: cli::TestSubcommand) {
-	match subcommand.command {
-		cli::TestCommand::Create(command) => test_create(command),
-		cli::TestCommand::Update(command) => test_update(command),
-		cli::TestCommand::Delete(command) => test_delete(command),
-		cli::TestCommand::UpdateAll => test_update_all(),
-	}
-}
-
 fn main() {
 	let args = cli::CLI::parse_custom();
 	
 	match args.subcommand {
-		cli::CLISubcommand::Compile(command) => compile(command),
-		cli::CLISubcommand::Test(command) => test_subcommand(command)
+		cli::CLISubcommand::Compile(command) => compile(command)
 	}
 }

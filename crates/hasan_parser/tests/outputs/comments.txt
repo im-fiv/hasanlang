@@ -1,0 +1,19 @@
+Program {
+    statements: [
+        FunctionDefinition(
+            Function {
+                prototype: FunctionPrototype {
+                    modifiers: [],
+                    name: "main",
+                    generics: [],
+                    arguments: [],
+                    return_type: None,
+                },
+                body: Some(
+                    [],
+                ),
+            },
+        ),
+    ],
+    module_info: None,
+}

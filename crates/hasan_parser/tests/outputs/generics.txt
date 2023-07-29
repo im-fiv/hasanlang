@@ -1,0 +1,165 @@
+Program {
+    statements: [
+        FunctionDefinition(
+            Function {
+                prototype: FunctionPrototype {
+                    modifiers: [],
+                    name: "generic_function",
+                    generics: [
+                        DefinitionType {
+                            name: "T",
+                            requires_implementations: [],
+                        },
+                    ],
+                    arguments: [
+                        FunctionArgument {
+                            name: "input",
+                            kind: Regular(
+                                RegularType {
+                                    base: "T",
+                                    generics: [],
+                                    raw: false,
+                                    array: false,
+                                },
+                            ),
+                        },
+                    ],
+                    return_type: Some(
+                        Regular(
+                            RegularType {
+                                base: "T",
+                                generics: [],
+                                raw: false,
+                                array: true,
+                            },
+                        ),
+                    ),
+                },
+                body: Some(
+                    [
+                        Return(
+                            Some(
+                                Array(
+                                    [
+                                        Identifier(
+                                            "input",
+                                        ),
+                                    ],
+                                ),
+                            ),
+                        ),
+                    ],
+                ),
+            },
+        ),
+        ClassDefinition {
+            modifiers: [],
+            name: "generic_class",
+            generics: [
+                DefinitionType {
+                    name: "T",
+                    requires_implementations: [],
+                },
+            ],
+            members: [
+                Variable(
+                    ClassDefinitionVariable {
+                        modifiers: [],
+                        name: "inner_value",
+                        kind: Regular(
+                            RegularType {
+                                base: "T",
+                                generics: [],
+                                raw: false,
+                                array: false,
+                            },
+                        ),
+                        default_value: Empty,
+                    },
+                ),
+                Function(
+                    ClassDefinitionFunction {
+                        attributes: Some(
+                            [
+                                Get,
+                            ],
+                        ),
+                        prototype: FunctionPrototype {
+                            modifiers: [],
+                            name: "value",
+                            generics: [],
+                            arguments: [],
+                            return_type: Some(
+                                Regular(
+                                    RegularType {
+                                        base: "T",
+                                        generics: [],
+                                        raw: false,
+                                        array: false,
+                                    },
+                                ),
+                            ),
+                        },
+                        body: Some(
+                            [
+                                Return(
+                                    Some(
+                                        DotAccess {
+                                            expression: Identifier(
+                                                "this",
+                                            ),
+                                            accessor: Identifier(
+                                                "inner_value",
+                                            ),
+                                        },
+                                    ),
+                                ),
+                            ],
+                        ),
+                    },
+                ),
+            ],
+        },
+        FunctionDefinition(
+            Function {
+                prototype: FunctionPrototype {
+                    modifiers: [],
+                    name: "main",
+                    generics: [],
+                    arguments: [],
+                    return_type: None,
+                },
+                body: Some(
+                    [
+                        VariableDefinition {
+                            modifiers: [],
+                            name: "wrapped",
+                            kind: None,
+                            value: FunctionCall {
+                                callee: Identifier(
+                                    "generic_function",
+                                ),
+                                generics: [
+                                    Regular(
+                                        RegularType {
+                                            base: "int",
+                                            generics: [],
+                                            raw: false,
+                                            array: false,
+                                        },
+                                    ),
+                                ],
+                                arguments: [
+                                    Int(
+                                        5,
+                                    ),
+                                ],
+                            },
+                        },
+                    ],
+                ),
+            },
+        ),
+    ],
+    module_info: None,
+}

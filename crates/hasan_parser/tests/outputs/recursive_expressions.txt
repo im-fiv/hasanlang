@@ -272,9 +272,7 @@ Program {
                                         ),
                                         kind: Regular(
                                             RegularType {
-                                                base: Identifier(
-                                                    "a",
-                                                ),
+                                                base: "a",
                                                 generics: [],
                                                 raw: false,
                                                 array: false,
@@ -283,9 +281,7 @@ Program {
                                     },
                                     kind: Regular(
                                         RegularType {
-                                            base: Identifier(
-                                                "b",
-                                            ),
+                                            base: "b",
                                             generics: [],
                                             raw: false,
                                             array: false,
@@ -294,9 +290,7 @@ Program {
                                 },
                                 kind: Regular(
                                     RegularType {
-                                        base: Identifier(
-                                            "c",
-                                        ),
+                                        base: "c",
                                         generics: [],
                                         raw: false,
                                         array: false,
@@ -305,9 +299,7 @@ Program {
                             },
                             kind: Regular(
                                 RegularType {
-                                    base: Identifier(
-                                        "d",
-                                    ),
+                                    base: "d",
                                     generics: [],
                                     raw: false,
                                     array: false,
@@ -316,9 +308,7 @@ Program {
                         },
                         kind: Regular(
                             RegularType {
-                                base: Identifier(
-                                    "e",
-                                ),
+                                base: "e",
                                 generics: [],
                                 raw: false,
                                 array: false,
@@ -327,9 +317,7 @@ Program {
                     },
                     kind: Regular(
                         RegularType {
-                            base: Identifier(
-                                "f",
-                            ),
+                            base: "f",
                             generics: [],
                             raw: false,
                             array: false,
@@ -338,9 +326,7 @@ Program {
                 },
                 kind: Regular(
                     RegularType {
-                        base: Identifier(
-                            "g",
-                        ),
+                        base: "g",
                         generics: [],
                         raw: false,
                         array: false,
@@ -509,15 +495,17 @@ Program {
             },
         },
         Return(
-            Array(
-                [
-                    Identifier(
-                        "complex_expression",
-                    ),
-                    Identifier(
-                        "var2",
-                    ),
-                ],
+            Some(
+                Array(
+                    [
+                        Identifier(
+                            "complex_expression",
+                        ),
+                        Identifier(
+                            "var2",
+                        ),
+                    ],
+                ),
             ),
         ),
     ],

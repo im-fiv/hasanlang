@@ -5,12 +5,14 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[workspace]
+members = ["crates/*"]
+
 [dependencies]
-anyhow = "1.0.72"
+hasan_pest_parser = { path = "./crates/hasan_pest_parser" }
+hasan_parser = { path = "./crates/hasan_parser" }
+hasan_semantic_analyzer = { path = "./crates/hasan_semantic_analyzer" }
+hasan_compiler = { path = "./crates/hasan_compiler" }
+inkwell = { git = "https://github.com/TheDan64/inkwell", branch = "master", features = ["llvm15-0"] }
 clap = { version = "4.3.12", features = ["derive"] }
-inkwell = { git = "https://github.com/TheDan64/inkwell", branch = "master", features = ["llvm15-0", "target-x86"] }
 pest = "2.7.0"
-pest_derive = { version = "2.7", features = ["grammar-extras"] }
-rand = "0.8.5"
-strum = "0.25.0"
-strum_macros = "0.25.1"

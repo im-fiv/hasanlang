@@ -1,0 +1,243 @@
+Program {
+    statements: [
+        FunctionDefinition(
+            Function {
+                prototype: FunctionPrototype {
+                    modifiers: [],
+                    name: "print_hello_world",
+                    generics: [],
+                    arguments: [],
+                    return_type: Some(
+                        Regular(
+                            RegularType {
+                                base: "void",
+                                generics: [],
+                                raw: false,
+                                array: false,
+                            },
+                        ),
+                    ),
+                },
+                body: Some(
+                    [
+                        FunctionCall {
+                            callee: Identifier(
+                                "print",
+                            ),
+                            generics: [],
+                            arguments: [
+                                String(
+                                    "hello, world!",
+                                ),
+                            ],
+                        },
+                    ],
+                ),
+            },
+        ),
+        FunctionCall {
+            callee: Identifier(
+                "print_hello_world",
+            ),
+            generics: [],
+            arguments: [],
+        },
+        FunctionDefinition(
+            Function {
+                prototype: FunctionPrototype {
+                    modifiers: [],
+                    name: "random_number",
+                    generics: [
+                        DefinitionType {
+                            name: "Type",
+                            requires_implementations: [],
+                        },
+                    ],
+                    arguments: [],
+                    return_type: Some(
+                        Regular(
+                            RegularType {
+                                base: "Type",
+                                generics: [],
+                                raw: false,
+                                array: false,
+                            },
+                        ),
+                    ),
+                },
+                body: Some(
+                    [
+                        Return(
+                            Some(
+                                Int(
+                                    5,
+                                ),
+                            ),
+                        ),
+                    ],
+                ),
+            },
+        ),
+        FunctionDefinition(
+            Function {
+                prototype: FunctionPrototype {
+                    modifiers: [],
+                    name: "arguments",
+                    generics: [],
+                    arguments: [
+                        FunctionArgument {
+                            name: "arg1",
+                            kind: Regular(
+                                RegularType {
+                                    base: "int",
+                                    generics: [],
+                                    raw: false,
+                                    array: false,
+                                },
+                            ),
+                        },
+                        FunctionArgument {
+                            name: "arg2",
+                            kind: Regular(
+                                RegularType {
+                                    base: "int",
+                                    generics: [],
+                                    raw: false,
+                                    array: false,
+                                },
+                            ),
+                        },
+                        FunctionArgument {
+                            name: "arg3",
+                            kind: Regular(
+                                RegularType {
+                                    base: "int",
+                                    generics: [],
+                                    raw: false,
+                                    array: false,
+                                },
+                            ),
+                        },
+                    ],
+                    return_type: Some(
+                        Regular(
+                            RegularType {
+                                base: "int",
+                                generics: [],
+                                raw: false,
+                                array: false,
+                            },
+                        ),
+                    ),
+                },
+                body: Some(
+                    [
+                        Return(
+                            Some(
+                                Binary {
+                                    lhs: Binary {
+                                        lhs: Identifier(
+                                            "arg1",
+                                        ),
+                                        operator: Plus,
+                                        rhs: Identifier(
+                                            "arg2",
+                                        ),
+                                    },
+                                    operator: Plus,
+                                    rhs: Identifier(
+                                        "arg3",
+                                    ),
+                                },
+                            ),
+                        ),
+                    ],
+                ),
+            },
+        ),
+        FunctionDefinition(
+            Function {
+                prototype: FunctionPrototype {
+                    modifiers: [],
+                    name: "no_return_type",
+                    generics: [],
+                    arguments: [
+                        FunctionArgument {
+                            name: "a",
+                            kind: Regular(
+                                RegularType {
+                                    base: "int",
+                                    generics: [],
+                                    raw: false,
+                                    array: false,
+                                },
+                            ),
+                        },
+                    ],
+                    return_type: None,
+                },
+                body: Some(
+                    [
+                        Return(
+                            Some(
+                                Identifier(
+                                    "a",
+                                ),
+                            ),
+                        ),
+                    ],
+                ),
+            },
+        ),
+        FunctionDefinition(
+            Function {
+                prototype: FunctionPrototype {
+                    modifiers: [],
+                    name: "main",
+                    generics: [],
+                    arguments: [],
+                    return_type: None,
+                },
+                body: Some(
+                    [
+                        VariableDefinition {
+                            modifiers: [],
+                            name: "add",
+                            kind: None,
+                            value: Int(
+                                2,
+                            ),
+                        },
+                        Return(
+                            Some(
+                                Binary {
+                                    lhs: FunctionCall {
+                                        callee: Identifier(
+                                            "random_number",
+                                        ),
+                                        generics: [
+                                            Regular(
+                                                RegularType {
+                                                    base: "int",
+                                                    generics: [],
+                                                    raw: false,
+                                                    array: false,
+                                                },
+                                            ),
+                                        ],
+                                        arguments: [],
+                                    },
+                                    operator: Plus,
+                                    rhs: Identifier(
+                                        "add",
+                                    ),
+                                },
+                            ),
+                        ),
+                    ],
+                ),
+            },
+        ),
+    ],
+    module_info: None,
+}
