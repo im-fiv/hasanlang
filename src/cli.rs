@@ -32,7 +32,11 @@ pub struct CompileCommand {
 
 	#[arg(short, long, default_value_t = false)]
 	/// Show debug information
-	pub debug: bool
+	pub debug: bool,
+
+	#[arg(short, long, default_value_t = false)]
+	/// Disable all optimization
+	pub no_opt: bool
 }
 
 #[derive(Debug, Args)]

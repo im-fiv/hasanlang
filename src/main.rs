@@ -53,8 +53,7 @@ fn copy_file(source: &PathBuf, destination: &PathBuf) {
 
 /// Subcommand to compile a file
 fn compile(command: cli::CompileCommand) {
-	let file_path = command.file_path;
-	let debug = command.debug;
+    let cli::CompileCommand { file_path, debug, no_opt } = command;
 
     // Create file if it doesn't exist
     match fs::metadata(&file_path) {
@@ -154,14 +153,16 @@ fn compile(command: cli::CompileCommand) {
 
     let fpm = PassManager::create(&module);
 
-    fpm.add_instruction_combining_pass();
-    fpm.add_reassociate_pass();
-    fpm.add_gvn_pass();
-    fpm.add_cfg_simplification_pass();
-    fpm.add_basic_alias_analysis_pass();
-    fpm.add_promote_memory_to_register_pass();
-    fpm.add_instruction_combining_pass();
-    fpm.add_reassociate_pass();
+    if !no_opt {
+        fpm.add_instruction_combining_pass();
+        fpm.add_reassociate_pass();
+        fpm.add_gvn_pass();
+        fpm.add_cfg_simplification_pass();
+        fpm.add_basic_alias_analysis_pass();
+        fpm.add_promote_memory_to_register_pass();
+        fpm.add_instruction_combining_pass();
+        fpm.add_reassociate_pass();
+    }
     
     fpm.initialize();
 
@@ -213,7 +214,8 @@ fn test_update(command: cli::UpdateTestCommand) {
     let file_path = format!("./tests/cases/{}.hsl", name);
     compile(cli::CompileCommand {
         file_path,
-        debug: false
+        debug: false,
+        no_opt: false
     });
 
     // Construct source and destination file paths
