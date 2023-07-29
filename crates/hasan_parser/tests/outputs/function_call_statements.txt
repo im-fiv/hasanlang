@@ -99,9 +99,7 @@ Program {
                 generics: [
                     Regular(
                         RegularType {
-                            base: Identifier(
-                                "B",
-                            ),
+                            base: "B",
                             generics: [],
                             raw: true,
                             array: true,
@@ -117,9 +115,7 @@ Program {
             generics: [
                 Regular(
                     RegularType {
-                        base: Identifier(
-                            "A",
-                        ),
+                        base: "A",
                         generics: [],
                         raw: false,
                         array: false,

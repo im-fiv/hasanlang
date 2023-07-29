@@ -1,0 +1,428 @@
+Program {
+    statements: [
+        Interface {
+            modifiers: [
+                Public,
+                Constant,
+                Static,
+            ],
+            name: "ComplexInterface",
+            generics: [
+                DefinitionType {
+                    name: "A",
+                    requires_implementations: [],
+                },
+                DefinitionType {
+                    name: "B",
+                    requires_implementations: [],
+                },
+                DefinitionType {
+                    name: "C",
+                    requires_implementations: [],
+                },
+            ],
+            members: [
+                Variable(
+                    InterfaceVariable {
+                        modifiers: [
+                            Static,
+                        ],
+                        name: "hello",
+                        kind: Regular(
+                            RegularType {
+                                base: "string",
+                                generics: [],
+                                raw: false,
+                                array: true,
+                            },
+                        ),
+                    },
+                ),
+                Variable(
+                    InterfaceVariable {
+                        modifiers: [],
+                        name: "reg_var",
+                        kind: Regular(
+                            RegularType {
+                                base: "int",
+                                generics: [],
+                                raw: true,
+                                array: false,
+                            },
+                        ),
+                    },
+                ),
+                Function(
+                    InterfaceFunction {
+                        attributes: Some(
+                            [
+                                Constructor,
+                            ],
+                        ),
+                        prototype: InterfaceFunctionPrototype {
+                            modifiers: [
+                                Public,
+                            ],
+                            name: "world",
+                            generics: [
+                                DefinitionType {
+                                    name: "T",
+                                    requires_implementations: [],
+                                },
+                            ],
+                            argument_types: [
+                                Regular(
+                                    RegularType {
+                                        base: "int",
+                                        generics: [],
+                                        raw: false,
+                                        array: false,
+                                    },
+                                ),
+                                Regular(
+                                    RegularType {
+                                        base: "int",
+                                        generics: [],
+                                        raw: false,
+                                        array: false,
+                                    },
+                                ),
+                            ],
+                            return_type: Regular(
+                                RegularType {
+                                    base: "int",
+                                    generics: [],
+                                    raw: false,
+                                    array: false,
+                                },
+                            ),
+                        },
+                    },
+                ),
+                Function(
+                    InterfaceFunction {
+                        attributes: None,
+                        prototype: InterfaceFunctionPrototype {
+                            modifiers: [],
+                            name: "bye",
+                            generics: [
+                                DefinitionType {
+                                    name: "A",
+                                    requires_implementations: [],
+                                },
+                            ],
+                            argument_types: [],
+                            return_type: Regular(
+                                RegularType {
+                                    base: "B",
+                                    generics: [],
+                                    raw: true,
+                                    array: true,
+                                },
+                            ),
+                        },
+                    },
+                ),
+                Function(
+                    InterfaceFunction {
+                        attributes: None,
+                        prototype: InterfaceFunctionPrototype {
+                            modifiers: [],
+                            name: "test",
+                            generics: [],
+                            argument_types: [],
+                            return_type: Function(
+                                FunctionType {
+                                    generics: [],
+                                    argument_types: [
+                                        Regular(
+                                            RegularType {
+                                                base: "int",
+                                                generics: [],
+                                                raw: false,
+                                                array: false,
+                                            },
+                                        ),
+                                        Regular(
+                                            RegularType {
+                                                base: "int",
+                                                generics: [],
+                                                raw: false,
+                                                array: false,
+                                            },
+                                        ),
+                                    ],
+                                    return_type: Function(
+                                        FunctionType {
+                                            generics: [],
+                                            argument_types: [
+                                                Regular(
+                                                    RegularType {
+                                                        base: "int",
+                                                        generics: [],
+                                                        raw: false,
+                                                        array: false,
+                                                    },
+                                                ),
+                                                Regular(
+                                                    RegularType {
+                                                        base: "C",
+                                                        generics: [],
+                                                        raw: false,
+                                                        array: false,
+                                                    },
+                                                ),
+                                            ],
+                                            return_type: Regular(
+                                                RegularType {
+                                                    base: "void",
+                                                    generics: [],
+                                                    raw: true,
+                                                    array: false,
+                                                },
+                                            ),
+                                        },
+                                    ),
+                                },
+                            ),
+                        },
+                    },
+                ),
+            ],
+        },
+        Interface {
+            modifiers: [],
+            name: "SimpleInterface",
+            generics: [],
+            members: [
+                Variable(
+                    InterfaceVariable {
+                        modifiers: [],
+                        name: "some_variable",
+                        kind: Regular(
+                            RegularType {
+                                base: "int",
+                                generics: [],
+                                raw: false,
+                                array: false,
+                            },
+                        ),
+                    },
+                ),
+                Function(
+                    InterfaceFunction {
+                        attributes: None,
+                        prototype: InterfaceFunctionPrototype {
+                            modifiers: [],
+                            name: "some_function",
+                            generics: [],
+                            argument_types: [],
+                            return_type: Regular(
+                                RegularType {
+                                    base: "void",
+                                    generics: [],
+                                    raw: false,
+                                    array: false,
+                                },
+                            ),
+                        },
+                    },
+                ),
+            ],
+        },
+        ClassDefinition {
+            modifiers: [],
+            name: "ExampleClass",
+            generics: [],
+            members: [],
+        },
+        Interface {
+            modifiers: [],
+            name: "ExampleInterface",
+            generics: [
+                DefinitionType {
+                    name: "T",
+                    requires_implementations: [],
+                },
+            ],
+            members: [
+                Variable(
+                    InterfaceVariable {
+                        modifiers: [],
+                        name: "hello",
+                        kind: Regular(
+                            RegularType {
+                                base: "T",
+                                generics: [],
+                                raw: false,
+                                array: false,
+                            },
+                        ),
+                    },
+                ),
+                Function(
+                    InterfaceFunction {
+                        attributes: None,
+                        prototype: InterfaceFunctionPrototype {
+                            modifiers: [],
+                            name: "function",
+                            generics: [],
+                            argument_types: [],
+                            return_type: Regular(
+                                RegularType {
+                                    base: "int",
+                                    generics: [],
+                                    raw: false,
+                                    array: false,
+                                },
+                            ),
+                        },
+                    },
+                ),
+            ],
+        },
+        InterfaceImpl {
+            interface_name: "ExampleInterface",
+            generics: [
+                DefinitionType {
+                    name: "world",
+                    requires_implementations: [],
+                },
+            ],
+            class_name: "ExampleClass",
+            members: [
+                Variable(
+                    ClassDefinitionVariable {
+                        modifiers: [],
+                        name: "hello",
+                        kind: Regular(
+                            RegularType {
+                                base: "world",
+                                generics: [],
+                                raw: false,
+                                array: false,
+                            },
+                        ),
+                        default_value: Empty,
+                    },
+                ),
+                Function(
+                    ClassDefinitionFunction {
+                        attributes: None,
+                        prototype: FunctionPrototype {
+                            modifiers: [],
+                            name: "function",
+                            generics: [],
+                            arguments: [],
+                            return_type: Some(
+                                Regular(
+                                    RegularType {
+                                        base: "int",
+                                        generics: [],
+                                        raw: false,
+                                        array: false,
+                                    },
+                                ),
+                            ),
+                        },
+                        body: Some(
+                            [
+                                Return(
+                                    Some(
+                                        Int(
+                                            5,
+                                        ),
+                                    ),
+                                ),
+                            ],
+                        ),
+                    },
+                ),
+            ],
+        },
+        Interface {
+            modifiers: [],
+            name: "Callable",
+            generics: [],
+            members: [
+                Function(
+                    InterfaceFunction {
+                        attributes: None,
+                        prototype: InterfaceFunctionPrototype {
+                            modifiers: [
+                                Public,
+                            ],
+                            name: "call",
+                            generics: [],
+                            argument_types: [],
+                            return_type: Regular(
+                                RegularType {
+                                    base: "void",
+                                    generics: [],
+                                    raw: false,
+                                    array: false,
+                                },
+                            ),
+                        },
+                    },
+                ),
+            ],
+        },
+        FunctionDefinition(
+            Function {
+                prototype: FunctionPrototype {
+                    modifiers: [],
+                    name: "call_anything",
+                    generics: [
+                        DefinitionType {
+                            name: "T",
+                            requires_implementations: [
+                                "Callable",
+                            ],
+                        },
+                    ],
+                    arguments: [
+                        FunctionArgument {
+                            name: "something",
+                            kind: Regular(
+                                RegularType {
+                                    base: "T",
+                                    generics: [],
+                                    raw: false,
+                                    array: false,
+                                },
+                            ),
+                        },
+                    ],
+                    return_type: Some(
+                        Regular(
+                            RegularType {
+                                base: "void",
+                                generics: [],
+                                raw: false,
+                                array: false,
+                            },
+                        ),
+                    ),
+                },
+                body: Some(
+                    [
+                        FunctionCall {
+                            callee: DotAccess {
+                                expression: Identifier(
+                                    "something",
+                                ),
+                                accessor: Identifier(
+                                    "call",
+                                ),
+                            },
+                            generics: [],
+                            arguments: [],
+                        },
+                    ],
+                ),
+            },
+        ),
+    ],
+    module_info: None,
+}

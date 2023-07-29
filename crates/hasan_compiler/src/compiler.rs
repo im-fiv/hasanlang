@@ -10,7 +10,7 @@ use std::collections::HashMap;
 use strum_macros::Display;
 use anyhow::{Error, bail};
 
-use crate::hasan_parser::{self as P};
+use hasan_parser::{self as P};
 
 const ENTRY_FUNCTION_NAME: &str = "main";
 

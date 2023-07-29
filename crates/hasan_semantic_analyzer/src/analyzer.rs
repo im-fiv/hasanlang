@@ -1,5 +1,5 @@
 use anyhow::Error;
-use crate::hasan_parser::Program;
+use hasan_parser::Program;
 
 #[derive(Debug, Clone)]
 pub struct SemanticData;

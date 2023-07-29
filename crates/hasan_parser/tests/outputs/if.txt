@@ -101,8 +101,10 @@ Program {
                     },
                     statements: [
                         Return(
-                            Int(
-                                5,
+                            Some(
+                                Int(
+                                    5,
+                                ),
                             ),
                         ),
                     ],
@@ -179,8 +181,10 @@ Program {
                     },
                     statements: [
                         Return(
-                            Int(
-                                5,
+                            Some(
+                                Int(
+                                    5,
+                                ),
                             ),
                         ),
                     ],

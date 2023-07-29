@@ -38,9 +38,7 @@ Program {
             kind: Some(
                 Regular(
                     RegularType {
-                        base: Identifier(
-                            "Light",
-                        ),
+                        base: "Light",
                         generics: [],
                         raw: false,
                         array: false,

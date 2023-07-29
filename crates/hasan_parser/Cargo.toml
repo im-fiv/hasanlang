@@ -1,0 +1,12 @@
+[package]
+name = "hasan_parser"
+version = "0.0.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+hasan_pest_parser = { path = "../hasan_pest_parser" }
+pest = "2.7.0"
+strum = "0.25.0"
+strum_macros = "0.25.1"
