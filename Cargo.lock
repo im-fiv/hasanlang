@@ -230,6 +230,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "hasan_cli"
+version = "0.0.0"
+dependencies = [
+ "clap",
+]
+
+[[package]]
 name = "hasan_compiler"
 version = "0.0.0"
 dependencies = [
@@ -271,7 +278,7 @@ dependencies = [
 name = "hasanlang"
 version = "0.2.0"
 dependencies = [
- "clap",
+ "hasan_cli",
  "hasan_compiler",
  "hasan_parser",
  "hasan_pest_parser",

@@ -22,6 +22,13 @@ use hasan_parser::{self as P};
 
 const ENTRY_FUNCTION_NAME: &str = "main";
 
+/// Alias to forget about the return value of any expression provided
+macro_rules! void_value {
+	($value:expr) => {
+		std::mem::forget($value)
+	};
+}
+
 /// Generates a random string given its length
 pub fn random_string() -> String {
 	// I wonder, is there a real possibility that it will generate the same string at some point?
@@ -81,25 +88,25 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	fn compile_statements(&mut self, statements: &Vec<P::Statement>) -> Result<(), Error> {
 		for statement in statements {
 			match statement.to_owned() {
-				P::Statement::FunctionDefinition(function) => { self.compile_function(function)?; },
-				P::Statement::Return(value) => { self.compile_return(value)?; },
+				P::Statement::FunctionDefinition(function) => void_value!(self.compile_function(function)?),
+				P::Statement::Return(value) => void_value!(self.compile_return(value)?),
 
-				P::Statement::VariableDefinition { modifiers, name, kind, value } => {
+				P::Statement::VariableDefinition { modifiers, name, kind, value } => void_value!(
 					self.compile_variable_definition(
 						modifiers,
 						name,
 						kind,
 						value
-					)?;
-				},
+					)?
+				),
 
-				P::Statement::FunctionCall { callee, generics, arguments } => {
+				P::Statement::FunctionCall { callee, generics, arguments } => void_value!(
 					self.compile_expression(&P::Expression::FunctionCall {
 						callee: Box::new(callee),
 						generics,
 						arguments
-					})?;
-				}
+					})?
+				),
 
 				_ => panic!("Encountered unknown statement `{}`", statement)
 			}
@@ -504,9 +511,8 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 		let converted_arguments = converted_arguments.as_slice();
 
 		let result_name = format!(
-			"call.{}.{}",
-			resolved_callee.get_name().to_str()?,
-			random_string()
+			"call.{}",
+			resolved_callee.get_name().to_str()?
 		);
 
 		let call_instruction = self.builder.build_call(resolved_callee, converted_arguments, &result_name);
