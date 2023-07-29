@@ -1,5 +1,3 @@
-mod cli;
-
 use std::fs;
 use std::fs::File;
 use std::io::BufReader;
@@ -37,9 +35,9 @@ fn write_file(path: &str, contents: String) {
 }
 //* Helper functions *//
 
-/// Subcommand to compile a file
-fn compile(command: cli::CompileCommand) {
-    let cli::CompileCommand { file_path, debug, no_opt } = command;
+/// Subcommand to parse a file
+fn parse(command: hasan_cli::ParseCommand) -> Option<hasan_parser::Program> {
+    let hasan_cli::ParseCommand { file_path, debug } = command;
 
     // Create file if it doesn't exist
     match fs::metadata(&file_path) {
@@ -49,10 +47,10 @@ fn compile(command: cli::CompileCommand) {
             write_file(&file_path, "func main() do\n\treturn \"Hello, World!\";\nend".to_owned());
         }
     }
-	
-	fs::create_dir_all("./compiled").expect("Failed to create `compiled` directory");
-	
-	// Pest parsing stage
+
+    fs::create_dir_all("./compiled").expect("Failed to create `compiled` directory");
+
+    // Pest parsing stage
 	if debug {
         println!("Pest parsing...");
     }
@@ -62,7 +60,7 @@ fn compile(command: cli::CompileCommand) {
 	
 	if let Err(e) = result {
 		eprintln!("{}", e);
-		return;
+		return None;
 	}
 	
 	let pairs = result.unwrap();
@@ -73,21 +71,38 @@ fn compile(command: cli::CompileCommand) {
 	}
 	
 	write_file("./compiled/1_raw_ast.txt", format!("{:#?}", pairs));
-	
-	// Hasan parsing stage
-	if debug {
+
+    // Hasan parsing stage
+    if debug {
         println!("AST parsing...");
     }
-	
-	let ast_parser = HasanParser::new(pairs);
-	let ast = ast_parser.parse();
-	
-	if debug {
-		println!("Parsed AST ({}): {:?}", ast.statements.len(), ast);
-		println!();
-	}
-	
-	write_file("./compiled/2_hasan_ast.txt", format!("{:#?}", ast));
+
+    let ast_parser = HasanParser::new(pairs);
+    let ast = ast_parser.parse();
+
+    if debug {
+        println!("Parsed AST ({}): {:?}", ast.statements.len(), ast);
+        println!();
+    }
+
+    write_file("./compiled/2_hasan_ast.txt", format!("{:#?}", ast));
+    Some(ast)
+}
+
+/// Subcommand to compile a file
+fn compile(command: hasan_cli::CompileCommand) {
+    let hasan_cli::CompileCommand { file_path, debug, no_opt } = command;
+
+    let parse_result = parse(hasan_cli::ParseCommand {
+        file_path,
+        debug
+    });
+
+    if parse_result.is_none() {
+        return;
+    }
+
+    let ast = parse_result.unwrap();
 
     // Semantic analysis stage
     if debug {
@@ -170,16 +185,20 @@ fn compile(command: cli::CompileCommand) {
 	}
 
     write_file("./compiled/4_llvm_ir.ll", codegen_data);
+}
 
-    if debug {
-        println!("Done!");
-    }
+/// Alias to forget about the return value of any expression provided
+macro_rules! void_value {
+	($value:expr) => {
+		std::mem::forget($value)
+	};
 }
 
 fn main() {
-	let args = cli::CLI::parse_custom();
+	let args = hasan_cli::CLI::parse_custom();
 	
 	match args.subcommand {
-		cli::CLISubcommand::Compile(command) => compile(command)
+		hasan_cli::CLISubcommand::Compile(command) => void_value!(compile(command)),
+        hasan_cli::CLISubcommand::Parse(command) => void_value!(parse(command))
 	}
 }

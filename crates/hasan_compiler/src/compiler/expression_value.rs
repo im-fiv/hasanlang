@@ -22,9 +22,6 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 		let kind = value.get_type();
 		let width = kind.get_bit_width();
 
-		// TODO: Remove later
-		println!("[DEBUG] width = {}", width);
-
 		match width {
 			1 => Ok(Self::Boolean(value)),
 			64 => Ok(Self::Int(value)),
