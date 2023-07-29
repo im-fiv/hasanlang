@@ -1,13 +1,21 @@
+mod constructs;
+use constructs::*;
+
+mod expression_value;
+use expression_value::*;
+
+mod types;
+use types::*;
+
 use inkwell::AddressSpace;
 use inkwell::context::Context;
 use inkwell::builder::Builder;
 use inkwell::passes::PassManager;
 use inkwell::module::Module;
 use inkwell::types::{BasicMetadataTypeEnum, BasicTypeEnum};
-use inkwell::values::{FunctionValue, PointerValue, IntValue, FloatValue, BasicValue, BasicValueEnum, GlobalValue, InstructionValue};
+use inkwell::values::{FunctionValue, PointerValue, IntValue, FloatValue, GlobalValue, InstructionValue, AnyValue, BasicMetadataValueEnum};
 
 use std::collections::HashMap;
-use strum_macros::Display;
 use anyhow::{Error, bail};
 
 use hasan_parser::{self as P};
@@ -15,386 +23,18 @@ use hasan_parser::{self as P};
 const ENTRY_FUNCTION_NAME: &str = "main";
 
 /// Generates a random string given its length
-pub fn random_string(length: usize) -> String {
+pub fn random_string() -> String {
 	// I wonder, is there a real possibility that it will generate the same string at some point?
+	const LENGTH: usize = 30;
 
 	use rand::{thread_rng, Rng};
 	use rand::distributions::Alphanumeric;
 
 	thread_rng()
 		.sample_iter(&Alphanumeric)
-		.take(length)
+		.take(LENGTH)
 		.map(char::from)
 		.collect()
-}
-
-#[derive(Debug, Clone)]
-pub struct FunctionPrototype {
-	pub name: String,
-	pub arguments: Vec<P::FunctionArgument>,
-	pub return_type: Option<P::Type>
-}
-
-impl FunctionPrototype {
-	pub fn from_parser(prototype: P::FunctionPrototype) -> Self {
-		let P::FunctionPrototype { modifiers: _, name, generics: _, arguments, return_type } = prototype;
-
-		Self { name, arguments, return_type }
-	}
-}
-
-#[derive(Debug, Clone)]
-pub struct Function {
-	pub prototype: FunctionPrototype,
-	pub body: P::FunctionBody
-}
-
-impl Function {
-	pub fn from_parser(function: P::Function) -> Self {
-		let P::Function { prototype, body } = function;
-		let prototype = FunctionPrototype::from_parser(prototype);
-		
-		Self { prototype, body }
-	}
-}
-
-#[derive(Debug, Clone)]
-pub struct Variable<'ctx> {
-	pub pointer: PointerValue<'ctx>,
-	pub kind: BasicTypeEnum<'ctx>
-}
-
-#[derive(Debug, Clone)]
-pub enum Global<'ctx> {
-	String(GlobalString<'ctx>),
-	Constant(GlobalValue<'ctx>)
-}
-
-#[derive(Debug, Clone)]
-pub struct GlobalString<'ctx> {
-	pub pointer: GlobalValue<'ctx>,
-	pub value: String
-}
-
-impl<'ctx> GlobalString<'ctx> {
-	/// Gets the length of the global string
-	pub fn len(&self) -> usize {
-		// Accounting for zero byte at the end
-		self.value.len() + 1
-	}
-
-	/// Checks whether the inner string value is empty
-	pub fn is_empty(&self) -> bool {
-		self.value.is_empty()
-	}
-}
-
-#[derive(Debug, Clone, Display)]
-pub enum ExpressionValue<'ctx> {
-	Int(IntValue<'ctx>),
-	Float(FloatValue<'ctx>),
-	String(GlobalValue<'ctx>),
-	Boolean(IntValue<'ctx>),
-	Pointer(PointerValue<'ctx>)
-}
-
-impl<'ctx, 'a> ExpressionValue<'ctx> {
-	/// Unwraps inner LLVM value and converts it into `BasicValueEnum`
-	pub fn unwrap_value(&self) -> BasicValueEnum<'ctx> {
-		/// Allows to get rid of repetition while having to write the same piece of code for every match arm
-		macro_rules! v {
-			($value:ident) => {
-				$value.as_basic_value_enum()
-			}
-		}
-
-		match self {
-			Self::Int(value) => v!(value),
-			Self::Float(value) => v!(value),
-			Self::String(value) => v!(value),
-			Self::Boolean(value) => v!(value),
-			Self::Pointer(value) => v!(value)
-		}
-	}
-
-	/// Applies unary `-` to the inner LLVM value.
-	/// Errors if the operation is performed on an incompatible type
-	pub fn apply_unary_minus(&self) -> Result<Self, Error> {
-		match self {
-			Self::Int(value) => Ok(Self::Int(value.const_neg())),
-			Self::Float(value) => Ok(Self::Float(value.const_neg())),
-
-			_ => bail!("Cannot perform unary operation `{}` on a value of type `{}`", "-", self.to_string())
-		}
-	}
-
-	/// Applies unary `not` to the inner LLVM value.
-	/// Errors if the operation is performed on an incompatible type
-	pub fn apply_unary_not(&self) -> Result<Self, Error> {
-		match self {
-			Self::Boolean(value) => Ok(Self::Boolean(value.const_not())),
-			_ => bail!("Cannot perform unary operation `{}` on a value of type `{}`", "not", self.to_string())
-		}
-	}
-
-	//* Binary operations *//
-	// TODO: Allow for calling user-defined functions for built-in binary operation interfaces
-
-	/// Compiles binary `+` with the inner LLVM value and the provided right-hand-side.
-	/// Errors if the operation is performed on incompatible types
-	pub fn compile_add(&self, other: &Self, builder: &'a Builder<'ctx>) -> Result<Self, Error> {
-		use BasicValueEnum as B;
-		
-		let self_unwrap = self.unwrap_value();
-		let other_unwrap = other.unwrap_value();
-
-		match (self_unwrap, other_unwrap) {
-			(B::IntValue(a), B::IntValue(b)) => Ok(Self::Int(builder.build_int_add(a, b, "temp.add"))),
-
-			(B::IntValue(a), B::FloatValue(b)) => {
-				let cast = builder.build_signed_int_to_float(a, b.get_type(), "temp.convert");
-				Ok(Self::Float(builder.build_float_add(cast, b, "temp.add")))
-			},
-
-			(B::FloatValue(a), B::IntValue(b)) => {
-				let cast = builder.build_signed_int_to_float(b, a.get_type(), "temp.convert");
-				Ok(Self::Float(builder.build_float_add(a, cast, "temp.add")))
-			},
-
-			(B::FloatValue(a), B::FloatValue(b)) => Ok(Self::Float(builder.build_float_add(a, b, "temp.add"))),
-
-			(a, b) => bail!("Cannot compile binary operation `{}` on `{}` and `{}`", P::BinaryOperator::Plus.as_str(), a, b)
-		}
-	}
-
-	/// Compiles binary `-` with the inner LLVM value and the provided right-hand-side.
-	/// Errors if the operation is performed on incompatible types
-	pub fn compile_subtract(&self, other: &Self, builder: &'a Builder<'ctx>) -> Result<Self, Error> {
-		use BasicValueEnum as B;
-		
-		let self_unwrap = self.unwrap_value();
-		let other_unwrap = other.unwrap_value();
-
-		match (self_unwrap, other_unwrap) {
-			(B::IntValue(a), B::IntValue(b)) => Ok(Self::Int(builder.build_int_sub(a, b, "temp.subtract"))),
-
-			(B::IntValue(a), B::FloatValue(b)) => {
-				let cast = builder.build_signed_int_to_float(a, b.get_type(), "temp.convert");
-				Ok(Self::Float(builder.build_float_sub(cast, b, "temp.subtract")))
-			},
-
-			(B::FloatValue(a), B::IntValue(b)) => {
-				let cast = builder.build_signed_int_to_float(b, a.get_type(), "temp.convert");
-				Ok(Self::Float(builder.build_float_add(a, cast, "temp.subtract")))
-			},
-
-			(B::FloatValue(a), B::FloatValue(b)) => Ok(Self::Float(builder.build_float_sub(a, b, "temp.subtract"))),
-
-			(a, b) => bail!("Cannot compile binary operation `{}` on `{}` and `{}`", P::BinaryOperator::Minus.as_str(), a, b)
-		}
-	}
-
-	/// Compiles binary `/` with the inner LLVM value and the provided right-hand-side.
-	/// Errors if the operation is performed on incompatible types
-	pub fn compile_divide(&self, other: &Self, builder: &'a Builder<'ctx>) -> Result<Self, Error> {
-		use BasicValueEnum as B;
-		
-		let self_unwrap = self.unwrap_value();
-		let other_unwrap = other.unwrap_value();
-
-		match (self_unwrap, other_unwrap) {
-			(B::IntValue(a), B::IntValue(b)) => Ok(Self::Int(builder.build_int_signed_div(a, b, "temp.divide"))),
-
-			(B::IntValue(a), B::FloatValue(b)) => {
-				let cast = builder.build_signed_int_to_float(a, b.get_type(), "temp.convert");
-				Ok(Self::Float(builder.build_float_div(cast, b, "temp.divide")))
-			},
-
-			(B::FloatValue(a), B::IntValue(b)) => {
-				let cast = builder.build_signed_int_to_float(b, a.get_type(), "temp.convert");
-				Ok(Self::Float(builder.build_float_div(a, cast, "temp.divide")))
-			},
-
-			(B::FloatValue(a), B::FloatValue(b)) => Ok(Self::Float(builder.build_float_div(a, b, "temp.divide"))),
-
-			(a, b) => bail!("Cannot compile binary operation `{}` on `{}` and `{}`", P::BinaryOperator::Divide.as_str(), a, b)
-		}
-	}
-
-	/// Compiles binary `*` with the inner LLVM value and the provided right-hand-side.
-	/// Errors if the operation is performed on incompatible types
-	pub fn compile_multiply(&self, other: &Self, builder: &'a Builder<'ctx>) -> Result<Self, Error> {
-		use BasicValueEnum as B;
-		
-		let self_unwrap = self.unwrap_value();
-		let other_unwrap = other.unwrap_value();
-
-		match (self_unwrap, other_unwrap) {
-			(B::IntValue(a), B::IntValue(b)) => Ok(Self::Int(builder.build_int_mul(a, b, "temp.multiply"))),
-
-			(B::IntValue(a), B::FloatValue(b)) => {
-				let cast = builder.build_signed_int_to_float(a, b.get_type(), "temp.convert");
-				Ok(Self::Float(builder.build_float_mul(cast, b, "temp.multiply")))
-			},
-
-			(B::FloatValue(a), B::IntValue(b)) => {
-				let cast = builder.build_signed_int_to_float(b, a.get_type(), "temp.convert");
-				Ok(Self::Float(builder.build_float_mul(a, cast, "temp.multiply")))
-			},
-
-			(B::FloatValue(a), B::FloatValue(b)) => Ok(Self::Float(builder.build_float_mul(a, b, "temp.multiply"))),
-
-			(a, b) => bail!("Cannot compile binary operation `{}` on `{}` and `{}`", P::BinaryOperator::Times.as_str(), a, b)
-		}
-	}
-
-	/// Compiles binary `%` with the inner LLVM value and the provided right-hand-side.
-	/// Errors if the operation is performed on incompatible types
-	pub fn compile_modulo(&self, other: &Self, builder: &'a Builder<'ctx>) -> Result<Self, Error> {
-		use BasicValueEnum as B;
-		
-		let self_unwrap = self.unwrap_value();
-		let other_unwrap = other.unwrap_value();
-
-		match (self_unwrap, other_unwrap) {
-			(B::IntValue(a), B::IntValue(b)) => Ok(Self::Int(builder.build_int_signed_rem(a, b, "temp.modulo"))),
-
-			(B::IntValue(a), B::FloatValue(b)) => {
-				let cast = builder.build_signed_int_to_float(a, b.get_type(), "temp.convert");
-				Ok(Self::Float(builder.build_float_rem(cast, b, "temp.modulo")))
-			},
-
-			(B::FloatValue(a), B::IntValue(b)) => {
-				let cast = builder.build_signed_int_to_float(b, a.get_type(), "temp.convert");
-				Ok(Self::Float(builder.build_float_rem(a, cast, "temp.modulo")))
-			},
-
-			(B::FloatValue(a), B::FloatValue(b)) => Ok(Self::Float(builder.build_float_rem(a, b, "temp.modulo"))),
-
-			(a, b) => bail!("Cannot compile binary operation `{}` on `{}` and `{}`", P::BinaryOperator::Modulo.as_str(), a, b)
-		}
-	}
-
-	/// Compiles binary `==` with the inner LLVM value and the provided right-hand-side.
-	/// Errors if the operation is performed on incompatible types
-	pub fn compile_equals(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self, Error> {
-		// TODO: Implement this function
-		unimplemented!()
-	}
-
-	/// Compiles binary `!=` with the inner LLVM value and the provided right-hand-side.
-	/// Errors if the operation is performed on incompatible types
-	pub fn compile_not_equals(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self, Error> {
-		// TODO: Implement this function
-		unimplemented!()
-	}
-
-	/// Compiles binary `and` with the inner LLVM value and the provided right-hand-side.
-	/// Errors if the operation is performed on incompatible types
-	pub fn compile_and(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self, Error> {
-		// TODO: Implement this function
-		unimplemented!()
-	}
-
-	/// Compiles binary `or` with the inner LLVM value and the provided right-hand-side.
-	/// Errors if the operation is performed on incompatible types
-	pub fn compile_or(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self, Error> {
-		// TODO: Implement this function
-		unimplemented!()
-	}
-
-	/// Compiles binary `>` with the inner LLVM value and the provided right-hand-side.
-	/// Errors if the operation is performed on incompatible types
-	pub fn compile_gt(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self, Error> {
-		// TODO: Implement this function
-		unimplemented!()
-	}
-
-	/// Compiles binary `<` with the inner LLVM value and the provided right-hand-side.
-	/// Errors if the operation is performed on incompatible types
-	pub fn compile_lt(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self, Error> {
-		// TODO: Implement this function
-		unimplemented!()
-	}
-
-	/// Compiles binary `>=` with the inner LLVM value and the provided right-hand-side.
-	/// Errors if the operation is performed on incompatible types
-	pub fn compile_gte(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self, Error> {
-		// TODO: Implement this function
-		unimplemented!()
-	}
-
-	/// Compiles binary `<=` with the inner LLVM value and the provided right-hand-side.
-	/// Errors if the operation is performed on incompatible types
-	pub fn compile_lte(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self, Error> {
-		// TODO: Implement this function
-		unimplemented!()
-	}
-}
-
-impl<'ctx> TryFrom<BasicValueEnum<'ctx>> for ExpressionValue<'ctx> {
-	type Error = Error;
-
-	fn try_from(value: BasicValueEnum<'ctx>) -> Result<Self, Self::Error> {
-		match value {
-			BasicValueEnum::IntValue(value) => Ok(Self::Int(value)),
-			BasicValueEnum::FloatValue(value) => Ok(Self::Float(value)),
-			BasicValueEnum::PointerValue(value) => Ok(Self::Pointer(value)),
-			
-			_ => bail!("Failed to convert value `{}` of type `BasicValueEnum` into `ExpressionValue`", value.get_type())
-		}
-	}
-}
-
-/// An enum containing all of the built-in types (typically types that have their default behavior explicitly defined by the compiler)
-#[derive(Debug, Clone, Display)]
-pub enum BuiltinType {
-	Int,
-	Float,
-	String,
-	Boolean,
-	Void
-}
-
-impl<'ctx> BuiltinType {
-	/// Returns the corresponding LLVM type of a built-in type
-	pub fn as_llvm_type(&self, context: &'ctx Context) -> Option<BasicTypeEnum<'ctx>> {
-		match self {
-			Self::Int => Some(BasicTypeEnum::IntType(context.i64_type())),
-			Self::Float => Some(BasicTypeEnum::FloatType(context.f64_type())),
-			Self::String => Some(BasicTypeEnum::PointerType(context.i8_type().ptr_type(AddressSpace::default()))),
-			Self::Boolean => Some(BasicTypeEnum::IntType(context.bool_type())),
-
-			Self::Void => None
-		}
-	}
-
-	/// Returns the string representation of a built-in type
-	pub fn as_hasan_str(&self) -> &'static str {
-		match self {
-			Self::Int => "int",
-			Self::Float => "float",
-			Self::String => "string",
-			Self::Boolean => "bool",
-			Self::Void => "void"
-		}
-	}
-}
-
-impl TryFrom<&str> for BuiltinType {
-	type Error = Error;
-
-	fn try_from(value: &str) -> Result<Self, Self::Error> {
-		match value {
-			"int" => Ok(Self::Int),
-			"float" => Ok(Self::Float),
-			"string" => Ok(Self::String),
-			"bool" => Ok(Self::Boolean),
-			"void" => Ok(Self::Void),
-
-			_ => bail!("Failed to convert `{}` into a built-in type", value)
-		}
-	}
 }
 
 #[derive(Debug, Clone)]
@@ -443,6 +83,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 			match statement.to_owned() {
 				P::Statement::FunctionDefinition(function) => { self.compile_function(function)?; },
 				P::Statement::Return(value) => { self.compile_return(value)?; },
+
 				P::Statement::VariableDefinition { modifiers, name, kind, value } => {
 					self.compile_variable_definition(
 						modifiers,
@@ -451,8 +92,13 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 						value
 					)?;
 				},
-				P::Statement::FunctionCall { callee, generics: _, arguments } => {
-					self.compile_function_call(callee, arguments)?;
+
+				P::Statement::FunctionCall { callee, generics, arguments } => {
+					self.compile_expression(&P::Expression::FunctionCall {
+						callee: Box::new(callee),
+						generics,
+						arguments
+					})?;
 				}
 
 				_ => panic!("Encountered unknown statement `{}`", statement)
@@ -527,7 +173,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 		}
 
 		// Otherwise, proceed with genereration
-		let name = format!("str_{}", random_string(30));
+		let name = format!("str.{}", random_string());
 		let global_value;
 
 		unsafe {
@@ -577,7 +223,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	fn compile_function_prototype(&self, prototype: &FunctionPrototype) -> Result<FunctionValue<'ctx>, Error> {
 		if prototype.return_type.is_none() {
 			// TODO: Resolve types during semantic analysis
-			bail!("Currently, all functions must have an explicit return type");
+			bail!("Unable to resolve function return type");
 		}
 
 		let return_type = self.compile_type(prototype.return_type.as_ref().unwrap())?;
@@ -700,7 +346,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 		let value = value.unwrap();
 
 		let compiled = self.compile_expression(&value)?;
-		let basic_value = compiled.unwrap_value();
+		let basic_value = compiled.unwrap_basic_value()?;
 
 		Ok(self.builder.build_return(Some(&basic_value)))
 	}
@@ -720,28 +366,34 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 			E::Unary { operator, operand } => self.compile_unary_expression(operator, operand),
 			E::Binary { lhs, operator, rhs } => self.compile_binary_expression(*lhs, operator, *rhs),
 
+			E::FunctionCall { callee, generics: _, arguments } => self.compile_function_call(*callee, arguments),
+
 			E::Identifier(value) => Ok(self.resolve_identifier(value)?),
 
 			_ => bail!("Encountered unsupported expression `{}`", expression.to_string())
 		}
 	}
 
-	/// Resolves the passed identifier into an `ExpressionValue`. Errors if the identifier has not bee found
+	/// Resolves the passed identifier into an `ExpressionValue`. Errors if the identifier has not been found
 	fn resolve_identifier(&mut self, name: String) -> Result<ExpressionValue<'ctx>, Error> {
-		let inside_variables = self.variables.contains_key(&name);
-		
-		// TODO: Allow for functions
+		let in_variables = self.variables.contains_key(&name);
+		let function = self.get_function(&name);
 
-		if !inside_variables {
+		if !in_variables && function.is_none() {
 			bail!("Identifier `{}` has not been found", name);
 		}
 
-		let variable = self.variables.get(&name)
-			.unwrap_or_else(|| unreachable!())
-			.to_owned();
+		if in_variables {
+			let variable = self.variables.get(&name)
+				.unwrap_or_else(|| unreachable!())
+				.to_owned();
 
-		let load = self.builder.build_load(variable.kind, variable.pointer, "temp.load");
-		ExpressionValue::try_from(load)
+			let load = self.builder.build_load(variable.kind, variable.pointer, "temp.load");
+			ExpressionValue::try_from(load)
+		} else {
+			let function = function.unwrap();
+			Ok(ExpressionValue::Function(function))
+		}
 	}
 
 	/// Compiles a unary expression given the operator and operand
@@ -781,7 +433,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	fn compile_variable_definition(&mut self, modifiers: P::GeneralModifiers, name: String, kind: Option<P::Type>, value: P::Expression) -> Result<(), Error> {
 		if kind.is_none() {
 			// TODO: Resolve types during semantic analysis
-			bail!("Currently, all variables must have an explicit type");
+			bail!("Unable to resolve variable type");
 		}
 
 		let inside_function = self.current_function.is_some();
@@ -799,7 +451,9 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 		let kind = kind.unwrap();
 		let kind_resolved = self.compile_type(&kind)?.unwrap();
 
-		let compiled_expression = self.compile_expression(&value)?.unwrap_value();
+		let compiled_expression = self
+			.compile_expression(&value)?
+			.unwrap_basic_value()?;
 
 		if is_constant {
 			let global_value = self.module.add_global(kind_resolved, Some(AddressSpace::default()), &name);
@@ -825,8 +479,37 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 		Ok(())
 	}
 
-	fn compile_function_call(&self, _callee: P::Expression, _arguments: Vec<P::Expression>) -> Result<(), Error> {
-		// TODO: Implement this function
-		unimplemented!()
+	fn compile_function_call(&mut self, callee: P::Expression, arguments: Vec<P::Expression>) -> Result<ExpressionValue<'ctx>, Error> {
+		let callee = self.compile_expression(&callee)?;
+		let resolved_callee = callee.unwrap_any_value()?;
+
+		if !resolved_callee.is_function_value() {
+			bail!("Unable to convert callee into a function: not a function");
+		}
+
+		let resolved_callee = resolved_callee.into_function_value();
+
+		let converted_arguments = arguments
+			.iter()
+			.map(|argument| {
+				let compiled = self.compile_expression(argument)
+					.expect("Failed to compile function call argument")
+					.unwrap_basic_value()
+					.unwrap();
+
+				BasicMetadataValueEnum::from(compiled)
+			})
+			.collect::<Vec<_>>();
+		
+		let converted_arguments = converted_arguments.as_slice();
+
+		let result_name = format!(
+			"call.{}.{}",
+			resolved_callee.get_name().to_str()?,
+			random_string()
+		);
+
+		let call_instruction = self.builder.build_call(resolved_callee, converted_arguments, &result_name);
+		ExpressionValue::try_from(call_instruction.as_any_value_enum())
 	}
 }
