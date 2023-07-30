@@ -187,18 +187,11 @@ fn compile(command: hasan_cli::CompileCommand) {
     write_file("./compiled/4_llvm_ir.ll", codegen_data);
 }
 
-/// Alias to forget about the return value of any expression provided
-macro_rules! void_value {
-	($value:expr) => {
-		std::mem::forget($value)
-	};
-}
-
 fn main() {
 	let args = hasan_cli::CLI::parse_custom();
 	
 	match args.subcommand {
-		hasan_cli::CLISubcommand::Compile(command) => void_value!(compile(command)),
-        hasan_cli::CLISubcommand::Parse(command) => void_value!(parse(command))
+		hasan_cli::CLISubcommand::Compile(command) => { compile(command); },
+        hasan_cli::CLISubcommand::Parse(command) => { parse(command); }
 	}
 }

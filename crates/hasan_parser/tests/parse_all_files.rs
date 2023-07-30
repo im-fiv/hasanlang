@@ -45,7 +45,7 @@ fn parse_all_files() {
 
 		let match_filename = format!("./tests/outputs/{}.txt", filename_str);
 
-		// Compile the file
+		// Parse the file
 		let contents = read_file(path.clone());
 		let parse_result = PestParser::parse(Rule::program, &contents);
 
@@ -61,7 +61,7 @@ fn parse_all_files() {
 		let ast_parser = HasanParser::new(pairs);
 		let ast = panic::catch_unwind(|| ast_parser.parse());
 
-		if !ast.is_ok() {
+		if ast.is_err() {
 			panic!("Failed to parse file {:?}", filename);
 		}
 
