@@ -31,6 +31,7 @@ statement = _{
 	for_in_stmt |
 	function_call_stmt |
 	function_definition_stmt |
+	function_declaration_stmt |
 	type_alias_stmt |
 	class_definition |
 	variable_definition_stmt |
@@ -60,12 +61,14 @@ general_modifiers = { modifier_public? ~ modifier_constant? ~ modifier_static? }
 // Module system is defined earlier //
 
 interface_stmt = { general_modifiers ~ "interface" ~ identifier ~ definition_generics? ~ interface_members ~ "end" ~ stmt_sep? }
-interface_impl_stmt = { "impl" ~ identifier ~ definition_generics? ~ "for" ~ identifier ~ class_definition_member* ~ "end" ~ stmt_sep? } // reusing class definition member
+interface_impl_stmt = { "impl" ~ identifier ~ call_generics? ~ "for" ~ identifier ~ class_definition_member* ~ "end" ~ stmt_sep? } // reusing class definition member
 
 return_stmt = { "return" ~ expression? ~ stmt_sep }
 
 function_call_stmt = { term_without_recursion ~ recursive_operator+ ~ stmt_sep } // this is wrong, but it will be handled inside the parser
+
 function_definition_stmt = { function_header ~ do_block ~ stmt_sep? }
+function_declaration_stmt = { function_header ~ stmt_sep }
 
 type_alias_stmt = { general_modifiers ~ "type" ~ identifier ~ definition_generics? ~ "=" ~ type ~ stmt_sep }
 
@@ -123,7 +126,7 @@ type = { regular_type | function_type }
 regular_type = { identifier ~ type_operators }
 	type_operators = { type_operator_raw? ~ type_operator_generics? ~ type_operator_array? }
 		type_operator_raw = { "!" }
-		type_operator_generics = { definition_generics }
+		type_operator_generics = { call_generics }
 		type_operator_array = { "[" ~ "]" }
 
 function_type = { definition_generics? ~ "(" ~ function_type_arguments ~ ")" ~ "->" ~ type }

@@ -1,6 +1,6 @@
 Program {
     statements: [
-        Interface {
+        InterfaceDefinition {
             modifiers: [
                 Public,
                 Constant,
@@ -190,7 +190,7 @@ Program {
                 ),
             ],
         },
-        Interface {
+        InterfaceDefinition {
             modifiers: [],
             name: "SimpleInterface",
             generics: [],
@@ -236,7 +236,7 @@ Program {
             generics: [],
             members: [],
         },
-        Interface {
+        InterfaceDefinition {
             modifiers: [],
             name: "ExampleInterface",
             generics: [
@@ -281,13 +281,17 @@ Program {
                 ),
             ],
         },
-        InterfaceImpl {
+        InterfaceImplementation {
             interface_name: "ExampleInterface",
             generics: [
-                DefinitionType {
-                    name: "world",
-                    requires_implementations: [],
-                },
+                Regular(
+                    RegularType {
+                        base: "world",
+                        generics: [],
+                        raw: false,
+                        array: false,
+                    },
+                ),
             ],
             class_name: "ExampleClass",
             members: [
@@ -340,7 +344,7 @@ Program {
                 ),
             ],
         },
-        Interface {
+        InterfaceDefinition {
             modifiers: [],
             name: "Callable",
             generics: [],

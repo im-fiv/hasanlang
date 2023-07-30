@@ -47,8 +47,34 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 
 ## My current TODO list
 
+### Compiler:
+
+- [ ] Exhaustive expression compiling
+- [ ] Bug fixes
+  - [ ] Nested functions not working
+  - [ ] Constant string variables causing the compiler to crash
+- [ ] `if` statements
+- [ ] `for` and `while` loops
+- [ ] Automatic `return` termination
+
 ### Semantic Analysis:
-- [ ] Get to it
+- [ ] Modifiers validation
+- [ ] Type resolving
+- [ ] Interfaces validation
+  - [ ] Implementation validation
+  - [ ] Type's implemented interfaces map
+- [ ] Function return type validation
+- [ ] Function call argument types validation
+- [ ] Generics validation
+  - [ ] Definitions
+  - [ ] Calls
+- [ ] Imports resolving
+- [ ] Name collision checking
+- [ ] Undefined identifiers checking
+- [ ] Type alias substitution
+- [ ] Checking for circular references
+- [ ] `return` statement checking
+- [ ] `break` statement checking
 
 ### Corrective Parser:
 

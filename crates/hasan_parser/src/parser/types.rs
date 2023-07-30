@@ -16,7 +16,7 @@ pub enum Type {
 #[derive(Debug, Clone)]
 pub struct RegularType {
 	pub base: String,
-	pub generics: Vec<DefinitionType>,
+	pub generics: Vec<Type>,
 
 	// Type attributes
 	pub raw: bool,

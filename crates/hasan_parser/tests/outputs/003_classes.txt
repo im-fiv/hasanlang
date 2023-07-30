@@ -34,10 +34,14 @@ Program {
                             RegularType {
                                 base: "SomeType",
                                 generics: [
-                                    DefinitionType {
-                                        name: "int",
-                                        requires_implementations: [],
-                                    },
+                                    Regular(
+                                        RegularType {
+                                            base: "int",
+                                            generics: [],
+                                            raw: false,
+                                            array: false,
+                                        },
+                                    ),
                                 ],
                                 raw: false,
                                 array: true,

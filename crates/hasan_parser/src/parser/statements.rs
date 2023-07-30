@@ -9,6 +9,7 @@ use strum_macros::Display;
 #[derive(Debug, Clone, Display)]
 pub enum Statement {
 	FunctionDefinition(Function),
+	FunctionDeclaration(Function),
 
 	TypeAlias {
 		modifiers: GeneralModifiers,
@@ -74,7 +75,7 @@ pub enum Statement {
 	
 	Break,
 
-	Interface {
+	InterfaceDefinition {
 		modifiers: GeneralModifiers,
 
 		name: String,
@@ -82,24 +83,24 @@ pub enum Statement {
 		members: Vec<InterfaceMember>
 	},
 
-	InterfaceImpl {
+	InterfaceImplementation {
 		interface_name: String,
-		generics: Vec<DefinitionType>,
+		generics: Vec<Type>,
 		class_name: String,
 		members: Vec<ClassDefinitionMember>
 	},
 
-	UseModule {
+	ModuleUse {
 		path: Vec<String>,
 		name: String
 	},
 
-	UseModuleAll {
+	ModuleUseAll {
 		path: Vec<String>,
 		name: String
 	},
 
-	UseModuleItems {
+	ModuleUseItems {
 		path: Vec<String>,
 		name: String,
 		items: Vec<ModuleItem>

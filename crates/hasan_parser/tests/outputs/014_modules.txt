@@ -1,16 +1,16 @@
 Program {
     statements: [
-        UseModule {
+        ModuleUse {
             path: [],
             name: "std",
         },
-        UseModule {
+        ModuleUse {
             path: [
                 "std",
             ],
             name: "fs",
         },
-        UseModuleItems {
+        ModuleUseItems {
             path: [
                 "std",
             ],
@@ -25,7 +25,7 @@ Program {
                 },
             ],
         },
-        UseModuleAll {
+        ModuleUseAll {
             path: [
                 "std",
             ],

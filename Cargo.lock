@@ -252,6 +252,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "hasan_hir"
+version = "0.0.0"
+dependencies = [
+ "hasan_parser",
+ "strum",
+ "strum_macros",
+]
+
+[[package]]
 name = "hasan_parser"
 version = "0.0.0"
 dependencies = [
@@ -274,6 +283,7 @@ name = "hasan_semantic_analyzer"
 version = "0.0.0"
 dependencies = [
  "anyhow",
+ "hasan_hir",
  "hasan_parser",
 ]
 
