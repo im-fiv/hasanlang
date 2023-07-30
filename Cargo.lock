@@ -242,7 +242,10 @@ version = "0.0.0"
 dependencies = [
  "anyhow",
  "hasan_parser",
+ "hasan_pest_parser",
+ "hasan_semantic_analyzer",
  "inkwell",
+ "pest",
  "rand",
  "strum",
  "strum_macros",

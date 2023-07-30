@@ -13,7 +13,7 @@ use inkwell::builder::Builder;
 use inkwell::passes::PassManager;
 use inkwell::module::Module;
 use inkwell::types::{BasicMetadataTypeEnum, BasicTypeEnum};
-use inkwell::values::{FunctionValue, PointerValue, IntValue, FloatValue, GlobalValue, InstructionValue, AnyValue, BasicMetadataValueEnum};
+use inkwell::values::{FunctionValue, PointerValue, IntValue, FloatValue, GlobalValue, AnyValue, BasicMetadataValueEnum};
 
 use std::collections::HashMap;
 use anyhow::{Error, bail};
@@ -21,13 +21,6 @@ use anyhow::{Error, bail};
 use hasan_parser::{self as P};
 
 const ENTRY_FUNCTION_NAME: &str = "main";
-
-/// Alias to forget about the return value of any expression provided
-macro_rules! void_value {
-	($value:expr) => {
-		std::mem::forget($value)
-	};
-}
 
 /// Generates a random string given its length
 pub fn random_string() -> String {
@@ -88,28 +81,22 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	fn compile_statements(&mut self, statements: &Vec<P::Statement>) -> Result<(), Error> {
 		for statement in statements {
 			match statement.to_owned() {
-				P::Statement::FunctionDefinition(function) => void_value!(self.compile_function(function)?),
-				P::Statement::Return(value) => void_value!(self.compile_return(value)?),
+				P::Statement::FunctionDefinition(function) => self.compile_function(function)?,
+				P::Statement::Return(value) => self.compile_return(value)?,
 
-				P::Statement::VariableDefinition { modifiers, name, kind, value } => void_value!(
-					self.compile_variable_definition(
-						modifiers,
-						name,
-						kind,
-						value
-					)?
-				),
+				P::Statement::VariableDefinition { modifiers, name, kind, value } => 
+					self.compile_variable_definition(modifiers, name, kind, value)?,
 
-				P::Statement::FunctionCall { callee, generics, arguments } => void_value!(
+				P::Statement::FunctionCall { callee, generics, arguments } => {
 					self.compile_expression(&P::Expression::FunctionCall {
 						callee: Box::new(callee),
 						generics,
 						arguments
-					})?
-				),
+					})?;
+				},
 
 				_ => panic!("Encountered unknown statement `{}`", statement)
-			}
+			};
 		}
 		
 		Ok(())
@@ -164,13 +151,11 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 		// Look up the string by value before creating a new global
 		let mut found_string: Option<GlobalString> = None;
 
-		for (_, global_string) in self.globals.iter() {
-			if let Global::String(global_string) = global_string {
+		for global in self.globals.values() {
+			if let Global::String(global_string) = global.clone() {
 				if global_string.value == value {
 					found_string = Some(global_string.clone());
 				}
-			} else {
-				continue;
 			}
 		}
 
@@ -290,7 +275,12 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	}
 
 	/// Compiles the provided `Function` into LLVM `FunctionValue`
-	fn compile_function(&mut self, function: P::Function) -> Result<FunctionValue<'ctx>, Error> {
+	fn compile_function(&mut self, function: P::Function) -> Result<(), Error> {
+		// BUG: Nested functions do not work. Reason is yet to be determined
+
+		let old_function_value = self.current_function;
+		self.current_function = None;
+
 		let converted_function = Function::from_parser(function);
 		let Function { prototype, body } = converted_function;
 
@@ -298,16 +288,16 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 		
 		// If no function body is present, return early as an external function
 		if body.is_none() {
-			return Ok(function);
+			return Ok(());
 		}
+
+		// Set current function
+		self.current_function = Some(function);
 
 		let body = body.unwrap();
 
 		let entry = self.context.append_basic_block(function, "entry");
 		self.builder.position_at_end(entry);
-
-		// Set current function
-		self.current_function = Some(function);
 
 		// Reserve the amount of arguments
 		self.variables.reserve(prototype.arguments.len());
@@ -330,13 +320,19 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 		self.compile_statements(&body)?;
 
 		// Unset current function
-		self.current_function = None;
+		self.current_function = old_function_value;
+
+		// Remove the arguments from variables list
+		// NOTE: I'm not quite sure how well that works with name collisions
+		for argument in prototype.arguments {
+			self.variables.remove_entry(&argument.name);
+		}
 
 		// Verify and return the function
 		if function.verify(true) {
 			self.fpm.run_on(&function);
 
-			Ok(function)
+			Ok(())
 		} else {
 			unsafe { function.delete() }
 
@@ -345,9 +341,10 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	}
 
 	/// Compiles the return statement
-	fn compile_return(&mut self, value: Option<P::Expression>) -> Result<InstructionValue, Error> {
+	fn compile_return(&mut self, value: Option<P::Expression>) -> Result<(), Error> {
 		if value.is_none() {
-			return Ok(self.builder.build_return(None));
+			self.builder.build_return(None);
+			return Ok(());
 		}
 
 		let value = value.unwrap();
@@ -355,7 +352,8 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 		let compiled = self.compile_expression(&value)?;
 		let basic_value = compiled.unwrap_basic_value()?;
 
-		Ok(self.builder.build_return(Some(&basic_value)))
+		self.builder.build_return(Some(&basic_value));
+		Ok(())
 	}
 
 	/// Compiles the provided `Expression` into LLVM number value (`FloatValue` or `IntValue`)
@@ -438,6 +436,9 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	}
 	
 	fn compile_variable_definition(&mut self, modifiers: P::GeneralModifiers, name: String, kind: Option<P::Type>, value: P::Expression) -> Result<(), Error> {
+		// BUG: It seems as if identifiers are unable to be resolved to globals
+		// BUG: Constant string variables seem to cause access violation exception
+		
 		if kind.is_none() {
 			// TODO: Resolve types during semantic analysis
 			bail!("Unable to resolve variable type");

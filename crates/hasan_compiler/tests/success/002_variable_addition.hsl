@@ -1,0 +1,3 @@
+func main() -> int do
+	return 4 + 2;
+end

@@ -1,0 +1,7 @@
+func sum(a: int, b: int) -> int do
+	return a + b;
+end
+
+func main() -> int do
+	return sum(4, 2);
+end
