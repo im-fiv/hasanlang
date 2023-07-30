@@ -381,23 +381,26 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 
 	/// Resolves the passed identifier into an `ExpressionValue`. Errors if the identifier has not been found
 	fn resolve_identifier(&mut self, name: String) -> Result<ExpressionValue<'ctx>, Error> {
-		let in_variables = self.variables.contains_key(&name);
+		let variable = self.variables.get(&name);
 		let function = self.get_function(&name);
+		let global = self.module.get_global(&name);
 
-		if !in_variables && function.is_none() {
+		if variable.is_none() && function.is_none() && global.is_none() {
 			bail!("Identifier `{}` has not been found", name);
 		}
 
-		if in_variables {
-			let variable = self.variables.get(&name)
-				.unwrap_or_else(|| unreachable!())
-				.to_owned();
-
+		if let Some(variable) = variable {
 			let load = self.builder.build_load(variable.kind, variable.pointer, "temp.load");
 			ExpressionValue::try_from(load)
-		} else {
-			let function = function.unwrap();
+		} else if let Some(function) = function {
 			Ok(ExpressionValue::Function(function))
+		} else if let Some(_global) = global {
+			// TODO: Fix global referencing
+
+			// Ok(ExpressionValue::Pointer(global.as_pointer_value()))
+			unimplemented!("Global referencing is not implemented")
+		} else {
+			unreachable!()
 		}
 	}
 
@@ -436,7 +439,6 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	}
 	
 	fn compile_variable_definition(&mut self, modifiers: P::GeneralModifiers, name: String, kind: Option<P::Type>, value: P::Expression) -> Result<(), Error> {
-		// BUG: It seems as if identifiers are unable to be resolved to globals
 		// BUG: Constant string variables seem to cause access violation exception
 		
 		if kind.is_none() {

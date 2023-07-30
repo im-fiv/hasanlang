@@ -110,21 +110,21 @@ fn compile(command: hasan_cli::CompileCommand) {
     }
     
     let analyzer = SemanticAnalyzer::new(ast.clone());
-    let analysis = analyzer.analyze();
+    let new_ast = analyzer.analyze();
 
-    if analysis.is_err() {
-        eprintln!("Error: {:?}", analysis.err().unwrap());
+    if new_ast.is_err() {
+        eprintln!("Error: {:?}", new_ast.err().unwrap());
         return;
     }
 
-    let analysis_data = analysis.unwrap();
+    let new_ast = new_ast.unwrap();
 
     if debug {
-		println!("Analysis data: {:?}", analysis_data);
+		println!("Analysis data: {:?}", new_ast);
 		println!();
 	}
 
-    write_file("./compiled/3_semantic_analysis.txt", format!("{:#?}", analysis_data));
+    write_file("./compiled/3_semantic_analysis.txt", format!("{:#?}", new_ast));
 
     // Compilation stage
     if debug {
@@ -168,7 +168,7 @@ fn compile(command: hasan_cli::CompileCommand) {
     fpm.initialize();
 
     let mut compiler = Compiler::new(&context, &builder, &fpm, &module);
-    let codegen = compiler.compile(&ast);
+    let codegen = compiler.compile(&new_ast);
 
     if codegen.is_err() {
         eprintln!("Error: {:?}", codegen.err().unwrap());

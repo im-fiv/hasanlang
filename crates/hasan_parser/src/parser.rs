@@ -131,6 +131,7 @@ impl<'p> HasanParser<'p> {
 				Rule::module_use_items_stmt => self.parse_module_use_items(pair),
 
 				Rule::function_definition_stmt => self.parse_function_definition(pair),
+				Rule::function_declaration_stmt => self.parse_function_declaration(pair),
 				Rule::type_alias_stmt => self.parse_type_alias(pair),
 				Rule::class_definition => self.parse_class_definition(pair),
 				Rule::variable_definition_stmt => self.parse_variable_definition(pair),
@@ -345,7 +346,7 @@ impl<'p> HasanParser<'p> {
 
 		let name = self.pair_str(next_pair);
 		
-		Statement::UseModule { path, name }
+		Statement::ModuleUse { path, name }
 	}
 
 	fn parse_module_use_all(&self, pair: Pair<Rule>) -> Statement {
@@ -371,7 +372,7 @@ impl<'p> HasanParser<'p> {
 
 		let name = self.pair_str(next_pair);
 		
-		Statement::UseModuleAll { path, name }
+		Statement::ModuleUseAll { path, name }
 	}
 
 	fn parse_module_use_items(&self, pair: Pair<Rule>) -> Statement {
@@ -408,7 +409,7 @@ impl<'p> HasanParser<'p> {
 			items.push(self.parse_module_item(item_pair));
 		}
 		
-		Statement::UseModuleItems { path, name, items }
+		Statement::ModuleUseItems { path, name, items }
 	}
 
 	fn parse_module_item(&self, pair: Pair<Rule>) -> ModuleItem {
@@ -649,7 +650,7 @@ impl<'p> HasanParser<'p> {
 
 		let members = self.parse_interface_members(next_pair);
 
-		Statement::Interface { modifiers, name, generics, members }
+		Statement::InterfaceDefinition { modifiers, name, generics, members }
 	}
 
 	fn parse_interface_impl(&self, pair: Pair<Rule>) -> Statement {
@@ -669,10 +670,10 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse interface implementation statement: generics/class name pair is missing");
 
-		let mut generics: Vec<DefinitionType> = Vec::new();
+		let mut generics: Vec<Type> = Vec::new();
 
-		if next_pair.as_rule() == Rule::definition_generics {
-			generics = self.parse_generics_as_definition_types(next_pair);
+		if next_pair.as_rule() == Rule::call_generics {
+			generics = self.parse_generics_as_types(next_pair);
 
 			next_pair = pairs
 				.next()
@@ -690,7 +691,7 @@ impl<'p> HasanParser<'p> {
 			members.push(self.parse_class_definition_member(pair));
 		}
 
-		Statement::InterfaceImpl {
+		Statement::InterfaceImplementation {
 			interface_name,
 			generics,
 			class_name,
@@ -1202,13 +1203,13 @@ impl<'p> HasanParser<'p> {
 
 				Rule::type_operator_generics => {
 					if let Type::Regular(regular_type) = output_type {
-						let definition_pair = pair
+						let generics_pair = pair
 							.into_inner()
 							.next()
 							.unwrap_or_else(|| unreachable!("Failed to parse type: generics pair is missing"));
 
 						let mut regular_type = regular_type.clone();
-						regular_type.generics = self.parse_generics_as_definition_types(definition_pair);
+						regular_type.generics = self.parse_generics_as_types(generics_pair);
 
 						output_type = Type::Regular(regular_type);
 					}
@@ -1397,6 +1398,10 @@ impl<'p> HasanParser<'p> {
 	}
 
 	fn parse_function_prototype(&self, pair: Pair<Rule>) -> FunctionPrototype {
+		if pair.as_rule() != Rule::function_header {
+			error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::function_header, pair.as_rule());
+		}
+
 		let mut header_pairs = pair.into_inner();
 
 		let modifiers_pair = header_pairs
@@ -1433,15 +1438,20 @@ impl<'p> HasanParser<'p> {
 	}
 
 	fn parse_function_definition(&self, pair: Pair<Rule>) -> Statement {
+		if pair.as_rule() != Rule::function_definition_stmt {
+			error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::function_definition_stmt, pair.as_rule());
+		}
+
 		let mut pairs = pair.into_inner();
 
-		let header_pair = pairs
-			.next()
-			.expect("Failed to parse function definition: function header is missing");
-
 		// Parsing the header
-		let prototype = self.parse_function_prototype(header_pair);
+		let prototype_pair = pairs
+			.next()
+			.expect("Failed to parse function definition: function prototype is missing");
 
+		let prototype = self.parse_function_prototype(prototype_pair);
+
+		// Parsing the body
 		let body_pairs = pairs
 			.next()
 			.expect("Failed to parse function definition: function body is missing")
@@ -1453,6 +1463,27 @@ impl<'p> HasanParser<'p> {
 		};
 
 		Statement::FunctionDefinition(function)
+	}
+
+	fn parse_function_declaration(&self, pair: Pair<Rule>) -> Statement {
+		if pair.as_rule() != Rule::function_declaration_stmt {
+			error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::general_modifiers, pair.as_rule());
+		}
+
+		let mut pairs = pair.into_inner();
+
+		let prototype_pair = pairs
+			.next()
+			.expect("Failed to parse function declaration: function prototype is missing");
+
+		let prototype = self.parse_function_prototype(prototype_pair);
+
+		let function = Function {
+			prototype,
+			body: None
+		};
+
+		Statement::FunctionDeclaration(function)
 	}
 
 	fn parse_type_alias(&self, pair: Pair<Rule>) -> Statement {

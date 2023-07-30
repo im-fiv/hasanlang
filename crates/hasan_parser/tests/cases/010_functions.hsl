@@ -21,5 +21,4 @@ func main() do
 	return random_number<int>() + add;
 end
 
-// NOTE: Function declarations have been removed (they are yet to come back later)
-// func function_declaration<A, B>(first: A, second: this) -> B!;
+func function_declaration<A, B>(first: A, second: this) -> B!;
