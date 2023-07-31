@@ -74,16 +74,14 @@ Program {
                                 array: false,
                             },
                         ),
-                        default_value: Empty,
+                        default_value: None,
                     },
                 ),
                 Function(
                     ClassDefinitionFunction {
-                        attributes: Some(
-                            [
-                                Get,
-                            ],
-                        ),
+                        attributes: [
+                            Get,
+                        ],
                         prototype: FunctionPrototype {
                             modifiers: [],
                             name: "value",
@@ -100,22 +98,20 @@ Program {
                                 ),
                             ),
                         },
-                        body: Some(
-                            [
-                                Return(
-                                    Some(
-                                        DotAccess {
-                                            expression: Identifier(
-                                                "this",
-                                            ),
-                                            accessor: Identifier(
-                                                "inner_value",
-                                            ),
-                                        },
-                                    ),
+                        body: [
+                            Return(
+                                Some(
+                                    DotAccess {
+                                        expression: Identifier(
+                                            "this",
+                                        ),
+                                        accessor: Identifier(
+                                            "inner_value",
+                                        ),
+                                    },
                                 ),
-                            ],
-                        ),
+                            ),
+                        ],
                     },
                 ),
             ],

@@ -1,7 +1,7 @@
 use super::{
 	DefinitionType, GeneralModifiers, Type,
 	Expression, Function, ClassDefinitionMember,
-	InterfaceMember
+	InterfaceMember, HasanCodegen, vec_transform_str
 };
 
 use strum_macros::Display;
@@ -110,6 +110,151 @@ pub enum Statement {
 	Unimplemented
 }
 
+impl HasanCodegen for Statement {
+	fn codegen(&self) -> String {
+		macro_rules! dry {
+			($name:ident, $func:expr, $sep:expr, $format:expr) => {
+				dry!($name, $func, $sep);
+				let $name = if !$name.is_empty() { format!($format, $name) } else { "".to_owned() };
+			};
+
+			($name:ident, $func:expr, $sep:expr) => {
+				let $name = vec_transform_str($name, $func, $sep);
+			};
+		}
+
+		match self {
+			Self::FunctionDefinition(function) |
+			Self::FunctionDeclaration(function) => function.codegen(),
+
+			Self::TypeAlias { modifiers, name, generics, definition } => {
+				dry!(modifiers, |value| value.to_string(), " ", "{} ");
+				dry!(generics, |value| value.codegen(), ", ", "<{}>");
+
+				format!("{}type {}{} = {};", modifiers, name, generics, definition.codegen())
+			},
+
+			Self::ClassDefinition { modifiers, name, generics, members } => {
+				dry!(modifiers, |value| value.to_string(), " ", "{} ");
+				dry!(generics, |value| value.codegen(), ", ", "<{}>");
+
+				dry!(members, |value| value.codegen(), "\n\t");
+
+				format!("{}class {}{}\n\t{}\nend", modifiers, name, generics, members)
+			},
+
+			Self::VariableDefinition { modifiers, name, kind, value } => {
+				dry!(modifiers, |value| value.to_string(), " ", "{} ");
+
+				if let Some(kind) = kind {
+					format!("{}var {}: {} = {};", modifiers, name, kind.codegen(), value.codegen())
+				} else {
+					format!("{}var {} = {};", modifiers, name, value.codegen())
+				}
+			},
+
+			Self::VariableAssign { name, value } => format!("{} = {};", name.codegen(), value.codegen()),
+
+			Self::FunctionCall { callee, generics, arguments } => {
+				dry!(generics, |value| value.codegen(), ", ", "<{}>");
+				
+				dry!(arguments, |value| value.codegen(), ", ");
+				format!("{}{}({});", callee.codegen(), generics, arguments)
+			},
+
+			Self::Return(value) => if let Some(value) = value {
+				format!("return {};", value.codegen())
+			} else {
+				"return;".to_owned()
+			},
+
+			Self::EnumDefinition { modifiers, name, variants } => {
+				dry!(modifiers, |value| value.to_string(), " ", "{} ");
+
+				dry!(variants, |value| value.codegen(), ",\n\t");
+				format!("{}enum {}\n\t{}\nend", modifiers, name, variants)
+			},
+
+			Self::If { condition, statements, elseif_branches, else_branch } => {
+				dry!(statements, |value| value.codegen(), "\n\t");
+				
+				if (elseif_branches.len() < 1) && else_branch.is_none() {
+					return format!("if {} then\n\t{}\nend", condition.codegen(), statements);
+				}
+
+				let mut elseif_branches_str = String::new();
+
+				for branch in elseif_branches {
+					let branch_statements = vec_transform_str(&branch.statements, |statement| statement.codegen(), "\n\t");
+					elseif_branches_str.push_str(&format!("else if {} then\n\t{}\n", branch.condition.codegen(), branch_statements));
+				}
+
+				if let Some(else_branch) = else_branch {
+					let statements_codegen = vec_transform_str(&else_branch.statements, |value| value.codegen(), "\n\t");
+					format!("if {} then\n\t{}\n{}else\n\t{}\nend", condition.codegen(), statements, elseif_branches_str, statements_codegen)
+				} else {
+					format!("if {} then\n\t{}\n{}end", condition.codegen(), statements, elseif_branches_str)
+				}
+			},
+
+			Self::While { condition, statements } => {
+				dry!(statements, |value| value.codegen(), "\n\t");
+				format!("while {} do\n\t{}\nend", condition.codegen(), statements)
+			},
+
+			Self::For { left, right, statements } => {
+				dry!(statements, |value| value.codegen(), "\n\t");
+				format!("for {} in {} do\n\t{}\nend", left.codegen(), right.codegen(), statements)
+			},
+
+			Self::Break => "break;".to_owned(),
+
+			Self::InterfaceDefinition { modifiers, name, generics, members } => {
+				dry!(modifiers, |value| value.to_string(), " ", "{} ");
+				dry!(generics, |value| value.to_string(), ", ", "<{}>");
+				dry!(members, |value| value.codegen(), "\n\t");
+
+				format!("{}interface {}{}\n\t{}\nend", modifiers, name, generics, members)
+			},
+
+			Self::InterfaceImplementation { interface_name, generics, class_name, members } => {
+				dry!(generics, |value| value.to_string(), ", ", "<{}>");
+				dry!(members, |value| value.codegen(), "\n\t");
+
+				format!("impl {}{} for {}\n\t{}\nend", interface_name, generics, class_name, members)
+			},
+
+			Self::ModuleUse { path, name } => {
+				if path.is_empty() {
+					format!("use module {}", name)
+				} else {
+					format!("use module {}.{}", path.join("."), name)
+				}
+			},
+
+			Self::ModuleUseAll { path, name } => {
+				if path.is_empty() {
+					format!("use module {}.*", name)
+				} else {
+					format!("use module {}.{}.*", path.join("."), name)
+				}
+			},
+			
+			Self::ModuleUseItems { path, name, items } => {
+				dry!(items, |value| value.codegen(), ",\n\t");
+
+				if path.is_empty() {
+					format!("use module {}\n\t{}\nend", name, items)
+				} else {
+					format!("use module {}.{}\n\t{}\nend", path.join("."), name, items)
+				}
+			},
+
+			Self::Unimplemented => "/* UNIMPLEMENTED */".to_owned()
+		}
+	}
+}
+
 #[derive(Debug, Clone)]
 pub enum ModuleItem {
 	Regular(String),
@@ -117,6 +262,21 @@ pub enum ModuleItem {
 	Renamed {
 		from: String,
 		to: String
+	}
+}
+
+impl HasanCodegen for ModuleItem {
+	fn codegen(&self) -> String {
+		match self {
+			Self::Regular(value) => value.to_owned(),
+			Self::Renamed { from, to } => format!("{} as {}", from, to)
+		}
+	}
+}
+
+impl ToString for ModuleItem {
+	fn to_string(&self) -> String {
+		self.codegen()
 	}
 }
 
@@ -129,4 +289,16 @@ pub struct ConditionBranch {
 #[derive(Debug, Clone)]
 pub struct EnumVariant {
 	pub name: String
+}
+
+impl HasanCodegen for EnumVariant {
+	fn codegen(&self) -> String {
+		self.name.clone()
+	}
+}
+
+impl ToString for EnumVariant {
+	fn to_string(&self) -> String {
+		self.codegen()
+	}
 }

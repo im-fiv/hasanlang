@@ -307,12 +307,12 @@ Program {
                                 array: false,
                             },
                         ),
-                        default_value: Empty,
+                        default_value: None,
                     },
                 ),
                 Function(
                     ClassDefinitionFunction {
-                        attributes: None,
+                        attributes: [],
                         prototype: FunctionPrototype {
                             modifiers: [],
                             name: "function",
@@ -329,17 +329,15 @@ Program {
                                 ),
                             ),
                         },
-                        body: Some(
-                            [
-                                Return(
-                                    Some(
-                                        Int(
-                                            5,
-                                        ),
+                        body: [
+                            Return(
+                                Some(
+                                    Int(
+                                        5,
                                     ),
                                 ),
-                            ],
-                        ),
+                            ),
+                        ],
                     },
                 ),
             ],

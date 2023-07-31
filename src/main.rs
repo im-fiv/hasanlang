@@ -109,7 +109,7 @@ fn compile(command: hasan_cli::CompileCommand) {
         println!("Analyzing...");
     }
     
-    let analyzer = SemanticAnalyzer::new(ast.clone());
+    let analyzer = SemanticAnalyzer::new(ast);
     let new_ast = analyzer.analyze();
 
     if new_ast.is_err() {

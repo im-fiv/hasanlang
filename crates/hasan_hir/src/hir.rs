@@ -1,10 +1,9 @@
 mod constructs;
-pub use constructs::*;
-
 mod statements;
-pub use statements::*;
-
+mod traits;
 mod types;
-pub use types::*;
 
-// TODO: HIR codegen
+pub use constructs::*;
+pub use statements::*;
+pub use traits::*;
+pub use types::*;

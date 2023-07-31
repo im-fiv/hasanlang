@@ -1,20 +1,30 @@
 mod attributes_modifiers;
-pub use attributes_modifiers::*;
-
 mod errors;
-pub use errors::*;
-
 mod expressions;
-pub use expressions::*;
-
 mod members;
-pub use members::*;
-
 mod statements;
-pub use statements::*;
-
+mod traits;
 mod types;
+
+pub use attributes_modifiers::*;
+pub use errors::*;
+pub use expressions::*;
+pub use members::*;
+pub use statements::*;
+pub use traits::*;
 pub use types::*;
+
+pub fn vec_transform_str<Elem, Func>(vec: &[Elem], func: Func, sep: &str) -> String
+where
+	Elem: ToString,
+	Func: Fn(&Elem) -> String
+{
+	vec
+		.iter()
+		.map(func)
+		.collect::<Vec<String>>()
+		.join(sep)
+}
 
 use std::iter::Peekable;
 use pest::iterators::{Pair, Pairs};
@@ -26,10 +36,44 @@ pub struct Program {
 	pub module_info: Option<ModuleInfo>
 }
 
+impl HasanCodegen for Program {
+	fn codegen(&self) -> String {
+		let statements = vec_transform_str(&self.statements, |statement| statement.codegen(), "\n");
+
+		if let Some(info) = self.module_info.clone() {
+			format!("{}\n{}", info.codegen(), statements)
+		} else {
+			statements
+		}
+	}
+}
+
+impl ToString for Program {
+	fn to_string(&self) -> String {
+		self.codegen()
+	}
+}
+
 #[derive(Debug, Clone)]
 pub struct ModuleInfo {
 	pub name: String,
 	pub path: Vec<String>
+}
+
+impl HasanCodegen for ModuleInfo {
+	fn codegen(&self) -> String {
+		if self.path.is_empty() {
+			format!("module {}", self.name)
+		} else {
+			format!("module {}.{}", self.path.join("."), self.name)
+		}
+	}
+}
+
+impl ToString for ModuleInfo {
+	fn to_string(&self) -> String {
+		self.codegen()
+	}
 }
 
 pub struct HasanParser<'p> {
@@ -1547,6 +1591,7 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.unwrap_or_else(|| panic!("Failed to parse a class definition function: expected rule '{:?}', got nothing", Rule::function_definition_stmt));
 
+		let attributes = attributes.unwrap_or(Vec::new());
 		let function_statement = self.parse_function_definition(statement_pair);
 		ClassDefinitionFunction::from_statement(function_statement, attributes)
 	}
@@ -1573,10 +1618,10 @@ impl<'p> HasanParser<'p> {
 			.unwrap_or_else(|| panic!("Failed to parse class definition variable: expected '{:?}', got nothing", Rule::r#type));
 
 		let default_value_option = inner_pairs.next();
-		let mut default_value = Expression::Empty;
+		let mut default_value: Option<Expression> = None;
 
 		if default_value_option.is_some() {
-			default_value = self.parse_expression(default_value_option.unwrap_or_else(|| unreachable!("Failed to parse class definition variable: default value pair is missing")));
+			default_value = Some(self.parse_expression(default_value_option.unwrap_or_else(|| unreachable!("Failed to parse class definition variable: default value pair is missing"))));
 		}
 
 		ClassDefinitionVariable {
