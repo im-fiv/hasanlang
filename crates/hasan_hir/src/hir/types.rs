@@ -27,7 +27,7 @@ pub struct Type {
 
 impl HIRCodegen for Type {
 	fn codegen(&self) -> String {
-		// TODO: Implement
+		// TODO: Figure out how to display types and implement this
 		"/* HIR TYPE NOT IMPLEMENTED YET */".to_owned()
 	}
 }
