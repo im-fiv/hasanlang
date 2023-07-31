@@ -1,8 +1,10 @@
+use super::Function;
 use strum_macros::Display;
 
 #[derive(Debug, Clone, Display)]
 pub enum Statement {
-	FunctionDefinition,
+	FunctionDefinition(Function),
+	FunctionDeclaration(Function),
 	TypeAlias,
 	ClassDefinition,
 	VariableDefinition,
