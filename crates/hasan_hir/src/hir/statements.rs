@@ -1,4 +1,5 @@
 use super::{Function, Class, Variable, Enum, If, While, For, ModuleInfo, HIRCodegen};
+
 use hasan_parser::{HasanCodegen, vec_transform_str};
 use strum_macros::Display;
 
@@ -23,7 +24,6 @@ pub enum Statement {
 	ModuleUseItems(ModuleInfo, Vec<String>)
 }
 
-// HIR Codegen implementation
 impl HIRCodegen for Statement {
 	fn codegen(&self) -> String {
 		match self {
