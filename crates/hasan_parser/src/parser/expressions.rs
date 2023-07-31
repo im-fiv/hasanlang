@@ -72,7 +72,6 @@ pub enum Expression {
 	Unimplemented
 }
 
-// TODO: Make use of `vec_to_string` in `impl HasanCodegen for Expression` block
 impl HasanCodegen for Expression {
 	fn codegen(&self) -> String {
 		match self {
