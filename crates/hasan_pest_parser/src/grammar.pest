@@ -4,12 +4,12 @@ program = { SOI ~ module_declaration_marker? ~ statement* ~ EOI }
 statements = { statement* }
 
 //* Modules *//
-module_use_items_stmt = { "use" ~ "module" ~ module_path? ~ identifier ~ module_use_items ~ "end" ~ stmt_sep }
-module_use_all_stmt = { "use" ~ "module" ~ module_path? ~ identifier ~ "." ~ "*" ~ stmt_sep }
-module_use_stmt = { "use" ~ "module" ~ module_path? ~ identifier ~ stmt_sep }
+module_use_items_stmt = { "use" ~ "module" ~ module_path? ~ identifier ~ module_use_items ~ "end" ~ stmt_sep? }
+module_use_all_stmt = { "use" ~ "module" ~ module_path? ~ identifier ~ "." ~ "*" ~ stmt_sep? }
+module_use_stmt = { "use" ~ "module" ~ module_path? ~ identifier ~ stmt_sep? }
 
 /// If present, will mark the file as a module
-module_declaration_marker = { "module" ~ module_path? ~ identifier ~ stmt_sep }
+module_declaration_marker = { "module" ~ module_path? ~ identifier ~ stmt_sep? }
 	module_path = { ( identifier ~ "." ~ !&"*")+ }
 
 module_use_items = { (module_use_item ~ ("," ~ module_use_item)*)? }

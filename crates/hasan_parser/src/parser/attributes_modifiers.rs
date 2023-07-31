@@ -5,6 +5,16 @@ pub enum GeneralModifier {
 	Static
 }
 
+impl ToString for GeneralModifier {
+	fn to_string(&self) -> String {
+		match self {
+			Self::Public => "pub",
+			Self::Constant => "const",
+			Self::Static => "static"
+		}.to_owned()
+	}
+}
+
 impl TryFrom<&str> for GeneralModifier {
 	type Error = String;
 
@@ -24,6 +34,16 @@ pub enum ClassFunctionAttribute {
 	Constructor,
 	Get,
 	Set
+}
+
+impl ToString for ClassFunctionAttribute {
+	fn to_string(&self) -> String {
+		match self {
+			Self::Constructor => "constructor",
+			Self::Get => "get",
+			Self::Set => "set"
+		}.to_owned()
+	}
 }
 
 impl TryFrom<&str> for ClassFunctionAttribute {

@@ -17,7 +17,7 @@ Program {
                                 array: false,
                             },
                         ),
-                        default_value: Empty,
+                        default_value: None,
                     },
                 ),
                 Variable(
@@ -32,16 +32,14 @@ Program {
                                 array: false,
                             },
                         ),
-                        default_value: Empty,
+                        default_value: None,
                     },
                 ),
                 Function(
                     ClassDefinitionFunction {
-                        attributes: Some(
-                            [
-                                Constructor,
-                            ],
-                        ),
+                        attributes: [
+                            Constructor,
+                        ],
                         prototype: FunctionPrototype {
                             modifiers: [],
                             name: "new",
@@ -81,41 +79,39 @@ Program {
                                 ),
                             ),
                         },
-                        body: Some(
-                            [
-                                VariableAssign {
-                                    name: DotAccess {
-                                        expression: Identifier(
-                                            "this",
-                                        ),
-                                        accessor: Identifier(
-                                            "event",
-                                        ),
-                                    },
-                                    value: Identifier(
+                        body: [
+                            VariableAssign {
+                                name: DotAccess {
+                                    expression: Identifier(
+                                        "this",
+                                    ),
+                                    accessor: Identifier(
                                         "event",
                                     ),
                                 },
-                                VariableAssign {
-                                    name: DotAccess {
-                                        expression: Identifier(
-                                            "this",
-                                        ),
-                                        accessor: Identifier(
-                                            "id",
-                                        ),
-                                    },
-                                    value: Identifier(
+                                value: Identifier(
+                                    "event",
+                                ),
+                            },
+                            VariableAssign {
+                                name: DotAccess {
+                                    expression: Identifier(
+                                        "this",
+                                    ),
+                                    accessor: Identifier(
                                         "id",
                                     ),
                                 },
-                            ],
-                        ),
+                                value: Identifier(
+                                    "id",
+                                ),
+                            },
+                        ],
                     },
                 ),
                 Function(
                     ClassDefinitionFunction {
-                        attributes: None,
+                        attributes: [],
                         prototype: FunctionPrototype {
                             modifiers: [],
                             name: "disconnect",
@@ -123,36 +119,34 @@ Program {
                             arguments: [],
                             return_type: None,
                         },
-                        body: Some(
-                            [
-                                FunctionCall {
-                                    callee: DotAccess {
-                                        expression: DotAccess {
-                                            expression: Identifier(
-                                                "this",
-                                            ),
-                                            accessor: Identifier(
-                                                "event",
-                                            ),
-                                        },
+                        body: [
+                            FunctionCall {
+                                callee: DotAccess {
+                                    expression: DotAccess {
+                                        expression: Identifier(
+                                            "this",
+                                        ),
                                         accessor: Identifier(
-                                            "_disconnect",
+                                            "event",
                                         ),
                                     },
-                                    generics: [],
-                                    arguments: [
-                                        DotAccess {
-                                            expression: Identifier(
-                                                "this",
-                                            ),
-                                            accessor: Identifier(
-                                                "id",
-                                            ),
-                                        },
-                                    ],
+                                    accessor: Identifier(
+                                        "_disconnect",
+                                    ),
                                 },
-                            ],
-                        ),
+                                generics: [],
+                                arguments: [
+                                    DotAccess {
+                                        expression: Identifier(
+                                            "this",
+                                        ),
+                                        accessor: Identifier(
+                                            "id",
+                                        ),
+                                    },
+                                ],
+                            },
+                        ],
                     },
                 ),
             ],
@@ -193,7 +187,7 @@ Program {
                                 array: false,
                             },
                         ),
-                        default_value: Empty,
+                        default_value: None,
                     },
                 ),
                 Variable(
@@ -208,16 +202,14 @@ Program {
                                 array: true,
                             },
                         ),
-                        default_value: Empty,
+                        default_value: None,
                     },
                 ),
                 Function(
                     ClassDefinitionFunction {
-                        attributes: Some(
-                            [
-                                Constructor,
-                            ],
-                        ),
+                        attributes: [
+                            Constructor,
+                        ],
                         prototype: FunctionPrototype {
                             modifiers: [],
                             name: "new",
@@ -246,28 +238,26 @@ Program {
                                 ),
                             ),
                         },
-                        body: Some(
-                            [
-                                VariableAssign {
-                                    name: DotAccess {
-                                        expression: Identifier(
-                                            "this",
-                                        ),
-                                        accessor: Identifier(
-                                            "name",
-                                        ),
-                                    },
-                                    value: Identifier(
+                        body: [
+                            VariableAssign {
+                                name: DotAccess {
+                                    expression: Identifier(
+                                        "this",
+                                    ),
+                                    accessor: Identifier(
                                         "name",
                                     ),
                                 },
-                            ],
-                        ),
+                                value: Identifier(
+                                    "name",
+                                ),
+                            },
+                        ],
                     },
                 ),
                 Function(
                     ClassDefinitionFunction {
-                        attributes: None,
+                        attributes: [],
                         prototype: FunctionPrototype {
                             modifiers: [],
                             name: "connect",
@@ -296,77 +286,75 @@ Program {
                                 ),
                             ),
                         },
-                        body: Some(
-                            [
-                                VariableDefinition {
-                                    modifiers: [],
-                                    name: "connection",
-                                    kind: None,
-                                    value: FunctionCall {
-                                        callee: DotAccess {
-                                            expression: Identifier(
-                                                "Connection",
-                                            ),
-                                            accessor: Identifier(
-                                                "new",
-                                            ),
-                                        },
-                                        generics: [],
-                                        arguments: [
-                                            Identifier(
-                                                "this",
-                                            ),
-                                        ],
+                        body: [
+                            VariableDefinition {
+                                modifiers: [],
+                                name: "connection",
+                                kind: None,
+                                value: FunctionCall {
+                                    callee: DotAccess {
+                                        expression: Identifier(
+                                            "Connection",
+                                        ),
+                                        accessor: Identifier(
+                                            "new",
+                                        ),
                                     },
+                                    generics: [],
+                                    arguments: [
+                                        Identifier(
+                                            "this",
+                                        ),
+                                    ],
                                 },
-                                VariableAssign {
-                                    name: ArrayAccess {
-                                        expression: DotAccess {
-                                            expression: Identifier(
-                                                "this",
-                                            ),
-                                            accessor: Identifier(
-                                                "functions",
-                                            ),
-                                        },
-                                        accessor: Binary {
-                                            lhs: DotAccess {
-                                                expression: DotAccess {
-                                                    expression: Identifier(
-                                                        "this",
-                                                    ),
-                                                    accessor: Identifier(
-                                                        "functions",
-                                                    ),
-                                                },
+                            },
+                            VariableAssign {
+                                name: ArrayAccess {
+                                    expression: DotAccess {
+                                        expression: Identifier(
+                                            "this",
+                                        ),
+                                        accessor: Identifier(
+                                            "functions",
+                                        ),
+                                    },
+                                    accessor: Binary {
+                                        lhs: DotAccess {
+                                            expression: DotAccess {
+                                                expression: Identifier(
+                                                    "this",
+                                                ),
                                                 accessor: Identifier(
-                                                    "length",
+                                                    "functions",
                                                 ),
                                             },
-                                            operator: Plus,
-                                            rhs: Int(
-                                                1,
+                                            accessor: Identifier(
+                                                "length",
                                             ),
                                         },
-                                    },
-                                    value: Identifier(
-                                        "function",
-                                    ),
-                                },
-                                Return(
-                                    Some(
-                                        Identifier(
-                                            "connection",
+                                        operator: Plus,
+                                        rhs: Int(
+                                            1,
                                         ),
+                                    },
+                                },
+                                value: Identifier(
+                                    "function",
+                                ),
+                            },
+                            Return(
+                                Some(
+                                    Identifier(
+                                        "connection",
                                     ),
                                 ),
-                            ],
-                        ),
+                            ),
+                        ],
                     },
                 ),
                 Function(
                     ClassDefinitionFunction {
-                        attributes: None,
+                        attributes: [],
                         prototype: FunctionPrototype {
                             modifiers: [],
                             name: "_disconnect",
@@ -386,36 +374,34 @@ Program {
                             ],
                             return_type: None,
                         },
-                        body: Some(
-                            [
-                                FunctionCall {
-                                    callee: DotAccess {
-                                        expression: DotAccess {
-                                            expression: Identifier(
-                                                "this",
-                                            ),
-                                            accessor: Identifier(
-                                                "connections",
-                                            ),
-                                        },
+                        body: [
+                            FunctionCall {
+                                callee: DotAccess {
+                                    expression: DotAccess {
+                                        expression: Identifier(
+                                            "this",
+                                        ),
                                         accessor: Identifier(
-                                            "remove",
+                                            "connections",
                                         ),
                                     },
-                                    generics: [],
-                                    arguments: [
-                                        Identifier(
-                                            "id",
-                                        ),
-                                    ],
+                                    accessor: Identifier(
+                                        "remove",
+                                    ),
                                 },
-                            ],
-                        ),
+                                generics: [],
+                                arguments: [
+                                    Identifier(
+                                        "id",
+                                    ),
+                                ],
+                            },
+                        ],
                     },
                 ),
                 Function(
                     ClassDefinitionFunction {
-                        attributes: None,
+                        attributes: [],
                         prototype: FunctionPrototype {
                             modifiers: [],
                             name: "fire",
@@ -423,54 +409,52 @@ Program {
                             arguments: [],
                             return_type: None,
                         },
-                        body: Some(
-                            [
-                                FunctionCall {
-                                    callee: DotAccess {
-                                        expression: DotAccess {
-                                            expression: Identifier(
-                                                "this",
-                                            ),
-                                            accessor: Identifier(
-                                                "connections",
-                                            ),
-                                        },
+                        body: [
+                            FunctionCall {
+                                callee: DotAccess {
+                                    expression: DotAccess {
+                                        expression: Identifier(
+                                            "this",
+                                        ),
                                         accessor: Identifier(
-                                            "forEach",
+                                            "connections",
                                         ),
                                     },
-                                    generics: [],
-                                    arguments: [
-                                        AnonymousFunction {
-                                            generics: [],
-                                            arguments: [
-                                                FunctionArgument {
-                                                    name: "function",
-                                                    kind: Regular(
-                                                        RegularType {
-                                                            base: "FuncType",
-                                                            generics: [],
-                                                            raw: false,
-                                                            array: false,
-                                                        },
-                                                    ),
-                                                },
-                                            ],
-                                            return_type: None,
-                                            statements: [
-                                                FunctionCall {
-                                                    callee: Identifier(
-                                                        "function",
-                                                    ),
-                                                    generics: [],
-                                                    arguments: [],
-                                                },
-                                            ],
-                                        },
-                                    ],
+                                    accessor: Identifier(
+                                        "forEach",
+                                    ),
                                 },
-                            ],
-                        ),
+                                generics: [],
+                                arguments: [
+                                    AnonymousFunction {
+                                        generics: [],
+                                        arguments: [
+                                            FunctionArgument {
+                                                name: "function",
+                                                kind: Regular(
+                                                    RegularType {
+                                                        base: "FuncType",
+                                                        generics: [],
+                                                        raw: false,
+                                                        array: false,
+                                                    },
+                                                ),
+                                            },
+                                        ],
+                                        return_type: None,
+                                        statements: [
+                                            FunctionCall {
+                                                callee: Identifier(
+                                                    "function",
+                                                ),
+                                                generics: [],
+                                                arguments: [],
+                                            },
+                                        ],
+                                    },
+                                ],
+                            },
+                        ],
                     },
                 ),
             ],

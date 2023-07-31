@@ -1,7 +1,7 @@
 mod compile_command;
-pub use compile_command::CompileCommand;
-
 mod parse_command;
+
+pub use compile_command::CompileCommand;
 pub use parse_command::ParseCommand;
 
 use clap::{Parser, Subcommand};

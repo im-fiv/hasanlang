@@ -1,10 +1,9 @@
 mod constructs;
-use constructs::*;
-
 mod expression_value;
-use expression_value::*;
-
 mod types;
+
+use constructs::*;
+use expression_value::*;
 use types::*;
 
 use inkwell::AddressSpace;
