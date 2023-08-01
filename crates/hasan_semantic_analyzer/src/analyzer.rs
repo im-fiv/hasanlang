@@ -1,21 +1,30 @@
+mod built_ins;
+mod scope;
+mod symbol;
+
+use built_ins::*;
+use scope::*;
+use symbol::*;
+
 use anyhow::Error;
 use hasan_parser::Program;
 
 #[derive(Debug, Clone)]
 pub struct SemanticAnalyzer {
-	#[allow(dead_code)]
-	ast: Program
+	pub scope: Scope
 }
 
 impl SemanticAnalyzer {
-	pub fn new(ast: Program) -> Self {
-		SemanticAnalyzer { ast }
+	pub fn new() -> Self {
+		SemanticAnalyzer {
+			scope: Scope::new()
+		}
 	}
 
-	pub fn analyze(&self) -> Result<Program, Error> {
+	pub fn analyze(&self, ast: Program) -> Result<Program, Error> {
 		// TODO: Implement semantic analysis when I have a better understanding of Rust
 		// TODO: Replace `Program` from `hasan_parser` to the one from `hasan_hir`
 
-		Ok(self.ast.clone())
+		Ok(ast)
 	}
 }
