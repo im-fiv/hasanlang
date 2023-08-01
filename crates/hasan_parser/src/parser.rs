@@ -714,10 +714,10 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse interface implementation statement: generics/class name pair is missing");
 
-		let mut generics: Vec<Type> = Vec::new();
+		let mut interface_generics: Vec<Type> = Vec::new();
 
 		if next_pair.as_rule() == Rule::call_generics {
-			generics = self.parse_generics_as_types(next_pair);
+			interface_generics = self.parse_generics_as_types(next_pair);
 
 			next_pair = pairs
 				.next()
@@ -725,9 +725,17 @@ impl<'p> HasanParser<'p> {
 		}
 
 		let class_name = self.pair_str(next_pair);
+
+		let mut class_generics: Vec<Type> = Vec::new();
 		let mut members: Vec<ClassDefinitionMember> = Vec::new();
 
 		for pair in pairs {
+			// This loop is really convenient for checking class generics
+			if pair.as_rule() == Rule::call_generics {
+				class_generics = self.parse_generics_as_types(pair);
+				continue;
+			}
+
 			if pair.as_rule() != Rule::class_definition_member {
 				error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::class_definition_member, pair.as_rule());
 			}
@@ -737,8 +745,11 @@ impl<'p> HasanParser<'p> {
 
 		Statement::InterfaceImplementation {
 			interface_name,
-			generics,
+			interface_generics,
+
 			class_name,
+			class_generics,
+
 			members
 		}
 	}
