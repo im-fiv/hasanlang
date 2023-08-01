@@ -109,15 +109,15 @@ fn compile(command: hasan_cli::CompileCommand) {
         println!("Analyzing...");
     }
     
-    let analyzer = SemanticAnalyzer::new(ast);
-    let new_ast = analyzer.analyze();
+    let analyzer = SemanticAnalyzer::new();
+    let analyzed_ast = analyzer.analyze(ast);
 
-    if new_ast.is_err() {
-        eprintln!("Error: {:?}", new_ast.err().unwrap());
+    if analyzed_ast.is_err() {
+        eprintln!("Error: {:?}", analyzed_ast.err().unwrap());
         return;
     }
 
-    let new_ast = new_ast.unwrap();
+    let new_ast = analyzed_ast.unwrap();
 
     if debug {
 		println!("Analysis data: {:?}", new_ast);
