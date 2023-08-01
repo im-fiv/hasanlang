@@ -2,10 +2,12 @@ use crate::HIRCodegen;
 use super::{TypeRef, Statement};
 use hasan_parser::vec_transform_str;
 
+pub type FunctionBody = Option<Vec<Statement>>;
+
 #[derive(Debug, Clone)]
 pub struct Function {
 	pub prototype: FunctionPrototype,
-	pub body: Option<Vec<Statement>>
+	pub body: FunctionBody
 }
 
 impl HIRCodegen for Function {

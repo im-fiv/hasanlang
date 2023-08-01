@@ -61,7 +61,6 @@ impl ToString for ModuleInfo {
 #[derive(Debug, Clone)]
 pub struct Variable {
 	pub name: String,
-
 	pub kind: Type,
 	pub value: hasan_parser::Expression
 }
