@@ -283,7 +283,7 @@ Program {
         },
         InterfaceImplementation {
             interface_name: "ExampleInterface",
-            generics: [
+            interface_generics: [
                 Regular(
                     RegularType {
                         base: "world",
@@ -294,6 +294,7 @@ Program {
                 ),
             ],
             class_name: "ExampleClass",
+            class_generics: [],
             members: [
                 Variable(
                     ClassDefinitionVariable {

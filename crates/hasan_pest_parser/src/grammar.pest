@@ -61,7 +61,7 @@ general_modifiers = { modifier_public? ~ modifier_constant? ~ modifier_static? }
 // Module system is defined earlier //
 
 interface_stmt = { general_modifiers ~ "interface" ~ identifier ~ definition_generics? ~ interface_members ~ "end" ~ stmt_sep? }
-interface_impl_stmt = { "impl" ~ identifier ~ call_generics? ~ "for" ~ identifier ~ class_definition_member* ~ "end" ~ stmt_sep? } // reusing class definition member
+interface_impl_stmt = { "impl" ~ identifier ~ call_generics? ~ "for" ~ identifier ~ call_generics? ~ class_definition_member* ~ "end" ~ stmt_sep? } // reusing class definition member
 
 return_stmt = { "return" ~ expression? ~ stmt_sep }
 

@@ -85,8 +85,11 @@ pub enum Statement {
 
 	InterfaceImplementation {
 		interface_name: String,
-		generics: Vec<Type>,
+		interface_generics: Vec<Type>,
+
 		class_name: String,
+		class_generics: Vec<Type>,
+
 		members: Vec<ClassDefinitionMember>
 	},
 
@@ -217,11 +220,13 @@ impl HasanCodegen for Statement {
 				format!("{}interface {}{}\n\t{}\nend", modifiers, name, generics, members)
 			},
 
-			Self::InterfaceImplementation { interface_name, generics, class_name, members } => {
-				dry!(generics, |value| value.to_string(), ", ", "<{}>");
+			Self::InterfaceImplementation { interface_name, interface_generics, class_name, class_generics, members } => {
+				dry!(interface_generics, |value| value.to_string(), ", ", "<{}>");
+				dry!(class_generics, |value| value.to_string(), ", ", "<{}>");
+
 				dry!(members, |value| value.codegen(), "\n\t");
 
-				format!("impl {}{} for {}\n\t{}\nend", interface_name, generics, class_name, members)
+				format!("impl {}{} for {}{}\n\t{}\nend", interface_name, interface_generics, class_name, class_generics, members)
 			},
 
 			Self::ModuleUse { path, name } => {
