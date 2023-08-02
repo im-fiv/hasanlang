@@ -1,13 +1,13 @@
 class ClassDefinition
-	pub a: int[] = "default value";
-	pub b: SomeType<int>[];
+	pub var a: int[] = "default value";
+	pub var b: SomeType<int>[];
 
 	#[constructor]
 	static func some_function() -> bool do
 		
 	end;
 
-	c: bool;
+	var c: bool;
 
 	func another_function() -> int do
 
@@ -15,7 +15,7 @@ class ClassDefinition
 end;
 
 pub class ClassDeclaraction
-	a: int;
+	var a: int;
 
 	#[constructor]
 	func some_function() -> bool do end

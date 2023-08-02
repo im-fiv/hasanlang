@@ -28,7 +28,7 @@ interface ExampleInterface<T>
 end
 
 impl ExampleInterface<world> for ExampleClass
-	hello: world;
+	var hello: world;
 
 	func function() -> int do
 		return 5;

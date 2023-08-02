@@ -4,7 +4,7 @@ func generic_function<T>(input: T) -> T[] do
 end
 
 class generic_class<T>
-	inner_value: T;
+	var inner_value: T;
 
 	#[get]
 	func value() -> T do

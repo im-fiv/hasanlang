@@ -1,6 +1,6 @@
 class Connection
-	event: Event;
-	id: int;
+	var event: Event;
+	var id: int;
 
 	#[constructor]
 	func new(event: Event, id: int) -> this do
@@ -16,8 +16,8 @@ end
 type FuncType = () -> void!;
 
 class Event
-	name: string;
-	functions: FuncType[];
+	var name: string;
+	var functions: FuncType[];
 
 	#[constructor]
 	func new(name: string) -> this do
