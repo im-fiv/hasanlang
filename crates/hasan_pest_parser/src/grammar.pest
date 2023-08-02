@@ -111,7 +111,7 @@ class_definition = { general_modifiers ~ "class" ~ identifier ~ definition_gener
 class_definition_member = { class_definition_function | class_definition_variable }
 
 class_definition_function = { attributes? ~ function_definition_stmt ~ stmt_sep? }
-class_definition_variable = { general_modifiers ~ identifier ~ ":" ~ type ~ ("=" ~ expression)? ~ stmt_sep }
+class_definition_variable = { general_modifiers ~ "var" ~ identifier ~ ":" ~ type ~ ("=" ~ expression)? ~ stmt_sep }
 
 // Other class features //
 attributes = { "#[" ~ attribute_identifier ~ ("," ~ attribute_identifier)* ~ "]" }
