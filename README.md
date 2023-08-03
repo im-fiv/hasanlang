@@ -50,6 +50,7 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 ### Compiler:
 
 - [ ] Exhaustive expression compiling
+- [ ] Exhaustive statement compiling
 - [ ] Bug fixes
   - [ ] Nested functions not working
   - [ ] Constant string variables causing the compiler to crash
