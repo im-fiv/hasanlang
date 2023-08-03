@@ -1241,21 +1241,11 @@ impl<'p> HasanParser<'p> {
 		let mut output_type = Type::Regular(RegularType {
 			base: self.pair_str(type_pair),
 			generics: Vec::new(),
-			raw: false,
 			array: false
 		});
 
 		for pair in operator_pairs {
 			match pair.as_rule() {
-				Rule::type_operator_raw => {
-					if let Type::Regular(regular_type) = output_type {
-						let mut regular_type = regular_type.clone();
-						regular_type.raw = true;
-
-						output_type = Type::Regular(regular_type);
-					}
-				},
-
 				Rule::type_operator_generics => {
 					if let Type::Regular(regular_type) = output_type {
 						let generics_pair = pair
