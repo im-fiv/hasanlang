@@ -101,7 +101,6 @@ Program {
                         RegularType {
                             base: "B",
                             generics: [],
-                            raw: true,
                             array: true,
                         },
                     ),
@@ -117,7 +116,6 @@ Program {
                     RegularType {
                         base: "A",
                         generics: [],
-                        raw: false,
                         array: false,
                     },
                 ),

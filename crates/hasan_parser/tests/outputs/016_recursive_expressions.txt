@@ -274,7 +274,6 @@ Program {
                                             RegularType {
                                                 base: "a",
                                                 generics: [],
-                                                raw: false,
                                                 array: false,
                                             },
                                         ),
@@ -283,7 +282,6 @@ Program {
                                         RegularType {
                                             base: "b",
                                             generics: [],
-                                            raw: false,
                                             array: false,
                                         },
                                     ),
@@ -292,7 +290,6 @@ Program {
                                     RegularType {
                                         base: "c",
                                         generics: [],
-                                        raw: false,
                                         array: false,
                                     },
                                 ),
@@ -301,7 +298,6 @@ Program {
                                 RegularType {
                                     base: "d",
                                     generics: [],
-                                    raw: false,
                                     array: false,
                                 },
                             ),
@@ -310,7 +306,6 @@ Program {
                             RegularType {
                                 base: "e",
                                 generics: [],
-                                raw: false,
                                 array: false,
                             },
                         ),
@@ -319,7 +314,6 @@ Program {
                         RegularType {
                             base: "f",
                             generics: [],
-                            raw: false,
                             array: false,
                         },
                     ),
@@ -328,7 +322,6 @@ Program {
                     RegularType {
                         base: "g",
                         generics: [],
-                        raw: false,
                         array: false,
                     },
                 ),

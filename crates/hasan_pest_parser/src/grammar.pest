@@ -124,8 +124,7 @@ enum_variant = { identifier }
 type = { regular_type | function_type }
 
 regular_type = { identifier ~ type_operators }
-	type_operators = { type_operator_raw? ~ type_operator_generics? ~ type_operator_array? }
-		type_operator_raw = { "!" }
+	type_operators = { type_operator_generics? ~ type_operator_array? }
 		type_operator_generics = { call_generics }
 		type_operator_array = { "[" ~ "]" }
 

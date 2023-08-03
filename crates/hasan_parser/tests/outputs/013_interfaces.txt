@@ -32,7 +32,6 @@ Program {
                             RegularType {
                                 base: "string",
                                 generics: [],
-                                raw: false,
                                 array: true,
                             },
                         ),
@@ -46,7 +45,6 @@ Program {
                             RegularType {
                                 base: "int",
                                 generics: [],
-                                raw: true,
                                 array: false,
                             },
                         ),
@@ -75,7 +73,6 @@ Program {
                                     RegularType {
                                         base: "int",
                                         generics: [],
-                                        raw: false,
                                         array: false,
                                     },
                                 ),
@@ -83,7 +80,6 @@ Program {
                                     RegularType {
                                         base: "int",
                                         generics: [],
-                                        raw: false,
                                         array: false,
                                     },
                                 ),
@@ -92,7 +88,6 @@ Program {
                                 RegularType {
                                     base: "int",
                                     generics: [],
-                                    raw: false,
                                     array: false,
                                 },
                             ),
@@ -116,7 +111,6 @@ Program {
                                 RegularType {
                                     base: "B",
                                     generics: [],
-                                    raw: true,
                                     array: true,
                                 },
                             ),
@@ -139,7 +133,6 @@ Program {
                                             RegularType {
                                                 base: "int",
                                                 generics: [],
-                                                raw: false,
                                                 array: false,
                                             },
                                         ),
@@ -147,7 +140,6 @@ Program {
                                             RegularType {
                                                 base: "int",
                                                 generics: [],
-                                                raw: false,
                                                 array: false,
                                             },
                                         ),
@@ -160,7 +152,6 @@ Program {
                                                     RegularType {
                                                         base: "int",
                                                         generics: [],
-                                                        raw: false,
                                                         array: false,
                                                     },
                                                 ),
@@ -168,7 +159,6 @@ Program {
                                                     RegularType {
                                                         base: "C",
                                                         generics: [],
-                                                        raw: false,
                                                         array: false,
                                                     },
                                                 ),
@@ -177,7 +167,6 @@ Program {
                                                 RegularType {
                                                     base: "void",
                                                     generics: [],
-                                                    raw: true,
                                                     array: false,
                                                 },
                                             ),
@@ -203,7 +192,6 @@ Program {
                             RegularType {
                                 base: "int",
                                 generics: [],
-                                raw: false,
                                 array: false,
                             },
                         ),
@@ -221,7 +209,6 @@ Program {
                                 RegularType {
                                     base: "void",
                                     generics: [],
-                                    raw: false,
                                     array: false,
                                 },
                             ),
@@ -254,7 +241,6 @@ Program {
                             RegularType {
                                 base: "T",
                                 generics: [],
-                                raw: false,
                                 array: false,
                             },
                         ),
@@ -272,7 +258,6 @@ Program {
                                 RegularType {
                                     base: "int",
                                     generics: [],
-                                    raw: false,
                                     array: false,
                                 },
                             ),
@@ -288,7 +273,6 @@ Program {
                     RegularType {
                         base: "world",
                         generics: [],
-                        raw: false,
                         array: false,
                     },
                 ),
@@ -304,7 +288,6 @@ Program {
                             RegularType {
                                 base: "world",
                                 generics: [],
-                                raw: false,
                                 array: false,
                             },
                         ),
@@ -324,7 +307,6 @@ Program {
                                     RegularType {
                                         base: "int",
                                         generics: [],
-                                        raw: false,
                                         array: false,
                                     },
                                 ),
@@ -362,7 +344,6 @@ Program {
                                 RegularType {
                                     base: "void",
                                     generics: [],
-                                    raw: false,
                                     array: false,
                                 },
                             ),
@@ -391,7 +372,6 @@ Program {
                                 RegularType {
                                     base: "T",
                                     generics: [],
-                                    raw: false,
                                     array: false,
                                 },
                             ),
@@ -402,7 +382,6 @@ Program {
                             RegularType {
                                 base: "void",
                                 generics: [],
-                                raw: false,
                                 array: false,
                             },
                         ),

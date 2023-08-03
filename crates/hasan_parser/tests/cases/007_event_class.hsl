@@ -13,7 +13,7 @@ class Connection
 	end
 end
 
-type FuncType = () -> void!;
+type FuncType = () -> void;
 
 class Event
 	var name: string;

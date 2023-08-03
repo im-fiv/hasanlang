@@ -40,7 +40,6 @@ Program {
                     RegularType {
                         base: "Light",
                         generics: [],
-                        raw: false,
                         array: false,
                     },
                 ),

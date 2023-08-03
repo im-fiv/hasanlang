@@ -1,13 +1,13 @@
 pub const static interface ComplexInterface<A, B, C>
 	static var hello: string[];
-	var reg_var: int!;
+	var reg_var: int;
 
 	#[constructor]
 	pub func world<T>(int, int) -> int;
 
-	func bye<A>() -> B![];
+	func bye<A>() -> B[];
 
-	func test() -> (int, int) -> (int, C) -> void!;
+	func test() -> (int, int) -> (int, C) -> void;
 end
 
 interface SimpleInterface

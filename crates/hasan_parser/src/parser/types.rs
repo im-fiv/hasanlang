@@ -34,13 +34,11 @@ pub struct RegularType {
 	pub generics: Vec<Type>,
 
 	// Type attributes
-	pub raw: bool,
 	pub array: bool
 }
 
 impl RegularType {
 	pub fn codegen(&self) -> String {
-		let raw_str = if self.raw { "!" } else { "" };
 		let array_str = if self.array { "[]" } else { "" };
 
 		let generics = self
@@ -56,7 +54,7 @@ impl RegularType {
 			format!("<{}>", generics)
 		};
 
-		format!("{}{}{}{}", self.base, raw_str, generics_str, array_str)
+		format!("{}{}{}", self.base, generics_str, array_str)
 	}
 }
 
