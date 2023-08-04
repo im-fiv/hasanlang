@@ -272,7 +272,7 @@ Program {
                                         ),
                                         kind: Regular(
                                             RegularType {
-                                                base: "a",
+                                                name: "a",
                                                 generics: [],
                                                 array: false,
                                             },
@@ -280,7 +280,7 @@ Program {
                                     },
                                     kind: Regular(
                                         RegularType {
-                                            base: "b",
+                                            name: "b",
                                             generics: [],
                                             array: false,
                                         },
@@ -288,7 +288,7 @@ Program {
                                 },
                                 kind: Regular(
                                     RegularType {
-                                        base: "c",
+                                        name: "c",
                                         generics: [],
                                         array: false,
                                     },
@@ -296,7 +296,7 @@ Program {
                             },
                             kind: Regular(
                                 RegularType {
-                                    base: "d",
+                                    name: "d",
                                     generics: [],
                                     array: false,
                                 },
@@ -304,7 +304,7 @@ Program {
                         },
                         kind: Regular(
                             RegularType {
-                                base: "e",
+                                name: "e",
                                 generics: [],
                                 array: false,
                             },
@@ -312,7 +312,7 @@ Program {
                     },
                     kind: Regular(
                         RegularType {
-                            base: "f",
+                            name: "f",
                             generics: [],
                             array: false,
                         },
@@ -320,7 +320,7 @@ Program {
                 },
                 kind: Regular(
                     RegularType {
-                        base: "g",
+                        name: "g",
                         generics: [],
                         array: false,
                     },
