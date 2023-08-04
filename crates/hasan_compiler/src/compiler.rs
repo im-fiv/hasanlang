@@ -190,14 +190,14 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	pub fn compile_type(&self, kind: &P::Type) -> Result<Option<BasicTypeEnum<'ctx>>, Error> {
 		match kind {
 			P::Type::Regular(regular_type) => {
-				let P::RegularType { base, generics: _, array } = regular_type.to_owned();
+				let P::RegularType { name, generics: _, array } = regular_type.to_owned();
 
 				if array {
 					// TODO: Implement this
 					unimplemented!("Array types are currently not supported");
 				}
 
-				let resolved_type = BuiltinType::try_from(base.as_str())?
+				let resolved_type = BuiltinType::try_from(name.as_str())?
 					.as_llvm_type(self.context);
 
 				Ok(resolved_type)

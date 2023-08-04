@@ -1,4 +1,4 @@
-use super::{Statement, GeneralModifier, ClassFunctionAttribute};
+use crate::{Statement, GeneralModifier, ClassFunctionAttribute, HasanCodegen, vec_transform_str};
 
 pub type ClassFunctionAttributes = Vec<ClassFunctionAttribute>;
 pub type GeneralModifiers = Vec<GeneralModifier>;
@@ -7,7 +7,7 @@ pub type FunctionBody = Option<Vec<Statement>>;
 pub type IntType = i64;
 pub type FloatType = f64;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Type {
 	Regular(RegularType),
 	Function(FunctionType)
@@ -28,17 +28,17 @@ impl ToString for Type {
 	}
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct RegularType {
-	pub base: String,
+	pub name: String,
 	pub generics: Vec<Type>,
 
 	// Type attributes
 	pub array: bool
 }
 
-impl RegularType {
-	pub fn codegen(&self) -> String {
+impl HasanCodegen for RegularType {
+	fn codegen(&self) -> String {
 		let array_str = if self.array { "[]" } else { "" };
 
 		let generics = self
@@ -54,11 +54,17 @@ impl RegularType {
 			format!("<{}>", generics)
 		};
 
-		format!("{}{}{}", self.base, generics_str, array_str)
+		format!("{}{}{}", self.name, generics_str, array_str)
 	}
 }
 
-#[derive(Debug, Clone)]
+impl ToString for RegularType {
+	fn to_string(&self) -> String {
+		self.codegen()
+	}
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct FunctionType {
 	pub generics: Vec<DefinitionType>,
 	pub argument_types: Vec<Type>,
@@ -94,7 +100,9 @@ impl FunctionType {
 #[derive(Debug, Clone, PartialEq)]
 pub struct DefinitionType {
 	pub name: String,
-	pub requires_implementations: Vec<String>
+
+	// Is it a good idea to reuse `RegularType` for this case?
+	pub requires_implementations: Vec<RegularType>
 }
 
 impl ToString for DefinitionType {
@@ -105,7 +113,7 @@ impl ToString for DefinitionType {
 
 impl DefinitionType {
 	pub fn codegen(&self) -> String {
-		let requires_impls = self.requires_implementations.join(", ");
+		let requires_impls = vec_transform_str(&self.requires_implementations, |interface| interface.codegen(), ", ");
 
 		if requires_impls.is_empty() {
 			self.name.clone()
