@@ -99,7 +99,7 @@ Program {
                 generics: [
                     Regular(
                         RegularType {
-                            base: "B",
+                            name: "B",
                             generics: [],
                             array: true,
                         },
@@ -114,7 +114,7 @@ Program {
             generics: [
                 Regular(
                     RegularType {
-                        base: "A",
+                        name: "A",
                         generics: [],
                         array: false,
                     },

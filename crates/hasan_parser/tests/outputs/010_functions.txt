@@ -10,7 +10,7 @@ Program {
                     return_type: Some(
                         Regular(
                             RegularType {
-                                base: "void",
+                                name: "void",
                                 generics: [],
                                 array: false,
                             },
@@ -56,7 +56,7 @@ Program {
                     return_type: Some(
                         Regular(
                             RegularType {
-                                base: "Type",
+                                name: "Type",
                                 generics: [],
                                 array: false,
                             },
@@ -87,7 +87,7 @@ Program {
                             name: "arg1",
                             kind: Regular(
                                 RegularType {
-                                    base: "int",
+                                    name: "int",
                                     generics: [],
                                     array: false,
                                 },
@@ -97,7 +97,7 @@ Program {
                             name: "arg2",
                             kind: Regular(
                                 RegularType {
-                                    base: "int",
+                                    name: "int",
                                     generics: [],
                                     array: false,
                                 },
@@ -107,7 +107,7 @@ Program {
                             name: "arg3",
                             kind: Regular(
                                 RegularType {
-                                    base: "int",
+                                    name: "int",
                                     generics: [],
                                     array: false,
                                 },
@@ -117,7 +117,7 @@ Program {
                     return_type: Some(
                         Regular(
                             RegularType {
-                                base: "int",
+                                name: "int",
                                 generics: [],
                                 array: false,
                             },
@@ -160,7 +160,7 @@ Program {
                             name: "a",
                             kind: Regular(
                                 RegularType {
-                                    base: "int",
+                                    name: "int",
                                     generics: [],
                                     array: false,
                                 },
@@ -211,7 +211,7 @@ Program {
                                         generics: [
                                             Regular(
                                                 RegularType {
-                                                    base: "int",
+                                                    name: "int",
                                                     generics: [],
                                                     array: false,
                                                 },
@@ -250,7 +250,7 @@ Program {
                             name: "first",
                             kind: Regular(
                                 RegularType {
-                                    base: "A",
+                                    name: "A",
                                     generics: [],
                                     array: false,
                                 },
@@ -260,7 +260,7 @@ Program {
                             name: "second",
                             kind: Regular(
                                 RegularType {
-                                    base: "this",
+                                    name: "this",
                                     generics: [],
                                     array: false,
                                 },
@@ -270,7 +270,7 @@ Program {
                     return_type: Some(
                         Regular(
                             RegularType {
-                                base: "B",
+                                name: "B",
                                 generics: [],
                                 array: false,
                             },

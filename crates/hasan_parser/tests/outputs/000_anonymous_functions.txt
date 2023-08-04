@@ -31,7 +31,7 @@ Program {
                 return_type: Some(
                     Regular(
                         RegularType {
-                            base: "int",
+                            name: "int",
                             generics: [],
                             array: false,
                         },
@@ -65,7 +65,7 @@ Program {
                         name: "a",
                         kind: Regular(
                             RegularType {
-                                base: "int",
+                                name: "int",
                                 generics: [],
                                 array: false,
                             },
@@ -75,7 +75,7 @@ Program {
                         name: "b",
                         kind: Regular(
                             RegularType {
-                                base: "int",
+                                name: "int",
                                 generics: [],
                                 array: false,
                             },
@@ -126,7 +126,7 @@ Program {
                         name: "a",
                         kind: Regular(
                             RegularType {
-                                base: "int",
+                                name: "int",
                                 generics: [],
                                 array: false,
                             },
@@ -150,7 +150,7 @@ Program {
                         name: "a",
                         kind: Regular(
                             RegularType {
-                                base: "int",
+                                name: "int",
                                 generics: [],
                                 array: false,
                             },
@@ -160,7 +160,7 @@ Program {
                 return_type: Some(
                     Regular(
                         RegularType {
-                            base: "int",
+                            name: "int",
                             generics: [],
                             array: false,
                         },
@@ -181,7 +181,7 @@ Program {
                 return_type: Some(
                     Regular(
                         RegularType {
-                            base: "int",
+                            name: "int",
                             generics: [],
                             array: false,
                         },
@@ -210,7 +210,7 @@ Program {
                         name: "a",
                         kind: Regular(
                             RegularType {
-                                base: "A",
+                                name: "A",
                                 generics: [],
                                 array: false,
                             },
@@ -220,7 +220,7 @@ Program {
                         name: "b",
                         kind: Regular(
                             RegularType {
-                                base: "B",
+                                name: "B",
                                 generics: [],
                                 array: false,
                             },
@@ -276,7 +276,7 @@ Program {
                         name: "input",
                         kind: Regular(
                             RegularType {
-                                base: "string",
+                                name: "string",
                                 generics: [],
                                 array: false,
                             },
@@ -319,14 +319,14 @@ Program {
                         generics: [
                             Regular(
                                 RegularType {
-                                    base: "int",
+                                    name: "int",
                                     generics: [],
                                     array: false,
                                 },
                             ),
                             Regular(
                                 RegularType {
-                                    base: "int",
+                                    name: "int",
                                     generics: [],
                                     array: false,
                                 },
