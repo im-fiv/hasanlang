@@ -181,7 +181,7 @@ impl HasanCodegen for Statement {
 			Self::If { condition, statements, elseif_branches, else_branch } => {
 				dry!(statements, |value| value.codegen(), "\n\t");
 				
-				if (elseif_branches.len() < 1) && else_branch.is_none() {
+				if elseif_branches.is_empty() && else_branch.is_none() {
 					return format!("if {} then\n\t{}\nend", condition.codegen(), statements);
 				}
 
