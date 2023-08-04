@@ -1,4 +1,4 @@
-use super::{Type, TypeRef, Function, HIRCodegen};
+use crate::{Type, TypeRef, Function, HIRCodegen};
 use hasan_parser::{HasanCodegen, vec_transform_str};
 
 pub type Class = Type;

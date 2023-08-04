@@ -1,4 +1,4 @@
-use super::{Function, Class, Variable, Enum, If, While, For, ModuleInfo, HIRCodegen};
+use crate::{Function, Class, Variable, Enum, If, While, For, ModuleInfo, HIRCodegen};
 
 use hasan_parser::{HasanCodegen, vec_transform_str};
 use strum_macros::Display;

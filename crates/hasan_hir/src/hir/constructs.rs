@@ -8,7 +8,7 @@ pub use conditionals::*;
 pub use enums::*;
 pub use functions::*;
 
-pub use super::{Statement, TypeRef, Type, HIRCodegen};
+pub use crate::{Statement, TypeRef, Type, HIRCodegen};
 use hasan_parser::vec_transform_str;
 
 #[derive(Debug, Clone)]

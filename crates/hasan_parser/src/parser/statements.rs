@@ -1,4 +1,4 @@
-use super::{
+use crate::{
 	DefinitionType, GeneralModifiers, Type,
 	Expression, Function, ClassDefinitionMember,
 	InterfaceMember, HasanCodegen, vec_transform_str

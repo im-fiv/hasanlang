@@ -1,5 +1,4 @@
-use super::{DefinitionType, IntType, FloatType, Type, Statement, GeneralModifiers, FunctionBody, HasanCodegen};
-use crate::vec_transform_str;
+use crate::{DefinitionType, IntType, FloatType, Type, Statement, GeneralModifiers, FunctionBody, HasanCodegen, vec_transform_str};
 
 macro_rules! dry {
 	($name:ident, $func:expr, $sep:expr, $format:expr) => {
