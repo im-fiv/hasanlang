@@ -1,5 +1,4 @@
-use crate::HIRCodegen;
-use super::{TypeRef, Statement};
+use crate::{TypeRef, Statement, HIRCodegen};
 use hasan_parser::vec_transform_str;
 
 pub type FunctionBody = Option<Vec<Statement>>;

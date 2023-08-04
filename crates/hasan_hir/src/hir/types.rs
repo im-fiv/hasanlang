@@ -1,4 +1,4 @@
-use super::{ClassMember, HIRCodegen};
+use crate::{ClassMember, HIRCodegen};
 
 /// A reference to a type with the second parameter being the dimensions of array (if present)
 #[derive(Debug, Clone)]

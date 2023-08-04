@@ -1,5 +1,4 @@
-use crate::HIRCodegen;
-use super::Statement;
+use crate::{Statement, HIRCodegen};
 use hasan_parser::{vec_transform_str, HasanCodegen};
 
 #[derive(Debug, Clone)]

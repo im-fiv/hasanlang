@@ -1,3 +1,5 @@
+mod cli;
+
 use std::fs;
 use std::fs::File;
 use std::io::BufReader;
@@ -36,8 +38,8 @@ fn write_file(path: &str, contents: String) {
 //* Helper functions *//
 
 /// Subcommand to parse a file
-fn parse(command: hasan_cli::ParseCommand) -> Option<hasan_parser::Program> {
-    let hasan_cli::ParseCommand { file_path, debug } = command;
+fn parse(command: cli::ParseCommand) -> Option<hasan_parser::Program> {
+    let cli::ParseCommand { file_path, debug } = command;
 
     // Create file if it doesn't exist
     match fs::metadata(&file_path) {
@@ -90,10 +92,10 @@ fn parse(command: hasan_cli::ParseCommand) -> Option<hasan_parser::Program> {
 }
 
 /// Subcommand to compile a file
-fn compile(command: hasan_cli::CompileCommand) {
-    let hasan_cli::CompileCommand { file_path, debug, no_opt } = command;
+fn compile(command: cli::CompileCommand) {
+    let cli::CompileCommand { file_path, debug, no_opt } = command;
 
-    let parse_result = parse(hasan_cli::ParseCommand {
+    let parse_result = parse(cli::ParseCommand {
         file_path,
         debug
     });
@@ -188,10 +190,10 @@ fn compile(command: hasan_cli::CompileCommand) {
 }
 
 fn main() {
-	let args = hasan_cli::CLI::parse_custom();
+	let args = cli::CLI::parse_custom();
 	
 	match args.subcommand {
-		hasan_cli::CLISubcommand::Compile(command) => { compile(command); },
-        hasan_cli::CLISubcommand::Parse(command) => { parse(command); }
+		cli::CLISubcommand::Compile(command) => { compile(command); },
+        cli::CLISubcommand::Parse(command) => { parse(command); }
 	}
 }
