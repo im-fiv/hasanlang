@@ -1114,7 +1114,7 @@ impl<'p> HasanParser<'p> {
 		let interfaces_pair = pairs.next();
 
 		if interfaces_pair.is_none() {
-			// Type doesn't have to implement any interfaces. Return a regular type
+			// Type is not obliged to implement any interfaces. Return a regular type
 			return DefinitionType {
 				name,
 				requires_implementations: Vec::new()
