@@ -59,6 +59,7 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 - [ ] Automatic `return` termination
 
 ### Semantic Analysis:
+
 - [ ] Modifiers validation
 - [ ] Type resolving
 - [ ] Interfaces validation
@@ -105,6 +106,7 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 ## Side tasks
 
 ### Corrective Parser:
+- [ ] Overhaul the CLI
 - [ ] Add spans for better semantic analysis error reporting
 - [x] Allow for generics in function type annotation
 - [x] Rewrite `parse_type` function along with the grammar of types
