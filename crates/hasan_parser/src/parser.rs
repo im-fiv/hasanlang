@@ -1122,14 +1122,14 @@ impl<'p> HasanParser<'p> {
 		}
 
 		let interface_pairs = interfaces_pair.unwrap().into_inner();
-		let mut requires_implementations: Vec<String> = Vec::new();
+		let mut requires_implementations: Vec<RegularType> = vec![];
 
 		for pair in interface_pairs {
-			if pair.as_rule() != Rule::identifier {
-				error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::identifier, pair.as_rule());
+			if pair.as_rule() != Rule::regular_type {
+				error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::regular_type, pair.as_rule());
 			}
 
-			requires_implementations.push(self.pair_str(pair));
+			requires_implementations.push(self.parse_regular_type(pair));
 		}
 
 		DefinitionType { name, requires_implementations }
@@ -1221,62 +1221,62 @@ impl<'p> HasanParser<'p> {
 		Statement::EnumDefinition { modifiers, name, variants }
 	}
 
-	fn parse_regular_type(&self, pair: Pair<Rule>) -> Type {
+	fn parse_regular_type(&self, pair: Pair<Rule>) -> RegularType {
+		// NOTE: `array_type` is a part of regular type
+		if pair.as_rule() == Rule::array_type {
+			// Unwrapping the `regular_type` from `array_type`
+			let pair = pair
+				.into_inner()
+				.next()
+				.expect("Failed to parse type: inner pairs are empty");
+
+			// Send the type to itself
+			let mut parsed = self.parse_regular_type(pair);
+
+			// Set the array flag
+			parsed.array = true;
+
+			return parsed;
+		}
+
 		if pair.as_rule() != Rule::regular_type {
-			error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::regular_type, pair.as_rule());
+			error!("expected '{:?}' or '{:?}', got '{:?}'", pair.as_span(), Rule::regular_type, Rule::array_type, pair.as_rule());
 		}
 
 		let mut pairs = pair.into_inner();
+		
+		let name = self.pair_str(
+			pairs
+				.next()
+				.expect("Failed to parse type: name pair is missing")
+		);
 
-		let type_pair = pairs
-			.next()
-			.expect("Failed to parse type: type expression pair is missing");
+		let next_pair = pairs.next();
 
-		let operators_pair = pairs
-			.next()
-			.expect("Failed to parse type: operators pair is missing");
-
-		let operator_pairs = operators_pair.into_inner();
-
-		let mut output_type = Type::Regular(RegularType {
-			base: self.pair_str(type_pair),
-			generics: Vec::new(),
-			array: false
-		});
-
-		for pair in operator_pairs {
-			match pair.as_rule() {
-				Rule::type_operator_generics => {
-					if let Type::Regular(regular_type) = output_type {
-						let generics_pair = pair
-							.into_inner()
-							.next()
-							.unwrap_or_else(|| unreachable!("Failed to parse type: generics pair is missing"));
-
-						let mut regular_type = regular_type.clone();
-						regular_type.generics = self.parse_generics_as_types(generics_pair);
-
-						output_type = Type::Regular(regular_type);
-					}
-				},
-
-				Rule::type_operator_array => {
-					if let Type::Regular(regular_type) = output_type {
-						let mut regular_type = regular_type.clone();
-						regular_type.array = true;
-
-						output_type = Type::Regular(regular_type);
-					}
-				},
-
-				rule => error!("unexpected rule '{:?}'", pair.as_span(), rule)
-			}
+		if next_pair.is_none() {
+			return RegularType {
+				name,
+				generics: vec![],
+				array: false
+			};
 		}
 
-		output_type
+		let next_pair = next_pair.unwrap();
+
+		if next_pair.as_rule() != Rule::call_generics {
+			error!("expected '{:?}', got '{:?}'", next_pair.as_span(), Rule::call_generics, next_pair.as_rule());
+		}
+
+		let generics = self.parse_generics_as_types(next_pair);
+
+		RegularType {
+			name,
+			generics,
+			array: false
+		}
 	}
 
-	fn parse_function_type(&self, pair: Pair<Rule>) -> Type {
+	fn parse_function_type(&self, pair: Pair<Rule>) -> FunctionType {
 		if pair.as_rule() != Rule::function_type {
 			error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::function_type, pair.as_rule());
 		}
@@ -1315,11 +1315,11 @@ impl<'p> HasanParser<'p> {
 
 		let return_type = Box::new(self.parse_type(return_type_pair));
 
-		Type::Function(FunctionType {
+		FunctionType {
 			generics,
 			argument_types,
 			return_type
-		})
+		}
 	}
 
 	fn parse_type(&self, pair: Pair<Rule>) -> Type {
@@ -1334,8 +1334,8 @@ impl<'p> HasanParser<'p> {
 			.expect("Failed to parse type: pairs are empty");
 
 		match inner_type_pair.as_rule() {
-			Rule::regular_type => self.parse_regular_type(inner_type_pair),
-			Rule::function_type => self.parse_function_type(inner_type_pair),
+			Rule::regular_type | Rule::array_type => Type::Regular(self.parse_regular_type(inner_type_pair)),
+			Rule::function_type => Type::Function(self.parse_function_type(inner_type_pair)),
 
 			rule => error!(
 				"expected '{:?}' or '{:?}', got '{:?}'",

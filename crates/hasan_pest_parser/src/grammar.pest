@@ -121,19 +121,18 @@ attribute_identifier = { "constructor" | "get" | "set" }
 enum_variant = { identifier }
 
 //* Types *//
-type = { regular_type | function_type }
+type = { array_type | regular_type | function_type }
 
-regular_type = { identifier ~ type_operators }
-	type_operators = { type_operator_generics? ~ type_operator_array? }
-		type_operator_generics = { call_generics }
-		type_operator_array = { "[" ~ "]" }
+regular_type = { identifier ~ call_generics? }
+// NOTE: `array_type` is a part of `regular_type` and is parsed into a regular type with the `array` field set to true
+array_type = { regular_type ~ "[" ~ "]" }
 
 function_type = { definition_generics? ~ "(" ~ function_type_arguments ~ ")" ~ "->" ~ type }
 	function_type_arguments = { (type ~ ("," ~ type)*)? }
 
 definition_generics = { "<" ~ definition_generics_type ~ ("," ~ definition_generics_type)* ~ ">" }
 	definition_generics_type = { identifier ~ ":" ~ "impl" ~ "<" ~ definition_generics_interfaces ~ ">" | identifier }
-		definition_generics_interfaces = { (identifier ~ ("," ~ identifier)*)? }
+		definition_generics_interfaces = { (regular_type ~ ("," ~ regular_type)*)? }
 
 call_generics = { "<" ~ type ~ ("," ~ type)* ~ ">" }
 
