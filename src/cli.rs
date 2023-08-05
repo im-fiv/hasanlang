@@ -8,16 +8,16 @@ use clap::{Parser, Subcommand};
 
 #[derive(Debug, Parser)]
 #[clap(author, version, about)]
-pub struct CLI {
+pub struct Cli {
 	/// Action
 	#[clap(subcommand)]
 	pub subcommand: CLISubcommand
 }
 
 // A workaround to allow not importing clap::Parser
-impl CLI {
+impl Cli {
 	pub fn parse_custom() -> Self {
-		CLI::parse()
+		Cli::parse()
 	}
 }
 
