@@ -221,7 +221,7 @@ fn compile(command: cli::CompileCommand) {
 }
 
 fn main() {
-	let args = cli::CLI::parse_custom();
+	let args = cli::Cli::parse_custom();
 	
 	match args.subcommand {
 		cli::CLISubcommand::Compile(command) => { compile(command); },
