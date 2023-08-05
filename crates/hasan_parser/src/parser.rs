@@ -126,7 +126,7 @@ impl<'p> HasanParser<'p> {
 		}
 
 		let pairs = pair.into_inner();
-		let mut path: Vec<String> = Vec::new();
+		let mut path: Vec<String> = vec![];
 
 		for pair in pairs {
 			path.push(self.pair_str(pair));
@@ -146,7 +146,7 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse module marker: path/module name pair is missing");
 
-		let mut path: Vec<String> = Vec::new();
+		let mut path: Vec<String> = vec![];
 
 		if next_pair.as_rule() == Rule::module_path {
 			path = self.parse_module_path(next_pair);
@@ -162,7 +162,7 @@ impl<'p> HasanParser<'p> {
 	}
 
 	fn parse_statements(&self, pairs: Pairs<Rule>) -> Vec<Statement> {
-		let mut statements: Vec<Statement> = Vec::new();
+		let mut statements: Vec<Statement> = vec![];
 
 		for pair in pairs {
 			if pair.as_rule() == Rule::EOI {
@@ -378,7 +378,7 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse use module statement: path/module name pair is missing");
 
-		let mut path: Vec<String> = Vec::new();
+		let mut path: Vec<String> = vec![];
 
 		if next_pair.as_rule() == Rule::module_path {
 			path = self.parse_module_path(next_pair);
@@ -404,7 +404,7 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse use module statement: path/module name pair is missing");
 
-		let mut path: Vec<String> = Vec::new();
+		let mut path: Vec<String> = vec![];
 
 		if next_pair.as_rule() == Rule::module_path {
 			path = self.parse_module_path(next_pair);
@@ -430,7 +430,7 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse use module statement: path/module name pair is missing");
 
-		let mut path: Vec<String> = Vec::new();
+		let mut path: Vec<String> = vec![];
 
 		if next_pair.as_rule() == Rule::module_path {
 			path = self.parse_module_path(next_pair);
@@ -447,7 +447,7 @@ impl<'p> HasanParser<'p> {
 			.expect("Failed to parse use module statement: items pair is missing")
 			.into_inner();
 
-		let mut items: Vec<ModuleItem> = Vec::new();
+		let mut items: Vec<ModuleItem> = vec![];
 		
 		for item_pair in items_pair {
 			items.push(self.parse_module_item(item_pair));
@@ -534,7 +534,7 @@ impl<'p> HasanParser<'p> {
 		}
 
 		let pairs = pair.into_inner();
-		let mut argument_types: Vec<Type> = Vec::new();
+		let mut argument_types: Vec<Type> = vec![];
 
 		for pair in pairs {
 			if pair.as_rule() != Rule::r#type {
@@ -585,7 +585,7 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse interface function: generics/arguments/return type pair is missing");
 
-		let mut generics: Vec<DefinitionType> = Vec::new();
+		let mut generics: Vec<DefinitionType> = vec![];
 
 		// If it's generics, parse and go to the next pair
 		if next_pair.as_rule() == Rule::definition_generics {
@@ -596,7 +596,7 @@ impl<'p> HasanParser<'p> {
 				.unwrap_or_else(|| unreachable!("Failed to parse interface function: arguments/return type pair is missing"));
 		}
 
-		let mut arguments: Vec<Type> = Vec::new();
+		let mut arguments: Vec<Type> = vec![];
 
 		// If it's arguments, parse them as types and skip to the return type
 		if next_pair.as_rule() == Rule::interface_function_arguments {
@@ -635,7 +635,7 @@ impl<'p> HasanParser<'p> {
 		// let span = pair.as_span();
 		let pairs = pair.into_inner();
 
-		let mut members = Vec::new();
+		let mut members = vec![];
 
 		for pair in pairs {
 			let member = match pair.as_rule() {
@@ -681,7 +681,7 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse interface statement: generics/members pair is missing");
 
-		let mut generics: Vec<DefinitionType> = Vec::new();
+		let mut generics: Vec<DefinitionType> = vec![];
 
 		if next_pair.as_rule() == Rule::definition_generics {
 			generics = self.parse_generics_as_definition_types(next_pair);
@@ -714,7 +714,7 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse interface implementation statement: generics/class name pair is missing");
 
-		let mut interface_generics: Vec<Type> = Vec::new();
+		let mut interface_generics: Vec<Type> = vec![];
 
 		if next_pair.as_rule() == Rule::call_generics {
 			interface_generics = self.parse_generics_as_types(next_pair);
@@ -726,8 +726,8 @@ impl<'p> HasanParser<'p> {
 
 		let class_name = self.pair_str(next_pair);
 
-		let mut class_generics: Vec<Type> = Vec::new();
-		let mut members: Vec<ClassDefinitionMember> = Vec::new();
+		let mut class_generics: Vec<Type> = vec![];
+		let mut members: Vec<ClassDefinitionMember> = vec![];
 
 		for pair in pairs {
 			// This loop is really convenient for checking class generics
@@ -761,9 +761,9 @@ impl<'p> HasanParser<'p> {
 
 		let pairs = pair.into_inner();
 
-		let mut generics: Vec<DefinitionType> = Vec::new();
-		let mut arguments: Vec<FunctionArgument> = Vec::new();
-		let mut statements: Vec<Statement> = Vec::new();
+		let mut generics: Vec<DefinitionType> = vec![];
+		let mut arguments: Vec<FunctionArgument> = vec![];
+		let mut statements: Vec<Statement> = vec![];
 		let mut return_type: Option<Type> = None;
 
 		for pair in pairs {
@@ -859,7 +859,7 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.unwrap_or_else(|| unreachable!("Failed to parse if statement: statements are missing"));
 
-		let mut elseif_branches: Vec<ConditionBranch> = Vec::new();
+		let mut elseif_branches: Vec<ConditionBranch> = vec![];
 		let mut else_branch: Option<ConditionBranch> = None;
 
 		for pair in pairs {
@@ -990,8 +990,8 @@ impl<'p> HasanParser<'p> {
 		if call_insides.len() < 1 {
 			return Expression::FunctionCall {
 				callee: Box::new(expression),
-				generics: Vec::new(),
-				arguments: Vec::new()
+				generics: vec![],
+				arguments: vec![]
 			};
 		}
 
@@ -999,8 +999,8 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.unwrap_or_else(|| unreachable!("Failed to parse function call expression: call pairs iterator is empty"));
 
-		let mut generics: Vec<Type> = Vec::new();
-		let mut arguments: Vec<Expression> = Vec::new();
+		let mut generics: Vec<Type> = vec![];
+		let mut arguments: Vec<Expression> = vec![];
 
 		// Notify that incorrect generics are being passed to the function
 		if next_pair.as_rule() == Rule::definition_generics {
@@ -1080,7 +1080,7 @@ impl<'p> HasanParser<'p> {
 
 	fn parse_array_expression(&self, pair: Pair<Rule>) -> Expression {
 		let pairs = pair.into_inner();
-		let mut items: Vec<Expression> = Vec::new();
+		let mut items: Vec<Expression> = vec![];
 
 		for pair in pairs {
 			let parsed_pair = self.parse_expression(pair);
@@ -1117,7 +1117,7 @@ impl<'p> HasanParser<'p> {
 			// Type is not obliged to implement any interfaces. Return a regular type
 			return DefinitionType {
 				name,
-				requires_implementations: Vec::new()
+				requires_implementations: vec![]
 			};
 		}
 
@@ -1145,7 +1145,7 @@ impl<'p> HasanParser<'p> {
 		}
 
 		let inner_pairs = pair.into_inner();
-		let mut generics: Vec<DefinitionType> = Vec::new();
+		let mut generics: Vec<DefinitionType> = vec![];
 
 		for arg in inner_pairs {
 			if arg.as_rule() != Rule::definition_generics_type {
@@ -1168,7 +1168,7 @@ impl<'p> HasanParser<'p> {
 		}
 
 		let inner_pairs = pair.into_inner();
-		let mut generics: Vec<Type> = Vec::new();
+		let mut generics: Vec<Type> = vec![];
 
 		for arg in inner_pairs {
 			if arg.as_rule() != Rule::r#type {
@@ -1208,7 +1208,7 @@ impl<'p> HasanParser<'p> {
 				.expect("Failed to parse enum definition: enum name is missing")
 		);
 
-		let mut variants: Vec<EnumVariant> = Vec::new();
+		let mut variants: Vec<EnumVariant> = vec![];
 
 		for pair in pairs {
 			if pair.as_rule() != Rule::enum_variant {
@@ -1287,7 +1287,7 @@ impl<'p> HasanParser<'p> {
 			.peek()
 			.expect("Failed to parse function type: generics/arguments pair is missing");
 
-		let mut generics: Vec<DefinitionType> = Vec::new();
+		let mut generics: Vec<DefinitionType> = vec![];
 
 		if next_pair.as_rule() == Rule::definition_generics {
 			generics = self.parse_generics_as_definition_types(next_pair);
@@ -1303,7 +1303,7 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse function type: arguments pair is missing");
 
-		let mut argument_types: Vec<Type> = Vec::new();
+		let mut argument_types: Vec<Type> = vec![];
 
 		for pair in arguments_pairs {
 			if pair.as_rule() != Rule::r#type {
@@ -1354,10 +1354,10 @@ impl<'p> HasanParser<'p> {
 		}
 		
 		let pairs = pair.into_inner();
-		let mut attributes: ClassFunctionAttributes = Vec::new();
+		let mut attributes: ClassFunctionAttributes = vec![];
 
 		// Keeping track of which attributes have already been defined to prevent users from defining them twice
-		let mut met_attributes: Vec<String> = Vec::new();
+		let mut met_attributes: Vec<String> = vec![];
 
 		for pair in pairs {
 			let as_str = pair.as_str();
@@ -1386,7 +1386,7 @@ impl<'p> HasanParser<'p> {
 
 		let pairs = pair.into_inner();
 
-		let mut arguments: Vec<FunctionArgument> = Vec::new();
+		let mut arguments: Vec<FunctionArgument> = vec![];
 
 		for pair in pairs {
 			if pair.as_rule() != Rule::function_argument {
@@ -1417,10 +1417,10 @@ impl<'p> HasanParser<'p> {
 			error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::general_modifiers, pair.as_rule());
 		}
 
-		let mut modifiers: GeneralModifiers = Vec::new();
+		let mut modifiers: GeneralModifiers = vec![];
 		let pairs = pair.into_inner();
 
-		let mut met_modifiers: Vec<String> = Vec::new();
+		let mut met_modifiers: Vec<String> = vec![];
 
 		for pair in pairs {
 			let as_str = pair.as_str();
@@ -1459,8 +1459,8 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse function prototype: function name is missing");
 
-		let mut generics: Vec<DefinitionType> = Vec::new();
-		let mut arguments: Vec<FunctionArgument> = Vec::new();
+		let mut generics: Vec<DefinitionType> = vec![];
+		let mut arguments: Vec<FunctionArgument> = vec![];
 		let mut return_type: Option<Type> = None;
 
 		for pair in header_pairs {
@@ -1548,7 +1548,7 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse type definition: expected generics/type, got nothing");
 
-		let mut generics: Vec<DefinitionType> = Vec::new();
+		let mut generics: Vec<DefinitionType> = vec![];
 
 		if next_pair.as_rule() == Rule::definition_generics {
 			generics = self.parse_generics_as_definition_types(next_pair);
@@ -1592,7 +1592,7 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.unwrap_or_else(|| panic!("Failed to parse a class definition function: expected rule '{:?}', got nothing", Rule::function_definition_stmt));
 
-		let attributes = attributes.unwrap_or(Vec::new());
+		let attributes = attributes.unwrap_or(vec![]);
 		let function_statement = self.parse_function_definition(statement_pair);
 		ClassDefinitionFunction::from_statement(function_statement, attributes)
 	}
@@ -1682,8 +1682,8 @@ impl<'p> HasanParser<'p> {
 			return Statement::ClassDefinition {
 				modifiers,
 				name: self.pair_str(name),
-				generics: Vec::new(),
-				members: Vec::new()
+				generics: vec![],
+				members: vec![]
 			};
 		}
 
@@ -1691,7 +1691,7 @@ impl<'p> HasanParser<'p> {
 		let next_pair = next_pair_option
 			.unwrap_or_else(|| unreachable!("Failed to parse class definition: unexpected end of pairs. Expected class members or generics, got nothing"));
 
-		let mut generics: Vec<DefinitionType> = Vec::new();
+		let mut generics: Vec<DefinitionType> = vec![];
 
 		// Check if the next pair is of rule definition_generics
 		if next_pair.as_rule() == Rule::definition_generics {
@@ -1703,7 +1703,7 @@ impl<'p> HasanParser<'p> {
 					modifiers,
 					name: self.pair_str(name),
 					generics,
-					members: Vec::new()
+					members: vec![]
 				};
 			}
 
@@ -1711,7 +1711,7 @@ impl<'p> HasanParser<'p> {
 			pairs.next();
 		}
 
-		let mut members: Vec<ClassDefinitionMember> = Vec::new();
+		let mut members: Vec<ClassDefinitionMember> = vec![];
 
 		for pair in pairs {
 			members.push(self.parse_class_definition_member(pair));
