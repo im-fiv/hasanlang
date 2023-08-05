@@ -9,20 +9,23 @@ pub struct Scope {
 
 impl Scope {
 	pub fn new() -> Self {
-		Scope {
+		Self {
 			symbol_table: HashMap::new(),
 			flags: ScopeFlags::default()
 		}
 	}
 
 	pub fn child_scope(&self) -> Self {
-		let symbol_table = self.symbol_table.clone();
-		let flags = self.flags.clone();
-
-		Scope {
-			symbol_table,
-			flags
+		Self {
+			symbol_table: self.symbol_table.clone(),
+			flags: self.flags
 		} 
+	}
+}
+
+impl Default for Scope {
+	fn default() -> Self {
+		Self::new()
 	}
 }
 
@@ -36,8 +39,8 @@ pub struct ScopeFlags {
 
 impl Default for ScopeFlags {
 	fn default() -> Self {
-		ScopeFlags {
-			global: false,
+		Self {
+			global: true,
 
 			in_function: false,
 			in_loop: false
