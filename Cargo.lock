@@ -230,13 +230,24 @@ dependencies = [
 ]
 
 [[package]]
+name = "hasan_analyzer"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "hasan_hir",
+ "hasan_parser",
+ "strum",
+ "strum_macros",
+]
+
+[[package]]
 name = "hasan_compiler"
 version = "0.0.0"
 dependencies = [
  "anyhow",
+ "hasan_analyzer",
  "hasan_parser",
  "hasan_pest_parser",
- "hasan_semantic_analyzer",
  "inkwell",
  "pest",
  "rand",
@@ -272,25 +283,14 @@ dependencies = [
 ]
 
 [[package]]
-name = "hasan_semantic_analyzer"
-version = "0.0.0"
-dependencies = [
- "anyhow",
- "hasan_hir",
- "hasan_parser",
- "strum",
- "strum_macros",
-]
-
-[[package]]
 name = "hasanlang"
 version = "0.2.0"
 dependencies = [
  "clap",
+ "hasan_analyzer",
  "hasan_compiler",
  "hasan_parser",
  "hasan_pest_parser",
- "hasan_semantic_analyzer",
  "inkwell",
  "pest",
 ]

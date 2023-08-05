@@ -9,7 +9,7 @@ use pest::Parser;
 
 use hasan_pest_parser::{PestParser, Rule};
 use hasan_parser::HasanParser;
-use hasan_semantic_analyzer::SemanticAnalyzer;
+use hasan_analyzer::SemanticAnalyzer;
 use hasan_compiler::Compiler;
 
 //* Helper functions *//
