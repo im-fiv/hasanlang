@@ -16,7 +16,7 @@ pub struct SemanticAnalyzer {
 
 impl SemanticAnalyzer {
 	pub fn new() -> Self {
-		SemanticAnalyzer {
+		Self {
 			scope: Scope::new()
 		}
 	}
@@ -26,5 +26,11 @@ impl SemanticAnalyzer {
 		// TODO: Replace `Program` from `hasan_parser` to the one from `hasan_hir`
 
 		Ok(ast)
+	}
+}
+
+impl Default for SemanticAnalyzer {
+	fn default() -> Self {
+		Self::new()
 	}
 }
