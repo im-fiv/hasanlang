@@ -169,11 +169,11 @@ fn compile(command: cli::CompileCommand) {
     
     fpm.initialize();
 
+    // Compile into LLVM IR
     let mut compiler = Compiler::new(&context, &builder, &fpm, &module);
-    let codegen = compiler.compile(&new_ast);
 
-    if codegen.is_err() {
-        eprintln!("Error: {:?}", codegen.err().unwrap());
+    if let Err(error) = compiler.compile(&new_ast) {
+        eprintln!("Compile error: {:?}", error);
         return;
     }
 
@@ -187,6 +187,37 @@ fn compile(command: cli::CompileCommand) {
 	}
 
     write_file("./compiled/4_llvm_ir.ll", codegen_data);
+
+    // Create object file
+    use std::process::Command;
+
+    let llc_status = Command::new("llc")
+        .arg("./compiled/4_llvm_ir.ll")
+        .arg("-o")
+        .arg("./compiled/5_object.o")
+        .arg("-filetype")
+        .arg("obj")
+        .status()
+        .expect("Failed to call `llc`");
+
+    if debug {
+        println!("`llc` command exit code: {}", llc_status.code().unwrap());
+    }
+
+    // Create executable
+    let executable_path = format!("./compiled/6_executable{}", std::env::consts::EXE_SUFFIX);
+
+    let ld_status = Command::new("ld")
+        .arg("./compiled/5_object.o")
+        .arg("-o")
+        .arg(executable_path.clone())
+        .status()
+        .expect("Failed to call `ld`");
+
+    if debug {
+        println!("`ld` command exit code: {}", ld_status.code().unwrap());
+        println!();
+    }
 }
 
 fn main() {
