@@ -210,7 +210,7 @@ fn compile(command: cli::CompileCommand) {
     let ld_status = Command::new("ld")
         .arg("./compiled/5_object.o")
         .arg("-o")
-        .arg(executable_path.clone())
+        .arg(executable_path)
         .status()
         .expect("Failed to call `ld`");
 
