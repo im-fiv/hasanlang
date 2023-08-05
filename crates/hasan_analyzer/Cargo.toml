@@ -1,5 +1,5 @@
 [package]
-name = "hasan_semantic_analyzer"
+name = "hasan_analyzer"
 version = "0.0.0"
 edition = "2021"
 
