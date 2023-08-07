@@ -1,32 +1,15 @@
 mod cli;
+mod jobs;
+mod consts;
 
-use std::fs;
+use consts::*;
+
 use std::fs::File;
-use std::io::BufReader;
-use std::io::prelude::*;
+use std::io::Write;
 
-use pest::Parser;
-
-use hasan_pest_parser::{PestParser, Rule};
-use hasan_parser::HasanParser;
-use hasan_analyzer::SemanticAnalyzer;
-use hasan_compiler::Compiler;
+use hasan_hir::HIRCodegen;
 
 //* Helper functions *//
-fn read_file(path: &str) -> String {
-	let file = File::open(path)
-        .unwrap_or_else(|_| panic!("Failed to open file `{}` (read)", path));
-	
-	let mut reader = BufReader::new(file);
-	let mut contents = String::new();
-	
-	reader
-        .read_to_string(&mut contents)
-        .unwrap_or_else(|_| panic!("Failed to read from file `{}`", path));
-
-	contents.replace("\r\n", "\n")
-}
-
 fn write_file(path: &str, contents: String) {
 	let mut file = File::create(path)
         .unwrap_or_else(|_| panic!("Failed to open file `{}` (write)", path));
@@ -35,196 +18,44 @@ fn write_file(path: &str, contents: String) {
         .write_all(contents.as_bytes())
         .unwrap_or_else(|_| panic!("Failed to write to file `{}`", path))
 }
+
+macro_rules! job {
+	($name:ident, $file_name:expr, $preproc_closure:expr, $($arg:expr),*) => {
+		{
+			let job_result = jobs::$name($($arg),*);
+			let closure = $preproc_closure;
+			write_file(&fmt_c($file_name), closure(job_result.clone()));
+
+			job_result
+		}
+	};
+}
 //* Helper functions *//
 
-/// Subcommand to parse a file
-fn parse(command: cli::ParseCommand) -> Option<hasan_parser::Program> {
-    let cli::ParseCommand { file_path, debug } = command;
+fn compile(command: cli::CompileCommand) {
+	let code = job!(read_file, SOURCE_FN, |result| result, &command.file_path);
+	let pairs = job!(pest_parse, PEST_AST_FN, |result| format!("{:#?}", result), &code, command.debug);
+	let ast = job!(hasan_parse, HASAN_AST_FN, |result| format!("{:#?}", result), pairs, command.debug);
+	let hir = job!(analyze, ANALYZED_FN, |result: hasan_hir::Program| result.codegen(), ast, command.debug);
 
-    // Create file if it doesn't exist
-    match fs::metadata(&file_path) {
-        Ok(_) => (),
-        Err(_) => {
-            println!("Input file `{}` did not exist and was created automatically", &file_path);
-            write_file(&file_path, "func main() do\n\treturn \"Hello, World!\";\nend".to_owned());
-        }
-    }
-
-    fs::create_dir_all("./compiled").expect("Failed to create `compiled` directory");
-
-    // Pest parsing stage
-	if debug {
-        println!("Pest parsing...");
-    }
+	job!(compile, IR_FN, |result| result, hir, command.no_opt, command.debug);
 	
-	let contents = read_file(&file_path);
-	let result = PestParser::parse(Rule::program, &contents);
-	
-	if let Err(e) = result {
-		eprintln!("{}", e);
-		return None;
-	}
-	
-	let pairs = result.unwrap();
-	
-	if debug {
-		println!("Parsed pairs ({}): {}", pairs.len(), pairs);
-		println!();
-	}
-	
-	write_file("./compiled/1_raw_ast.txt", format!("{:#?}", pairs));
-
-    // Hasan parsing stage
-    if debug {
-        println!("AST parsing...");
-    }
-
-    let ast_parser = HasanParser::new(pairs);
-    let ast = ast_parser.parse();
-
-    if debug {
-        println!("Parsed AST ({}): {:?}", ast.statements.len(), ast);
-        println!();
-    }
-
-    write_file("./compiled/2_hasan_ast.txt", format!("{:#?}", ast));
-    Some(ast)
+	jobs::link(command.debug);
 }
 
-/// Subcommand to compile a file
-fn compile(command: cli::CompileCommand) {
-    let cli::CompileCommand { file_path, debug, no_opt } = command;
+fn parse(command: cli::ParseCommand) {
+    let code = job!(read_file, SOURCE_FN, |result| result, &command.file_path);
+	let pairs = job!(pest_parse, PEST_AST_FN, |result| format!("{:#?}", result), &code, command.debug);
+	let ast = job!(hasan_parse, HASAN_AST_FN, |result| format!("{:#?}", result), pairs, command.debug);
 
-    let parse_result = parse(cli::ParseCommand {
-        file_path,
-        debug
-    });
-
-    if parse_result.is_none() {
-        return;
-    }
-
-    let ast = parse_result.unwrap();
-
-    // Semantic analysis stage
-    if debug {
-        println!("Analyzing...");
-    }
-    
-    let analyzer = SemanticAnalyzer::new();
-    let analyzed_ast = analyzer.analyze(ast);
-
-    if analyzed_ast.is_err() {
-        eprintln!("Error: {:?}", analyzed_ast.err().unwrap());
-        return;
-    }
-
-    let new_ast = analyzed_ast.unwrap();
-
-    if debug {
-		println!("Analysis data: {:?}", new_ast);
-		println!();
-	}
-
-    write_file("./compiled/3_semantic_analysis.txt", format!("{:#?}", new_ast));
-
-    // Compilation stage
-    if debug {
-        println!("Compiling...");
-    }
-
-    // Initialize the compiler
-    use inkwell::context::Context;
-    use inkwell::passes::PassManager;
-    use inkwell::targets::{InitializationConfig, Target, TargetMachine};
-    
-    Target::initialize_native(&InitializationConfig::default())
-        .expect("Failed to initialize native target");
-
-    let context = Context::create();
-    let module = context.create_module("program");
-    let builder = context.create_builder();
-
-    let execution_engine = module
-        .create_execution_engine()
-        .expect("Failed to create execution engine");
-
-    let target_data = execution_engine.get_target_data();
-
-    module.set_triple(&TargetMachine::get_default_triple());
-    module.set_data_layout(&target_data.get_data_layout());
-
-    let fpm = PassManager::create(&module);
-
-    if !no_opt {
-        fpm.add_instruction_combining_pass();
-        fpm.add_reassociate_pass();
-        fpm.add_gvn_pass();
-        fpm.add_cfg_simplification_pass();
-        fpm.add_basic_alias_analysis_pass();
-        fpm.add_promote_memory_to_register_pass();
-        fpm.add_instruction_combining_pass();
-        fpm.add_reassociate_pass();
-    }
-    
-    fpm.initialize();
-
-    // Compile into LLVM IR
-    let mut compiler = Compiler::new(&context, &builder, &fpm, &module);
-
-    if let Err(error) = compiler.compile(&new_ast) {
-        eprintln!("Compile error: {:?}", error);
-        return;
-    }
-
-    let codegen_data = module
-        .print_to_string()
-        .to_string();
-
-    if debug {
-		println!("Codegen data: {:?}", codegen_data);
-		println!();
-	}
-
-    write_file("./compiled/4_llvm_ir.ll", codegen_data);
-
-    // Create object file
-    use std::process::Command;
-
-    let llc_status = Command::new("llc")
-        .arg("./compiled/4_llvm_ir.ll")
-        .arg("-o")
-        .arg("./compiled/5_object.o")
-        .arg("-filetype")
-        .arg("obj")
-        .status()
-        .expect("Failed to call `llc`");
-
-    if debug {
-        println!("`llc` command exit code: {}", llc_status.code().unwrap());
-    }
-
-    // Create executable
-    let executable_path = format!("./compiled/6_executable{}", std::env::consts::EXE_SUFFIX);
-
-    let ld_status = Command::new("ld")
-        .arg("./compiled/5_object.o")
-        .arg("-o")
-        .arg(executable_path)
-        .status()
-        .expect("Failed to call `ld`");
-
-    if debug {
-        println!("`ld` command exit code: {}", ld_status.code().unwrap());
-        println!();
-    }
+	job!(analyze, ANALYZED_FN, |result: hasan_hir::Program| result.codegen(), ast, command.debug);
 }
 
 fn main() {
 	let args = cli::Cli::parse_custom();
 	
 	match args.subcommand {
-		cli::CLISubcommand::Compile(command) => { compile(command); },
-        cli::CLISubcommand::Parse(command) => { parse(command); }
+		cli::CLISubcommand::Compile(command) => compile(command),
+        cli::CLISubcommand::Parse(command) => parse(command)
 	}
 }

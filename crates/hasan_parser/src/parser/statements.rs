@@ -255,7 +255,7 @@ impl HasanCodegen for Statement {
 				}
 			},
 
-			Self::Unimplemented => "/* UNIMPLEMENTED */".to_owned()
+			Self::Unimplemented => "/* unimplemented */".to_owned()
 		}
 	}
 }

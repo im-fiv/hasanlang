@@ -2,7 +2,10 @@ use crate::{ClassMember, HIRCodegen};
 
 /// A reference to a type with the second parameter being the dimensions of array (if present)
 #[derive(Debug, Clone)]
-pub struct TypeRef(Type, usize);
+pub struct TypeRef(
+	pub Type,
+	pub usize
+);
 
 impl HIRCodegen for TypeRef {
 	fn codegen(&self) -> String {

@@ -9,6 +9,7 @@ edition = "2021"
 hasan_pest_parser = { path = "../hasan_pest_parser" }
 hasan_parser = { path = "../hasan_parser" }
 hasan_analyzer = { path = "../hasan_analyzer" }
+hasan_hir = { path = "../hasan_hir" }
 inkwell = { git = "https://github.com/TheDan64/inkwell", branch = "master", features = ["llvm15-0"] }
 pest = "2.7.0"
 rand = "0.8.5"
