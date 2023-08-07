@@ -1,5 +1,0 @@
-func main() -> void do
-	const var test: string = "hello";
-
-	return;
-end

@@ -7,7 +7,6 @@ use scope::*;
 use symbol::*;
 
 use anyhow::Error;
-use hasan_parser::Program;
 
 #[derive(Debug, Clone)]
 pub struct SemanticAnalyzer {
@@ -21,11 +20,12 @@ impl SemanticAnalyzer {
 		}
 	}
 
-	pub fn analyze(&self, ast: Program) -> Result<Program, Error> {
-		// TODO: Implement semantic analysis when I have a better understanding of Rust
-		// TODO: Replace `Program` from `hasan_parser` to the one from `hasan_hir`
+	pub fn analyze(&self, _ast: hasan_parser::Program) -> Result<hasan_hir::Program, Error> {
+		let converted_ast: hasan_hir::Program = hasan_hir::Program::default();
 
-		Ok(ast)
+		// TODO: Convert statements
+
+		Ok(converted_ast)
 	}
 }
 

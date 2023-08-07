@@ -12,7 +12,9 @@ members = ["crates/*"]
 hasan_pest_parser = { path = "./crates/hasan_pest_parser" }
 hasan_parser = { path = "./crates/hasan_parser" }
 hasan_analyzer = { path = "./crates/hasan_analyzer" }
+hasan_hir = { path = "./crates/hasan_hir" }
 hasan_compiler = { path = "./crates/hasan_compiler" }
 inkwell = { git = "https://github.com/TheDan64/inkwell", branch = "master", features = ["llvm15-0"] }
 pest = "2.7.0"
 clap = { version = "4.3.19", features = ["derive"] }
+const_format = "0.2.31"

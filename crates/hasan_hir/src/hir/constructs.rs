@@ -11,7 +11,7 @@ pub use functions::*;
 pub use crate::{Statement, TypeRef, Type, HIRCodegen};
 use hasan_parser::vec_transform_str;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Default)]
 pub struct Program {
 	pub statements: Vec<Statement>,
 	pub module_info: Option<ModuleInfo>,
@@ -61,6 +61,6 @@ impl ToString for ModuleInfo {
 #[derive(Debug, Clone)]
 pub struct Variable {
 	pub name: String,
-	pub kind: Type,
+	pub kind: TypeRef,
 	pub value: hasan_parser::Expression
 }

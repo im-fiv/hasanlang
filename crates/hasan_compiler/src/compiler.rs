@@ -6,7 +6,6 @@ use constructs::*;
 use expression_value::*;
 use types::*;
 
-use inkwell::AddressSpace;
 use inkwell::context::Context;
 use inkwell::builder::Builder;
 use inkwell::passes::PassManager;
@@ -17,7 +16,8 @@ use inkwell::values::{FunctionValue, PointerValue, IntValue, FloatValue, GlobalV
 use std::collections::HashMap;
 use anyhow::{Error, bail};
 
-use hasan_parser::{self as P};
+use hasan_parser::{self as parser};
+use hasan_hir::{self as hir};
 
 const ENTRY_FUNCTION_NAME: &str = "main";
 
@@ -44,10 +44,9 @@ pub struct Compiler<'a, 'ctx> {
     pub module: &'a Module<'ctx>,
 
 	variables: HashMap<String, Variable<'ctx>>,
-	globals: HashMap<String, Global<'ctx>>,
+	globals: HashMap<String, GlobalString<'ctx>>,
     current_function: Option<FunctionValue<'ctx>>,
 }
-
 
 impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	pub fn new(
@@ -67,7 +66,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 		}
 	}
 
-	pub fn compile(&mut self, program: &P::Program) -> Result<(), Error> {
+	pub fn compile(&mut self, program: &hir::Program) -> Result<(), Error> {
 		self.compile_statements(&program.statements)?;
 
 		if self.get_function(ENTRY_FUNCTION_NAME).is_none() {
@@ -77,19 +76,18 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 		Ok(())
 	}
 
-	fn compile_statements(&mut self, statements: &Vec<P::Statement>) -> Result<(), Error> {
+	fn compile_statements(&mut self, statements: &Vec<hir::Statement>) -> Result<(), Error> {
 		for statement in statements {
 			match statement.to_owned() {
-				P::Statement::FunctionDefinition(function) => self.compile_function(function)?,
-				P::Statement::Return(value) => self.compile_return(value)?,
+				hir::Statement::FunctionDefinition(function) => self.compile_function(function)?,
+				hir::Statement::Return(value) => self.compile_return(value)?,
 
-				P::Statement::VariableDefinition { modifiers, name, kind, value } => 
-					self.compile_variable_definition(modifiers, name, kind, value)?,
+				hir::Statement::VariableDefinition(variable) => self.compile_variable_definition(variable)?,
 
-				P::Statement::FunctionCall { callee, generics, arguments } => {
-					self.compile_expression(&P::Expression::FunctionCall {
+				hir::Statement::FunctionCall(callee, arguments) => {
+					self.compile_expression(&parser::Expression::FunctionCall {
 						callee: Box::new(callee),
-						generics,
+						generics: vec![],
 						arguments
 					})?;
 				},
@@ -126,7 +124,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	}
 
 	/// Converts a Rust integer into a corresponding LLVM value
-	fn int_value(&self, value: P::IntType) -> IntValue<'ctx> {
+	fn int_value(&self, value: parser::IntType) -> IntValue<'ctx> {
 		let is_negative = value < 0;
 		let converted = value.unsigned_abs();
 
@@ -141,7 +139,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 
 	/// Converts a Rust float into a corresponding LLVM value
 	#[inline]
-	fn float_value(&self, value: P::FloatType) -> FloatValue<'ctx> {
+	fn float_value(&self, value: parser::FloatType) -> FloatValue<'ctx> {
 		self.context.f64_type().const_float(value)
 	}
 
@@ -151,10 +149,8 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 		let mut found_string: Option<GlobalString> = None;
 
 		for global in self.globals.values() {
-			if let Global::String(global_string) = global.clone() {
-				if global_string.value == value {
-					found_string = Some(global_string.clone());
-				}
+			if global.value == value {
+				found_string = Some(global.clone());
 			}
 		}
 
@@ -176,7 +172,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 			value
 		};
 
-		self.globals.insert(name, Global::String(global));
+		self.globals.insert(name, global);
 		global_value
 	}
 
@@ -187,37 +183,21 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	}
 
 	/// Resolves a parser type into a LLVM type
-	pub fn compile_type(&self, kind: &P::Type) -> Result<Option<BasicTypeEnum<'ctx>>, Error> {
-		match kind {
-			P::Type::Regular(regular_type) => {
-				let P::RegularType { name, generics: _, array } = regular_type.to_owned();
+	pub fn compile_type(&self, kind: &hir::TypeRef) -> Result<Option<BasicTypeEnum<'ctx>>, Error> {
+		// TODO: Allow for resolving non-built-in types
+		let hir::TypeRef(kind, _dimensions) = kind;
 
-				if array {
-					// TODO: Implement this
-					unimplemented!("Array types are currently not supported");
-				}
+		let resolved_type = BuiltinType::try_from(kind.name.as_str())?
+			.as_llvm_type(self.context);
 
-				let resolved_type = BuiltinType::try_from(name.as_str())?
-					.as_llvm_type(self.context);
+		// TODO: Make use of `dimensions` field
 
-				Ok(resolved_type)
-			},
-
-			P::Type::Function(_function_type) => {
-				// TODO: Implement function types
-				unimplemented!("Function types are currently not supported")
-			}
-		}
+		Ok(resolved_type)
 	}
 
 	/// Compiles the provided function prototype
-	fn compile_function_prototype(&self, prototype: &FunctionPrototype) -> Result<FunctionValue<'ctx>, Error> {
-		if prototype.return_type.is_none() {
-			// TODO: Resolve types during semantic analysis
-			bail!("Unable to resolve function return type");
-		}
-
-		let return_type = self.compile_type(prototype.return_type.as_ref().unwrap())?;
+	fn compile_function_prototype(&self, prototype: &hir::FunctionPrototype) -> Result<FunctionValue<'ctx>, Error> {
+		let return_type = self.compile_type(&prototype.return_type)?;
 
 		let argument_types = prototype.arguments
 			.iter()
@@ -274,14 +254,13 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	}
 
 	/// Compiles the provided `Function` into LLVM `FunctionValue`
-	fn compile_function(&mut self, function: P::Function) -> Result<(), Error> {
+	fn compile_function(&mut self, function: hir::Function) -> Result<(), Error> {
 		// BUG: Nested functions do not work. Reason is yet to be determined
 
 		let old_function_value = self.current_function;
 		self.current_function = None;
 
-		let converted_function = Function::from_parser(function);
-		let Function { prototype, body } = converted_function;
+		let hir::Function { prototype, body } = function;
 
 		let function = self.compile_function_prototype(&prototype)?;
 		
@@ -340,7 +319,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	}
 
 	/// Compiles the return statement
-	fn compile_return(&mut self, value: Option<P::Expression>) -> Result<(), Error> {
+	fn compile_return(&mut self, value: Option<parser::Expression>) -> Result<(), Error> {
 		if value.is_none() {
 			self.builder.build_return(None);
 			return Ok(());
@@ -356,23 +335,23 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	}
 
 	/// Compiles the provided `Expression` into LLVM number value (`FloatValue` or `IntValue`)
-	fn compile_expression(&mut self, expression: &P::Expression) -> Result<ExpressionValue<'ctx>, Error> {
-		use P::Expression::{self as E};
+	fn compile_expression(&mut self, expression: &parser::Expression) -> Result<ExpressionValue<'ctx>, Error> {
+		use parser::Expression::{self as e};
 
 		match expression.to_owned() {
 			// TODO: Implement the rest of expressions
 
-			E::Int(value) => Ok(ExpressionValue::Int(self.int_value(value))),
-			E::Float(value) => Ok(ExpressionValue::Float(self.float_value(value))),
-			E::String(value) => Ok(ExpressionValue::String(self.string_value(value))),
-			E::Boolean(value) => Ok(ExpressionValue::Boolean(self.bool_value(value))),
+			e::Int(value) => Ok(ExpressionValue::Int(self.int_value(value))),
+			e::Float(value) => Ok(ExpressionValue::Float(self.float_value(value))),
+			e::String(value) => Ok(ExpressionValue::String(self.string_value(value))),
+			e::Boolean(value) => Ok(ExpressionValue::Boolean(self.bool_value(value))),
 
-			E::Unary { operator, operand } => self.compile_unary_expression(operator, operand),
-			E::Binary { lhs, operator, rhs } => self.compile_binary_expression(*lhs, operator, *rhs),
+			e::Unary { operator, operand } => self.compile_unary_expression(operator, operand),
+			e::Binary { lhs, operator, rhs } => self.compile_binary_expression(*lhs, operator, *rhs),
 
-			E::FunctionCall { callee, generics: _, arguments } => self.compile_function_call(*callee, arguments),
+			e::FunctionCall { callee, generics: _, arguments } => self.compile_function_call(*callee, arguments),
 
-			E::Identifier(value) => Ok(self.resolve_identifier(value)?),
+			e::Identifier(value) => Ok(self.resolve_identifier(value)?),
 
 			_ => bail!("Encountered unsupported expression `{}`", expression.to_string())
 		}
@@ -397,83 +376,64 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 			// TODO: Fix global referencing
 
 			// Ok(ExpressionValue::Pointer(global.as_pointer_value()))
-			unimplemented!("Global referencing is not implemented")
+			todo!("global referencing")
 		} else {
 			unreachable!()
 		}
 	}
 
 	/// Compiles a unary expression given the operator and operand
-	fn compile_unary_expression(&mut self, operator: P::UnaryOperator, operand: Box<P::Expression>) -> Result<ExpressionValue<'ctx>, Error> {
+	fn compile_unary_expression(&mut self, operator: parser::UnaryOperator, operand: Box<parser::Expression>) -> Result<ExpressionValue<'ctx>, Error> {
 		let compiled_expression = self.compile_expression(operand.as_ref())?;
 
 		match operator {
-			P::UnaryOperator::Minus => compiled_expression.apply_unary_minus(),
-			P::UnaryOperator::Not => compiled_expression.apply_unary_not()
+			parser::UnaryOperator::Minus => compiled_expression.apply_unary_minus(),
+			parser::UnaryOperator::Not => compiled_expression.apply_unary_not()
 		}
 	}
 
-	fn compile_binary_expression(&mut self, lhs: P::Expression, operator: P::BinaryOperator, rhs: P::Expression) -> Result<ExpressionValue<'ctx>, Error> {
+	fn compile_binary_expression(&mut self, lhs: parser::Expression, operator: parser::BinaryOperator, rhs: parser::Expression) -> Result<ExpressionValue<'ctx>, Error> {
+		use parser::BinaryOperator::{self as b};
+		
 		let compiled_lhs = self.compile_expression(&lhs)?;
 		let compiled_rhs = self.compile_expression(&rhs)?;
 
 		Ok(match operator {
-			P::BinaryOperator::Plus => compiled_lhs.compile_add(&compiled_rhs, self.builder)?,
-			P::BinaryOperator::Minus => compiled_lhs.compile_subtract(&compiled_rhs, self.builder)?,
-			P::BinaryOperator::Divide => compiled_lhs.compile_divide(&compiled_rhs, self.builder)?,
-			P::BinaryOperator::Times => compiled_lhs.compile_multiply(&compiled_rhs, self.builder)?,
-			P::BinaryOperator::Modulo => compiled_lhs.compile_modulo(&compiled_rhs, self.builder)?,
+			b::Plus => compiled_lhs.compile_add(&compiled_rhs, self.builder)?,
+			b::Minus => compiled_lhs.compile_subtract(&compiled_rhs, self.builder)?,
+			b::Divide => compiled_lhs.compile_divide(&compiled_rhs, self.builder)?,
+			b::Times => compiled_lhs.compile_multiply(&compiled_rhs, self.builder)?,
+			b::Modulo => compiled_lhs.compile_modulo(&compiled_rhs, self.builder)?,
 
-			P::BinaryOperator::Equals => compiled_lhs.compile_equals(&compiled_rhs, self.builder)?,
-			P::BinaryOperator::NotEquals => compiled_lhs.compile_not_equals(&compiled_rhs, self.builder)?,
+			b::Equals => compiled_lhs.compile_equals(&compiled_rhs, self.builder)?,
+			b::NotEquals => compiled_lhs.compile_not_equals(&compiled_rhs, self.builder)?,
 
-			P::BinaryOperator::And => compiled_lhs.compile_and(&compiled_rhs, self.builder)?,
-			P::BinaryOperator::Or => compiled_lhs.compile_or(&compiled_rhs, self.builder)?,
+			b::And => compiled_lhs.compile_and(&compiled_rhs, self.builder)?,
+			b::Or => compiled_lhs.compile_or(&compiled_rhs, self.builder)?,
 
-			P::BinaryOperator::GreaterThan => compiled_lhs.compile_gt(&compiled_rhs, self.builder)?,
-			P::BinaryOperator::LessThan => compiled_lhs.compile_lt(&compiled_rhs, self.builder)?,
-			P::BinaryOperator::GreaterThanEqual => compiled_lhs.compile_gte(&compiled_rhs, self.builder)?,
-			P::BinaryOperator::LessThanEqual => compiled_lhs.compile_lte(&compiled_rhs, self.builder)?
+			b::GreaterThan => compiled_lhs.compile_gt(&compiled_rhs, self.builder)?,
+			b::LessThan => compiled_lhs.compile_lt(&compiled_rhs, self.builder)?,
+			b::GreaterThanEqual => compiled_lhs.compile_gte(&compiled_rhs, self.builder)?,
+			b::LessThanEqual => compiled_lhs.compile_lte(&compiled_rhs, self.builder)?
 		})
 	}
 	
-	fn compile_variable_definition(&mut self, modifiers: P::GeneralModifiers, name: String, kind: Option<P::Type>, value: P::Expression) -> Result<(), Error> {
+	fn compile_variable_definition(&mut self, variable: hir::Variable) -> Result<(), Error> {
 		// BUG: Constant string variables seem to cause access violation exception
-		
-		if kind.is_none() {
-			// TODO: Resolve types during semantic analysis
-			bail!("Unable to resolve variable type");
-		}
-
 		let inside_function = self.current_function.is_some();
-		let is_constant = modifiers.contains(&P::GeneralModifier::Constant);
 
-		if !inside_function && !is_constant {
+		if !inside_function {
 			bail!("Cannot define variables outside of functions");
 		}
 
-		if inside_function && is_constant {
-			// TODO: Implement this function
-			bail!("Cannot define constants inside functions");
-		}
-
-		let kind = kind.unwrap();
-		let kind_resolved = self.compile_type(&kind)?.unwrap();
+		let kind_resolved = self.compile_type(&variable.kind)?.unwrap();
 
 		let compiled_expression = self
-			.compile_expression(&value)?
+			.compile_expression(&variable.value)?
 			.unwrap_basic_value()?;
 
-		if is_constant {
-			let global_value = self.module.add_global(kind_resolved, Some(AddressSpace::default()), &name);
-			global_value.set_initializer(&compiled_expression);
-
-			self.globals.insert(name, Global::Constant(global_value));
-			return Ok(());
-		}
-
 		// Allocate memory
-		let alloca = self.builder.build_alloca(kind_resolved, &name);
+		let alloca = self.builder.build_alloca(kind_resolved, &variable.name);
 
 		// Store the value
 		self.builder.build_store(alloca, compiled_expression);
@@ -484,11 +444,11 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 			kind: kind_resolved
 		};
 
-		self.variables.insert(name, variable_struct);
+		self.variables.insert(variable.name, variable_struct);
 		Ok(())
 	}
 
-	fn compile_function_call(&mut self, callee: P::Expression, arguments: Vec<P::Expression>) -> Result<ExpressionValue<'ctx>, Error> {
+	fn compile_function_call(&mut self, callee: parser::Expression, arguments: Vec<parser::Expression>) -> Result<ExpressionValue<'ctx>, Error> {
 		let callee = self.compile_expression(&callee)?;
 		let resolved_callee = callee.unwrap_any_value()?;
 
