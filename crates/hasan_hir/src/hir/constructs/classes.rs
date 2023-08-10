@@ -3,7 +3,7 @@ use hasan_parser::{HasanCodegen, vec_transform_str};
 
 pub type Class = Type;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum ClassMember {
 	Variable(ClassVariable),
 	Function(ClassFunction)
@@ -24,7 +24,7 @@ impl ToString for ClassMember {
 	}
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct ClassVariable {
 	pub name: String,
 	pub kind: TypeRef,
@@ -43,7 +43,7 @@ impl ToString for ClassVariable {
 	}
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct ClassFunction(hasan_parser::ClassFunctionAttributes, Function);
 
 impl HIRCodegen for ClassFunction {

@@ -727,7 +727,7 @@ impl<'p> HasanParser<'p> {
 		let class_name = self.pair_str(next_pair);
 
 		let mut class_generics: Vec<Type> = vec![];
-		let mut members: Vec<ClassDefinitionMember> = vec![];
+		let mut members: Vec<ClassMember> = vec![];
 
 		for pair in pairs {
 			// This loop is really convenient for checking class generics
@@ -1568,7 +1568,7 @@ impl<'p> HasanParser<'p> {
 		}
 	}
 
-	fn parse_class_definition_function(&self, pair: Pair<Rule>) -> ClassDefinitionFunction {
+	fn parse_class_definition_function(&self, pair: Pair<Rule>) -> ClassFunction {
 		if pair.as_rule() != Rule::class_definition_function {
 			panic!("Failed to parse a class definition function: expected rule '{:?}', got '{:?}'", Rule::class_definition_function, pair.as_rule());
 		}
@@ -1594,10 +1594,10 @@ impl<'p> HasanParser<'p> {
 
 		let attributes = attributes.unwrap_or(vec![]);
 		let function_statement = self.parse_function_definition(statement_pair);
-		ClassDefinitionFunction::from_statement(function_statement, attributes)
+		ClassFunction::from_statement(function_statement, attributes)
 	}
 
-	fn parse_class_definition_variable(&self, pair: Pair<Rule>) -> ClassDefinitionVariable {
+	fn parse_class_definition_variable(&self, pair: Pair<Rule>) -> ClassVariable {
 		if pair.as_rule() != Rule::class_definition_variable {
 			panic!("Failed to parse class definiton variable: expected rule '{:?}', got '{:?}'", Rule::class_definition_variable, pair.as_rule());
 		}
@@ -1625,7 +1625,7 @@ impl<'p> HasanParser<'p> {
 			default_value = Some(self.parse_expression(default_value_option.unwrap_or_else(|| unreachable!("Failed to parse class definition variable: default value pair is missing"))));
 		}
 
-		ClassDefinitionVariable {
+		ClassVariable {
 			modifiers,
 			name: self.pair_str(name),
 			kind: self.parse_type(kind),
@@ -1633,7 +1633,7 @@ impl<'p> HasanParser<'p> {
 		}
 	}
 
-	fn parse_class_definition_member(&self, pair: Pair<Rule>) -> ClassDefinitionMember {
+	fn parse_class_definition_member(&self, pair: Pair<Rule>) -> ClassMember {
 		if pair.as_rule() != Rule::class_definition_member {
 			panic!("Failed to parse class definition member: expected rule '{:?}', got '{:?}'", Rule::class_definition_member, pair.as_rule());
 		}
@@ -1644,8 +1644,8 @@ impl<'p> HasanParser<'p> {
 			.expect("Failed to parse class definition member: pairs are empty");
 
 		match inner.as_rule() {
-			Rule::class_definition_variable => ClassDefinitionMember::Variable(self.parse_class_definition_variable(inner)),
-			Rule::class_definition_function => ClassDefinitionMember::Function(self.parse_class_definition_function(inner)),
+			Rule::class_definition_variable => ClassMember::Variable(self.parse_class_definition_variable(inner)),
+			Rule::class_definition_function => ClassMember::Function(self.parse_class_definition_function(inner)),
 
 			rule => error!(
 				"expected '{:?}' or '{:?}', got '{:?}'",
@@ -1711,7 +1711,7 @@ impl<'p> HasanParser<'p> {
 			pairs.next();
 		}
 
-		let mut members: Vec<ClassDefinitionMember> = vec![];
+		let mut members: Vec<ClassMember> = vec![];
 
 		for pair in pairs {
 			members.push(self.parse_class_definition_member(pair));

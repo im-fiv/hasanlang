@@ -3,7 +3,7 @@ use crate::{Function, Class, Variable, Enum, If, While, For, ModuleInfo, HIRCode
 use hasan_parser::{HasanCodegen, vec_transform_str};
 use strum_macros::Display;
 
-#[derive(Debug, Clone, Display)]
+#[derive(Debug, Clone, PartialEq, Display)]
 pub enum Statement {
 	FunctionDefinition(Function),
 	FunctionDeclaration(Function),

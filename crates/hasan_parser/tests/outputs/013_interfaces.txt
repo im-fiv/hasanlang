@@ -281,7 +281,7 @@ Program {
             class_generics: [],
             members: [
                 Variable(
-                    ClassDefinitionVariable {
+                    ClassVariable {
                         modifiers: [],
                         name: "hello",
                         kind: Regular(
@@ -295,7 +295,7 @@ Program {
                     },
                 ),
                 Function(
-                    ClassDefinitionFunction {
+                    ClassFunction {
                         attributes: [],
                         prototype: FunctionPrototype {
                             modifiers: [],

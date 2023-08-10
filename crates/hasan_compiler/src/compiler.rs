@@ -16,8 +16,8 @@ use inkwell::values::{FunctionValue, PointerValue, IntValue, FloatValue, GlobalV
 use std::collections::HashMap;
 use anyhow::{Error, bail};
 
-use hasan_parser::{self as parser};
-use hasan_hir::{self as hir};
+use hasan_parser as parser;
+use hasan_hir as hir;
 
 const ENTRY_FUNCTION_NAME: &str = "main";
 
@@ -336,7 +336,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 
 	/// Compiles the provided `Expression` into LLVM number value (`FloatValue` or `IntValue`)
 	fn compile_expression(&mut self, expression: &parser::Expression) -> Result<ExpressionValue<'ctx>, Error> {
-		use parser::Expression::{self as e};
+		use parser::Expression as e;
 
 		match expression.to_owned() {
 			// TODO: Implement the rest of expressions
@@ -393,7 +393,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	}
 
 	fn compile_binary_expression(&mut self, lhs: parser::Expression, operator: parser::BinaryOperator, rhs: parser::Expression) -> Result<ExpressionValue<'ctx>, Error> {
-		use parser::BinaryOperator::{self as b};
+		use parser::BinaryOperator as b;
 		
 		let compiled_lhs = self.compile_expression(&lhs)?;
 		let compiled_rhs = self.compile_expression(&rhs)?;

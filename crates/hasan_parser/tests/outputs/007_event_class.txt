@@ -6,7 +6,7 @@ Program {
             generics: [],
             members: [
                 Variable(
-                    ClassDefinitionVariable {
+                    ClassVariable {
                         modifiers: [],
                         name: "event",
                         kind: Regular(
@@ -20,7 +20,7 @@ Program {
                     },
                 ),
                 Variable(
-                    ClassDefinitionVariable {
+                    ClassVariable {
                         modifiers: [],
                         name: "id",
                         kind: Regular(
@@ -34,7 +34,7 @@ Program {
                     },
                 ),
                 Function(
-                    ClassDefinitionFunction {
+                    ClassFunction {
                         attributes: [
                             Constructor,
                         ],
@@ -105,7 +105,7 @@ Program {
                     },
                 ),
                 Function(
-                    ClassDefinitionFunction {
+                    ClassFunction {
                         attributes: [],
                         prototype: FunctionPrototype {
                             modifiers: [],
@@ -170,7 +170,7 @@ Program {
             generics: [],
             members: [
                 Variable(
-                    ClassDefinitionVariable {
+                    ClassVariable {
                         modifiers: [],
                         name: "name",
                         kind: Regular(
@@ -184,7 +184,7 @@ Program {
                     },
                 ),
                 Variable(
-                    ClassDefinitionVariable {
+                    ClassVariable {
                         modifiers: [],
                         name: "functions",
                         kind: Regular(
@@ -198,7 +198,7 @@ Program {
                     },
                 ),
                 Function(
-                    ClassDefinitionFunction {
+                    ClassFunction {
                         attributes: [
                             Constructor,
                         ],
@@ -246,7 +246,7 @@ Program {
                     },
                 ),
                 Function(
-                    ClassDefinitionFunction {
+                    ClassFunction {
                         attributes: [],
                         prototype: FunctionPrototype {
                             modifiers: [],
@@ -341,7 +341,7 @@ Program {
                     },
                 ),
                 Function(
-                    ClassDefinitionFunction {
+                    ClassFunction {
                         attributes: [],
                         prototype: FunctionPrototype {
                             modifiers: [],
@@ -387,7 +387,7 @@ Program {
                     },
                 ),
                 Function(
-                    ClassDefinitionFunction {
+                    ClassFunction {
                         attributes: [],
                         prototype: FunctionPrototype {
                             modifiers: [],

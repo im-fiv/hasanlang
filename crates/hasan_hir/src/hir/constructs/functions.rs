@@ -3,7 +3,7 @@ use hasan_parser::vec_transform_str;
 
 pub type FunctionBody = Option<Vec<Statement>>;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Function {
 	pub prototype: FunctionPrototype,
 	pub body: FunctionBody
@@ -26,7 +26,7 @@ impl ToString for Function {
 	}
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct FunctionPrototype {
 	pub name: String,
 	pub arguments: Vec<FunctionArgument>,
@@ -46,7 +46,7 @@ impl ToString for FunctionPrototype {
 	}
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct FunctionArgument {
 	pub name: String,
 	pub kind: TypeRef

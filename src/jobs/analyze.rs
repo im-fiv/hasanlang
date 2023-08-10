@@ -5,8 +5,8 @@ pub fn analyze(ast: hasan_parser::Program, debug: bool) -> hasan_hir::Program {
 		println!("Analyzing...");
 	}
 
-    let analyzer = SemanticAnalyzer::new();
-    let ast = analyzer.analyze(ast);
+    let mut analyzer = SemanticAnalyzer::new(ast);
+    let ast = analyzer.analyze();
 
 	if let Err(error) = ast {
 		panic!("Error: {:?}", error)
