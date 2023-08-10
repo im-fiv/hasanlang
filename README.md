@@ -72,6 +72,11 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
   - [ ] Calls
 - [ ] Imports resolving
 - [ ] Name collision checking
+  - [ ] Modules
+  - [ ] Classes and variables
+  - [ ] Types
+  - [ ] Function arguments
+  - [ ] Generic parameters
 - [ ] Undefined identifiers checking
 - [ ] Type alias substitution
 - [ ] Circular references checking
