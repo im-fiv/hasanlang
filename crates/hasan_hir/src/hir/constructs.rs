@@ -71,13 +71,13 @@ impl HIRCodegen for Variable {
 	fn codegen(&self) -> String {
 		use hasan_parser::HasanCodegen;
 
-		let name = if self.is_constant {
-			format!("@CONSTANT_{}", self.name)
+		let prefix = if self.is_constant {
+			"const "
 		} else {
-			self.name.clone()
-		};
+			""
+		}.to_owned();
 
-		format!("{{{}: {} = {}}}", name, self.kind.codegen(), self.value.codegen())
+		format!("{}var {}: {} = {}", prefix, self.name, self.kind.codegen(), self.value.codegen())
 	}
 }
 

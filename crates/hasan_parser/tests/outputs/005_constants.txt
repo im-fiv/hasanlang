@@ -6,7 +6,7 @@ Program {
             ],
             name: "a",
             kind: None,
-            value: Int(
+            value: Integer(
                 5,
             ),
         },
@@ -14,7 +14,7 @@ Program {
             name: Identifier(
                 "a",
             ),
-            value: Int(
+            value: Integer(
                 4,
             ),
         },

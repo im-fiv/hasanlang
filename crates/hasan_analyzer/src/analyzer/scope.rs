@@ -1,20 +1,53 @@
-use super::Symbol;
+use super::{Symbol, BuiltinType};
+
+use hasan_hir as hir;
 
 use std::collections::HashMap;
 use anyhow::{Error, bail};
 
+type SymbolTable = HashMap<String, Symbol>;
+
 #[derive(Debug, Clone)]
 pub struct Scope {
-	pub symbol_table: HashMap<String, Symbol>,
+	pub symbol_table: SymbolTable,
 	pub flags: ScopeFlags
 }
 
 impl Scope {
 	pub fn new() -> Self {
 		Self {
-			symbol_table: HashMap::new(),
+			symbol_table: Self::create_populated_table(),
 			flags: ScopeFlags::default()
 		}
+	}
+
+	fn create_populated_table() -> SymbolTable {
+		let mut table: SymbolTable = HashMap::new();
+
+		// Defining built-in types
+		macro_rules! def_builtin {
+			($variant:ident) => {
+				{
+					let name = BuiltinType::$variant.to_string();
+
+					let class = hir::Class {
+						name: name.clone(),
+						members: vec![],
+						implements_interfaces: BuiltinType::$variant.implemented_interfaces()
+					};
+
+					table.insert(name, Symbol::Class(class));
+				}
+			};
+		}
+
+		def_builtin!(Integer);
+		def_builtin!(Float);
+		def_builtin!(String);
+		def_builtin!(Boolean);
+		def_builtin!(Void);
+
+		table
 	}
 
 	/// Creates a child scope while keeping all of the variables in scope

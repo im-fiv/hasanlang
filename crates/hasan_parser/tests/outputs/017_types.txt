@@ -146,7 +146,7 @@ Program {
                             Some(
                                 Array(
                                     [
-                                        Int(
+                                        Integer(
                                             5,
                                         ),
                                     ],
@@ -227,7 +227,7 @@ Program {
                             value: TypeCast {
                                 value: TypeCast {
                                     value: TypeCast {
-                                        value: Int(
+                                        value: Integer(
                                             3,
                                         ),
                                         kind: Regular(
@@ -310,7 +310,7 @@ Program {
                         ),
                     ],
                     arguments: [
-                        Int(
+                        Integer(
                             5,
                         ),
                     ],

@@ -4,7 +4,7 @@ Program {
             name: Identifier(
                 "a",
             ),
-            value: Int(
+            value: Integer(
                 5,
             ),
         },
@@ -22,7 +22,7 @@ Program {
                     "c",
                 ),
             },
-            value: Int(
+            value: Integer(
                 3,
             ),
         },
@@ -121,7 +121,7 @@ Program {
                 ),
             ],
             arguments: [
-                Int(
+                Integer(
                     1,
                 ),
             ],

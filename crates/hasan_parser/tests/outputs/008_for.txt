@@ -10,7 +10,7 @@ Program {
                 ),
                 generics: [],
                 arguments: [
-                    Int(
+                    Integer(
                         5,
                     ),
                 ],

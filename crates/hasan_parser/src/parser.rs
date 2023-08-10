@@ -321,7 +321,7 @@ impl<'p> HasanParser<'p> {
 		let string = pair.as_str().to_owned();
 
 		match string.parse::<IntType>() {
-			Ok(i) => Expression::Int(i),
+			Ok(i) => Expression::Integer(i),
 			Err(_) => match string.parse::<FloatType>() {
 				Ok(f) => Expression::Float(f),
 				Err(_) => error!("failed to parse number literal '{}'", pair.as_span(), string),

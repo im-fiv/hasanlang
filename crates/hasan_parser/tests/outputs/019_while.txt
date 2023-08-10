@@ -4,7 +4,7 @@ Program {
             modifiers: [],
             name: "counter",
             kind: None,
-            value: Int(
+            value: Integer(
                 0,
             ),
         },
@@ -19,7 +19,7 @@ Program {
                             "counter",
                         ),
                         operator: GreaterThan,
-                        rhs: Int(
+                        rhs: Integer(
                             10,
                         ),
                     },
@@ -49,7 +49,7 @@ Program {
                             "counter",
                         ),
                         operator: Minus,
-                        rhs: Int(
+                        rhs: Integer(
                             1,
                         ),
                     },

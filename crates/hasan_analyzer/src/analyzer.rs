@@ -49,13 +49,49 @@ impl SemanticAnalyzer {
 			ClassDefinition { modifiers, name, generics, members } =>
 				self.analyze_class_definition(modifiers, name, generics, members),
 
+			Return(value) => self.analyze_return(value),
+
 			_ => bail!("Unsupported statement `{}`", statement.to_string())
 		}
 	}
 
 	fn type_from_expression(&self, expression: &p::Expression) -> Result<hir::TypeRef, Error> {
-		// TODO
-		todo!()
+		use p::Expression::*;
+
+		macro_rules! def_builtin {
+			($name:ident, $variant:ident) => {
+				let $name = self
+					.scope
+					.get_symbol(&BuiltinType::$variant.to_string())?
+					.as_class()?;
+			};
+		}
+
+		macro_rules! wrap_ok_ref {
+			($value:expr) => {
+				Ok(hir::TypeRef($value, 0))
+			};
+
+			($value:expr, $dimensions:expr) => {
+				Ok(hir::TypeRef($value, $dimensions))
+			};
+		}
+
+		def_builtin!(t_int, Integer);
+		def_builtin!(t_float, Float);
+		def_builtin!(t_string, String);
+		def_builtin!(t_bool, Boolean);
+		
+		match expression.to_owned() {
+			Integer(_) => wrap_ok_ref!(t_int),
+			Float(_) => wrap_ok_ref!(t_float),
+			String(_) => wrap_ok_ref!(t_string),
+			Boolean(_) => wrap_ok_ref!(t_bool),
+
+			// TODO: Exhaustive expression type resolving
+
+			_ => bail!("Encountered unsupported expression `{}`", expression.to_string())
+		}
 	}
 
 	fn convert_type(&self, kind: &p::Type) -> Result<hir::TypeRef, Error> {
@@ -98,10 +134,6 @@ impl SemanticAnalyzer {
 		value: p::Expression
 	) -> Result<hir::Statement, Error> {
 		use p::GeneralModifier::*;
-
-		if !self.scope.flags.in_function {
-			bail!("Cannot define a variable outside of a function");
-		}
 		
 		let m_public = modifiers.contains(&Public);
 		let m_const = modifiers.contains(&Constant);
@@ -109,6 +141,10 @@ impl SemanticAnalyzer {
 
 		if m_public && self.ast.module_info.is_none() {
 			bail!("`pub` modifiers are not permitted outside of modules");
+		}
+
+		if !m_public && !self.scope.flags.in_function {
+			bail!("Cannot define a variable outside of a function");
 		}
 
 		if m_static {
@@ -264,6 +300,15 @@ impl SemanticAnalyzer {
 	) -> Result<hir::Statement, Error> {
 		use p::GeneralModifier::*;
 
+		let original_scope = self.scope.clone();
+
+		let mut new_scope = original_scope.create_child_scope();
+		new_scope.flags.in_class = true;
+
+		self.scope = new_scope;
+
+		// TODO: Add `this` into scope
+
 		let m_public = modifiers.contains(&Public);
 		let m_const = modifiers.contains(&Constant);
 		let m_static = modifiers.contains(&Static);
@@ -286,16 +331,12 @@ impl SemanticAnalyzer {
 		}
 
 		let members = {
-			let original_scope = self.scope.clone();
 			let mut converted: Vec<hir::ClassMember> = vec![];
-
-			let mut new_scope = original_scope.create_child_scope();
-			new_scope.flags.in_class = true;
 
 			for member in members {
 				converted.push(self.analyze_class_member(member)?);
 			}
-
+			
 			converted
 		};
 
@@ -305,7 +346,17 @@ impl SemanticAnalyzer {
 			implements_interfaces: vec![]
 		};
 
+		self.scope = original_scope;
+
 		self.scope.insert_symbol(name, Symbol::Class(class.clone()))?;
 		Ok(hir::Statement::ClassDefinition(class))
+	}
+
+	fn analyze_return(&mut self, value: Option<p::Expression>) -> Result<hir::Statement, Error> {
+		if !self.scope.flags.in_function {
+			bail!("`return` statements are not permitted outside of functions");
+		}
+
+		Ok(hir::Statement::Return(value))
 	}
 }

@@ -341,7 +341,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 		match expression.to_owned() {
 			// TODO: Implement the rest of expressions
 
-			e::Int(value) => Ok(ExpressionValue::Int(self.int_value(value))),
+			e::Integer(value) => Ok(ExpressionValue::Int(self.int_value(value))),
 			e::Float(value) => Ok(ExpressionValue::Float(self.float_value(value))),
 			e::String(value) => Ok(ExpressionValue::String(self.string_value(value))),
 			e::Boolean(value) => Ok(ExpressionValue::Boolean(self.bool_value(value))),
