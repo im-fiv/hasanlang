@@ -13,7 +13,7 @@ macro_rules! dry {
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Expression {
-	Int(IntType),
+	Integer(IntType),
 	Float(FloatType),
 	String(String),
 	Boolean(bool),
@@ -74,7 +74,7 @@ pub enum Expression {
 impl HasanCodegen for Expression {
 	fn codegen(&self) -> String {
 		match self {
-			Self::Int(value) => format!("{}", value),
+			Self::Integer(value) => format!("{}", value),
 			Self::Float(value) => format!("{}", value),
 			Self::String(value) => format!("\"{}\"", value),
 			Self::Boolean(value) => format!("{}", value),

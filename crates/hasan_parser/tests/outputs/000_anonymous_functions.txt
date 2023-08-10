@@ -13,7 +13,7 @@ Program {
                 statements: [
                     Return(
                         Some(
-                            Int(
+                            Integer(
                                 5,
                             ),
                         ),
@@ -41,11 +41,11 @@ Program {
                     Return(
                         Some(
                             Binary {
-                                lhs: Int(
+                                lhs: Integer(
                                     2,
                                 ),
                                 operator: Plus,
-                                rhs: Int(
+                                rhs: Integer(
                                     2,
                                 ),
                             },
@@ -257,7 +257,7 @@ Program {
                     statements: [
                         Return(
                             Some(
-                                Int(
+                                Integer(
                                     2,
                                 ),
                             ),
@@ -333,16 +333,16 @@ Program {
                             ),
                         ],
                         arguments: [
-                            Int(
+                            Integer(
                                 2,
                             ),
-                            Int(
+                            Integer(
                                 2,
                             ),
                         ],
                     },
                     operator: Equals,
-                    rhs: Int(
+                    rhs: Integer(
                         4,
                     ),
                 },

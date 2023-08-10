@@ -141,7 +141,7 @@ Program {
                                     ),
                                 ],
                                 arguments: [
-                                    Int(
+                                    Integer(
                                         5,
                                     ),
                                 ],

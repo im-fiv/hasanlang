@@ -321,7 +321,7 @@ Program {
                                             ),
                                         },
                                         operator: Plus,
-                                        rhs: Int(
+                                        rhs: Integer(
                                             1,
                                         ),
                                     },

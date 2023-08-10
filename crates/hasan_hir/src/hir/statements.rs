@@ -31,7 +31,7 @@ impl HIRCodegen for Statement {
 			Self::FunctionDeclaration(function) => function.codegen(),
 
 			Self::ClassDefinition(class) => class.codegen(),
-			Self::VariableDefinition(variable) => format!("var {}: {} = {};", variable.name, variable.kind.codegen(), variable.value.codegen()),
+			Self::VariableDefinition(variable) => variable.codegen(),
 			
 			Self::VariableAssign(assignee, value) => format!("{} = {};", assignee.codegen(), value.codegen()),
 			Self::FunctionCall(callee, arguments) => {

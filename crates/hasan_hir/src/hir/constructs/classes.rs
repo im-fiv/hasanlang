@@ -44,7 +44,10 @@ impl ToString for ClassVariable {
 }
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct ClassFunction(hasan_parser::ClassFunctionAttributes, Function);
+pub struct ClassFunction(
+	pub hasan_parser::ClassFunctionAttributes,
+	pub Function
+);
 
 impl HIRCodegen for ClassFunction {
 	fn codegen(&self) -> String {

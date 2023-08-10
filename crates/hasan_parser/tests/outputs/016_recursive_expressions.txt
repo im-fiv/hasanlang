@@ -5,16 +5,16 @@ Program {
             name: "a",
             kind: None,
             value: Binary {
-                lhs: Int(
+                lhs: Integer(
                     2,
                 ),
                 operator: Plus,
                 rhs: Binary {
-                    lhs: Int(
+                    lhs: Integer(
                         2,
                     ),
                     operator: Times,
-                    rhs: Int(
+                    rhs: Integer(
                         2,
                     ),
                 },
@@ -35,16 +35,16 @@ Program {
                 operator: Plus,
                 rhs: Binary {
                     lhs: Binary {
-                        lhs: Int(
+                        lhs: Integer(
                             2,
                         ),
                         operator: Divide,
-                        rhs: Int(
+                        rhs: Integer(
                             2,
                         ),
                     },
                     operator: Times,
-                    rhs: Int(
+                    rhs: Integer(
                         12312312,
                     ),
                 },
@@ -85,17 +85,17 @@ Program {
                     },
                     operator: Plus,
                     rhs: Binary {
-                        lhs: Int(
+                        lhs: Integer(
                             1337,
                         ),
                         operator: Times,
-                        rhs: Int(
+                        rhs: Integer(
                             3232892,
                         ),
                     },
                 },
                 operator: Minus,
-                rhs: Int(
+                rhs: Integer(
                     1,
                 ),
             },
@@ -115,32 +115,32 @@ Program {
                                             expression: Identifier(
                                                 "array",
                                             ),
-                                            accessor: Int(
+                                            accessor: Integer(
                                                 0,
                                             ),
                                         },
-                                        accessor: Int(
+                                        accessor: Integer(
                                             1,
                                         ),
                                     },
-                                    accessor: Int(
+                                    accessor: Integer(
                                         2,
                                     ),
                                 },
-                                accessor: Int(
+                                accessor: Integer(
                                     3,
                                 ),
                             },
-                            accessor: Int(
+                            accessor: Integer(
                                 4,
                             ),
                         },
-                        accessor: Int(
+                        accessor: Integer(
                             5,
                         ),
                     },
                     operator: Minus,
-                    rhs: Int(
+                    rhs: Integer(
                         1,
                     ),
                 },
@@ -165,7 +165,7 @@ Program {
                             expression: Identifier(
                                 "array",
                             ),
-                            accessor: Int(
+                            accessor: Integer(
                                 0,
                             ),
                         },
@@ -190,11 +190,11 @@ Program {
                     ],
                 },
                 accessor: Binary {
-                    lhs: Int(
+                    lhs: Integer(
                         4,
                     ),
                     operator: Minus,
-                    rhs: Int(
+                    rhs: Integer(
                         2,
                     ),
                 },
@@ -267,7 +267,7 @@ Program {
                             value: TypeCast {
                                 value: TypeCast {
                                     value: TypeCast {
-                                        value: Int(
+                                        value: Integer(
                                             3,
                                         ),
                                         kind: Regular(
@@ -333,7 +333,7 @@ Program {
             ),
             generics: [],
             arguments: [
-                Int(
+                Integer(
                     123,
                 ),
             ],
@@ -368,11 +368,11 @@ Program {
             name: "var2",
             kind: None,
             value: Binary {
-                lhs: Int(
+                lhs: Integer(
                     2,
                 ),
                 operator: Plus,
-                rhs: Int(
+                rhs: Integer(
                     5,
                 ),
             },
@@ -389,12 +389,12 @@ Program {
                                 "var2",
                             ),
                             operator: Times,
-                            rhs: Int(
+                            rhs: Integer(
                                 15,
                             ),
                         },
                         operator: Divide,
-                        rhs: Int(
+                        rhs: Integer(
                             3,
                         ),
                     },
@@ -406,7 +406,7 @@ Program {
                                     expression: Identifier(
                                         "a",
                                     ),
-                                    accessor: Int(
+                                    accessor: Integer(
                                         0,
                                     ),
                                 },
@@ -416,13 +416,13 @@ Program {
                             },
                             generics: [],
                             arguments: [
-                                Int(
+                                Integer(
                                     1,
                                 ),
-                                Int(
+                                Integer(
                                     2,
                                 ),
-                                Int(
+                                Integer(
                                     3,
                                 ),
                                 String(
@@ -443,11 +443,11 @@ Program {
                                                 expression: Identifier(
                                                     "a",
                                                 ),
-                                                accessor: Int(
+                                                accessor: Integer(
                                                     0,
                                                 ),
                                             },
-                                            accessor: Int(
+                                            accessor: Integer(
                                                 1,
                                             ),
                                         },
@@ -466,11 +466,11 @@ Program {
                             generics: [],
                             arguments: [
                                 Binary {
-                                    lhs: Int(
+                                    lhs: Integer(
                                         123123123,
                                     ),
                                     operator: Times,
-                                    rhs: Int(
+                                    rhs: Integer(
                                         2,
                                     ),
                                 },
@@ -482,7 +482,7 @@ Program {
                     },
                 },
                 operator: Plus,
-                rhs: Int(
+                rhs: Integer(
                     2,
                 ),
             },

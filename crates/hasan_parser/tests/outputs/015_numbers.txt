@@ -12,7 +12,7 @@ Program {
             modifiers: [],
             name: "meaning_of_life",
             kind: None,
-            value: Int(
+            value: Integer(
                 42,
             ),
         },

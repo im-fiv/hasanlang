@@ -36,8 +36,19 @@ pub struct Type {
 
 impl HIRCodegen for Type {
 	fn codegen(&self) -> String {
-		// TODO: Figure out how to display types and implement this
-		"/* HIR TYPE NOT IMPLEMENTED YET */".to_owned()
+		let members = self
+			.members
+			.iter()
+			.map(|member| {
+				match member {
+					ClassMember::Variable(variable) => variable.name.to_owned(),
+					ClassMember::Function(function) => function.1.prototype.name.to_owned()
+				}
+			})
+			.collect::<Vec<_>>()
+			.join(", ");
+
+		format!("<type {}{{{}}}: impl<{}>>", self.name, members, self.implements_interfaces.join(", "))
 	}
 }
 
