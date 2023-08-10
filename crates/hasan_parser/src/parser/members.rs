@@ -15,7 +15,7 @@ macro_rules! dry {
 	};
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum InterfaceMember {
 	Variable(InterfaceVariable),
 	Function(InterfaceFunction)
@@ -36,7 +36,7 @@ impl ToString for InterfaceMember {
 	}
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct InterfaceVariable {
 	pub modifiers: GeneralModifiers,
 
@@ -59,7 +59,7 @@ impl ToString for InterfaceVariable {
 	}
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct InterfaceFunction {
 	pub attributes: Option<ClassFunctionAttributes>,
 	pub prototype: InterfaceFunctionPrototype
@@ -84,7 +84,7 @@ impl ToString for InterfaceFunction {
 	}
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct InterfaceFunctionPrototype {
 	pub modifiers: GeneralModifiers,
 
@@ -114,13 +114,13 @@ impl ToString for InterfaceFunctionPrototype {
 	}
 }
 
-#[derive(Debug, Clone)]
-pub enum ClassDefinitionMember {
-	Variable(ClassDefinitionVariable),
-	Function(ClassDefinitionFunction)
+#[derive(Debug, Clone, PartialEq)]
+pub enum ClassMember {
+	Variable(ClassVariable),
+	Function(ClassFunction)
 }
 
-impl HasanCodegen for ClassDefinitionMember {
+impl HasanCodegen for ClassMember {
 	fn codegen(&self) -> String {
 		match self {
 			Self::Variable(variable) => variable.codegen(),
@@ -129,14 +129,14 @@ impl HasanCodegen for ClassDefinitionMember {
 	}
 }
 
-impl ToString for ClassDefinitionMember {
+impl ToString for ClassMember {
 	fn to_string(&self) -> String {
 		self.codegen()
 	}
 }
 
-#[derive(Debug, Clone)]
-pub struct ClassDefinitionVariable {
+#[derive(Debug, Clone, PartialEq)]
+pub struct ClassVariable {
 	pub modifiers: GeneralModifiers,
 
 	pub name: String,
@@ -144,7 +144,7 @@ pub struct ClassDefinitionVariable {
 	pub default_value: Option<Expression>
 }
 
-impl HasanCodegen for ClassDefinitionVariable {
+impl HasanCodegen for ClassVariable {
 	fn codegen(&self) -> String {
 		let modifiers = &self.modifiers;
 		dry!(modifiers, |value| value.to_string(), " ", "{} ");
@@ -159,27 +159,27 @@ impl HasanCodegen for ClassDefinitionVariable {
 	}
 }
 
-#[derive(Debug, Clone)]
-pub struct ClassDefinitionFunction {
+#[derive(Debug, Clone, PartialEq)]
+pub struct ClassFunction {
 	pub attributes: ClassFunctionAttributes,
 	pub prototype: FunctionPrototype,
 	pub body: Vec<Statement>
 }
 
-impl ClassDefinitionFunction {
+impl ClassFunction {
 	pub fn from_statement(statement: Statement, attributes: ClassFunctionAttributes) -> Self {
 		if let Statement::FunctionDefinition(function) = statement {
 			let Function { prototype, body } = function;
 			let body = body.unwrap_or_else(|| panic!("Failed to convert a function declaration into a class definition function"));
 
-			ClassDefinitionFunction { attributes, prototype, body }
+			ClassFunction { attributes, prototype, body }
 		} else {
 			panic!("Failed to convert invalid statement into a class definition function");
 		}
 	}
 }
 
-impl HasanCodegen for ClassDefinitionFunction {
+impl HasanCodegen for ClassFunction {
 	fn codegen(&self) -> String {
 		let attributes = &self.attributes;
 		let statements = &self.body;

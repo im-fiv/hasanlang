@@ -36,7 +36,7 @@ impl ToString for Program {
 	}
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct ModuleInfo {
 	pub name: String,
 	pub path: Vec<String>
@@ -58,9 +58,31 @@ impl ToString for ModuleInfo {
 	}
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Variable {
 	pub name: String,
 	pub kind: TypeRef,
-	pub value: hasan_parser::Expression
+	pub value: hasan_parser::Expression,
+
+	pub is_constant: bool
+}
+
+impl HIRCodegen for Variable {
+	fn codegen(&self) -> String {
+		use hasan_parser::HasanCodegen;
+
+		let name = if self.is_constant {
+			format!("@CONSTANT_{}", self.name)
+		} else {
+			self.name.clone()
+		};
+
+		format!("{{{}: {} = {}}}", name, self.kind.codegen(), self.value.codegen())
+	}
+}
+
+impl ToString for Variable {
+	fn to_string(&self) -> String {
+		self.codegen()
+	}
 }

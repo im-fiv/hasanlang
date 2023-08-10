@@ -61,7 +61,7 @@ Program {
             ],
             members: [
                 Variable(
-                    ClassDefinitionVariable {
+                    ClassVariable {
                         modifiers: [],
                         name: "inner_value",
                         kind: Regular(
@@ -75,7 +75,7 @@ Program {
                     },
                 ),
                 Function(
-                    ClassDefinitionFunction {
+                    ClassFunction {
                         attributes: [
                             Get,
                         ],

@@ -11,7 +11,7 @@ macro_rules! dry {
 	};
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum Expression {
 	Int(IntType),
 	Float(FloatType),
@@ -206,7 +206,7 @@ impl std::fmt::Display for UnaryOperator {
 	}
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct FunctionPrototype {
 	pub modifiers: GeneralModifiers,
 
@@ -235,7 +235,7 @@ impl HasanCodegen for FunctionPrototype {
 	}
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Function {
 	pub prototype: FunctionPrototype,
 	pub body: FunctionBody
@@ -254,7 +254,7 @@ impl HasanCodegen for Function {
 	}
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct FunctionArgument {
 	pub name: String,
 	pub kind: Type

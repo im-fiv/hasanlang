@@ -1,7 +1,7 @@
 use crate::HIRCodegen;
 use hasan_parser::{vec_transform_str, HasanCodegen};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Enum {
 	pub name: String,
 	pub variants: Vec<hasan_parser::EnumVariant>

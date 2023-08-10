@@ -4,7 +4,7 @@ use inkwell::builder::Builder;
 use strum_macros::Display;
 use anyhow::{Error, bail};
 
-use hasan_parser::{self as P};
+use hasan_parser as p;
 
 #[derive(Debug, Clone, Display)]
 pub enum ExpressionValue<'ctx> {
@@ -115,7 +115,7 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 
 			(B::FloatValue(a), B::FloatValue(b)) => Ok(Self::Float(builder.build_float_add(a, b, "temp.add"))),
 
-			(a, b) => bail!("Cannot compile binary operation `{}` on `{}` and `{}`", P::BinaryOperator::Plus.as_str(), a, b)
+			(a, b) => bail!("Cannot compile binary operation `{}` on `{}` and `{}`", p::BinaryOperator::Plus.as_str(), a, b)
 		}
 	}
 
@@ -142,7 +142,7 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 
 			(B::FloatValue(a), B::FloatValue(b)) => Ok(Self::Float(builder.build_float_sub(a, b, "temp.subtract"))),
 
-			(a, b) => bail!("Cannot compile binary operation `{}` on `{}` and `{}`", P::BinaryOperator::Minus.as_str(), a, b)
+			(a, b) => bail!("Cannot compile binary operation `{}` on `{}` and `{}`", p::BinaryOperator::Minus.as_str(), a, b)
 		}
 	}
 
@@ -169,7 +169,7 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 
 			(B::FloatValue(a), B::FloatValue(b)) => Ok(Self::Float(builder.build_float_div(a, b, "temp.divide"))),
 
-			(a, b) => bail!("Cannot compile binary operation `{}` on `{}` and `{}`", P::BinaryOperator::Divide.as_str(), a, b)
+			(a, b) => bail!("Cannot compile binary operation `{}` on `{}` and `{}`", p::BinaryOperator::Divide.as_str(), a, b)
 		}
 	}
 
@@ -196,7 +196,7 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 
 			(B::FloatValue(a), B::FloatValue(b)) => Ok(Self::Float(builder.build_float_mul(a, b, "temp.multiply"))),
 
-			(a, b) => bail!("Cannot compile binary operation `{}` on `{}` and `{}`", P::BinaryOperator::Times.as_str(), a, b)
+			(a, b) => bail!("Cannot compile binary operation `{}` on `{}` and `{}`", p::BinaryOperator::Times.as_str(), a, b)
 		}
 	}
 
@@ -223,7 +223,7 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 
 			(B::FloatValue(a), B::FloatValue(b)) => Ok(Self::Float(builder.build_float_rem(a, b, "temp.modulo"))),
 
-			(a, b) => bail!("Cannot compile binary operation `{}` on `{}` and `{}`", P::BinaryOperator::Modulo.as_str(), a, b)
+			(a, b) => bail!("Cannot compile binary operation `{}` on `{}` and `{}`", p::BinaryOperator::Modulo.as_str(), a, b)
 		}
 	}
 

@@ -1,12 +1,12 @@
 use crate::{
 	DefinitionType, GeneralModifiers, Type,
-	Expression, Function, ClassDefinitionMember,
+	Expression, Function, ClassMember,
 	InterfaceMember, HasanCodegen, vec_transform_str
 };
 
 use strum_macros::Display;
 
-#[derive(Debug, Clone, Display)]
+#[derive(Debug, Clone, PartialEq, Display)]
 pub enum Statement {
 	FunctionDefinition(Function),
 	FunctionDeclaration(Function),
@@ -24,7 +24,7 @@ pub enum Statement {
 
 		name: String,
 		generics: Vec<DefinitionType>,
-		members: Vec<ClassDefinitionMember>
+		members: Vec<ClassMember>
 	},
 
 	VariableDefinition {
@@ -90,7 +90,7 @@ pub enum Statement {
 		class_name: String,
 		class_generics: Vec<Type>,
 
-		members: Vec<ClassDefinitionMember>
+		members: Vec<ClassMember>
 	},
 
 	ModuleUse {
@@ -260,7 +260,7 @@ impl HasanCodegen for Statement {
 	}
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub enum ModuleItem {
 	Regular(String),
 
@@ -285,13 +285,13 @@ impl ToString for ModuleItem {
 	}
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct ConditionBranch {
 	pub condition: Expression,
 	pub statements: Vec<Statement>
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct EnumVariant {
 	pub name: String
 }

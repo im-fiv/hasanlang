@@ -1,7 +1,7 @@
 use crate::{Statement, HIRCodegen};
 use hasan_parser::{vec_transform_str, HasanCodegen};
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct If {
 	pub condition: hasan_parser::Expression,
 	pub statements: Vec<Statement>,
@@ -39,7 +39,7 @@ impl ToString for If {
 	}
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct While {
 	pub condition: hasan_parser::Expression,
 	pub statements: Vec<Statement>
@@ -58,7 +58,7 @@ impl ToString for While {
 	}
 }
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct For {
 	pub left: hasan_parser::Expression,
 	pub right: hasan_parser::Expression,

@@ -6,7 +6,7 @@ Program {
             generics: [],
             members: [
                 Variable(
-                    ClassDefinitionVariable {
+                    ClassVariable {
                         modifiers: [
                             Public,
                         ],
@@ -26,7 +26,7 @@ Program {
                     },
                 ),
                 Variable(
-                    ClassDefinitionVariable {
+                    ClassVariable {
                         modifiers: [
                             Public,
                         ],
@@ -50,7 +50,7 @@ Program {
                     },
                 ),
                 Function(
-                    ClassDefinitionFunction {
+                    ClassFunction {
                         attributes: [
                             Constructor,
                         ],
@@ -75,7 +75,7 @@ Program {
                     },
                 ),
                 Variable(
-                    ClassDefinitionVariable {
+                    ClassVariable {
                         modifiers: [],
                         name: "c",
                         kind: Regular(
@@ -89,7 +89,7 @@ Program {
                     },
                 ),
                 Function(
-                    ClassDefinitionFunction {
+                    ClassFunction {
                         attributes: [],
                         prototype: FunctionPrototype {
                             modifiers: [],
@@ -119,7 +119,7 @@ Program {
             generics: [],
             members: [
                 Variable(
-                    ClassDefinitionVariable {
+                    ClassVariable {
                         modifiers: [],
                         name: "a",
                         kind: Regular(
@@ -133,7 +133,7 @@ Program {
                     },
                 ),
                 Function(
-                    ClassDefinitionFunction {
+                    ClassFunction {
                         attributes: [
                             Constructor,
                         ],
@@ -156,7 +156,7 @@ Program {
                     },
                 ),
                 Function(
-                    ClassDefinitionFunction {
+                    ClassFunction {
                         attributes: [],
                         prototype: FunctionPrototype {
                             modifiers: [
@@ -193,7 +193,7 @@ Program {
             ],
             members: [
                 Function(
-                    ClassDefinitionFunction {
+                    ClassFunction {
                         attributes: [
                             Get,
                         ],
@@ -216,7 +216,7 @@ Program {
                     },
                 ),
                 Function(
-                    ClassDefinitionFunction {
+                    ClassFunction {
                         attributes: [],
                         prototype: FunctionPrototype {
                             modifiers: [
@@ -250,7 +250,7 @@ Program {
                     },
                 ),
                 Function(
-                    ClassDefinitionFunction {
+                    ClassFunction {
                         attributes: [],
                         prototype: FunctionPrototype {
                             modifiers: [],
@@ -283,7 +283,7 @@ Program {
             ],
             members: [
                 Function(
-                    ClassDefinitionFunction {
+                    ClassFunction {
                         attributes: [
                             Get,
                         ],
@@ -306,7 +306,7 @@ Program {
                     },
                 ),
                 Function(
-                    ClassDefinitionFunction {
+                    ClassFunction {
                         attributes: [],
                         prototype: FunctionPrototype {
                             modifiers: [
@@ -340,7 +340,7 @@ Program {
                     },
                 ),
                 Function(
-                    ClassDefinitionFunction {
+                    ClassFunction {
                         attributes: [],
                         prototype: FunctionPrototype {
                             modifiers: [],
