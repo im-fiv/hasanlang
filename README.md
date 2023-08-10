@@ -74,7 +74,8 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 - [ ] Name collision checking
 - [ ] Undefined identifiers checking
 - [ ] Type alias substitution
-- [ ] Checking for circular references
+- [ ] Circular references checking
+- [ ] Circular imports checking
 - [ ] `return` statement checking
 - [ ] `break` statement checking
 
