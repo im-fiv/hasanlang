@@ -17,8 +17,6 @@ pub enum Statement {
 	While(While),
 	For(For),
 	Break,
-
-	// TODO: Should everything get imported at the analysis stage?
 	ModuleUse(ModuleInfo),
 	ModuleUseAll(ModuleInfo),
 	ModuleUseItems(ModuleInfo, Vec<String>)
