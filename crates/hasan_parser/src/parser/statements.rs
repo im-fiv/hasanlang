@@ -1,10 +1,12 @@
 use crate::{
 	DefinitionType, GeneralModifiers, Type,
 	Expression, Function, ClassMember,
-	InterfaceMember, HasanCodegen, vec_transform_str
+	InterfaceMember, HasanCodegen, vec_transform_str,
+	NUM_SPACES
 };
 
 use strum_macros::Display;
+use indent::indent_all_by;
 
 #[derive(Debug, Clone, PartialEq, Display)]
 pub enum Statement {
@@ -141,9 +143,9 @@ impl HasanCodegen for Statement {
 				dry!(modifiers, |value| value.to_string(), " ", "{} ");
 				dry!(generics, |value| value.codegen(), ", ", "<{}>");
 
-				dry!(members, |value| value.codegen(), "\n\t");
+				dry!(members, |value| value.codegen(), "\n");
 
-				format!("{}class {}{}\n\t{}\nend", modifiers, name, generics, members)
+				format!("{}class {}{}\n{}\nend", modifiers, name, generics, indent_all_by(NUM_SPACES, members))
 			},
 
 			Self::VariableDefinition { modifiers, name, kind, value } => {
@@ -160,8 +162,8 @@ impl HasanCodegen for Statement {
 
 			Self::FunctionCall { callee, generics, arguments } => {
 				dry!(generics, |value| value.codegen(), ", ", "<{}>");
-				
 				dry!(arguments, |value| value.codegen(), ", ");
+
 				format!("{}{}({});", callee.codegen(), generics, arguments)
 			},
 
@@ -173,41 +175,82 @@ impl HasanCodegen for Statement {
 
 			Self::EnumDefinition { modifiers, name, variants } => {
 				dry!(modifiers, |value| value.to_string(), " ", "{} ");
-				dry!(variants, |value| value.codegen(), ",\n\t");
+				dry!(variants, |value| value.codegen(), ",\n");
 				
-				format!("{}enum {}\n\t{}\nend", modifiers, name, variants)
+				format!("{}enum {}\n{}\nend", modifiers, name, indent_all_by(NUM_SPACES, variants))
 			},
 
 			Self::If { condition, statements, elseif_branches, else_branch } => {
-				dry!(statements, |value| value.codegen(), "\n\t");
+				dry!(statements, |value| value.codegen(), "\n");
 				
 				if elseif_branches.is_empty() && else_branch.is_none() {
-					return format!("if {} then\n\t{}\nend", condition.codegen(), statements);
+					return format!("if {} then\n{}\nend", condition.codegen(), indent_all_by(NUM_SPACES, statements));
 				}
 
 				let mut elseif_branches_str = String::new();
 
 				for branch in elseif_branches {
-					let branch_statements = vec_transform_str(&branch.statements, |statement| statement.codegen(), "\n\t");
-					elseif_branches_str.push_str(&format!("else if {} then\n\t{}\n", branch.condition.codegen(), branch_statements));
+					let branch_statements = vec_transform_str(
+						&branch.statements,
+						|statement| statement.codegen(),
+						"\n"
+					);
+					
+					elseif_branches_str.push_str(
+						&format!(
+							"else if {} then\n{}\n",
+
+							branch.condition.codegen(),
+							indent_all_by(NUM_SPACES, branch_statements)
+						)
+					);
 				}
 
 				if let Some(else_branch) = else_branch {
-					let statements_codegen = vec_transform_str(&else_branch.statements, |value| value.codegen(), "\n\t");
-					format!("if {} then\n\t{}\n{}else\n\t{}\nend", condition.codegen(), statements, elseif_branches_str, statements_codegen)
+					let else_statements = vec_transform_str(
+						&else_branch.statements,
+						|value| value.codegen(),
+						"\n"
+					);
+					
+					format!(
+						"if {} then\n{}\n{}else\n{}\nend",
+
+						condition.codegen(),
+						indent_all_by(NUM_SPACES, statements),
+						elseif_branches_str,
+						indent_all_by(NUM_SPACES, else_statements)
+					)
 				} else {
-					format!("if {} then\n\t{}\n{}end", condition.codegen(), statements, elseif_branches_str)
+					format!(
+						"if {} then\n{}\n{}end",
+
+						condition.codegen(),
+						indent_all_by(NUM_SPACES, statements),
+						elseif_branches_str
+					)
 				}
 			},
 
 			Self::While { condition, statements } => {
-				dry!(statements, |value| value.codegen(), "\n\t");
-				format!("while {} do\n\t{}\nend", condition.codegen(), statements)
+				dry!(statements, |value| value.codegen(), "\n");
+
+				format!(
+					"while {} do\n{}\nend",
+					condition.codegen(),
+					indent_all_by(NUM_SPACES, statements)
+				)
 			},
 
 			Self::For { left, right, statements } => {
-				dry!(statements, |value| value.codegen(), "\n\t");
-				format!("for {} in {} do\n\t{}\nend", left.codegen(), right.codegen(), statements)
+				dry!(statements, |value| value.codegen(), "\n");
+
+				format!(
+					"for {} in {} do\n{}\nend",
+					left.codegen(),
+					right.codegen(),
+					indent_all_by(NUM_SPACES, statements)
+				)
 			},
 
 			Self::Break => "break;".to_owned(),
@@ -215,18 +258,30 @@ impl HasanCodegen for Statement {
 			Self::InterfaceDefinition { modifiers, name, generics, members } => {
 				dry!(modifiers, |value| value.to_string(), " ", "{} ");
 				dry!(generics, |value| value.to_string(), ", ", "<{}>");
-				dry!(members, |value| value.codegen(), "\n\t");
+				dry!(members, |value| value.codegen(), "\n");
 
-				format!("{}interface {}{}\n\t{}\nend", modifiers, name, generics, members)
+				format!(
+					"{}interface {}{}\n{}\nend",
+					modifiers,
+					name,
+					generics,
+					indent_all_by(NUM_SPACES, members)
+				)
 			},
 
 			Self::InterfaceImplementation { interface_name, interface_generics, class_name, class_generics, members } => {
 				dry!(interface_generics, |value| value.to_string(), ", ", "<{}>");
 				dry!(class_generics, |value| value.to_string(), ", ", "<{}>");
+				dry!(members, |value| value.codegen(), "\n");
 
-				dry!(members, |value| value.codegen(), "\n\t");
-
-				format!("impl {}{} for {}{}\n\t{}\nend", interface_name, interface_generics, class_name, class_generics, members)
+				format!(
+					"impl {}{} for {}{}\n{}\nend",
+					interface_name,
+					interface_generics,
+					class_name,
+					class_generics,
+					indent_all_by(NUM_SPACES, members)
+				)
 			},
 
 			Self::ModuleUse { path, name } => {
@@ -246,12 +301,12 @@ impl HasanCodegen for Statement {
 			},
 			
 			Self::ModuleUseItems { path, name, items } => {
-				dry!(items, |value| value.codegen(), ",\n\t");
+				dry!(items, |value| value.codegen(), ",\n");
 
 				if path.is_empty() {
-					format!("use module {}\n\t{}\nend", name, items)
+					format!("use module {}\n{}\nend", name, indent_all_by(NUM_SPACES, items))
 				} else {
-					format!("use module {}.{}\n\t{}\nend", path.join("."), name, items)
+					format!("use module {}.{}\n{}\nend", path.join("."), name, indent_all_by(NUM_SPACES, items))
 				}
 			},
 

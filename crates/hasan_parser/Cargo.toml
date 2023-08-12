@@ -10,3 +10,4 @@ hasan_pest_parser = { path = "../hasan_pest_parser" }
 pest = "2.7.0"
 strum = "0.25.0"
 strum_macros = "0.25.1"
+indent = "0.1.1"

@@ -49,7 +49,12 @@ impl HasanCodegen for InterfaceVariable {
 		let modifiers = &self.modifiers;
 		dry!(modifiers, |modifier| modifier.to_string(), " ", "{} ");
 
-		format!("{}var {}: {};", modifiers, self.name, self.kind.codegen())
+		format!(
+			"{}var {}: {};",
+			modifiers,
+			self.name,
+			self.kind.codegen()
+		)
 	}
 }
 
@@ -68,8 +73,16 @@ pub struct InterfaceFunction {
 impl HasanCodegen for InterfaceFunction {
 	fn codegen(&self) -> String {
 		let attributes = if let Some(attributes) = self.attributes.clone() {
-			let attributes = vec_transform_str(&attributes, |value| value.to_string(), ", ");
-			if !attributes.is_empty() { format!("#[{}]\n", attributes) } else { "".to_owned() }
+			let attributes = vec_transform_str(
+				&attributes,
+				|value| value.to_string(),
+				", "
+			);
+
+			match !attributes.is_empty() {
+				true => format!("#[{}]\n", attributes),
+				false => "".to_owned()
+			}
 		} else {
 			"".to_owned()
 		};
@@ -104,7 +117,14 @@ impl HasanCodegen for InterfaceFunctionPrototype {
 		dry!(generics, |value| value.codegen(), ", ", "<{}>");
 		dry!(argument_types, |value| value.codegen(), ", ");
 
-		format!("{}func {}{}({}) -> {}", modifiers, self.name, generics, argument_types, self.return_type.codegen())
+		format!(
+			"{}func {}{}({}) -> {}",
+			modifiers,
+			self.name,
+			generics,
+			argument_types,
+			self.return_type.codegen()
+		)
 	}
 }
 
@@ -149,13 +169,18 @@ impl HasanCodegen for ClassVariable {
 		let modifiers = &self.modifiers;
 		dry!(modifiers, |value| value.to_string(), " ", "{} ");
 
-		let default_value = if let Some(default_value) = self.default_value.clone() {
-			format!(" = {}", default_value.codegen())
-		} else {
-			"".to_owned()
+		let default_value = match self.default_value.clone() {
+			Some(value) => format!(" = {}", value.codegen()),
+			None => "".to_owned()
 		};
 
-		format!("{}{}: {}{};", modifiers, self.name, self.kind.codegen(), default_value)
+		format!(
+			"{}var {}: {}{};",
+			modifiers,
+			self.name,
+			self.kind.codegen(),
+			default_value
+		)
 	}
 }
 
@@ -187,6 +212,11 @@ impl HasanCodegen for ClassFunction {
 		dry!(attributes, |value| value.to_string(), ", ", "#[{}]\n");
 		dry!(statements, |value| value.codegen(), "\n\t");
 
-		format!("{}{} do\n\t{}\nend", attributes, self.prototype.codegen(), statements)
+		format!(
+			"{}{} do\n\t{}\nend",
+			attributes,
+			self.prototype.codegen(),
+			statements
+		)
 	}
 }

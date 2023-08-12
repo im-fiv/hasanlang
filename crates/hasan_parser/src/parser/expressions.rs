@@ -1,4 +1,11 @@
-use crate::{DefinitionType, IntType, FloatType, Type, Statement, GeneralModifiers, FunctionBody, HasanCodegen, vec_transform_str};
+use crate::{
+	DefinitionType, IntType, FloatType,
+	Type, Statement, GeneralModifiers,
+	FunctionBody, HasanCodegen, vec_transform_str,
+	NUM_SPACES
+};
+
+use indent::indent_all_by;
 
 macro_rules! dry {
 	($name:ident, $func:expr, $sep:expr, $format:expr) => {
@@ -98,7 +105,12 @@ impl HasanCodegen for Expression {
 			Self::ArrowAccess { expression, accessor } => format!("{}->{}", expression.codegen(), accessor.codegen()),
 
 			Self::Array(values) => {
-				let values = vec_transform_str(values, |value| value.codegen(), ", ");
+				let values = vec_transform_str(
+					values,
+					|value| value.codegen(),
+					", "
+				);
+
 				format!("([{}])", values)
 			},
 
@@ -111,7 +123,7 @@ impl HasanCodegen for Expression {
 			Self::AnonymousFunction { generics, arguments, return_type, statements } => {
 				let generics = vec_transform_str(generics, |generic| generic.codegen(), ", ");
 				let arguments = vec_transform_str(arguments, |argument| argument.codegen(), ", ");
-				let statements = vec_transform_str(statements, |statement| statement.codegen(), "\n\t");
+				let statements = vec_transform_str(statements, |statement| statement.codegen(), "\n");
 
 				let return_type = *return_type.to_owned();
 				
@@ -127,7 +139,13 @@ impl HasanCodegen for Expression {
 					format!(" -> {}", return_type.unwrap().codegen())
 				};
 
-				format!("(func{}({}){} do\n\t{}\nend)", generics_str, arguments, return_type_str, statements)
+				format!(
+					"(func{}({}){} do\n{}\nend)",
+					generics_str,
+					arguments,
+					return_type_str,
+					indent_all_by(NUM_SPACES, statements)
+				)
 			},
 
 			Self::Empty => "".to_owned(),
@@ -219,19 +237,30 @@ pub struct FunctionPrototype {
 impl HasanCodegen for FunctionPrototype {
 	fn codegen(&self) -> String {
 		let modifiers = &self.modifiers;
-		dry!(modifiers, |modifier| modifier.to_string(), " ", "{} ");
-
 		let generics = &self.generics;
+
+		dry!(modifiers, |modifier| modifier.to_string(), " ", "{} ");
 		dry!(generics, |generic| generic.to_string(), ", ", "<{}>");
 
-		let return_type = if let Some(return_type) = self.return_type.clone() {
-			format!(" -> {}", return_type.codegen())
-		} else {
-			"".to_owned()
+		let return_type = match self.return_type.clone() {
+			Some(kind) => format!(" -> {}", kind.codegen()),
+			None => "".to_owned()
 		};
 
-		let arguments = vec_transform_str(&self.arguments, |argument| argument.codegen(), ", ");
-		format!("{}func {}{}({}){}", modifiers, self.name, generics, arguments, return_type)
+		let arguments = vec_transform_str(
+			&self.arguments,
+			|argument| argument.codegen(),
+			", "
+		);
+
+		format!(
+			"{}func {}{}({}){}",
+			modifiers,
+			self.name,
+			generics,
+			arguments,
+			return_type
+		)
 	}
 }
 
@@ -244,12 +273,19 @@ pub struct Function {
 impl HasanCodegen for Function {
 	fn codegen(&self) -> String {
 		let prototype = self.prototype.codegen();
-		
-		if let Some(body) = self.body.clone() {
-			let body = vec_transform_str(&body, |statement| statement.codegen(), "\n\t");
-			format!("{} do\n\t{}\nend", prototype, body)
-		} else {
-			format!("{};", prototype)
+
+		match self.body.clone() {
+			Some(body) => {
+				let body = vec_transform_str(
+					&body,
+					|statement| statement.codegen(),
+					"\n"
+				);
+
+				format!("{} do\n{}\nend", prototype, indent_all_by(NUM_SPACES, body))
+			},
+
+			None => format!("{};", prototype)
 		}
 	}
 }
