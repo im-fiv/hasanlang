@@ -11,6 +11,7 @@ pub enum BuiltinType {
 
 impl BuiltinType {
 	pub fn implemented_interfaces(&self) -> Vec<String> {
+		use hasan_hir::HIRCodegen;
 		use BuiltinInterface::*;
 
 		let number_interfaces = vec![
@@ -44,7 +45,7 @@ impl BuiltinType {
 
 		interfaces
 			.iter()
-			.map(|interface| interface.to_string())
+			.map(|interface| interface.codegen())
 			.collect::<Vec<_>>()
 	}
 }
