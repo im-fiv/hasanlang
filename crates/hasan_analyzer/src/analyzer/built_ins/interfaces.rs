@@ -1,34 +1,56 @@
+use hasan_hir::HIRCodegen;
 use strum_macros::Display;
 
-#[derive(Debug, Clone, Copy, PartialEq, Display)]
+#[derive(Debug, Clone, PartialEq, Display)]
 pub enum BuiltinInterface {
 	/// `+` operator
-	AddOp,
+	AddOp(String),
 
-	/// Unary and binary `-` operator
-	SubOp,
+	/// Binary `-` operator
+	SubOp(String),
+
+	/// Unary `-` operator
+	NegOp,
 	
 	/// `/` operator
-	DivOp,
+	DivOp(String),
 
 	/// `*` operator
-	MulOp,
+	MulOp(String),
 	
 	/// `%` operator
-	RemOp,
+	RemOp(String),
 
 	/// `==` and `!=` operators
-	EqOps,
+	EqOps(String),
 
 	/// `and`, `or`, and `not` operators
-	LogicOps,
+	LogicOps(String),
 
 	/// `>` and `<` operators
-	CmpOps,
+	CmpOps(String),
 
 	/// `>=` and `<=` operators
-	CmpEqOps,
+	CmpEqOps(String),
 
 	/// Interface for representing functions
 	Function
+}
+
+impl HIRCodegen for BuiltinInterface {
+	fn codegen(&self) -> String {
+		match self {
+			Self::AddOp(v) |
+			Self::SubOp(v) |
+			Self::DivOp(v) |
+			Self::MulOp(v) |
+			Self::RemOp(v) |
+			Self::EqOps(v) |
+			Self::LogicOps(v) |
+			Self::CmpOps(v) |
+			Self::CmpEqOps(v) => format!("{}<{}>", self.to_string(), v),
+
+			_ => self.to_string()
+		}
+	}
 }
