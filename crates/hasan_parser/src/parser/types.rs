@@ -1,4 +1,7 @@
-use crate::{Statement, GeneralModifier, ClassFunctionAttribute, HasanCodegen, vec_transform_str};
+use crate::{
+	Statement, GeneralModifier, ClassFunctionAttribute,
+	HasanCodegen, vec_transform_str
+};
 
 pub type ClassFunctionAttributes = Vec<ClassFunctionAttribute>;
 pub type GeneralModifiers = Vec<GeneralModifier>;
