@@ -173,8 +173,8 @@ impl HasanCodegen for Statement {
 
 			Self::EnumDefinition { modifiers, name, variants } => {
 				dry!(modifiers, |value| value.to_string(), " ", "{} ");
-
 				dry!(variants, |value| value.codegen(), ",\n\t");
+				
 				format!("{}enum {}\n\t{}\nend", modifiers, name, variants)
 			},
 
