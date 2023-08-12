@@ -13,15 +13,32 @@ impl BuiltinType {
 	pub fn implemented_interfaces(&self) -> Vec<String> {
 		use BuiltinInterface::*;
 
-		// TODO: This is not quite correct. I need a way to express that the `int type
-		// only implements the following interfaces for `int` and `float` right-hand-sides
-		let number_interfaces = vec![AddOp, SubOp, DivOp, MulOp, RemOp, EqOps, CmpOps, CmpEqOps];
+		let number_interfaces = vec![
+			AddOp(Self::Integer.to_string()),
+			SubOp(Self::Integer.to_string()),
+			NegOp,
+			DivOp(Self::Integer.to_string()),
+			MulOp(Self::Integer.to_string()),
+			RemOp(Self::Integer.to_string()),
+			EqOps(Self::Integer.to_string()),
+			CmpOps(Self::Integer.to_string()),
+			CmpEqOps(Self::Integer.to_string()),
+
+			AddOp(Self::Float.to_string()),
+			SubOp(Self::Float.to_string()),
+			DivOp(Self::Float.to_string()),
+			MulOp(Self::Float.to_string()),
+			RemOp(Self::Float.to_string()),
+			EqOps(Self::Float.to_string()),
+			CmpOps(Self::Float.to_string()),
+			CmpEqOps(Self::Float.to_string()),
+		];
 
 		let interfaces = match self {
 			Self::Integer |
 			Self::Float => number_interfaces,
-			Self::String => vec![],
-			Self::Boolean => vec![LogicOps],
+			Self::String => vec![ EqOps(Self::String.to_string()) ],
+			Self::Boolean => vec![ LogicOps(Self::Boolean.to_string()) ],
 			Self::Void => vec![]
 		};
 
