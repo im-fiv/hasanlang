@@ -362,7 +362,7 @@ impl SemanticAnalyzer {
 				let a_get = attributes.contains(&Get);
 				let a_set = attributes.contains(&Set);
 
-				if a_constructor && (prototype.name != "new".to_owned()) {
+				if a_constructor && (prototype.name != *"new") {
 					bail!("Class constructor function should always be named `new`");
 				}
 
