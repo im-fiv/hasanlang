@@ -120,8 +120,8 @@ impl SemanticAnalyzer {
 			},
 
 			p::Type::Function(kind) => {
-				// TODO
-				todo!("function type resolving")
+				// TODO: Function type converting
+				todo!("function type converting")
 			}
 		}
 	}
@@ -287,8 +287,112 @@ impl SemanticAnalyzer {
 	}
 
 	fn analyze_class_member(&mut self, member: p::ClassMember) -> Result<hir::ClassMember, Error> {
-		// TODO: Implement this function
-		todo!()
+		Ok(match member {
+			p::ClassMember::Variable(variable) => {
+				use p::GeneralModifier::*;
+
+				let p::ClassVariable {
+					modifiers,
+					name,
+					kind,
+					default_value
+				} = variable;
+
+				let m_public = modifiers.contains(&Public);
+				let m_const = modifiers.contains(&Constant);
+				let m_static = modifiers.contains(&Static);
+
+				if m_const && m_static {
+					bail!("`const` and `static` modifiers cannot be used together");
+				}
+
+				let converted_kind = self.convert_type(&kind)?;
+				
+				if let Some(value) = default_value.clone() {
+					let resolved_kind = self.type_from_expression(&value)?;
+
+					if converted_kind != resolved_kind {
+						bail!(
+							"Mismatched types for class member `{}`: type `{}` was specified, got `{}`",
+							name,
+							converted_kind.display(),
+							resolved_kind.display()
+						)
+					}
+				}
+
+				let flags = hir::ClassVariableFlags {
+					is_public: m_public,
+					is_const: m_const,
+					is_static: m_static
+				};
+
+				let variable = hir::ClassVariable {
+					name,
+					kind: converted_kind,
+					default_value,
+
+					flags
+				};
+
+				hir::ClassMember::Variable(variable)
+			},
+
+			p::ClassMember::Function(function) => {
+				use p::GeneralModifier::*;
+				use p::ClassFunctionAttribute::*;
+
+				let p::ClassFunction {
+					attributes,
+					prototype,
+					body
+				} = function;
+
+				// Checking modifiers
+				let m_public = prototype.modifiers.contains(&Public);
+				let m_const = prototype.modifiers.contains(&Constant);
+				let m_static = prototype.modifiers.contains(&Static);
+
+				if m_const {
+					bail!("`const` modifiers are not permitted inside function prototypes");
+				}
+
+				// Checking attributes
+				let a_constructor = attributes.contains(&Constructor);
+				let a_get = attributes.contains(&Get);
+				let a_set = attributes.contains(&Set);
+
+				if a_constructor && (prototype.name != "new".to_owned()) {
+					bail!("Class constructor function should always be named `new`");
+				}
+
+				if a_constructor && (a_get || a_set) {
+					bail!("Class constructor function cannot have `get` or `set` attributes");
+				}
+
+				if a_get && a_set {
+					bail!("Class function cannot have both `get` and `set` attributes");
+				}
+
+				let function = self.analyze_function(p::Function {
+					prototype,
+					body: Some(body)
+				})?;
+
+				let flags = hir::ClassFunctionFlags {
+					is_public: m_public,
+					is_static: m_static
+				};
+
+				let class_function = hir::ClassFunction {
+					attributes,
+					function,
+					flags
+				};
+
+				hir::ClassMember::Function(class_function)
+			}
+		})
 	}
 
 	fn analyze_class_definition(
@@ -331,13 +435,22 @@ impl SemanticAnalyzer {
 		}
 
 		let members = {
-			let mut converted: Vec<hir::ClassMember> = vec![];
+			let mut converted_vec: Vec<hir::ClassMember> = vec![];
+			let mut met_names: Vec<String> = vec![];
 
 			for member in members {
-				converted.push(self.analyze_class_member(member)?);
+				let converted_member = self.analyze_class_member(member)?; 
+				let name = converted_member.name();
+				
+				if met_names.contains(&name) {
+					bail!("Found multiple definitions of class member `{}`", name);
+				}
+				
+				converted_vec.push(converted_member);
+				met_names.push(name);
 			}
 			
-			converted
+			converted_vec
 		};
 
 		let class = hir::Class {

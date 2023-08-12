@@ -11,6 +11,10 @@ impl TypeRef {
 	pub fn from_type(kind: Type) -> Self {
 		Self(kind, 0)
 	}
+
+	pub fn display(&self) -> String {
+		format!("{}{}", self.0.name, "[]".repeat(self.1))
+	}
 }
 
 impl HIRCodegen for TypeRef {
@@ -42,7 +46,7 @@ impl HIRCodegen for Type {
 			.map(|member| {
 				match member {
 					ClassMember::Variable(variable) => variable.name.to_owned(),
-					ClassMember::Function(function) => function.1.prototype.name.to_owned()
+					ClassMember::Function(function) => function.function.prototype.name.to_owned()
 				}
 			})
 			.collect::<Vec<_>>()
