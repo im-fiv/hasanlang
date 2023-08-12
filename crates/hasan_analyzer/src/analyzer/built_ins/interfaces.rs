@@ -48,7 +48,7 @@ impl HIRCodegen for BuiltinInterface {
 			Self::EqOps(v) |
 			Self::LogicOps(v) |
 			Self::CmpOps(v) |
-			Self::CmpEqOps(v) => format!("{}<{}>", self.to_string(), v),
+			Self::CmpEqOps(v) => format!("{}<{}>", self, v),
 
 			_ => self.to_string()
 		}
