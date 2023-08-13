@@ -86,8 +86,17 @@ pub struct ClassFunction {
 
 impl HIRCodegen for ClassFunction {
 	fn codegen(&self) -> String {
-		let attributes = vec_transform_str(&self.attributes, |attribute| attribute.to_string(), ", ");
-		let attributes = if !attributes.is_empty() { format!("#[{}]\n", attributes) } else { "".to_owned() };
+		let attributes = vec_transform_str(
+			&self.attributes,
+			|attribute| attribute.to_string(),
+			", "
+		);
+		
+		let attributes = if !attributes.is_empty() {
+			format!("#[{}]\n", attributes)
+		} else {
+			"".to_owned()
+		};
 
 		format!("{}{}{}", self.flags.codegen(), attributes, self.function.codegen())
 	}

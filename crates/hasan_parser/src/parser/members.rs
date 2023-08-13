@@ -1,8 +1,11 @@
 use crate::{
 	GeneralModifiers, Type, ClassFunctionAttributes,
 	DefinitionType, Expression, FunctionPrototype,
-	Statement, Function, HasanCodegen, vec_transform_str
+	Statement, Function, HasanCodegen, vec_transform_str,
+	NUM_SPACES
 };
+
+use indent::indent_all_by;
 
 macro_rules! dry {
 	($name:ident, $func:expr, $sep:expr, $format:expr) => {
@@ -210,13 +213,13 @@ impl HasanCodegen for ClassFunction {
 		let statements = &self.body;
 
 		dry!(attributes, |value| value.to_string(), ", ", "#[{}]\n");
-		dry!(statements, |value| value.codegen(), "\n\t");
+		dry!(statements, |value| value.codegen(), "\n");
 
 		format!(
-			"{}{} do\n\t{}\nend",
+			"{}{} do\n{}\nend",
 			attributes,
 			self.prototype.codegen(),
-			statements
+			indent_all_by(NUM_SPACES, statements)
 		)
 	}
 }

@@ -5,6 +5,7 @@ use crate::{
 	NUM_SPACES
 };
 
+use strum_macros::Display;
 use indent::indent_all_by;
 
 macro_rules! dry {
@@ -18,7 +19,7 @@ macro_rules! dry {
 	};
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Display)]
 pub enum Expression {
 	Integer(IntType),
 	Float(FloatType),
@@ -151,12 +152,6 @@ impl HasanCodegen for Expression {
 			Self::Empty => "".to_owned(),
 			Self::Unimplemented => "/* unimplemented */".to_owned()
 		}
-	}
-}
-
-impl ToString for Expression {
-	fn to_string(&self) -> String {
-		self.codegen()
 	}
 }
 

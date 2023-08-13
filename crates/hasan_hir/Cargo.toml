@@ -9,3 +9,4 @@ edition = "2021"
 hasan_parser = { path = "../hasan_parser" }
 strum = "0.25.0"
 strum_macros = "0.25.1"
+indent = "0.1.1"
