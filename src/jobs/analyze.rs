@@ -9,7 +9,7 @@ pub fn analyze(ast: hasan_parser::Program, debug: bool) -> hasan_hir::Program {
     let ast = analyzer.analyze();
 
 	if let Err(error) = ast {
-		panic!("Error: {:?}", error)
+		panic!("{:?}", error)
 	}
 
 	let ast = ast.unwrap();
