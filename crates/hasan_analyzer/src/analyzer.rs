@@ -11,6 +11,8 @@ use anyhow::{Error, bail};
 use hasan_parser as p;
 use hasan_hir as hir;
 
+use hir::HIRCodegen;
+
 #[derive(Debug, Clone)]
 pub struct SemanticAnalyzer {
 	pub scope: Scope,
@@ -157,7 +159,7 @@ impl SemanticAnalyzer {
 			let kind_given = self.convert_type(&kind_given)?;
 
 			if kind_given != kind_resolved {
-				bail!("Mismatched types for variable `{}`: expected `{}` but `{}` was provided", name, kind_resolved.to_string(), kind_given.to_string());
+				bail!("Mismatched types for variable `{}`: expected `{}` but `{}` was provided", name, kind_resolved.codegen(), kind_given.codegen());
 			}
 		}
 

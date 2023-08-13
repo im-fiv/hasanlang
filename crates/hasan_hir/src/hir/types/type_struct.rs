@@ -1,34 +1,5 @@
 use crate::{ClassMember, HIRCodegen};
 
-/// A reference to a type with the second parameter being the dimensions of array (if present)
-#[derive(Debug, Clone, PartialEq)]
-pub struct TypeRef(
-	pub Type,
-	pub usize
-);
-
-impl TypeRef {
-	pub fn from_type(kind: Type) -> Self {
-		Self(kind, 0)
-	}
-
-	pub fn display(&self) -> String {
-		format!("{}{}", self.0.name, "[]".repeat(self.1))
-	}
-}
-
-impl HIRCodegen for TypeRef {
-	fn codegen(&self) -> String {
-		format!("{}{}", self.0.codegen(), "[]".repeat(self.1))
-	}
-}
-
-impl ToString for TypeRef {
-	fn to_string(&self) -> String {
-		self.codegen()
-	}
-}
-
 /// Every type is essentially a class, even functions.
 /// All functions/closures automatically implement their according built-in interface
 #[derive(Debug, Clone, PartialEq)]
@@ -53,11 +24,5 @@ impl HIRCodegen for Type {
 			.join(", ");
 
 		format!("<type {}{{{}}}: impl<{}>>", self.name, members, self.implements_interfaces.join(", "))
-	}
-}
-
-impl ToString for Type {
-	fn to_string(&self) -> String {
-		self.codegen()
 	}
 }

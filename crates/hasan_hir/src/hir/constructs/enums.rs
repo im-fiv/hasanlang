@@ -25,9 +25,3 @@ impl HIRCodegen for Enum {
 		)
 	}
 }
-
-impl ToString for Enum {
-	fn to_string(&self) -> String {
-		self.codegen()
-	}
-}

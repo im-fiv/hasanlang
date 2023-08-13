@@ -1,6 +1,6 @@
 use crate::{Statement, HIRCodegen};
-use hasan_parser::{vec_transform_str, HasanCodegen, NUM_SPACES};
 
+use hasan_parser::{vec_transform_str, NUM_SPACES, HasanCodegen};
 use indent::indent_all_by;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -71,71 +71,5 @@ impl HIRCodegen for If {
 				elseif_branches_str
 			)
 		}
-	}
-}
-
-impl ToString for If {
-	fn to_string(&self) -> String {
-		self.codegen()
-	}
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub struct While {
-	pub condition: hasan_parser::Expression,
-	pub statements: Vec<Statement>
-}
-
-impl HIRCodegen for While {
-	fn codegen(&self) -> String {
-		let statements = vec_transform_str(
-			&self.statements,
-			|statement| statement.codegen(),
-			"\n"
-		);
-		
-		format!(
-			"while {} do\n{}\nend",
-			
-			self.condition.codegen(),
-			indent_all_by(NUM_SPACES, statements)
-		)
-	}
-}
-
-impl ToString for While {
-	fn to_string(&self) -> String {
-		self.codegen()
-	}
-}
-
-#[derive(Debug, Clone, PartialEq)]
-pub struct For {
-	pub left: hasan_parser::Expression,
-	pub right: hasan_parser::Expression,
-	pub statements: Vec<Statement>
-}
-
-impl HIRCodegen for For {
-	fn codegen(&self) -> String {
-		let statements = vec_transform_str(
-			&self.statements,
-			|statement| statement.codegen(),
-			"\n"
-		);
-		
-		format!(
-			"for {} in {} do\n{}\nend",
-			
-			self.left.codegen(),
-			self.right.codegen(),
-			indent_all_by(NUM_SPACES, statements)
-		)
-	}
-}
-
-impl ToString for For {
-	fn to_string(&self) -> String {
-		self.codegen()
 	}
 }
