@@ -2,6 +2,7 @@ use hasan_hir::{Class, Variable, Enum, FunctionPrototype, TypeRef};
 use super::BuiltinInterface;
 
 use anyhow::{Error, bail};
+use paste::paste;
 
 #[derive(Debug, Clone)]
 pub enum Symbol {
@@ -11,8 +12,6 @@ pub enum Symbol {
 	Variable(Variable),
 	Enum(Enum)
 }
-
-use paste::paste;
 
 /// A macro to implement `is_...` and `as_...` methods for a specific variant of an enum
 macro_rules! impl_conv {
@@ -45,6 +44,8 @@ impl_conv!(Symbol, class, Class);
 impl_conv!(Symbol, interface, Interface);
 impl_conv!(Symbol, variable, Variable);
 impl_conv!(Symbol, enum, Enum);
+
+//-----------------------------------------------------------------//
 
 // The reason this is not inside `hasan_hir` is that interfaces only exist on the type level,
 // and `hasan_hir` is the intermediate representation *after* the type checking, so it wouldn't
