@@ -206,29 +206,33 @@ impl HasanCodegen for Statement {
 					);
 				}
 
-				if let Some(else_branch) = else_branch {
-					let else_statements = vec_transform_str(
-						&else_branch.statements,
-						|value| value.codegen(),
-						"\n"
-					);
-					
-					format!(
-						"if {} then\n{}\n{}else\n{}\nend",
+				match else_branch {
+					Some(branch) => {
+						let else_statements = vec_transform_str(
+							&branch.statements,
+							|statement| statement.codegen(),
+							"\n"
+						);
 
-						condition.codegen(),
-						indent_all_by(NUM_SPACES, statements),
-						elseif_branches_str,
-						indent_all_by(NUM_SPACES, else_statements)
-					)
-				} else {
-					format!(
-						"if {} then\n{}\n{}end",
+						format!(
+							"if {} then\n{}\n{}else\n{}\nend",
 
-						condition.codegen(),
-						indent_all_by(NUM_SPACES, statements),
-						elseif_branches_str
-					)
+							condition.codegen(),
+							indent_all_by(NUM_SPACES, statements),
+							elseif_branches_str,
+							indent_all_by(NUM_SPACES, else_statements)
+						)
+					},
+
+					None => {
+						format!(
+							"if {} then\n{}\n{}end",
+
+							condition.codegen(),
+							indent_all_by(NUM_SPACES, statements),
+							elseif_branches_str
+						)
+					}
 				}
 			},
 

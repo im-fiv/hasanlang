@@ -51,7 +51,7 @@ impl SemanticAnalyzer {
 
 			Return(value) => self.analyze_return(value),
 
-			_ => bail!("Unsupported statement `{}`", statement.to_string())
+			_ => bail!("Encountered unsupported statement `{}`", statement.to_string())
 		}
 	}
 

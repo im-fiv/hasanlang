@@ -1,5 +1,7 @@
 use crate::{Statement, HIRCodegen};
-use hasan_parser::{vec_transform_str, HasanCodegen};
+use hasan_parser::{vec_transform_str, HasanCodegen, NUM_SPACES};
+
+use indent::indent_all_by;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct If {
@@ -11,24 +13,63 @@ pub struct If {
 
 impl HIRCodegen for If {
 	fn codegen(&self) -> String {
-		let statements = vec_transform_str(&self.statements, |statement| statement.codegen(), "\n\t");
+		let statements = vec_transform_str(
+			&self.statements,
+			|statement| statement.codegen(),
+			"\n"
+		);
 				
 		if self.elseif_branches.is_empty() && self.else_branch.is_none() {
-			return format!("if {} then\n\t{}\nend", self.condition.codegen(), statements);
+			return format!(
+				"if {} then\n{}\nend",
+
+				self.condition.codegen(),
+				indent_all_by(NUM_SPACES, statements)
+			);
 		}
 
 		let mut elseif_branches_str = String::new();
 
 		for branch in self.elseif_branches.clone() {
-			let branch_statements = vec_transform_str(&branch.statements, |statement| statement.codegen(), "\n\t");
-			elseif_branches_str.push_str(&format!("else if {} then\n\t{}\n", branch.condition.codegen(), branch_statements));
+			let branch_statements = vec_transform_str(
+				&branch.statements,
+				|statement| statement.codegen(),
+				"\n"
+			);
+			
+			elseif_branches_str.push_str(
+				&format!(
+					"else if {} then\n{}\n",
+
+					branch.condition.codegen(),
+					indent_all_by(NUM_SPACES, branch_statements)
+				)
+			);
 		}
 
 		if let Some(else_branch) = self.else_branch.clone() {
-			let statements_codegen = vec_transform_str(&else_branch.statements, |value| value.codegen(), "\n\t");
-			format!("if {} then\n\t{}\n{}else\n\t{}\nend", self.condition.codegen(), statements, elseif_branches_str, statements_codegen)
+			let else_statements = vec_transform_str(
+				&else_branch.statements,
+				|value| value.codegen(),
+				"\n"
+			);
+			
+			format!(
+				"if {} then\n{}\n{}else\n{}\nend",
+				
+				self.condition.codegen(),
+				indent_all_by(NUM_SPACES, statements),
+				elseif_branches_str,
+				indent_all_by(NUM_SPACES, else_statements)
+			)
 		} else {
-			format!("if {} then\n\t{}\n{}end", self.condition.codegen(), statements, elseif_branches_str)
+			format!(
+				"if {} then\n{}\n{}end",
+				
+				self.condition.codegen(),
+				indent_all_by(NUM_SPACES, statements),
+				elseif_branches_str
+			)
 		}
 	}
 }
@@ -47,8 +88,18 @@ pub struct While {
 
 impl HIRCodegen for While {
 	fn codegen(&self) -> String {
-		let statements = vec_transform_str(&self.statements, |statement| statement.codegen(), "\n\t");
-		format!("while {} do\n\t{}\nend", self.condition.codegen(), statements)
+		let statements = vec_transform_str(
+			&self.statements,
+			|statement| statement.codegen(),
+			"\n"
+		);
+		
+		format!(
+			"while {} do\n{}\nend",
+			
+			self.condition.codegen(),
+			indent_all_by(NUM_SPACES, statements)
+		)
 	}
 }
 
@@ -67,8 +118,19 @@ pub struct For {
 
 impl HIRCodegen for For {
 	fn codegen(&self) -> String {
-		let statements = vec_transform_str(&self.statements, |statement| statement.codegen(), "\n\t");
-		format!("for {} in {} do\n\t{}\nend", self.left.codegen(), self.right.codegen(), statements)
+		let statements = vec_transform_str(
+			&self.statements,
+			|statement| statement.codegen(),
+			"\n"
+		);
+		
+		format!(
+			"for {} in {} do\n{}\nend",
+			
+			self.left.codegen(),
+			self.right.codegen(),
+			indent_all_by(NUM_SPACES, statements)
+		)
 	}
 }
 

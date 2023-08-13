@@ -282,6 +282,7 @@ name = "hasan_hir"
 version = "0.0.0"
 dependencies = [
  "hasan_parser",
+ "indent",
  "strum",
  "strum_macros",
 ]

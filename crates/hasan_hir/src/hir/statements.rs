@@ -1,7 +1,9 @@
 use crate::{Function, Class, Variable, Enum, If, While, For, ModuleInfo, HIRCodegen};
 
-use hasan_parser::{HasanCodegen, vec_transform_str};
+use hasan_parser::{HasanCodegen, vec_transform_str, NUM_SPACES};
+
 use strum_macros::Display;
+use indent::indent_all_by;
 
 #[derive(Debug, Clone, PartialEq, Display)]
 pub enum Statement {
@@ -61,9 +63,14 @@ impl HIRCodegen for Statement {
 
 			Self::ModuleUseItems(info, items) => {
 				let path = info.path.join(".");
-				let items = items.join(",\n\t");
+				let items = items.join(",\n");
 
-				format!("use module {}.{}\n\t{}\nend", path, info.name, items)
+				format!(
+					"use module {}.{}\n{}\nend",
+					path,
+					info.name,
+					indent_all_by(NUM_SPACES, items)
+				)
 			}
 		}
 	}

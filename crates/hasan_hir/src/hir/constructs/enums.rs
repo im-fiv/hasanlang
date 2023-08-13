@@ -1,5 +1,7 @@
 use crate::HIRCodegen;
-use hasan_parser::{vec_transform_str, HasanCodegen};
+use hasan_parser::{vec_transform_str, HasanCodegen, NUM_SPACES};
+
+use indent::indent_all_by;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Enum {
@@ -9,8 +11,18 @@ pub struct Enum {
 
 impl HIRCodegen for Enum {
 	fn codegen(&self) -> String {
-		let variants = vec_transform_str(&self.variants, |variant| variant.codegen(), ",\n\t");
-		format!("enum {}\n\t{}\nend", self.name, variants)
+		let variants = vec_transform_str(
+			&self.variants,
+			|variant| variant.codegen(),
+			",\n"
+		);
+		
+		format!(
+			"enum {}\n{}\nend",
+
+			self.name,
+			indent_all_by(NUM_SPACES, variants)
+		)
 	}
 }
 

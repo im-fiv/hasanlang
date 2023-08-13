@@ -1,5 +1,7 @@
 use crate::{TypeRef, Statement, HIRCodegen};
-use hasan_parser::vec_transform_str;
+use hasan_parser::{vec_transform_str, NUM_SPACES};
+
+use indent::indent_all_by;
 
 pub type FunctionBody = Option<Vec<Statement>>;
 
@@ -12,8 +14,17 @@ pub struct Function {
 impl HIRCodegen for Function {
 	fn codegen(&self) -> String {
 		if let Some(body) = self.body.clone() {
-			let body = vec_transform_str(&body, |statement| statement.codegen(), "\n\t");
-			format!("{} do\n\t{}\nend", self.prototype.codegen(), body)
+			let body = vec_transform_str(
+				&body,
+				|statement| statement.codegen(),
+				"\n"
+			);
+
+			format!(
+				"{} do\n{}\nend",
+				self.prototype.codegen(),
+				indent_all_by(NUM_SPACES, body)
+			)
 		} else {
 			format!("{};", self.prototype.codegen())
 		}
