@@ -1,3 +1,3 @@
-mod parser;
-
-pub use parser::*;
+#[derive(pest_derive::Parser)]
+#[grammar = "grammar.pest"]
+pub struct PestParser;
