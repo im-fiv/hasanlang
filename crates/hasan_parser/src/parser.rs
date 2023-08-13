@@ -1,80 +1,24 @@
 mod attributes_modifiers;
-mod errors;
 mod expressions;
 mod members;
 mod statements;
-mod traits;
 mod types;
+mod errors;
+mod program;
+mod traits;
 
 pub use attributes_modifiers::*;
-pub use errors::*;
 pub use expressions::*;
 pub use members::*;
 pub use statements::*;
-pub use traits::*;
 pub use types::*;
-
-pub fn vec_transform_str<Elem, Func>(vec: &[Elem], func: Func, sep: &str) -> String
-where
-	Elem: ToString,
-	Func: Fn(&Elem) -> String
-{
-	vec
-		.iter()
-		.map(func)
-		.collect::<Vec<String>>()
-		.join(sep)
-}
+pub use errors::*;
+pub use program::*;
+pub use traits::*;
 
 use std::iter::Peekable;
 use pest::iterators::{Pair, Pairs};
 use hasan_pest_parser::Rule;
-
-#[derive(Debug, Clone)]
-pub struct Program {
-	pub statements: Vec<Statement>,
-	pub module_info: Option<ModuleInfo>
-}
-
-impl HasanCodegen for Program {
-	fn codegen(&self) -> String {
-		let statements = vec_transform_str(&self.statements, |statement| statement.codegen(), "\n");
-
-		if let Some(info) = self.module_info.clone() {
-			format!("{}\n{}", info.codegen(), statements)
-		} else {
-			statements
-		}
-	}
-}
-
-impl ToString for Program {
-	fn to_string(&self) -> String {
-		self.codegen()
-	}
-}
-
-#[derive(Debug, Clone)]
-pub struct ModuleInfo {
-	pub name: String,
-	pub path: Vec<String>
-}
-
-impl HasanCodegen for ModuleInfo {
-	fn codegen(&self) -> String {
-		if self.path.is_empty() {
-			format!("module {}", self.name)
-		} else {
-			format!("module {}.{}", self.path.join("."), self.name)
-		}
-	}
-}
-
-impl ToString for ModuleInfo {
-	fn to_string(&self) -> String {
-		self.codegen()
-	}
-}
 
 pub struct HasanParser<'p> {
 	pairs: Pairs<'p, Rule>
