@@ -44,7 +44,7 @@ pub fn compile(hir: Program, no_opt: bool, debug: bool) -> String {
     let mut compiler = Compiler::new(&context, &builder, &fpm, &module);
 
 	if let Err(error) = compiler.compile(&hir) {
-        panic!("Error: {:?}", error);
+        panic!("{:?}", error);
     }
 
     let codegen_data = module
