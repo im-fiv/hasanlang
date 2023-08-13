@@ -91,6 +91,8 @@ impl Default for Scope {
 	}
 }
 
+//-----------------------------------------------------------------//
+
 #[derive(Debug, Clone, Copy)]
 pub struct ScopeFlags {
 	pub global: bool,
