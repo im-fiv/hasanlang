@@ -30,12 +30,6 @@ impl HIRCodegen for Program {
 	}
 }
 
-impl ToString for Program {
-	fn to_string(&self) -> String {
-		self.codegen()
-	}
-}
-
 #[derive(Debug, Clone, PartialEq)]
 pub struct ModuleInfo {
 	pub name: String,
@@ -49,12 +43,6 @@ impl HIRCodegen for ModuleInfo {
 		} else {
 			format!("module {}.{}", self.path.join("."), self.name)
 		}
-	}
-}
-
-impl ToString for ModuleInfo {
-	fn to_string(&self) -> String {
-		self.codegen()
 	}
 }
 
@@ -78,11 +66,5 @@ impl HIRCodegen for Variable {
 		}.to_owned();
 
 		format!("{}var {}: {} = {}", prefix, self.name, self.kind.codegen(), self.value.codegen())
-	}
-}
-
-impl ToString for Variable {
-	fn to_string(&self) -> String {
-		self.codegen()
 	}
 }

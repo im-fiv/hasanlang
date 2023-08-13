@@ -31,11 +31,7 @@ impl HIRCodegen for Function {
 	}	
 }
 
-impl ToString for Function {
-	fn to_string(&self) -> String {
-		self.codegen()
-	}
-}
+//-----------------------------------------------------------------//
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct FunctionPrototype {
@@ -51,11 +47,7 @@ impl HIRCodegen for FunctionPrototype {
 	}
 }
 
-impl ToString for FunctionPrototype {
-	fn to_string(&self) -> String {
-		self.codegen()
-	}
-}
+//-----------------------------------------------------------------//
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct FunctionArgument {
@@ -66,11 +58,5 @@ pub struct FunctionArgument {
 impl HIRCodegen for FunctionArgument {
 	fn codegen(&self) -> String {
 		format!("{}: {}", self.name, self.kind.codegen())
-	}
-}
-
-impl ToString for FunctionArgument {
-	fn to_string(&self) -> String {
-		self.codegen()
 	}
 }
