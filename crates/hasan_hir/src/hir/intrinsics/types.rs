@@ -1,7 +1,8 @@
-use super::BuiltinInterface;
+use crate::HirCodegen;
+use super::IntrinsicInterface;
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-pub enum BuiltinType {
+pub enum IntrinsicType {
 	Integer,
 	Float,
 	String,
@@ -9,10 +10,9 @@ pub enum BuiltinType {
 	Void
 }
 
-impl BuiltinType {
+impl IntrinsicType {
 	pub fn implemented_interfaces(&self) -> Vec<String> {
-		use hasan_hir::HIRCodegen;
-		use BuiltinInterface::*;
+		use IntrinsicInterface::*;
 
 		let number_interfaces = vec![
 			AddOp(Self::Integer.to_string()),
@@ -50,7 +50,7 @@ impl BuiltinType {
 	}
 }
 
-impl ToString for BuiltinType {
+impl ToString for IntrinsicType {
 	fn to_string(&self) -> String {
 		match self {
 			Self::Integer => "int",

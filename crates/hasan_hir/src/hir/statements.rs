@@ -1,4 +1,4 @@
-use crate::{Function, Class, Variable, Enum, If, While, For, ModuleInfo, HIRCodegen};
+use crate::{Function, Class, Variable, Enum, If, While, For, ModuleInfo, HirCodegen};
 
 use hasan_parser::{HasanCodegen, vec_transform_str, NUM_SPACES};
 
@@ -24,7 +24,7 @@ pub enum Statement {
 	ModuleUseItems(ModuleInfo, Vec<String>)
 }
 
-impl HIRCodegen for Statement {
+impl HirCodegen for Statement {
 	fn codegen(&self) -> String {
 		match self {
 			Self::FunctionDefinition(function) |

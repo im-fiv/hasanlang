@@ -7,7 +7,7 @@ use consts::*;
 use std::fs::File;
 use std::io::Write;
 
-use hasan_hir::HIRCodegen;
+use hasan_hir::{HirCodegen, HirDiagnostics};
 use hasan_parser::HasanCodegen;
 
 //* Helper functions *//
@@ -41,10 +41,17 @@ fn compile(command: cli::CompileCommand) {
 	let ast = job!(hasan_parse, HASAN_AST_FN, |result| format!("{:#?}", result), pairs, command.debug);
 	write_file(&fmt_c(HASAN_AST_CODEGEN_FN), ast.codegen());
 
-	let hir = job!(analyze, ANALYZED_FN, |result| format!("{:#?}", result), ast, command.debug);
-	write_file(&fmt_c(ANALYZED_CODEGEN_FN), hir.codegen());
+	let hir = job!(
+		analyze,
+		ANALYZED_FN,
+		|result: (hasan_hir::Program, hasan_analyzer::Scope)| format!("{:#?}", result.0),
+		ast,
+		command.debug
+	);
 
-	job!(compile, IR_FN, |result| result, hir, command.no_opt, command.debug);
+	write_file(&fmt_c(ANALYZED_CODEGEN_FN), format!("{}\n\n{}", hir.1.info_string(), hir.0.codegen()));
+
+	job!(compile, IR_FN, |result| result, hir.0, command.no_opt, command.debug);
 	
 	jobs::link(command.debug);
 }
@@ -57,8 +64,15 @@ fn parse(command: cli::ParseCommand) {
 	let ast = job!(hasan_parse, HASAN_AST_FN, |result| format!("{:#?}", result), pairs, command.debug);
 	write_file(&fmt_c(HASAN_AST_CODEGEN_FN), ast.codegen());
 
-	let hir = job!(analyze, ANALYZED_FN, |result| format!("{:#?}", result), ast, command.debug);
-	write_file(&fmt_c(ANALYZED_CODEGEN_FN), hir.codegen());
+	let hir = job!(
+		analyze,
+		ANALYZED_FN,
+		|result: (hasan_hir::Program, hasan_analyzer::Scope)| format!("{:#?}", result.0),
+		ast,
+		command.debug
+	);
+
+	write_file(&fmt_c(ANALYZED_CODEGEN_FN), format!("{}\n\n{}", hir.1.info_string(), hir.0.codegen()));
 }
 
 fn main() {

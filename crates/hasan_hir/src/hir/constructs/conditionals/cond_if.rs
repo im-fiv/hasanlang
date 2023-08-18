@@ -1,4 +1,4 @@
-use crate::{Statement, HIRCodegen};
+use crate::{Statement, HirCodegen};
 
 use hasan_parser::{vec_transform_str, NUM_SPACES, HasanCodegen};
 use indent::indent_all_by;
@@ -11,7 +11,7 @@ pub struct If {
 	pub else_branch: Option<hasan_parser::ConditionBranch>
 }
 
-impl HIRCodegen for If {
+impl HirCodegen for If {
 	fn codegen(&self) -> String {
 		let statements = vec_transform_str(
 			&self.statements,

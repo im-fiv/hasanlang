@@ -1,4 +1,4 @@
-use crate::{Statement, HIRCodegen};
+use crate::{Statement, HirCodegen};
 
 use hasan_parser::{vec_transform_str, NUM_SPACES, HasanCodegen};
 use indent::indent_all_by;
@@ -10,7 +10,7 @@ pub struct For {
 	pub statements: Vec<Statement>
 }
 
-impl HIRCodegen for For {
+impl HirCodegen for For {
 	fn codegen(&self) -> String {
 		let statements = vec_transform_str(
 			&self.statements,

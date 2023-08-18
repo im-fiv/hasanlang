@@ -8,7 +8,7 @@ pub use conditionals::*;
 pub use enums::*;
 pub use functions::*;
 
-pub use crate::{Statement, TypeRef, Type, HIRCodegen};
+pub use crate::{Statement, TypeRef, Type, HirCodegen, HirDiagnostics};
 use hasan_parser::vec_transform_str;
 
 #[derive(Debug, Clone, Default)]
@@ -18,7 +18,7 @@ pub struct Program {
 	pub imports: Vec<ModuleInfo>
 }
 
-impl HIRCodegen for Program {
+impl HirCodegen for Program {
 	fn codegen(&self) -> String {
 		let statements = vec_transform_str(&self.statements, |statement| statement.codegen(), "\n");
 
@@ -36,7 +36,7 @@ pub struct ModuleInfo {
 	pub path: Vec<String>
 }
 
-impl HIRCodegen for ModuleInfo {
+impl HirCodegen for ModuleInfo {
 	fn codegen(&self) -> String {
 		if self.path.is_empty() {
 			format!("module {}", self.name)
@@ -55,7 +55,18 @@ pub struct Variable {
 	pub is_constant: bool
 }
 
-impl HIRCodegen for Variable {
+impl HirDiagnostics for Variable {
+	fn info_string(&self) -> String {
+		let base = format!("var {}: {}", self.name, self.kind.info_string());
+
+		match self.is_constant {
+			true => format!("const {}", base),
+			false => base
+		}
+	}
+}
+
+impl HirCodegen for Variable {
 	fn codegen(&self) -> String {
 		use hasan_parser::HasanCodegen;
 

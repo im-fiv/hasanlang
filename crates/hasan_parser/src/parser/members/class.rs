@@ -1,6 +1,6 @@
 use crate::{
 	HasanCodegen, GeneralModifiers, Type,
-	Expression, dry, ClassFunctionAttributes,
+	Expression, cond_vec_transform, ClassFunctionAttributes,
 	FunctionPrototype, Statement, Function,
 	NUM_SPACES, vec_transform_str
 };
@@ -35,12 +35,11 @@ pub struct ClassVariable {
 
 impl HasanCodegen for ClassVariable {
 	fn codegen(&self) -> String {
-		let modifiers = &self.modifiers;
-		dry!(modifiers, |value| value.to_string(), " ", "{} ");
+		let modifiers = cond_vec_transform!(&self.modifiers, |value| value.to_string(), " ", "{} ");
 
 		let default_value = match self.default_value.clone() {
 			Some(value) => format!(" = {}", value.codegen()),
-			None => "".to_owned()
+			None => String::new()
 		};
 
 		format!(
@@ -80,8 +79,8 @@ impl HasanCodegen for ClassFunction {
 		let attributes = &self.attributes;
 		let statements = &self.body;
 
-		dry!(attributes, |value| value.to_string(), ", ", "#[{}]\n");
-		dry!(statements, |value| value.codegen(), "\n");
+		let attributes = cond_vec_transform!(attributes, |value| value.to_string(), ", ", "#[{}]\n");
+		let statements = vec_transform_str(statements, |value| value.codegen(), "\n");
 
 		format!(
 			"{}{} do\n{}\nend",

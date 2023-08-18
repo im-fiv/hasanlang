@@ -1,4 +1,4 @@
-use crate::{TypeRef, HIRCodegen};
+use crate::{TypeRef, HirCodegen, HirDiagnostics};
 use hasan_parser::HasanCodegen;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -7,10 +7,22 @@ pub struct ClassVariable {
 	pub kind: TypeRef,
 	pub default_value: Option<hasan_parser::Expression>,
 
-	pub flags: ClassVariableFlags
+	pub flags: ClassVariableModifiers
 }
 
-impl HIRCodegen for ClassVariable {
+impl HirDiagnostics for ClassVariable {
+	fn info_string(&self) -> String {
+		format!(
+			"{}var {}: {}",
+			
+			self.flags.info_string(),
+			self.name,
+			self.kind.info_string()
+		)
+	}
+}
+
+impl HirCodegen for ClassVariable {
 	fn codegen(&self) -> String {
 		if let Some(value) = self.default_value.clone() {
 			return format!(
@@ -30,13 +42,19 @@ impl HIRCodegen for ClassVariable {
 //-----------------------------------------------------------------//
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-pub struct ClassVariableFlags {
+pub struct ClassVariableModifiers {
 	pub is_public: bool,
 	pub is_const: bool,
 	pub is_static: bool
 }
 
-impl HIRCodegen for ClassVariableFlags {
+impl HirDiagnostics for ClassVariableModifiers {
+	fn info_string(&self) -> String {
+		self.codegen()
+	}
+}
+
+impl HirCodegen for ClassVariableModifiers {
 	fn codegen(&self) -> String {
 		let mut truthy_values: Vec<String> = vec![];
 

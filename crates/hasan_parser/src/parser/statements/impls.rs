@@ -1,4 +1,4 @@
-use crate::{HasanCodegen, dry, vec_transform_str, NUM_SPACES};
+use crate::{HasanCodegen, cond_vec_transform, vec_transform_str, NUM_SPACES};
 use super::Statement;
 
 use indent::indent_all_by;
@@ -10,23 +10,23 @@ impl HasanCodegen for Statement {
 			Self::FunctionDeclaration(function) => function.codegen(),
 
 			Self::TypeAlias { modifiers, name, generics, definition } => {
-				dry!(modifiers, |value| value.to_string(), " ", "{} ");
-				dry!(generics, |value| value.codegen(), ", ", "<{}>");
+				let modifiers = cond_vec_transform!(modifiers, |value| value.to_string(), " ", "{} ");
+				let generics = cond_vec_transform!(generics, |value| value.codegen(), ", ", "<{}>");
 
 				format!("{}type {}{} = {};", modifiers, name, generics, definition.codegen())
 			},
 
 			Self::ClassDefinition { modifiers, name, generics, members } => {
-				dry!(modifiers, |value| value.to_string(), " ", "{} ");
-				dry!(generics, |value| value.codegen(), ", ", "<{}>");
+				let modifiers = cond_vec_transform!(modifiers, |value| value.to_string(), " ", "{} ");
+				let generics = cond_vec_transform!(generics, |value| value.codegen(), ", ", "<{}>");
 
-				dry!(members, |value| value.codegen(), "\n");
+				let members = vec_transform_str(members, |value| value.codegen(), "\n");
 
 				format!("{}class {}{}\n{}\nend", modifiers, name, generics, indent_all_by(NUM_SPACES, members))
 			},
 
 			Self::VariableDefinition { modifiers, name, kind, value } => {
-				dry!(modifiers, |value| value.to_string(), " ", "{} ");
+				let modifiers = cond_vec_transform!(modifiers, |value| value.to_string(), " ", "{} ");
 
 				if let Some(kind) = kind {
 					format!("{}var {}: {} = {};", modifiers, name, kind.codegen(), value.codegen())
@@ -38,8 +38,8 @@ impl HasanCodegen for Statement {
 			Self::VariableAssign { name, value } => format!("{} = {};", name.codegen(), value.codegen()),
 
 			Self::FunctionCall { callee, generics, arguments } => {
-				dry!(generics, |value| value.codegen(), ", ", "<{}>");
-				dry!(arguments, |value| value.codegen(), ", ");
+				let generics = cond_vec_transform!(generics, |value| value.codegen(), ", ", "<{}>");
+				let arguments = vec_transform_str(arguments, |value| value.codegen(), ", ");
 
 				format!("{}{}({});", callee.codegen(), generics, arguments)
 			},
@@ -51,8 +51,8 @@ impl HasanCodegen for Statement {
 			},
 
 			Self::EnumDefinition { modifiers, name, variants } => {
-				dry!(modifiers, |value| value.to_string(), " ", "{} ");
-				dry!(variants, |value| value.codegen(), ",\n");
+				let modifiers = cond_vec_transform!(modifiers, |value| value.to_string(), " ", "{} ");
+				let variants = vec_transform_str(variants, |value| value.codegen(), ",\n");
 				
 				format!(
 					"{}enum {}\n{}\nend",
@@ -64,7 +64,7 @@ impl HasanCodegen for Statement {
 			},
 
 			Self::If { condition, statements, elseif_branches, else_branch } => {
-				dry!(statements, |value| value.codegen(), "\n");
+				let statements = vec_transform_str(statements, |value| value.codegen(), "\n");
 				
 				if elseif_branches.is_empty() && else_branch.is_none() {
 					return format!(
@@ -125,7 +125,7 @@ impl HasanCodegen for Statement {
 			},
 
 			Self::While { condition, statements } => {
-				dry!(statements, |value| value.codegen(), "\n");
+				let statements = vec_transform_str(statements, |value| value.codegen(), "\n");
 
 				format!(
 					"while {} do\n{}\nend",
@@ -136,7 +136,7 @@ impl HasanCodegen for Statement {
 			},
 
 			Self::For { left, right, statements } => {
-				dry!(statements, |value| value.codegen(), "\n");
+				let statements = vec_transform_str(statements, |value| value.codegen(), "\n");
 
 				format!(
 					"for {} in {} do\n{}\nend",
@@ -150,9 +150,10 @@ impl HasanCodegen for Statement {
 			Self::Break => "break;".to_owned(),
 
 			Self::InterfaceDefinition { modifiers, name, generics, members } => {
-				dry!(modifiers, |value| value.to_string(), " ", "{} ");
-				dry!(generics, |value| value.codegen(), ", ", "<{}>");
-				dry!(members, |value| value.codegen(), "\n");
+				let modifiers = cond_vec_transform!(modifiers, |value| value.to_string(), " ", "{} ");
+				let generics = cond_vec_transform!(generics, |value| value.codegen(), ", ", "<{}>");
+
+				let members = vec_transform_str(members, |value| value.codegen(), "\n");
 
 				format!(
 					"{}interface {}{}\n{}\nend",
@@ -165,9 +166,10 @@ impl HasanCodegen for Statement {
 			},
 
 			Self::InterfaceImplementation { interface_name, interface_generics, class_name, class_generics, members } => {
-				dry!(interface_generics, |value| value.codegen(), ", ", "<{}>");
-				dry!(class_generics, |value| value.codegen(), ", ", "<{}>");
-				dry!(members, |value| value.codegen(), "\n");
+				let interface_generics = cond_vec_transform!(interface_generics, |value| value.codegen(), ", ", "<{}>");
+				let class_generics = cond_vec_transform!(class_generics, |value| value.codegen(), ", ", "<{}>");
+
+				let members = vec_transform_str(members, |value| value.codegen(), "\n");
 
 				format!(
 					"impl {}{} for {}{}\n{}\nend",
@@ -197,12 +199,23 @@ impl HasanCodegen for Statement {
 			},
 			
 			Self::ModuleUseItems { path, name, items } => {
-				dry!(items, |value| value.codegen(), ",\n");
+				let items = vec_transform_str(items, |value| value.codegen(), ",\n");
 
 				if path.is_empty() {
-					format!("use module {}\n{}\nend", name, indent_all_by(NUM_SPACES, items))
+					format!(
+						"use module {}\n{}\nend",
+						
+						name,
+						indent_all_by(NUM_SPACES, items)
+					)
 				} else {
-					format!("use module {}.{}\n{}\nend", path.join("."), name, indent_all_by(NUM_SPACES, items))
+					format!(
+						"use module {}.{}\n{}\nend",
+						
+						path.join("."),
+						name,
+						indent_all_by(NUM_SPACES, items)
+					)
 				}
 			},
 
