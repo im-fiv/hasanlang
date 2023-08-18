@@ -24,10 +24,10 @@ impl FunctionType {
 			.collect::<Vec<_>>()
 			.join(", ");
 
-		let generics_str = if generics.is_empty() {
-			"".to_owned()
-		} else {
+		let generics_str = if !generics.is_empty() {
 			format!("<{}>", generics)
+		} else {
+			String::new()
 		};
 
 		format!("{}({}) -> {}", generics_str, argument_types, self.return_type.codegen())

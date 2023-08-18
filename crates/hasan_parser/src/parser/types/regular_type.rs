@@ -21,10 +21,10 @@ impl HasanCodegen for RegularType {
 			.collect::<Vec<_>>()
 			.join(", ");
 
-		let generics_str = if generics.is_empty() {
-			"".to_owned()
-		} else {
+		let generics_str = if !generics.is_empty() {
 			format!("<{}>", generics)
+		} else {
+			String::new()
 		};
 
 		format!("{}{}{}", self.name, generics_str, array_str)

@@ -256,6 +256,7 @@ dependencies = [
  "anyhow",
  "hasan_hir",
  "hasan_parser",
+ "indent",
  "paste",
  "strum",
  "strum_macros",

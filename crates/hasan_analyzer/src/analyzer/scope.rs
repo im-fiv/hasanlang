@@ -1,15 +1,18 @@
-use super::{Symbol, BuiltinType};
+use super::Symbol;
 
 use hasan_hir as hir;
 
 use std::collections::HashMap;
 use anyhow::{Error, bail};
 
-type SymbolTable = HashMap<String, Symbol>;
+pub type SymbolTable = HashMap<String, Symbol>;
+/// Contains a "generics map" for a given symbol
+pub type GenericTable = HashMap<Symbol, Vec<Symbol>>;
 
 #[derive(Debug, Clone)]
 pub struct Scope {
 	pub symbol_table: SymbolTable,
+	pub generic_table: GenericTable,
 	pub flags: ScopeFlags
 }
 
@@ -17,6 +20,7 @@ impl Scope {
 	pub fn new() -> Self {
 		Self {
 			symbol_table: Self::create_populated_table(),
+			generic_table: HashMap::new(),
 			flags: ScopeFlags::default()
 		}
 	}
@@ -28,12 +32,12 @@ impl Scope {
 		macro_rules! def_builtin {
 			($variant:ident) => {
 				{
-					let name = BuiltinType::$variant.to_string();
+					let name = hir::IntrinsicType::$variant.to_string();
 
 					let class = hir::Class {
 						name: name.clone(),
 						members: vec![],
-						implements_interfaces: BuiltinType::$variant.implemented_interfaces()
+						implements_interfaces: hir::IntrinsicType::$variant.implemented_interfaces()
 					};
 
 					table.insert(name, Symbol::Class(class));
@@ -54,6 +58,7 @@ impl Scope {
 	pub fn create_child_scope(&self) -> Self {
 		Self {
 			symbol_table: self.symbol_table.clone(),
+			generic_table: self.generic_table.clone(), // TODO: Is this correct?
 			flags: self.flags
 		} 
 	}
@@ -85,6 +90,55 @@ impl Scope {
 	}
 }
 
+impl hir::HirDiagnostics for Scope {
+	fn info_string(&self) -> String {
+		use indent::{indent_all_by, indent_all_with};
+		use hasan_parser::NUM_SPACES;
+
+		let symbol_table = self
+			.symbol_table
+			.values()
+			.map(|symbol| symbol.info_string())
+			.collect::<Vec<_>>()
+			.join("\n\n");
+
+		let generic_table = self
+			.generic_table
+			.iter()
+			.map(|(symbol, table)| {
+				let mut table_str = String::new();
+
+				for table_entry in table {
+					table_str.push_str(&table_entry.info_string());
+				}
+
+				format!(
+					"{}:\n{}",
+					symbol.name(),
+					table_str
+				)
+			})
+			.collect::<Vec<_>>()
+			.join("\n");
+
+		let flags = self.flags.info_string();
+
+		let scope_info = indent_all_by(NUM_SPACES, format!(
+			"Scope Info:\n{}",
+
+			indent_all_by(hasan_parser::NUM_SPACES, format!(
+				"Symbol Table:\n{}\n\nGeneric Table:\n{}\n\nFlags:\n{}",
+
+				indent_all_by(NUM_SPACES, symbol_table),
+				indent_all_by(NUM_SPACES, generic_table),
+				indent_all_by(NUM_SPACES, indent_all_with("- ", flags))
+			))
+		));
+
+		format!("/*\n{}\n*/", scope_info)
+	}
+}
+
 impl Default for Scope {
 	fn default() -> Self {
 		Self::new()
@@ -102,6 +156,30 @@ pub struct ScopeFlags {
 	pub in_class: bool
 }
 
+impl ScopeFlags {
+	pub fn as_string_vec(&self) -> Vec<String> {
+		let mut flags = vec![];
+
+		if self.global {
+			flags.push("global".to_owned());
+		}
+
+		if self.in_function {
+			flags.push("in_function".to_owned());
+		}
+
+		if self.in_loop {
+			flags.push("in_loop".to_owned());
+		}
+
+		flags
+	}
+
+	pub fn info_string(&self) -> String {
+		self.as_string_vec().join(",\n")
+	}
+}
+
 impl Default for ScopeFlags {
 	fn default() -> Self {
 		Self {
@@ -116,20 +194,6 @@ impl Default for ScopeFlags {
 
 impl ToString for ScopeFlags {
 	fn to_string(&self) -> String {
-		let mut flags = vec![];
-
-		if self.global {
-			flags.push("global");
-		}
-
-		if self.in_function {
-			flags.push("in_function");
-		}
-
-		if self.in_loop {
-			flags.push("in_loop");
-		}
-
-		format!("ScopeFlags({})", flags.join(", "))
+		format!("ScopeFlags({})", self.as_string_vec().join(", "))
 	}
 }

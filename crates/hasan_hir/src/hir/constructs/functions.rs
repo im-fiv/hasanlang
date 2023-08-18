@@ -1,5 +1,8 @@
-use crate::{TypeRef, Statement, HIRCodegen};
 use hasan_parser::{vec_transform_str, NUM_SPACES};
+use crate::{
+	TypeRef, Statement,
+	HirCodegen, HirDiagnostics,
+};
 
 use indent::indent_all_by;
 
@@ -11,7 +14,24 @@ pub struct Function {
 	pub body: FunctionBody
 }
 
-impl HIRCodegen for Function {
+impl HirDiagnostics for Function {
+	fn info_string(&self) -> String {
+		let prototype = self.prototype.info_string();
+
+		match self.body.clone() {
+			Some(_) => format!(
+				"{} do\n{}\nend",
+
+				prototype,
+				indent_all_by(NUM_SPACES, "...")
+			),
+
+			None => prototype
+		}
+	}
+}
+
+impl HirCodegen for Function {
 	fn codegen(&self) -> String {
 		if let Some(body) = self.body.clone() {
 			let body = vec_transform_str(
@@ -31,6 +51,15 @@ impl HIRCodegen for Function {
 	}	
 }
 
+impl From<FunctionPrototype> for Function {
+	fn from(prototype: FunctionPrototype) -> Self {
+		Self {
+			prototype,
+			body: None
+		}
+	}
+}
+
 //-----------------------------------------------------------------//
 
 #[derive(Debug, Clone, PartialEq)]
@@ -40,7 +69,13 @@ pub struct FunctionPrototype {
 	pub return_type: TypeRef
 }
 
-impl HIRCodegen for FunctionPrototype {
+impl HirDiagnostics for FunctionPrototype {
+	fn info_string(&self) -> String {
+		self.codegen()
+	}
+}
+
+impl HirCodegen for FunctionPrototype {
 	fn codegen(&self) -> String {
 		let arguments = vec_transform_str(&self.arguments, |argument| argument.codegen(), ", ");
 		format!("func {}({}) -> {}", self.name, arguments, self.return_type.codegen())
@@ -55,7 +90,7 @@ pub struct FunctionArgument {
 	pub kind: TypeRef
 }
 
-impl HIRCodegen for FunctionArgument {
+impl HirCodegen for FunctionArgument {
 	fn codegen(&self) -> String {
 		format!("{}: {}", self.name, self.kind.codegen())
 	}

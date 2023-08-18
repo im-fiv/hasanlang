@@ -1,17 +1,15 @@
-mod built_ins;
 mod scope;
 mod symbol;
 
-use built_ins::*;
-use scope::*;
-use symbol::*;
+pub use scope::*;
+pub use symbol::*;
 
 use anyhow::{Error, bail};
 
 use hasan_parser as p;
 use hasan_hir as hir;
 
-use hir::HIRCodegen;
+use hir::HirCodegen;
 
 #[derive(Debug, Clone)]
 pub struct SemanticAnalyzer {
@@ -62,10 +60,10 @@ impl SemanticAnalyzer {
 
 		macro_rules! def_builtin {
 			($name:ident, $variant:ident) => {
-				let $name = self
+				let $name: hir::Class = self
 					.scope
-					.get_symbol(&BuiltinType::$variant.to_string())?
-					.as_class()?;
+					.get_symbol(&hir::IntrinsicType::$variant.to_string())?
+					.try_into()?;
 			};
 		}
 
@@ -118,7 +116,9 @@ impl SemanticAnalyzer {
 					bail!("Symbol `{}` is not a type", kind.name);
 				}
 
-				Ok(hir::TypeRef(symbol.as_class()?, dimensions))
+				let class: hir::Class = symbol.try_into()?;
+
+				Ok(hir::TypeRef(class, dimensions))
 			},
 
 			p::Type::Function(kind) => {
@@ -245,6 +245,11 @@ impl SemanticAnalyzer {
 	fn analyze_function(&mut self, function: p::Function) -> Result<hir::Function, Error> {
 		let prototype = self.analyze_function_prototype(function.prototype)?;
 
+		self.scope.insert_symbol(
+			prototype.name.clone(),
+			Symbol::Class(prototype.clone().into())
+		)?;
+
 		let body: Option<Vec<hir::Statement>> = if let Some(func_body) = function.body {
 			let original_scope = self.scope.clone();
 			let mut converted = vec![];
@@ -265,10 +270,17 @@ impl SemanticAnalyzer {
 			None
 		};
 
-		Ok(hir::Function {
-			prototype,
+		let function = hir::Function {
+			prototype: prototype.clone(),
 			body
-		})
+		};
+
+		self.scope.update_symbol(
+			prototype.name.clone(),
+			Symbol::Class(function.clone().into())
+		)?;
+
+		Ok(function)
 	}
 
 	fn analyze_function_stmt(&mut self, statement: p::Statement) -> Result<hir::Statement, Error> {
@@ -323,7 +335,7 @@ impl SemanticAnalyzer {
 					}
 				}
 
-				let flags = hir::ClassVariableFlags {
+				let flags = hir::ClassVariableModifiers {
 					is_public: m_public,
 					is_const: m_const,
 					is_static: m_static
@@ -381,7 +393,7 @@ impl SemanticAnalyzer {
 					body: Some(body)
 				})?;
 
-				let flags = hir::ClassFunctionFlags {
+				let flags = hir::ClassFunctionModifiers {
 					is_public: m_public,
 					is_static: m_static
 				};

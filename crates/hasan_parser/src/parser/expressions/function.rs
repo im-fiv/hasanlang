@@ -1,7 +1,7 @@
 use crate::{
 	Statement, vec_transform_str, HasanCodegen,
 	NUM_SPACES, GeneralModifiers, DefinitionType,
-	Type, dry
+	Type, cond_vec_transform
 };
 
 use indent::indent_all_by;
@@ -46,15 +46,13 @@ pub struct FunctionPrototype {
 
 impl HasanCodegen for FunctionPrototype {
 	fn codegen(&self) -> String {
-		let modifiers = &self.modifiers;
-		let generics = &self.generics;
+		let modifiers = cond_vec_transform!(&self.modifiers, |modifier| modifier.to_string(), " ", "{} ");
+		let generics = cond_vec_transform!(&self.generics, |generic| generic.codegen(), ", ", "<{}>");
 
-		dry!(modifiers, |modifier| modifier.to_string(), " ", "{} ");
-		dry!(generics, |generic| generic.codegen(), ", ", "<{}>");
 
 		let return_type = match self.return_type.clone() {
 			Some(kind) => format!(" -> {}", kind.codegen()),
-			None => "".to_owned()
+			None => String::new()
 		};
 
 		let arguments = vec_transform_str(

@@ -8,15 +8,22 @@ pub use expression::*;
 pub use function::*;
 pub use unary_operator::*;
 
-macro_rules! dry {
-	($name:ident, $func:expr, $sep:expr, $format:expr) => {
-		dry!($name, $func, $sep);
-		let $name = if !$name.is_empty() { format!($format, $name) } else { "".to_owned() };
-	};
+/// Conditional vector transformation.
+/// Expands to `crate::vec_transform_str($value, $func, $sep)`.
+/// If the resulting value is not empty, formats it with `$format`.
+/// Otherwise, returns an empty owned string.
+macro_rules! cond_vec_transform {
+	($value:expr, $func:expr, $sep:expr, $format:expr) => {
+		{
+			let result = crate::vec_transform_str($value, $func, $sep);
 
-	($name:ident, $func:expr, $sep:expr) => {
-		let $name = vec_transform_str($name, $func, $sep);
+			if !result.is_empty() {
+				format!($format, result)
+			} else {
+				String::new()
+			}
+		}
 	};
 }
 
-pub(crate) use dry;
+pub(crate) use cond_vec_transform;

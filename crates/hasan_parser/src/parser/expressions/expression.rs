@@ -119,13 +119,13 @@ impl HasanCodegen for Expression {
 				let return_type = *return_type.to_owned();
 				
 				let generics_str = if generics.is_empty() {
-					"".to_owned()
+					String::new()
 				} else {
 					format!("<{}>", generics)
 				};
 
 				let return_type_str = if return_type.is_none() {
-					"".to_owned()
+					String::new()
 				} else {
 					format!(" -> {}", return_type.unwrap().codegen())
 				};
@@ -139,7 +139,7 @@ impl HasanCodegen for Expression {
 				)
 			},
 
-			Self::Empty => "".to_owned(),
+			Self::Empty => String::new(),
 			Self::Unimplemented => "/* unimplemented */".to_owned()
 		}
 	}

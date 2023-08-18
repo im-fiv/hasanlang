@@ -1536,7 +1536,7 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.unwrap_or_else(|| panic!("Failed to parse a class definition function: expected rule '{:?}', got nothing", Rule::function_definition_stmt));
 
-		let attributes = attributes.unwrap_or(vec![]);
+		let attributes = attributes.unwrap_or_default();
 		let function_statement = self.parse_function_definition(statement_pair);
 		ClassFunction::from_statement(function_statement, attributes)
 	}

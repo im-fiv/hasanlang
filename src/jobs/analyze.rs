@@ -1,6 +1,6 @@
-use hasan_analyzer::SemanticAnalyzer;
+use hasan_analyzer::{SemanticAnalyzer, Scope};
 
-pub fn analyze(ast: hasan_parser::Program, debug: bool) -> hasan_hir::Program {
+pub fn analyze(ast: hasan_parser::Program, debug: bool) -> (hasan_hir::Program, Scope) {
 	if debug {
 		println!("Analyzing...");
 	}
@@ -19,5 +19,5 @@ pub fn analyze(ast: hasan_parser::Program, debug: bool) -> hasan_hir::Program {
 		println!();
 	}
 
-	ast
+	(ast, analyzer.scope)
 }

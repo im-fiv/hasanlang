@@ -1,8 +1,8 @@
-use hasan_hir::HIRCodegen;
+use crate::HirCodegen;
 use strum_macros::Display;
 
 #[derive(Debug, Clone, PartialEq, Display)]
-pub enum BuiltinInterface {
+pub enum IntrinsicInterface {
 	/// `+` operator
 	AddOp(String),
 
@@ -37,7 +37,19 @@ pub enum BuiltinInterface {
 	Function
 }
 
-impl HIRCodegen for BuiltinInterface {
+impl IntrinsicInterface {
+	pub fn get_member_name(&self, pos: usize) -> Option<String> {
+		let member_names = match self {
+			Self::Function => vec!["call"],
+
+			_ => todo!("members for the rest of intrinsic interfaces")
+		};
+
+		member_names.get(pos).map(|&name| name.to_owned())
+	}
+}
+
+impl HirCodegen for IntrinsicInterface {
 	fn codegen(&self) -> String {
 		match self {
 			Self::AddOp(v) |

@@ -1,4 +1,4 @@
-use crate::HIRCodegen;
+use crate::HirCodegen;
 use super::{ClassVariable, ClassFunction};
 
 #[derive(Debug, Clone, PartialEq)]
@@ -16,7 +16,7 @@ impl ClassMember {
 	}
 }
 
-impl HIRCodegen for ClassMember {
+impl HirCodegen for ClassMember {
 	fn codegen(&self) -> String {
 		match self {
 			Self::Variable(variable) => variable.codegen(),

@@ -1,4 +1,4 @@
-use crate::HIRCodegen;
+use crate::{HirCodegen, HirDiagnostics};
 use super::Type;
 
 /// A reference to a type with the second parameter being the dimensions of array (if present)
@@ -9,17 +9,25 @@ pub struct TypeRef(
 );
 
 impl TypeRef {
-	pub fn from_type(kind: Type) -> Self {
-		Self(kind, 0)
-	}
-
 	pub fn display(&self) -> String {
 		format!("{}{}", self.0.name, "[]".repeat(self.1))
 	}
 }
 
-impl HIRCodegen for TypeRef {
+impl HirDiagnostics for TypeRef {
+	fn info_string(&self) -> String {
+		self.codegen()
+	}
+}
+
+impl HirCodegen for TypeRef {
 	fn codegen(&self) -> String {
 		format!("{}{}", self.0.codegen(), "[]".repeat(self.1))
+	}
+}
+
+impl From<Type> for TypeRef {
+	fn from(kind: Type) -> Self {
+		Self(kind, 0)
 	}
 }

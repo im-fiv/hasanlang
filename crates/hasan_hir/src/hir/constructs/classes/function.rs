@@ -1,15 +1,26 @@
-use crate::{Function, HIRCodegen};
-
 use hasan_parser::vec_transform_str;
+use crate::{Function, HirCodegen, HirDiagnostics};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct ClassFunction {
 	pub attributes: hasan_parser::ClassFunctionAttributes,
 	pub function: Function,
-	pub flags: ClassFunctionFlags
+	pub flags: ClassFunctionModifiers
 }
 
-impl HIRCodegen for ClassFunction {
+impl HirDiagnostics for ClassFunction {
+	fn info_string(&self) -> String {
+		let flags = self.flags.info_string();
+
+		if !flags.is_empty() {
+			format!("{} {}", flags, self.function.info_string())
+		} else {
+			self.function.info_string()
+		}
+	}
+}
+
+impl HirCodegen for ClassFunction {
 	fn codegen(&self) -> String {
 		let attributes = vec_transform_str(
 			&self.attributes,
@@ -20,7 +31,7 @@ impl HIRCodegen for ClassFunction {
 		let attributes = if !attributes.is_empty() {
 			format!("#[{}]\n", attributes)
 		} else {
-			"".to_owned()
+			String::new()
 		};
 
 		format!("{}{}{}", self.flags.codegen(), attributes, self.function.codegen())
@@ -30,12 +41,18 @@ impl HIRCodegen for ClassFunction {
 //-----------------------------------------------------------------//
 
 #[derive(Debug, Clone, Copy, PartialEq)]
-pub struct ClassFunctionFlags {
+pub struct ClassFunctionModifiers {
 	pub is_public: bool,
 	pub is_static: bool
 }
 
-impl HIRCodegen for ClassFunctionFlags {
+impl HirDiagnostics for ClassFunctionModifiers {
+	fn info_string(&self) -> String {
+		self.codegen()
+	}
+}
+
+impl HirCodegen for ClassFunctionModifiers {
 	fn codegen(&self) -> String {
 		let mut truthy_values: Vec<String> = vec![];
 
