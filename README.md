@@ -23,7 +23,7 @@ To set up Hasanlang, you will need to have [Rust](https://www.rust-lang.org/tool
 ```bash
 git clone https://github.com/greenbush5/hasanlang.git
 cd hasanlang
-cargo build
+cargo build --release
 ```
 
 Additionally, you can install [Hasanlang syntax highlighting extension](https://github.com/greenbush5/hasanlang-syntax-extension) for VS Code. This is my first time making a syntax highlighting extension, so feel free to contribute to this extension as well!
