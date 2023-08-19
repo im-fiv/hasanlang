@@ -1,6 +1,7 @@
 # Hasanlang
 ![Build Status](https://github.com/greenbush5/hasanlang/actions/workflows/build.yml/badge.svg)
 ![Language](https://img.shields.io/badge/Language-Rust-orange)
+![Hits-of-Code](https://hitsofcode.com/github/greenbush5/hasanlang?branch=main)]
 ![Contributions](https://img.shields.io/badge/Contributions-Welcome-brightgreen)
 
 Hasanlang is a work-in-progress programming language, made for fun, that aims to be self-hosted. The goal of this project is to extend my knowledge about compilers, programming languages, and how they are made. Currently, this is my primary project.
