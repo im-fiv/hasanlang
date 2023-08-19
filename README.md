@@ -53,7 +53,6 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 - [ ] Exhaustive expression compiling
 - [ ] Exhaustive statement compiling
 - [ ] Bug fixes
-  - [ ] Nested functions not working
   - [ ] Constant string variables causing the compiler to crash
 - [ ] `if` statements
 - [ ] `for` and `while` loops
@@ -84,6 +83,7 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 - [ ] Circular imports checking
 - [ ] `return` statement checking
 - [ ] `break` statement checking
+- [ ] Nested functions flattening
 
 ### Corrective Parser:
 
