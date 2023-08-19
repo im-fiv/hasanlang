@@ -7,7 +7,7 @@ use anyhow::{Error, bail};
 
 /// An enum containing all of the built-in types (typically types that have their default behavior explicitly defined by the compiler)
 #[derive(Debug, Clone, Display)]
-pub enum BuiltinType {
+pub enum IntrinsicType {
 	Int,
 	Float,
 	String,
@@ -15,7 +15,7 @@ pub enum BuiltinType {
 	Void
 }
 
-impl<'ctx> BuiltinType {
+impl<'ctx> IntrinsicType {
 	/// Returns the corresponding LLVM type of a built-in type
 	pub fn as_llvm_type(&self, context: &'ctx Context) -> Option<BasicTypeEnum<'ctx>> {
 		match self {
@@ -29,7 +29,7 @@ impl<'ctx> BuiltinType {
 	}
 }
 
-impl TryFrom<&str> for BuiltinType {
+impl TryFrom<&str> for IntrinsicType {
 	type Error = Error;
 
 	fn try_from(value: &str) -> Result<Self, Self::Error> {

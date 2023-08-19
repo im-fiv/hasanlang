@@ -187,7 +187,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 		// TODO: Allow for resolving non-built-in types
 		let hir::TypeRef(kind, _dimensions) = kind;
 		
-		let resolved_type = BuiltinType::try_from(kind.name.as_str())?
+		let resolved_type = IntrinsicType::try_from(kind.name.as_str())?
 			.as_llvm_type(self.context);
 		
 		// TODO: Make use of `dimensions` field

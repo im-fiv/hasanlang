@@ -76,6 +76,6 @@ impl HirCodegen for Variable {
 			""
 		}.to_owned();
 
-		format!("{}var {}: {} = {}", prefix, self.name, self.kind.codegen(), self.value.codegen())
+		format!("{}var {}: {} = {};", prefix, self.name, self.kind.codegen(), self.value.codegen())
 	}
 }

@@ -9,18 +9,21 @@ pub struct TypeRef(
 );
 
 impl TypeRef {
+	#[inline]
 	pub fn display(&self) -> String {
 		format!("{}{}", self.0.name, "[]".repeat(self.1))
 	}
 }
 
 impl HirDiagnostics for TypeRef {
+	#[inline]
 	fn info_string(&self) -> String {
 		self.codegen()
 	}
 }
 
 impl HirCodegen for TypeRef {
+	#[inline]
 	fn codegen(&self) -> String {
 		format!("{}{}", self.0.codegen(), "[]".repeat(self.1))
 	}

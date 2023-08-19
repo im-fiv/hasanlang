@@ -9,6 +9,19 @@ pub type SymbolTable = HashMap<String, Symbol>;
 /// Contains a "generics map" for a given symbol
 pub type GenericTable = HashMap<Symbol, Vec<Symbol>>;
 
+// TODO: One possible way of implementing the generics table:
+//
+// Given this scope structure:
+//   A
+//  / \
+// B  C
+//
+// From scope `A`, analyze both `B` and `C` scopes, and clone their generic tables.
+// Next, search for symbols that exist both in `A` and the underlying scope.
+// If such shared symbols exist, propagate the updated generic table to scope `A`.
+// Given that there may be conflicts between `B` and `C`, we only want to
+// add non-existing generic table entries, rather than overwriting existing ones.
+
 #[derive(Debug, Clone)]
 pub struct Scope {
 	pub symbol_table: SymbolTable,
@@ -19,39 +32,10 @@ pub struct Scope {
 impl Scope {
 	pub fn new() -> Self {
 		Self {
-			symbol_table: Self::create_populated_table(),
+			symbol_table: HashMap::new(),
 			generic_table: HashMap::new(),
 			flags: ScopeFlags::default()
 		}
-	}
-
-	fn create_populated_table() -> SymbolTable {
-		let mut table: SymbolTable = HashMap::new();
-
-		// Defining built-in types
-		macro_rules! def_builtin {
-			($variant:ident) => {
-				{
-					let name = hir::IntrinsicType::$variant.to_string();
-
-					let class = hir::Class {
-						name: name.clone(),
-						members: vec![],
-						implements_interfaces: hir::IntrinsicType::$variant.implemented_interfaces()
-					};
-
-					table.insert(name, Symbol::Class(class));
-				}
-			};
-		}
-
-		def_builtin!(Integer);
-		def_builtin!(Float);
-		def_builtin!(String);
-		def_builtin!(Boolean);
-		def_builtin!(Void);
-
-		table
 	}
 
 	/// Creates a child scope while keeping all of the variables in scope

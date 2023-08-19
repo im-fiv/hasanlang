@@ -1,0 +1,3 @@
+[submodule "hasanlang-syntax-extension"]
+	path = syntax-extension
+	url = https://github.com/greenbush5/hasanlang-syntax-extension

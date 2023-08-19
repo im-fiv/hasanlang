@@ -1,5 +1,4 @@
-use crate::HirCodegen;
-use super::{ClassVariable, ClassFunction};
+use crate::{HirCodegen, ClassVariable, ClassFunction};
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum ClassMember {

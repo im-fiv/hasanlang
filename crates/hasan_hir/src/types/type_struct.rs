@@ -1,18 +1,28 @@
 use crate::{
-	ClassMember, HirCodegen, HirDiagnostics, FunctionPrototype,
-	Function, IntrinsicInterface
+	ClassMember, HirCodegen, HirDiagnostics,
+	FunctionPrototype, Function, IntrinsicInterface
 };
 
 use hasan_parser::NUM_SPACES;
 use indent::indent_all_by;
 
 /// Every type is essentially a class, even functions.
-/// All functions/closures automatically implement their according built-in interface
+/// All functions/closures automatically implement their according intrinsic interface
 #[derive(Debug, Clone, PartialEq)]
 pub struct Type {
 	pub name: String,
 	pub members: Vec<ClassMember>,
 	pub implements_interfaces: Vec<String>
+}
+
+impl Type {
+	pub fn member_by_name(&self, name: &str) -> Option<ClassMember> {
+		self
+			.members
+			.clone()
+			.into_iter()
+			.find(|member| member.name() == *name)
+	}
 }
 
 impl HirDiagnostics for Type {
@@ -76,8 +86,8 @@ impl From<Function> for Type {
 	fn from(function: Function) -> Self {
 		let inner_function = {
 			let prototype = FunctionPrototype {
-				name: IntrinsicInterface::Function.get_member_name(0).unwrap(),
-				arguments: vec![],
+				name: IntrinsicInterface::Function.members().get(0).unwrap().name(),
+				arguments: function.prototype.arguments,
 				return_type: function.prototype.return_type
 			};
 
@@ -90,7 +100,7 @@ impl From<Function> for Type {
 		let class_function = crate::ClassFunction {
 			attributes: vec![],
 			function: inner_function,
-			flags: crate::ClassFunctionModifiers {
+			modifiers: crate::ClassFunctionModifiers {
 				is_public: true,
 				is_static: false
 			}

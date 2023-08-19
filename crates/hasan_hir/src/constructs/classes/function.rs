@@ -1,16 +1,18 @@
 use hasan_parser::vec_transform_str;
-use crate::{Function, HirCodegen, HirDiagnostics};
+use crate::{Function, HirCodegen, HirDiagnostics, ClassMember};
+
+use anyhow::{Error, bail};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct ClassFunction {
 	pub attributes: hasan_parser::ClassFunctionAttributes,
 	pub function: Function,
-	pub flags: ClassFunctionModifiers
+	pub modifiers: ClassFunctionModifiers
 }
 
 impl HirDiagnostics for ClassFunction {
 	fn info_string(&self) -> String {
-		let flags = self.flags.info_string();
+		let flags = self.modifiers.info_string();
 
 		if !flags.is_empty() {
 			format!("{} {}", flags, self.function.info_string())
@@ -34,16 +36,37 @@ impl HirCodegen for ClassFunction {
 			String::new()
 		};
 
-		format!("{}{}{}", self.flags.codegen(), attributes, self.function.codegen())
+		format!("{}{}{}", self.modifiers.codegen(), attributes, self.function.codegen())
+	}
+}
+
+impl TryFrom<ClassMember> for ClassFunction {
+	type Error = Error;
+
+	fn try_from(member: ClassMember) -> Result<Self, Self::Error> {
+		if let ClassMember::Function(function) = member {
+			return Ok(function);
+		}
+
+		bail!("Class member `{}` is not a function", member.name());
 	}
 }
 
 //-----------------------------------------------------------------//
 
-#[derive(Debug, Clone, Copy, PartialEq)]
+#[derive(Debug, Clone, Copy, PartialEq, Default)]
 pub struct ClassFunctionModifiers {
 	pub is_public: bool,
 	pub is_static: bool
+}
+
+impl ClassFunctionModifiers {
+	pub fn new(is_public: bool, is_static: bool) -> Self {
+		Self {
+			is_public,
+			is_static
+		}
+	}
 }
 
 impl HirDiagnostics for ClassFunctionModifiers {

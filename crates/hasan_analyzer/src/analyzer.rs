@@ -51,6 +51,9 @@ impl SemanticAnalyzer {
 
 			Return(value) => self.analyze_return(value),
 
+			InterfaceImplementation { interface_name, interface_generics, class_name, class_generics, members } =>
+				self.analyze_interface_impl(interface_name, interface_generics, class_name, class_generics, members),
+
 			_ => bail!("Encountered unsupported statement `{}`", statement.to_string())
 		}
 	}
@@ -69,7 +72,7 @@ impl SemanticAnalyzer {
 
 		macro_rules! wrap_ok_ref {
 			($value:expr) => {
-				Ok(hir::TypeRef($value, 0))
+				Ok($value.into())
 			};
 
 			($value:expr, $dimensions:expr) => {
@@ -87,6 +90,172 @@ impl SemanticAnalyzer {
 			Float(_) => wrap_ok_ref!(t_float),
 			String(_) => wrap_ok_ref!(t_string),
 			Boolean(_) => wrap_ok_ref!(t_bool),
+
+			Unary { operator, operand } => {
+				let expression_type = self.type_from_expression(&operand)?;
+
+				use p::UnaryOperator::*;
+				use hir::IntrinsicInterface::*;
+
+				let interface = match operator {
+					Minus => NegOp,
+					Not => LogicOps(expression_type.codegen())
+				};
+
+				// TODO: This is incorrect
+				// The type should be checked with account for array dimensions
+				// rather than the underlying type
+				if !expression_type.0.implements_interfaces.contains(&interface.codegen()) {
+					bail!("Type `{}` does not implement interface `{}`", expression_type.codegen(), interface.codegen());
+				}
+
+				Ok(expression_type)
+			},
+
+			Binary { lhs, operator, rhs } => {
+				let lhs_type = self.type_from_expression(&lhs)?;
+				let rhs_type = self.type_from_expression(&rhs)?;
+
+				use p::BinaryOperator::*;
+				use hir::IntrinsicInterface::*;
+
+				let rhs_string = rhs_type.codegen();
+
+				let interface = match operator {
+					Plus => AddOp,
+					Minus => SubOp,
+					Divide => DivOp,
+					Times => MulOp,
+					Modulo => RemOp,
+					Equals | NotEquals => EqOps,
+					And | Or => LogicOps,
+					GreaterThan | LessThan => CmpOps,
+					GreaterThanEqual | LessThanEqual => CmpEqOps
+				}(rhs_string);
+
+				// TODO: This is incorrect
+				// The type should be checked with account for array dimensions
+				// rather than the underlying type
+				if !lhs_type.0.implements_interfaces.contains(&interface.codegen()) {
+					bail!("Type `{}` does not implement interface `{}`", lhs_type.codegen(), interface.codegen());
+				}
+
+				let interface_member_operator = hir::IntrinsicInterfaceMember::from(operator);
+				let interface_members = interface.members();
+				let interface_member_found = interface_members
+					.iter()
+					.find(|&&member| member == interface_member_operator);
+
+				if interface_member_found.is_none() {
+					bail!("Interface `{}` has not member named `{}`", interface.codegen(), interface_member_operator.name());
+				}
+
+				let interface_member_found = interface_member_found
+					.unwrap()
+					.to_owned();
+
+				let class_member = lhs_type
+					.0
+					.members
+					.iter()
+					.find(|&member| member.name() == interface_member_found.name())
+					.unwrap_or_else(|| unreachable!("Type `{}` has no member named `{}`", lhs_type.codegen(), interface_member_found.name()))
+					.to_owned();
+
+				let class_function = hir::ClassFunction::try_from(class_member)?;
+				let return_type = class_function.function.prototype.return_type;
+
+				Ok(return_type)
+			},
+
+			FunctionCall { callee, generics, arguments } => {
+				let callee_type = self.type_from_expression(&callee)?;
+
+				if
+					!callee_type.0.implements_interfaces.contains(
+						&hir::IntrinsicInterface::Function.codegen()
+					) ||
+					(callee_type.1 > 0)
+				{
+					bail!(
+						"Type `{}` does not implement interface `{}`",
+						callee_type.codegen(),
+						hir::IntrinsicInterface::Function.to_string()
+					);
+				}
+
+				let callee_type = callee_type.0;
+				
+				// TODO: Generics
+				if !generics.is_empty() {
+					bail!("Generics are not yet supported");
+				}
+
+				let function = hir::ClassFunction::try_from(
+					callee_type
+						.members
+						.get(0)
+						.unwrap_or_else(|| {
+							let interfaces = callee_type
+								.implements_interfaces
+								.join(", ");
+
+							unreachable!("Type `impl<{}>` is empty", interfaces)
+						})
+						.to_owned()
+				)?.function;
+
+				let prototype = function.prototype;
+
+				// Checking argument types and count
+				let len_expected = prototype.arguments.len();
+				let len_got = arguments.len();
+
+				if len_expected != len_got {
+					bail!(
+						"Incorrect amount of arguments for function `{}`: expected {} argument(s), got {}",
+						
+						prototype.name,
+						len_expected,
+						len_got
+					);
+				}
+
+				for (index, got) in arguments.iter().enumerate() {
+					let got = self.type_from_expression(got)?;
+
+					let expected = prototype
+						.arguments
+						.get(index)
+						.unwrap_or_else(|| unreachable!("Failed to get function argument #{}", index))
+						.kind
+						.clone();
+
+					if expected != got {
+						bail!(
+							"Incorrect type for argument #{} for function `{}`: expected type `{}`, got `{}`",
+
+							index,
+							prototype.name,
+							expected.codegen(),
+							got.codegen()
+						);
+					}
+				}
+
+				Ok(prototype.return_type)
+			},
+
+			Identifier(identifier) => {
+				let symbol = self.scope.get_symbol(&identifier)?;
+
+				Ok(match symbol {
+					Symbol::Class(class) => class.into(),
+					Symbol::Variable(variable) => variable.kind,
+
+					_ => bail!("Cannot use symbol of type `{}` as a value", symbol.to_string())
+				})
+			},
 
 			// TODO: Exhaustive expression type resolving
 
@@ -121,7 +290,7 @@ impl SemanticAnalyzer {
 				Ok(hir::TypeRef(class, dimensions))
 			},
 
-			p::Type::Function(kind) => {
+			p::Type::Function(_kind) => {
 				// TODO: Function type converting
 				todo!("function type converting")
 			}
@@ -145,7 +314,7 @@ impl SemanticAnalyzer {
 			bail!("`pub` modifiers are not permitted outside of modules");
 		}
 
-		if !m_public && !self.scope.flags.in_function {
+		if !m_public && !m_const && !self.scope.flags.in_function {
 			bail!("Cannot define a variable outside of a function");
 		}
 
@@ -346,7 +515,7 @@ impl SemanticAnalyzer {
 					kind: converted_kind,
 					default_value,
 
-					flags
+					modifiers: flags
 				};
 
 				hir::ClassMember::Variable(variable)
@@ -401,7 +570,7 @@ impl SemanticAnalyzer {
 				let class_function = hir::ClassFunction {
 					attributes,
 					function,
-					flags
+					modifiers: flags
 				};
 
 				hir::ClassMember::Function(class_function)
@@ -485,5 +654,38 @@ impl SemanticAnalyzer {
 		}
 
 		Ok(hir::Statement::Return(value))
+	}
+
+	fn analyze_interface_impl(
+		&mut self,
+		interface_name: String,
+		interface_generics: Vec<p::Type>,
+		class_name: String,
+		class_generics: Vec<p::Type>,
+		members: Vec<p::ClassMember>
+	) -> Result<hir::Statement, Error> {
+		let interface = match self.scope.get_symbol(&interface_name)? {
+			Symbol::Interface(interface) => interface,
+			symbol => bail!("Expected a symbol of type `Interface`, got `{}`", symbol.to_string())
+		};
+
+		// TODO: Generics
+		if !interface_generics.is_empty() {
+			bail!("Generics are not yet supported");
+		}
+
+		let class = match self.scope.get_symbol(&class_name)? {
+			Symbol::Class(class) => class,
+			symbol => bail!("Expected a symbol of type `Class`, got `{}`", symbol.to_string())
+		};
+
+		// TODO: Generics
+		if !class_generics.is_empty() {
+			bail!("Generics are not yet supported");
+		}
+
+		// TODO: Check member collisions, exhaustive implementation, and signatures
+
+		Ok(hir::Statement::Omitted)
 	}
 }
