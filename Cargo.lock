@@ -282,6 +282,7 @@ dependencies = [
 name = "hasan_hir"
 version = "0.0.0"
 dependencies = [
+ "anyhow",
  "hasan_parser",
  "indent",
  "strum",

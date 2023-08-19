@@ -21,7 +21,10 @@ pub enum Statement {
 	Break,
 	ModuleUse(ModuleInfo),
 	ModuleUseAll(ModuleInfo),
-	ModuleUseItems(ModuleInfo, Vec<String>)
+	ModuleUseItems(ModuleInfo, Vec<String>),
+
+	/// Special statement that represents all omitted statements
+	Omitted
 }
 
 impl HirCodegen for Statement {
@@ -71,7 +74,9 @@ impl HirCodegen for Statement {
 					info.name,
 					indent_all_by(NUM_SPACES, items)
 				)
-			}
+			},
+
+			Self::Omitted => String::new()
 		}
 	}
 }

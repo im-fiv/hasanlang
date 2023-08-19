@@ -1,5 +1,4 @@
-use crate::HirCodegen;
-use super::IntrinsicInterface;
+use crate::{HirCodegen, IntrinsicInterface};
 
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub enum IntrinsicType {
@@ -11,39 +10,53 @@ pub enum IntrinsicType {
 }
 
 impl IntrinsicType {
-	pub fn implemented_interfaces(&self) -> Vec<String> {
+	#[inline]
+	pub fn name(&self) -> String {
+		self.to_string()
+	}
+
+	pub fn impl_interfaces(&self) -> Vec<IntrinsicInterface> {
 		use IntrinsicInterface::*;
 
-		let number_interfaces = vec![
-			AddOp(Self::Integer.to_string()),
-			SubOp(Self::Integer.to_string()),
-			NegOp,
-			DivOp(Self::Integer.to_string()),
-			MulOp(Self::Integer.to_string()),
-			RemOp(Self::Integer.to_string()),
-			EqOps(Self::Integer.to_string()),
-			CmpOps(Self::Integer.to_string()),
-			CmpEqOps(Self::Integer.to_string()),
+		macro_rules! s_str {
+			($variant:ident) => {
+				Self::$variant.to_string()
+			}
+		}
 
-			AddOp(Self::Float.to_string()),
-			SubOp(Self::Float.to_string()),
-			DivOp(Self::Float.to_string()),
-			MulOp(Self::Float.to_string()),
-			RemOp(Self::Float.to_string()),
-			EqOps(Self::Float.to_string()),
-			CmpOps(Self::Float.to_string()),
-			CmpEqOps(Self::Float.to_string()),
+		let number_interfaces = vec![
+			AddOp(s_str!(Integer)),
+			SubOp(s_str!(Integer)),
+			NegOp,
+			DivOp(s_str!(Integer)),
+			MulOp(s_str!(Integer)),
+			RemOp(s_str!(Integer)),
+			EqOps(s_str!(Integer)),
+			CmpOps(s_str!(Integer)),
+			CmpEqOps(s_str!(Integer)),
+
+			AddOp(s_str!(Float)),
+			SubOp(s_str!(Float)),
+			DivOp(s_str!(Float)),
+			MulOp(s_str!(Float)),
+			RemOp(s_str!(Float)),
+			EqOps(s_str!(Float)),
+			CmpOps(s_str!(Float)),
+			CmpEqOps(s_str!(Float)),
 		];
 
-		let interfaces = match self {
+		match self {
 			Self::Integer |
 			Self::Float => number_interfaces,
-			Self::String => vec![ EqOps(Self::String.to_string()) ],
-			Self::Boolean => vec![ LogicOps(Self::Boolean.to_string()) ],
+			Self::String => vec![ EqOps(s_str!(String)) ],
+			Self::Boolean => vec![ LogicOps(s_str!(Boolean)) ],
 			Self::Void => vec![]
-		};
+		}
+	}
 
-		interfaces
+	pub fn impl_interfaces_str(&self) -> Vec<String> {
+		self
+			.impl_interfaces()
 			.iter()
 			.map(|interface| interface.codegen())
 			.collect::<Vec<_>>()

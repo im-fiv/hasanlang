@@ -5,11 +5,12 @@ use hasan_hir::{
 	IntrinsicInterface, HirDiagnostics
 };
 
-use indent::indent_all_by;
 use anyhow::{Error, bail};
+use indent::indent_all_by;
+use strum_macros::Display;
 use paste::paste;
 
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, Display)]
 pub enum Symbol {
 	// NOTE: Functions are considered classes that implement the according function interface
 	Class(Class),

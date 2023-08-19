@@ -1,4 +1,5 @@
 use crate::HirCodegen;
+
 use strum_macros::Display;
 
 #[derive(Debug, Clone, PartialEq, Display)]
@@ -38,14 +39,22 @@ pub enum IntrinsicInterface {
 }
 
 impl IntrinsicInterface {
-	pub fn get_member_name(&self, pos: usize) -> Option<String> {
-		let member_names = match self {
-			Self::Function => vec!["call"],
+	pub fn members(&self) -> Vec<IntrinsicInterfaceMember> {
+		use IntrinsicInterfaceMember::*;
 
-			_ => todo!("members for the rest of intrinsic interfaces")
-		};
-
-		member_names.get(pos).map(|&name| name.to_owned())
+		match self {
+			Self::AddOp(_) => vec![Add],
+			Self::SubOp(_) => vec![Sub],
+			Self::NegOp => vec![Neg],
+			Self::DivOp(_) => vec![Div],
+			Self::MulOp(_) => vec![Mul],
+			Self::RemOp(_) => vec![Rem],
+			Self::EqOps(_) => vec![Eq, Neq],
+			Self::LogicOps(_) => vec![And, Or, Not],
+			Self::CmpOps(_) => vec![Gt, Lt],
+			Self::CmpEqOps(_) => vec![Gte, Lte],
+			Self::Function => vec![Call]
+		}
 	}
 }
 
@@ -63,6 +72,89 @@ impl HirCodegen for IntrinsicInterface {
 			Self::CmpEqOps(v) => format!("{}<{}>", self, v),
 
 			_ => self.to_string()
+		}
+	}
+}
+
+//-----------------------------------------------------------------//
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum IntrinsicInterfaceMember {
+	/// `AddOp` interface
+	Add,
+
+	/// `SubOp` interface
+	Sub,
+
+	/// `NegOp` interface
+	Neg,
+
+	/// `DivOp` interface
+	Div,
+
+	/// `MulOp` interface
+	Mul,
+
+	/// `RemOp` interface
+	Rem,
+
+	/// `EqOps` interface
+	Eq, Neq,
+
+	/// `LogicOps` interface
+	And, Or, Not,
+
+	/// `CmpOps` interface
+	Gt, Lt,
+
+	/// `CmpEqOps` interface
+	Gte, Lte,
+
+	/// `Function` interface
+	Call
+}
+
+impl IntrinsicInterfaceMember {
+	pub fn name(&self) -> String {
+		match self {
+			Self::Add => "add",
+			Self::Sub => "sub",
+			Self::Neg => "neg",
+			Self::Div => "div",
+			Self::Mul => "mul",
+			Self::Rem => "rem",
+			Self::Eq => "eq",
+			Self::Neq => "neq",
+			Self::And => "and",
+			Self::Or => "or",
+			Self::Not => "not",
+			Self::Gt => "gt",
+			Self::Lt => "lt",
+			Self::Gte => "gte",
+			Self::Lte => "lte",
+			Self::Call => "call"
+		}.to_owned()
+	}
+}
+
+impl From<hasan_parser::BinaryOperator> for IntrinsicInterfaceMember {
+	fn from(operator: hasan_parser::BinaryOperator) -> Self {
+		use hasan_parser::BinaryOperator::*;
+
+		match operator {
+			Plus => Self::Add,
+			Minus => Self::Sub,
+			Divide => Self::Div,
+			Times => Self::Mul,
+			Modulo => Self::Rem,
+			Equals => Self::Eq,
+			NotEquals => Self::Neq,
+			And => Self::And,
+			Or => Self::Or,
+			GreaterThan => Self::Gt,
+			LessThan => Self::Lt,
+			GreaterThanEqual => Self::Gte,
+			LessThanEqual => Self::Lte
 		}
 	}
 }
