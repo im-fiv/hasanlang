@@ -247,7 +247,7 @@ impl SemanticAnalyzer {
 
 		self.scope.insert_symbol(
 			prototype.name.clone(),
-			Symbol::Class(prototype.clone().into())
+			Symbol::Class(hir::Class::from(prototype.clone()))
 		)?;
 
 		let body: Option<Vec<hir::Statement>> = if let Some(func_body) = function.body {
@@ -277,7 +277,7 @@ impl SemanticAnalyzer {
 
 		self.scope.update_symbol(
 			prototype.name.clone(),
-			Symbol::Class(function.clone().into())
+			Symbol::Class(hir::Class::from(function.clone()))
 		)?;
 
 		Ok(function)

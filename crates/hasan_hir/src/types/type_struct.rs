@@ -68,7 +68,7 @@ impl HirCodegen for Type {
 
 impl From<FunctionPrototype> for Type {
 	fn from(prototype: FunctionPrototype) -> Self {
-		prototype.into()
+		Self::from(Function::from(prototype))
 	}
 }
 
