@@ -662,9 +662,9 @@ impl SemanticAnalyzer {
 		interface_generics: Vec<p::Type>,
 		class_name: String,
 		class_generics: Vec<p::Type>,
-		members: Vec<p::ClassMember>
+		_members: Vec<p::ClassMember>
 	) -> Result<hir::Statement, Error> {
-		let interface = match self.scope.get_symbol(&interface_name)? {
+		let _interface = match self.scope.get_symbol(&interface_name)? {
 			Symbol::Interface(interface) => interface,
 			symbol => bail!("Expected a symbol of type `Interface`, got `{}`", symbol.to_string())
 		};
@@ -674,7 +674,7 @@ impl SemanticAnalyzer {
 			bail!("Generics are not yet supported");
 		}
 
-		let class = match self.scope.get_symbol(&class_name)? {
+		let _class = match self.scope.get_symbol(&class_name)? {
 			Symbol::Class(class) => class,
 			symbol => bail!("Expected a symbol of type `Class`, got `{}`", symbol.to_string())
 		};
