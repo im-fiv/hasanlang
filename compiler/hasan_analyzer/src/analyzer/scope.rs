@@ -42,7 +42,7 @@ impl Scope {
 	pub fn create_child_scope(&self) -> Self {
 		Self {
 			symbol_table: self.symbol_table.clone(),
-			generic_table: self.generic_table.clone(), // TODO: Is this correct?
+			generic_table: HashMap::new(), // Create a new generic table for easier merging
 			flags: self.flags
 		} 
 	}
