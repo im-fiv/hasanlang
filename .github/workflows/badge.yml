@@ -16,3 +16,12 @@ jobs:
           badge: ./output/badge.svg
           patterns: '*.*'  # Patterns in the format of a '.gitignore' file, separated by pipes.
           ignore: 'node_modules'
+      
+      - name: Deploy to image-data branch
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          publish_dir: ./output
+          publish_branch: image-data
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
