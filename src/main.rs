@@ -13,11 +13,11 @@ use hasan_parser::HasanCodegen;
 //* Helper functions *//
 fn write_file(path: &str, contents: String) {
 	let mut file = File::create(path)
-        .unwrap_or_else(|_| panic!("Failed to open file `{}` (write)", path));
+		.unwrap_or_else(|_| panic!("Failed to open file `{}` (write)", path));
 
 	file
-        .write_all(contents.as_bytes())
-        .unwrap_or_else(|_| panic!("Failed to write to file `{}`", path))
+		.write_all(contents.as_bytes())
+		.unwrap_or_else(|_| panic!("Failed to write to file `{}`", path))
 }
 
 macro_rules! job {
@@ -80,6 +80,6 @@ fn main() {
 	
 	match args.subcommand {
 		cli::CLISubcommand::Compile(command) => compile(command),
-        cli::CLISubcommand::Parse(command) => parse(command)
+		cli::CLISubcommand::Parse(command) => parse(command)
 	}
 }

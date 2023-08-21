@@ -9,7 +9,7 @@ pub fn hasan_parse(pairs: Pairs<Rule>, debug: bool) -> Program {
 	}
 
 	let parser = HasanParser::new(pairs);
-    let ast = parser.parse();
+	let ast = parser.parse();
 
 	if debug {
 		println!("Parsed AST: {:?}", ast);
