@@ -55,7 +55,7 @@ outputs:
     description: 'The absolute path to the directory that contains the output svg.'
 
 runs:
-  using: 'node12'
+  using: 'node16'
   main: 'index.js'
 
 branding:
