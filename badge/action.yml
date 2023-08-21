@@ -56,7 +56,7 @@ outputs:
 
 runs:
   using: 'node12'
-  main: './badge/index.js'
+  main: 'index.js'
 
 branding:
   icon: 'award'  
