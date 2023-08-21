@@ -1,0 +1,11 @@
+{
+	"name": "gha-loc-badge",
+	"version": "1.0.0",
+	"license": "MIT",
+	"repository": "https://github.com/shadowmoose/GHA-LoC-Badge",
+	"dependencies": {
+	  "@actions/core": "^1.2.3",
+	  "badgen": "^3.0.1",
+	  "glob-gitignore": "^1.0.14"
+	}
+}
