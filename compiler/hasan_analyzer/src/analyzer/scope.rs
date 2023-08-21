@@ -1,4 +1,4 @@
-use super::Symbol;
+use crate::Symbol;
 
 use hasan_hir as hir;
 
@@ -32,10 +32,58 @@ pub struct Scope {
 impl Scope {
 	pub fn new() -> Self {
 		Self {
-			symbol_table: HashMap::new(),
+			symbol_table: Self::populated_sym_table(),
 			generic_table: HashMap::new(),
 			flags: ScopeFlags::default()
 		}
+	}
+
+	pub fn populated_sym_table() -> SymbolTable {
+		let mut result = HashMap::new();
+
+		macro_rules! intrinsic {
+			(interface $variant:ident$(<$($generic:ident),*>)?) => {
+				{
+					let variant = hir::IntrinsicInterface::$variant$(($(stringify!($generic).to_owned()),*))?;
+					let name = variant.to_string();
+					let interface = crate::Interface::from_intrinsic(variant, &result);
+
+					result.insert(name, Symbol::Interface(interface));
+				}
+			};
+
+			(type $variant:ident) => {
+				{
+					let variant = hir::IntrinsicType::$variant;
+					let name = variant.name();
+					let class = hir::Type::from_intrinsic(variant, &result);
+
+					result.insert(name, Symbol::Class(class));
+				}
+			};
+		}
+		
+		// Adding intrinsic types
+		intrinsic!(type Integer);
+		intrinsic!(type Float);
+		intrinsic!(type String);
+		intrinsic!(type Boolean);
+		intrinsic!(type Void);
+
+		// Adding intrinsic interfaces
+		intrinsic!(interface AddOp<Rhs>);
+		intrinsic!(interface SubOp<Rhs>);
+		intrinsic!(interface NegOp);
+		intrinsic!(interface DivOp<Rhs>);
+		intrinsic!(interface MulOp<Rhs>);
+		intrinsic!(interface RemOp<Rhs>);
+		intrinsic!(interface EqOps<Rhs>);
+		intrinsic!(interface LogicOps<Rhs>);
+		intrinsic!(interface CmpOps<Rhs>);
+		intrinsic!(interface CmpEqOps<Rhs>);
+		intrinsic!(interface Function);
+
+		result
 	}
 
 	/// Creates a child scope while keeping all of the variables in scope

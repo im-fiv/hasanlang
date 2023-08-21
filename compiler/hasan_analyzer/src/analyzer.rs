@@ -1,6 +1,8 @@
+mod interface;
 mod scope;
 mod symbol;
 
+pub use interface::*;
 pub use scope::*;
 pub use symbol::*;
 

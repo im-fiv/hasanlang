@@ -135,6 +135,23 @@ impl IntrinsicInterfaceMember {
 			Self::Call => "call"
 		}.to_owned()
 	}
+
+	pub fn is_function(&self) -> bool {
+		matches!(
+			self,
+
+			Self::Add | Self::Sub | Self::Neg |
+			Self::Div | Self::Mul | Self::Rem |
+			Self::Eq | Self::Neq | Self::And |
+			Self::Or | Self::Not | Self::Gt |
+			Self::Lt | Self::Gte | Self::Lte |
+			Self::Call
+		)
+	}
+
+	pub fn is_variable(&self) -> bool {
+		!self.is_function()
+	}
 }
 
 impl From<hasan_parser::BinaryOperator> for IntrinsicInterfaceMember {

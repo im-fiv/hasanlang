@@ -1,6 +1,7 @@
 use crate::{
 	ClassMember, HirCodegen, HirDiagnostics,
-	FunctionPrototype, Function, IntrinsicInterface
+	FunctionPrototype, Function, IntrinsicInterface,
+	IntrinsicType
 };
 
 use hasan_parser::NUM_SPACES;
@@ -16,6 +17,11 @@ pub struct Type {
 }
 
 impl Type {
+	pub fn from_intrinsic(kind: IntrinsicType, table: &hasan_analyzer::SymbolTable) -> Self {
+		// TODO
+		todo!()
+	}
+
 	pub fn member_by_name(&self, name: &str) -> Option<ClassMember> {
 		self
 			.members

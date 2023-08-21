@@ -30,6 +30,8 @@ impl HirCodegen for Program {
 	}
 }
 
+//-----------------------------------------------------------------//
+
 #[derive(Debug, Clone, PartialEq)]
 pub struct ModuleInfo {
 	pub name: String,
@@ -45,6 +47,8 @@ impl HirCodegen for ModuleInfo {
 		}
 	}
 }
+
+//-----------------------------------------------------------------//
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Variable {

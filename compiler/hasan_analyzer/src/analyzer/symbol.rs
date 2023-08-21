@@ -1,12 +1,7 @@
-use hasan_parser::{NUM_SPACES, vec_transform_str};
-use hasan_hir::{
-	Class, Variable, Enum,
-	FunctionPrototype, TypeRef,
-	IntrinsicInterface, HirDiagnostics
-};
+use crate::Interface;
+use hasan_hir::{Class, Variable, Enum, HirDiagnostics};
 
 use anyhow::{Error, bail};
-use indent::indent_all_by;
 use strum_macros::Display;
 use paste::paste;
 
@@ -80,66 +75,3 @@ impl_conv!(Symbol {
 	Variable,
 	Enum
 });
-
-//-----------------------------------------------------------------//
-
-// The reason this is not inside `hasan_hir` is that interfaces only exist on the type level,
-// and `hasan_hir` is the intermediate representation *after* the type checking, so it wouldn't
-// make sense to have it there
-#[derive(Debug, Clone)]
-pub struct Interface {
-	pub name: String,
-	pub members: Vec<InterfaceMember>,
-
-	/// If an interface is built-in, this property will be of Some(built_ins::BuiltinInterface)
-	pub intrinsic: Option<IntrinsicInterface>
-}
-
-impl HirDiagnostics for Interface {
-	fn info_string(&self) -> String {
-		let members_str = vec_transform_str(
-			&self.members,
-			|member| member.info_string(),
-			"\n\n"
-		);
-
-		let base = format!(
-			"interface {}:\n{}",
-			
-			self.name,
-			indent_all_by(NUM_SPACES, members_str)
-		);
-
-		match self.intrinsic.clone() {
-			Some(intrinsic) => format!("intrinsic({}) {}", intrinsic, base),
-			None => base
-		}
-	}
-}
-
-#[derive(Debug, Clone)]
-pub enum InterfaceMember {
-	Variable(InterfaceVariable),
-	Function(FunctionPrototype)
-}
-
-impl HirDiagnostics for InterfaceMember {
-	fn info_string(&self) -> String {
-		match self {
-			Self::Variable(variable) => variable.info_string(),
-			Self::Function(function) => function.info_string()
-		}
-	}
-}
-
-#[derive(Debug, Clone)]
-pub struct InterfaceVariable {
-	pub name: String,
-	pub kind: TypeRef
-}
-
-impl HirDiagnostics for InterfaceVariable {
-	fn info_string(&self) -> String {
-		format!("var {}: {}", self.name, self.kind.info_string())
-	}
-}
