@@ -33,7 +33,7 @@ class ExampleClass
 end
 
 impl ExampleInterface for ExampleClass
-	some_variable: int = 5;
+	var some_variable: int = 5;
 
 	func some_function(count: int, str: string) -> string do
 		return str * count;
