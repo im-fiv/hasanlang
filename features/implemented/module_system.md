@@ -67,9 +67,9 @@ end
 
 pub class public_class
 	// NOTE: All class members are private by default!
-	private_variable: int = 5;
+	var private_variable: int = 5;
 
-	pub public_variable: int = 42;
+	pub var public_variable: int = 42;
 
 	// Constructor functions are public by default
 	#[constructor]
