@@ -73,7 +73,9 @@ impl<'p> HasanParser<'p> {
 			}
 		}
 
-		let statements = statements.unwrap_or_else(|| unreachable!("Failed to parse file: program rule is missing"));
+		let statements = statements
+			.unwrap_or_else(|| unreachable!("Failed to parse file: program rule is missing"));
+		
 		Program { statements, module_info }
 	}
 
@@ -101,7 +103,7 @@ impl<'p> HasanParser<'p> {
 
 		let mut next_pair = pairs
 			.next()
-			.expect("Failed to parse module marker: path/module name pair is missing");
+			.expect("Failed to parse module marker: expected path/module name, got nothing");
 
 		let mut path: Vec<String> = vec![];
 
@@ -110,7 +112,7 @@ impl<'p> HasanParser<'p> {
 
 			next_pair = pairs
 				.next()
-				.expect("Failed to parse module marker: module name pair is missing");
+				.expect("Failed to parse module marker: expected module name, got nothing");
 		}
 
 		let name = self.pair_str(next_pair);
@@ -333,7 +335,7 @@ impl<'p> HasanParser<'p> {
 
 		let mut next_pair = pairs
 			.next()
-			.expect("Failed to parse use module statement: path/module name pair is missing");
+			.expect("Failed to parse use module statement: expected path/module name, got nothing");
 
 		let mut path: Vec<String> = vec![];
 
@@ -342,7 +344,7 @@ impl<'p> HasanParser<'p> {
 
 			next_pair = pairs
 				.next()
-				.expect("Failed to parse use module statement: module name pair is missing");
+				.expect("Failed to parse use module statement: expected module name, got nothing");
 		}
 
 		let name = self.pair_str(next_pair);
@@ -359,7 +361,7 @@ impl<'p> HasanParser<'p> {
 
 		let mut next_pair = pairs
 			.next()
-			.expect("Failed to parse use module statement: path/module name pair is missing");
+			.expect("Failed to parse use module statement: expected path/module name, got nothing");
 
 		let mut path: Vec<String> = vec![];
 
@@ -368,7 +370,7 @@ impl<'p> HasanParser<'p> {
 
 			next_pair = pairs
 				.next()
-				.expect("Failed to parse use module statement: module name pair is missing");
+				.expect("Failed to parse use module statement: expected module name, got nothing");
 		}
 
 		let name = self.pair_str(next_pair);
@@ -385,7 +387,7 @@ impl<'p> HasanParser<'p> {
 
 		let mut next_pair = pairs
 			.next()
-			.expect("Failed to parse use module statement: path/module name pair is missing");
+			.expect("Failed to parse use module statement: expected path/module name, got nothing");
 
 		let mut path: Vec<String> = vec![];
 
@@ -394,14 +396,14 @@ impl<'p> HasanParser<'p> {
 
 			next_pair = pairs
 				.next()
-				.expect("Failed to parse use module statement: module name pair is missing");
+				.expect("Failed to parse use module statement: expected module name, got nothing");
 		}
 		
 		let name = self.pair_str(next_pair);
 
 		let items_pair = pairs
 			.next()
-			.expect("Failed to parse use module statement: items pair is missing")
+			.expect("Failed to parse use module statement: expected items pair, got nothing")
 			.into_inner();
 
 		let mut items: Vec<ModuleItem> = vec![];
@@ -429,18 +431,18 @@ impl<'p> HasanParser<'p> {
 
 		let mut pairs = pair.into_inner();
 
-		let name = self.pair_str(
-			pairs
-				.next()
-				.expect("Failed to parse module import item: name pair is missing")
-		);
+		let name_pair = pairs
+			.next()
+			.expect("Failed to parse module import item: expected identifier, got nothing");
+
+		let name = self.pair_str(name_pair);
 
 		match as_rule {
 			Rule::module_item_rename => {
 				let new_name = self.pair_str(
 					pairs
 						.next()
-						.expect("Failed to parse module import item: new name pair is missing")
+						.expect("Failed to parse module import item: expected new name, got nothing")
 				);
 
 				ModuleItem::Renamed {
@@ -464,19 +466,19 @@ impl<'p> HasanParser<'p> {
 
 		let modifiers_pair = pairs
 			.next()
-			.expect("Failed to parse interface variable: modifiers pair is missing");
+			.expect("Failed to parse interface variable: expected modifiers, got nothing");
 
 		let modifiers = self.parse_general_modifiers(modifiers_pair);
 
 		let name = self.pair_str(
 			pairs
 				.next()
-				.expect("Failed to parse interface variable: name pair is missing")
+				.expect("Failed to parse interface variable: expected identifier, got nothing")
 		);
 
 		let type_pair = pairs
 			.next()
-			.expect("Failed to parse interface variable: type pair is missing");
+			.expect("Failed to parse interface variable: expected type, got nothing");
 
 		InterfaceVariable {
 			modifiers,
@@ -514,7 +516,7 @@ impl<'p> HasanParser<'p> {
 		// Next pair can either be attributes or modifiers
 		let mut next_pair = pairs
 			.next()
-			.expect("Failed to parse interface function: attributes/modifiers pair is missing");
+			.expect("Failed to parse interface function: expected attributes/modifiers, got nothing");
 
 		let mut attributes: Option<ClassFunctionAttributes> = None;
 		
@@ -524,7 +526,7 @@ impl<'p> HasanParser<'p> {
 			// Next pair is guaranteed to be `general_modifiers`, even if it's empty
 			next_pair = pairs
 				.next()
-				.unwrap_or_else(|| unreachable!("Failed to parse interface function: modifiers pair is missing"));
+				.unwrap_or_else(|| unreachable!("Failed to parse interface function: expected modifiers, got nothing"));
 		}
 
 		// Parse modifiers
@@ -534,13 +536,13 @@ impl<'p> HasanParser<'p> {
 		let name = self.pair_str(
 			pairs
 				.next()
-				.expect("Failed to parse interface variable: name pair is missing")
+				.expect("Failed to parse interface variable: expected identifier, got nothing")
 		);
 
 		// Next pair can be generics, arguments or return_type
 		let mut next_pair = pairs
 			.next()
-			.expect("Failed to parse interface function: generics/arguments/return type pair is missing");
+			.expect("Failed to parse interface function: expected generics/arguments/return type, got nothing");
 
 		let mut generics: Vec<DefinitionType> = vec![];
 
@@ -550,7 +552,7 @@ impl<'p> HasanParser<'p> {
 
 			next_pair = pairs
 				.next()
-				.unwrap_or_else(|| unreachable!("Failed to parse interface function: arguments/return type pair is missing"));
+				.unwrap_or_else(|| unreachable!("Failed to parse interface function: expected arguments/return type, got nothing"));
 		}
 
 		let mut arguments: Vec<Type> = vec![];
@@ -561,7 +563,7 @@ impl<'p> HasanParser<'p> {
 
 			next_pair = pairs
 				.next()
-				.unwrap_or_else(|| unreachable!("Failed to parse interface function: return type pair is missing"));
+				.unwrap_or_else(|| unreachable!("Failed to parse interface function: expected return type, got nothing"));
 		}
 
 		// Make sure that the last rule is a type (return type)
@@ -583,6 +585,28 @@ impl<'p> HasanParser<'p> {
 		InterfaceFunction { attributes, prototype }
 	}
 
+	fn parse_interface_assoc_type(&self, pair: Pair<Rule>) -> InterfaceAssocType {
+		if pair.as_rule() != Rule::interface_type {
+			error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::interface_type, pair.as_rule());
+		}
+
+		let mut inner_pairs = pair.into_inner();
+
+		let modifiers_pair = inner_pairs
+			.next()
+			.expect("Failed to parse interface associated type: expected modifiers, got nothing");
+
+		let modifiers = self.parse_general_modifiers(modifiers_pair);
+
+		let name_pair = inner_pairs
+			.next()
+			.expect("Failed to parse interface associated type: expected identifier, got nothing");
+
+		let name = self.pair_str(name_pair);
+
+		InterfaceAssocType { modifiers, name }
+	}
+
 	fn parse_interface_members(&self, pair: Pair<Rule>) -> Vec<InterfaceMember> {
 		if pair.as_rule() != Rule::interface_members {
 			error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::interface_members, pair.as_rule());
@@ -598,6 +622,7 @@ impl<'p> HasanParser<'p> {
 			let member = match pair.as_rule() {
 				Rule::interface_variable => InterfaceMember::Variable(self.parse_interface_variable(pair)),
 				Rule::interface_function => InterfaceMember::Function(self.parse_interface_function(pair)),
+				Rule::interface_type => InterfaceMember::AssocType(self.parse_interface_assoc_type(pair)),
 
 				rule => error!(
 					"expected '{:?}' or '{:?}', got '{:?}'",
@@ -624,19 +649,19 @@ impl<'p> HasanParser<'p> {
 
 		let modifiers_pair = pairs
 			.next()
-			.expect("Failed to parse interface statement: modifiers pair is missing");
+			.expect("Failed to parse interface statement: expected modifiers, got nothing");
 
 		let modifiers = self.parse_general_modifiers(modifiers_pair);
 
 		let name = self.pair_str(
 			pairs
 				.next()
-				.expect("Failed to parse interface statement: name pair is missing")
+				.expect("Failed to parse interface statement: expected identifier, got nothing")
 		);
 
 		let mut next_pair = pairs
 			.next()
-			.expect("Failed to parse interface statement: generics/members pair is missing");
+			.expect("Failed to parse interface statement: expected generics/members, got nothing");
 
 		let mut generics: Vec<DefinitionType> = vec![];
 
@@ -646,7 +671,7 @@ impl<'p> HasanParser<'p> {
 			// Next pair is guaranteed to be `interface_members`, even if there are no members
 			next_pair = pairs
 				.next()
-				.unwrap_or_else(|| unreachable!("Failed to parse interface statement: members pair is missing"));
+				.unwrap_or_else(|| unreachable!("Failed to parse interface statement: expected members, got nothing"));
 		}
 
 		let members = self.parse_interface_members(next_pair);
@@ -664,12 +689,12 @@ impl<'p> HasanParser<'p> {
 		let interface_name = self.pair_str(
 			pairs
 				.next()
-				.expect("Failed to parse interface implementation statement: interface name pair is missing")
+				.expect("Failed to parse interface implementation statement: expected identifier, got nothing")
 		);
 
 		let mut next_pair = pairs
 			.next()
-			.expect("Failed to parse interface implementation statement: generics/class name pair is missing");
+			.expect("Failed to parse interface implementation statement: expected generics/identifier, got nothing");
 
 		let mut interface_generics: Vec<Type> = vec![];
 
@@ -678,7 +703,7 @@ impl<'p> HasanParser<'p> {
 
 			next_pair = pairs
 				.next()
-				.expect("Failed to parse interface implementation statement: class name pair is missing");
+				.expect("Failed to parse interface implementation statement: expected identifier, got nothing");
 		}
 
 		let class_name = self.pair_str(next_pair);
@@ -810,11 +835,11 @@ impl<'p> HasanParser<'p> {
 
 		let condition_pair = pairs
 			.next()
-			.expect("Failed to parse if statement: condition is missing");
+			.expect("Failed to parse if statement: expected condition, got nothing");
 
 		let statements_pair = pairs
 			.next()
-			.unwrap_or_else(|| unreachable!("Failed to parse if statement: statements are missing"));
+			.unwrap_or_else(|| unreachable!("Failed to parse if statement: expected statements, got nothing"));
 
 		let mut elseif_branches: Vec<ConditionBranch> = vec![];
 		let mut else_branch: Option<ConditionBranch> = None;
@@ -869,15 +894,15 @@ impl<'p> HasanParser<'p> {
 
 		let left_pair = pairs
 			.next()
-			.expect("Failed to parse for statement: left side is missing");
+			.expect("Failed to parse for statement: expected left side, got nothing");
 
 		let right_pair = pairs
 			.next()
-			.expect("Failed to parse for statement: right side is missing");
+			.expect("Failed to parse for statement: expected right side, got nothing");
 
 		let statements_pair = pairs
 			.next()
-			.expect("Failed to parse for statement: right side is missing");
+			.expect("Failed to parse for statement: expected statements, got nothing");
 
 		Statement::For {
 			left: self.parse_expression(left_pair),
@@ -1062,11 +1087,11 @@ impl<'p> HasanParser<'p> {
 
 		let mut pairs = pair.into_inner();
 
-		let name = self.pair_str(
-			pairs
-				.next()
-				.expect("Failed to parse definition generics type: name pair is missing")
-		);
+		let name_pair = pairs
+			.next()
+			.expect("Failed to parse definition generics type: expected identifier, got nothing");
+
+		let name = self.pair_str(name_pair);
 
 		let interfaces_pair = pairs.next();
 
@@ -1144,7 +1169,7 @@ impl<'p> HasanParser<'p> {
 		let name = self.pair_str(
 			pairs
 				.next()
-				.expect("Failed to parse enum variant: name is missing")
+				.expect("Failed to parse enum variant: expected identifier, got nothing")
 		);
 
 		EnumVariant { name }
@@ -1155,15 +1180,15 @@ impl<'p> HasanParser<'p> {
 
 		let modifiers_pair = pairs
 			.next()
-			.expect("Failed to parse enum definition: modifiers are missing");
+			.expect("Failed to parse enum definition: expected modifiers, got nothing");
 
 		let modifiers = self.parse_general_modifiers(modifiers_pair);
 
-		let name = self.pair_str(
-			pairs
-				.next()
-				.expect("Failed to parse enum definition: enum name is missing")
-		);
+		let name_pair = pairs
+			.next()
+			.expect("Failed to parse enum definition: expected an identifier, got nothing");
+
+		let name = self.pair_str(name_pair);
 
 		let mut variants: Vec<EnumVariant> = vec![];
 
@@ -1179,7 +1204,7 @@ impl<'p> HasanParser<'p> {
 	}
 
 	fn parse_regular_type(&self, pair: Pair<Rule>) -> RegularType {
-		// NOTE: `array_type` is a part of regular type
+		// Note: `array_type` is a part of regular type
 		if pair.as_rule() == Rule::array_type {
 			// Unwrapping the `regular_type` from `array_type`
 			let pair = pair
@@ -1201,12 +1226,12 @@ impl<'p> HasanParser<'p> {
 		}
 
 		let mut pairs = pair.into_inner();
+
+		let name_pair = pairs
+			.next()
+			.expect("Failed to parse type: expected identifier, got nothing");
 		
-		let name = self.pair_str(
-			pairs
-				.next()
-				.expect("Failed to parse type: name pair is missing")
-		);
+		let name = self.pair_str(name_pair);			
 
 		let next_pair = pairs.next();
 
@@ -1242,7 +1267,7 @@ impl<'p> HasanParser<'p> {
 
 		let next_pair = pairs
 			.peek()
-			.expect("Failed to parse function type: generics/arguments pair is missing");
+			.expect("Failed to parse function type: expected generics/arguments, got nothing");
 
 		let mut generics: Vec<DefinitionType> = vec![];
 
@@ -1253,12 +1278,12 @@ impl<'p> HasanParser<'p> {
 
 		let arguments_pairs = pairs
 			.next()
-			.expect("Failed to parse function type: arguments pair is missing")
+			.expect("Failed to parse function type: expected arguments pair, got nothing")
 			.into_inner();
 
 		let return_type_pair = pairs
 			.next()
-			.expect("Failed to parse function type: arguments pair is missing");
+			.expect("Failed to parse function type: expected arguments pair, got nothing");
 
 		let mut argument_types: Vec<Type> = vec![];
 
@@ -1307,7 +1332,7 @@ impl<'p> HasanParser<'p> {
 
 	fn parse_class_function_attributes(&self, pair: Pair<Rule>) -> ClassFunctionAttributes {
 		if pair.as_rule() != Rule::attributes {
-			panic!("Failed to parse function attributes: got an unexpected rule. Expected '{:?}', got '{:?}'", Rule::attributes, pair.as_rule());
+			panic!("Failed to parse function attributes: expected '{:?}', got '{:?}'", Rule::attributes, pair.as_rule());
 		}
 		
 		let pairs = pair.into_inner();
@@ -1354,11 +1379,11 @@ impl<'p> HasanParser<'p> {
 
 			let name_pair = arg_pairs
 				.next()
-				.expect("Failed to parse function definition arguments: argument name is missing");
+				.expect("Failed to parse function definition arguments: expectged argument name, got nothing");
 
 			let kind_pair = arg_pairs
 				.next()
-				.expect("Failed to parse function definition arguments: argument type is missing");
+				.expect("Failed to parse function definition arguments: expected argument type, got nothing");
 
 			arguments.push(FunctionArgument {
 				name: self.pair_str(name_pair),
@@ -1408,13 +1433,13 @@ impl<'p> HasanParser<'p> {
 
 		let modifiers_pair = header_pairs
 			.next()
-			.expect("Failed to parse function prototype: modifiers are missing");
+			.expect("Failed to parse function prototype: expected modifiers, got nothing");
 
 		let modifiers = self.parse_general_modifiers(modifiers_pair);
 
 		let name = header_pairs
 			.next()
-			.expect("Failed to parse function prototype: function name is missing");
+			.expect("Failed to parse function prototype: expected function name, got nothing");
 
 		let mut generics: Vec<DefinitionType> = vec![];
 		let mut arguments: Vec<FunctionArgument> = vec![];
@@ -1449,14 +1474,14 @@ impl<'p> HasanParser<'p> {
 		// Parsing the header
 		let prototype_pair = pairs
 			.next()
-			.expect("Failed to parse function definition: function prototype is missing");
+			.expect("Failed to parse function definition: expected function prototype, got nothing");
 
 		let prototype = self.parse_function_prototype(prototype_pair);
 
 		// Parsing the body
 		let body_pairs = pairs
 			.next()
-			.expect("Failed to parse function definition: function body is missing")
+			.expect("Failed to parse function definition: expected function body, got nothing")
 			.into_inner();
 
 		let function = Function {
@@ -1476,7 +1501,7 @@ impl<'p> HasanParser<'p> {
 
 		let prototype_pair = pairs
 			.next()
-			.expect("Failed to parse function declaration: function prototype is missing");
+			.expect("Failed to parse function declaration: expected function prototype, got nothing");
 
 		let prototype = self.parse_function_prototype(prototype_pair);
 
@@ -1525,6 +1550,39 @@ impl<'p> HasanParser<'p> {
 		}
 	}
 
+	fn parse_class_definition_assoc_type(&self, pair: Pair<Rule>) -> ClassAssocType {
+		if pair.as_rule() != Rule::class_definition_type {
+			panic!("Failed to parse a class definition associated type: expected rule '{:?}', got '{:?}'", Rule::class_definition_type, pair.as_rule());
+		}
+
+		let mut inner_pairs = pair.into_inner();
+
+		let modifiers_pair = inner_pairs
+			.next()
+			.unwrap_or_else(|| panic!("Failed to parse a class definition associated type: expected rule '{:?}', got nothing", Rule::general_modifiers));
+	
+		let modifiers = self.parse_general_modifiers(modifiers_pair);
+
+		let name_pair = inner_pairs
+			.next()
+			.expect("Failed to parse a class definition associated type: expected identifier, got nothing");
+
+		let name = self.pair_str(name_pair);
+
+		let kind_pair = inner_pairs
+			.next()
+			.unwrap_or_else(|| panic!("Failed to parse a class definition associated type: expected rule '{:?}', got nothing", Rule::r#type));
+
+		let kind = self.parse_type(kind_pair);
+
+		ClassAssocType {
+			modifiers,
+
+			name,
+			kind
+		}
+	}
+
 	fn parse_class_definition_function(&self, pair: Pair<Rule>) -> ClassFunction {
 		if pair.as_rule() != Rule::class_definition_function {
 			panic!("Failed to parse a class definition function: expected rule '{:?}', got '{:?}'", Rule::class_definition_function, pair.as_rule());
@@ -1551,6 +1609,7 @@ impl<'p> HasanParser<'p> {
 
 		let attributes = attributes.unwrap_or_default();
 		let function_statement = self.parse_function_definition(statement_pair);
+
 		ClassFunction::from_statement(function_statement, attributes)
 	}
 
@@ -1579,7 +1638,12 @@ impl<'p> HasanParser<'p> {
 		let mut default_value: Option<Expression> = None;
 
 		if default_value_option.is_some() {
-			default_value = Some(self.parse_expression(default_value_option.unwrap_or_else(|| unreachable!("Failed to parse class definition variable: default value pair is missing"))));
+			default_value = Some(
+				self.parse_expression(
+					default_value_option
+						.unwrap_or_else(|| unreachable!("Failed to parse class definition variable: expected default value, got nothing"))
+				)
+			);
 		}
 
 		ClassVariable {
@@ -1603,6 +1667,7 @@ impl<'p> HasanParser<'p> {
 		match inner.as_rule() {
 			Rule::class_definition_variable => ClassMember::Variable(self.parse_class_definition_variable(inner)),
 			Rule::class_definition_function => ClassMember::Function(self.parse_class_definition_function(inner)),
+			Rule::class_definition_type => ClassMember::AssocType(self.parse_class_definition_assoc_type(inner)),
 
 			rule => error!(
 				"expected '{:?}' or '{:?}', got '{:?}'",
@@ -1620,13 +1685,13 @@ impl<'p> HasanParser<'p> {
 
 		let modifiers_pair = pairs
 			.next()
-			.expect("Failed to parse class definition: modifiers are missing");
+			.expect("Failed to parse class definition: expected modifiers, got nothing");
 
 		let modifiers = self.parse_general_modifiers(modifiers_pair);
 
 		let name = pairs
 			.next()
-			.expect("Failed to parse class definition: class name is missing");
+			.expect("Failed to parse class definition: expected identifier, got nothing");
 
 		if name.as_rule() != Rule::identifier {
 			error!("expected '{:?}', got '{:?}'", name.as_span(), Rule::identifier, name.as_rule());
@@ -1693,7 +1758,7 @@ impl<'p> HasanParser<'p> {
 
 		let name = pairs
 			.next()
-			.expect("Failed to parse variable definition: variable name is missing");
+			.expect("Failed to parse variable definition: expected identifier, got nothing");
 
 		let mut next_pair = pairs
 			.next()
@@ -1706,7 +1771,7 @@ impl<'p> HasanParser<'p> {
 
 			next_pair = pairs
 				.next()
-				.expect("Failed to parse variable definition: variable value is missing");
+				.expect("Failed to parse variable definition: expected expression, got nothing");
 		}
 		
 		let value = if next_pair.as_rule() == Rule::expression {

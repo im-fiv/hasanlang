@@ -7,7 +7,7 @@ use paste::paste;
 
 #[derive(Debug, Clone, Display)]
 pub enum Symbol {
-	// NOTE: Functions are considered classes that implement the according function interface
+	// Note: Functions are considered classes that implement the according function interface
 	Class(Class),
 	Interface(Interface),
 	Variable(Variable),

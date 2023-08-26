@@ -113,6 +113,8 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 
 ## Side tasks
 
+- [ ] Implement type expressions (e.g. `this->SomeType`, `(int, float)`, ...)
+
 ### Corrective Parser:
 - [ ] Overhaul the CLI
 - [ ] Add spans for better semantic analysis error reporting

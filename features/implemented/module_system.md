@@ -66,7 +66,7 @@ pub enum public_enum
 end
 
 pub class public_class
-	// NOTE: All class members are private by default!
+	// Note: All class members are private by default!
 	private_variable: int = 5;
 
 	pub public_variable: int = 42;

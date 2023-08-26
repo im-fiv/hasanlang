@@ -161,11 +161,10 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 		
 		// Otherwise, proceed with genereration
 		let name = format!("str.{}", random_string());
-		let global_value;
-		
-		unsafe {
-			global_value = self.builder.build_global_string(&value, &name);
-		}
+
+		let global_value = unsafe {
+			self.builder.build_global_string(&value, &name)
+		};
 		
 		let global = GlobalString {
 			pointer: global_value,
@@ -301,7 +300,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 		self.current_function = old_function_value;
 		
 		// Remove the arguments from variables list
-		// NOTE: I'm not quite sure how well that works with name collisions
+		// Note: I'm not quite sure how well that works with name collisions
 		for argument in prototype.arguments {
 			self.variables.remove_entry(&argument.name);
 		}

@@ -1,17 +1,84 @@
 mod interface;
+mod generic_table;
 mod scope;
 mod symbol;
 
 pub use interface::*;
+pub use generic_table::*;
 pub use scope::*;
 pub use symbol::*;
 
-use anyhow::{Error, bail};
+use anyhow::{Result, bail};
 
 use hasan_parser as p;
 use hasan_hir as hir;
+use hasan_intrinsics as intr;
 
 use hir::HirCodegen;
+
+fn type_from_function(function: hir::Function) -> hir::Type {
+	let inner_function = {
+		let prototype = hir::FunctionPrototype {
+			name: intr::FunctionMembers::Call.name(),
+			arguments: function.prototype.arguments,
+			return_type: function.prototype.return_type
+		};
+
+		hir::Function {
+			prototype,
+			body: function.body
+		}
+	};
+
+	let class_function = hir::ClassFunction {
+		attributes: vec![],
+		function: inner_function,
+		modifiers: hir::ClassFunctionModifiers::new(true, true)
+	};
+
+	let wrapped_function = hir::ClassMember::Function(class_function);
+
+	hir::Type {
+		name: function.prototype.name,
+		members: vec![wrapped_function],
+		implements_interfaces: vec![intr::IntrinsicInterface::Function.name()]
+	}
+}
+
+#[inline]
+fn function_from_prototype(prototype: hir::FunctionPrototype) -> hir::Function {
+	hir::Function {
+		prototype,
+		body: None
+	}
+}
+
+/// Converts a binary operator into an intrinsic interface member index
+fn bin_op_intr_member(operator: &p::BinaryOperator) -> usize {
+	use p::BinaryOperator::*;
+
+	macro_rules! to_num {
+		($enum:ident::$variant:ident) => (
+			intr::$enum::$variant as usize
+		);
+	}
+
+	match operator {
+		Plus => to_num!(AddOpMembers::Add),
+		Minus => to_num!(SubOpMembers::Sub),
+		Divide => to_num!(DivOpMembers::Div),
+		Times => to_num!(MulOpMembers::Mul),
+		Modulo => to_num!(RemOpMembers::Rem),
+		Equals => to_num!(EqOpsMembers::Eq),
+		NotEquals => to_num!(EqOpsMembers::Neq),
+		And => to_num!(LogicOpsMembers::AndOp),
+		Or => to_num!(LogicOpsMembers::OrOp),
+		GreaterThan => to_num!(CmpOpsMembers::Gt),
+		LessThan => to_num!(CmpOpsMembers::Lt),
+		GreaterThanEqual => to_num!(CmpEqOpsMembers::Gte),
+		LessThanEqual => to_num!(CmpEqOpsMembers::Lte)
+	}
+}
 
 #[derive(Debug, Clone)]
 pub struct SemanticAnalyzer {
@@ -27,7 +94,7 @@ impl SemanticAnalyzer {
 		}
 	}
 
-	pub fn analyze(&mut self) -> Result<hir::Program, Error> {
+	pub fn analyze(&mut self) -> Result<hir::Program> {
 		let mut converted_ast: hir::Program = hir::Program::default();
 
 		for statement in self.ast.statements.clone() {
@@ -38,7 +105,7 @@ impl SemanticAnalyzer {
 		Ok(converted_ast)
 	}
 
-	fn analyze_statement(&mut self, statement: p::Statement) -> Result<hir::Statement, Error> {
+	fn analyze_statement(&mut self, statement: p::Statement) -> Result<hir::Statement> {
 		use p::Statement::*;
 		
 		match statement {
@@ -60,14 +127,14 @@ impl SemanticAnalyzer {
 		}
 	}
 
-	fn type_from_expression(&self, expression: &p::Expression) -> Result<hir::TypeRef, Error> {
+	fn type_from_expression(&self, expression: &p::Expression) -> Result<hir::TypeRef> {
 		use p::Expression::*;
 
 		macro_rules! def_builtin {
 			($name:ident, $variant:ident) => {
 				let $name: hir::Class = self
 					.scope
-					.get_symbol(&hir::IntrinsicType::$variant.to_string())?
+					.get_symbol(&intr::IntrinsicType::$variant.to_string())?
 					.try_into()?;
 			};
 		}
@@ -97,18 +164,28 @@ impl SemanticAnalyzer {
 				let expression_type = self.type_from_expression(&operand)?;
 
 				use p::UnaryOperator::*;
-				use hir::IntrinsicInterface::*;
+				use intr::IntrinsicInterface::*;
 
-				let interface = match operator {
+				let intrinsic_interface = match operator {
 					Minus => NegOp,
-					Not => LogicOps(expression_type.codegen())
+					Not => LogicOps
 				};
+
+				let interface = self.scope.get_symbol(&intrinsic_interface.name())?;
+
+				if !interface.is_interface() {
+					bail!("Intrinsic interface `{}` is not an interface in the symbol table", intrinsic_interface.name());
+				}
+
+				let interface: Interface = interface.try_into()?;
+
+				// TODO: Generic interface substitution
 
 				// TODO: This is incorrect
 				// The type should be checked with account for array dimensions
 				// rather than the underlying type
-				if !expression_type.0.implements_interfaces.contains(&interface.codegen()) {
-					bail!("Type `{}` does not implement interface `{}`", expression_type.codegen(), interface.codegen());
+				if !expression_type.0.implements_interfaces.contains(&interface.unique_name()) {
+					bail!("Type `{}` does not implement interface `{}`", expression_type.codegen(), interface.unique_name());
 				}
 
 				Ok(expression_type)
@@ -119,11 +196,11 @@ impl SemanticAnalyzer {
 				let rhs_type = self.type_from_expression(&rhs)?;
 
 				use p::BinaryOperator::*;
-				use hir::IntrinsicInterface::*;
+				use intr::IntrinsicInterface::*;
 
-				let rhs_string = rhs_type.codegen();
+				let _rhs_string = rhs_type.codegen();
 
-				let interface = match operator {
+				let intrinsic_interface = match operator {
 					Plus => AddOp,
 					Minus => SubOp,
 					Divide => DivOp,
@@ -133,36 +210,34 @@ impl SemanticAnalyzer {
 					And | Or => LogicOps,
 					GreaterThan | LessThan => CmpOps,
 					GreaterThanEqual | LessThanEqual => CmpEqOps
-				}(rhs_string);
+				};
+
+				let interface: Interface = self
+					.scope
+					.get_symbol(&intrinsic_interface.name())?
+					.try_into()?;
+
+				// TODO: Generic interface substitution
 
 				// TODO: This is incorrect
 				// The type should be checked with account for array dimensions
 				// rather than the underlying type
-				if !lhs_type.0.implements_interfaces.contains(&interface.codegen()) {
-					bail!("Type `{}` does not implement interface `{}`", lhs_type.codegen(), interface.codegen());
+				if !lhs_type.0.implements_interfaces.contains(&interface.unique_name()) {
+					bail!("Type `{}` does not implement interface `{}`", lhs_type.codegen(), interface.unique_name());
 				}
 
-				let interface_member_operator = hir::IntrinsicInterfaceMember::from(operator);
-				let interface_members = interface.members();
-				let interface_member_found = interface_members
-					.iter()
-					.find(|&&member| member == interface_member_operator);
+				let interface_member_index = bin_op_intr_member(&operator);
 
-				if interface_member_found.is_none() {
-					bail!("Interface `{}` has not member named `{}`", interface.codegen(), interface_member_operator.name());
-				}
-
-				let interface_member_found = interface_member_found
-					.unwrap()
+				let interface_member = interface
+					.members
+					.get(interface_member_index)
+					.ok_or_else(|| anyhow::format_err!("Interface `{}` has not member #{}", interface.unique_name(), interface_member_index))?
 					.to_owned();
 
 				let class_member = lhs_type
 					.0
-					.members
-					.iter()
-					.find(|&member| member.name() == interface_member_found.name())
-					.unwrap_or_else(|| unreachable!("Type `{}` has no member named `{}`", lhs_type.codegen(), interface_member_found.name()))
-					.to_owned();
+					.member_by_name(&interface_member.name())
+					.unwrap_or_else(|| unreachable!("Type `{}` has no member named `{}`", lhs_type.codegen(), interface_member.name()));
 
 				let class_function = hir::ClassFunction::try_from(class_member)?;
 				let return_type = class_function.function.prototype.return_type;
@@ -173,16 +248,15 @@ impl SemanticAnalyzer {
 			FunctionCall { callee, generics, arguments } => {
 				let callee_type = self.type_from_expression(&callee)?;
 
-				if
-					!callee_type.0.implements_interfaces.contains(
-						&hir::IntrinsicInterface::Function.codegen()
-					) ||
-					(callee_type.1 > 0)
-				{
+				let function_interface: Interface = self.scope.get_symbol(
+					&intr::IntrinsicInterface::Function.name()
+				)?.try_into()?;
+
+				if !callee_type.0.implements_interfaces.contains(&function_interface.unique_name()) || (callee_type.1 > 0) {
 					bail!(
 						"Type `{}` does not implement interface `{}`",
 						callee_type.codegen(),
-						hir::IntrinsicInterface::Function.to_string()
+						function_interface.unique_name()
 					);
 				}
 
@@ -265,7 +339,7 @@ impl SemanticAnalyzer {
 		}
 	}
 
-	fn convert_type(&self, kind: &p::Type) -> Result<hir::TypeRef, Error> {
+	fn convert_type(&self, kind: &p::Type) -> Result<hir::TypeRef> {
 		match kind.to_owned() {
 			p::Type::Regular(kind) => {
 				// TODO: Recursively resolve type aliases
@@ -305,7 +379,7 @@ impl SemanticAnalyzer {
 		name: String,
 		kind: Option<p::Type>,
 		value: p::Expression
-	) -> Result<hir::Statement, Error> {
+	) -> Result<hir::Statement> {
 		use p::GeneralModifier::*;
 		
 		let m_public = modifiers.contains(&Public);
@@ -347,7 +421,7 @@ impl SemanticAnalyzer {
 		Ok(hir::Statement::VariableDefinition(variable))
 	}
 
-	fn convert_function_argument(&mut self, argument: p::FunctionArgument) -> Result<hir::FunctionArgument, Error> {
+	fn convert_function_argument(&mut self, argument: p::FunctionArgument) -> Result<hir::FunctionArgument> {
 		let resolved_type = self.convert_type(&argument.kind)?;
 
 		Ok(hir::FunctionArgument {
@@ -356,7 +430,7 @@ impl SemanticAnalyzer {
 		})
 	}
 
-	fn analyze_function_prototype(&mut self, prototype: p::FunctionPrototype) -> Result<hir::FunctionPrototype, Error> {
+	fn analyze_function_prototype(&mut self, prototype: p::FunctionPrototype) -> Result<hir::FunctionPrototype> {
 		use p::GeneralModifier::*;
 		
 		let p::FunctionPrototype {
@@ -413,12 +487,16 @@ impl SemanticAnalyzer {
 		})
 	}
 
-	fn analyze_function(&mut self, function: p::Function) -> Result<hir::Function, Error> {
+	fn analyze_function(&mut self, function: p::Function) -> Result<hir::Function> {
 		let prototype = self.analyze_function_prototype(function.prototype)?;
 
 		self.scope.insert_symbol(
 			prototype.name.clone(),
-			Symbol::Class(hir::Class::from(prototype.clone()))
+			Symbol::Class(
+				type_from_function(
+					function_from_prototype(prototype.clone())
+				)
+			)
 		)?;
 
 		let body: Option<Vec<hir::Statement>> = if let Some(func_body) = function.body {
@@ -448,13 +526,15 @@ impl SemanticAnalyzer {
 
 		self.scope.update_symbol(
 			prototype.name.clone(),
-			Symbol::Class(hir::Class::from(function.clone()))
+			Symbol::Class(
+				type_from_function(function.clone())
+			)
 		)?;
 
 		Ok(function)
 	}
 
-	fn analyze_function_stmt(&mut self, statement: p::Statement) -> Result<hir::Statement, Error> {
+	fn analyze_function_stmt(&mut self, statement: p::Statement) -> Result<hir::Statement> {
 		let function = match statement {
 			p::Statement::FunctionDefinition(function) |
 			p::Statement::FunctionDeclaration(function) => function,
@@ -471,7 +551,7 @@ impl SemanticAnalyzer {
 		Ok(hir::Statement::FunctionDefinition(function))
 	}
 
-	fn analyze_class_member(&mut self, member: p::ClassMember) -> Result<hir::ClassMember, Error> {
+	fn analyze_class_member(&mut self, member: p::ClassMember) -> Result<hir::ClassMember> {
 		Ok(match member {
 			p::ClassMember::Variable(variable) => {
 				use p::GeneralModifier::*;
@@ -576,6 +656,31 @@ impl SemanticAnalyzer {
 				};
 
 				hir::ClassMember::Function(class_function)
+			},
+
+			p::ClassMember::AssocType(kind) => {
+				use p::GeneralModifier::*;
+
+				let p::ClassAssocType { modifiers, name, kind } = kind;
+
+				// Checking modifiers
+				let m_const = modifiers.contains(&Constant);
+				let m_static = modifiers.contains(&Static);
+
+				if m_const {
+					bail!("`const` modifiers are not permitted for associated types");
+				}
+
+				if m_static {
+					bail!("Associated class types are implicitly static");
+				}
+
+				let assoc_type = hir::ClassAssocType {
+					name,
+					kind: self.convert_type(&kind)?
+				};
+
+				hir::ClassMember::AssocType(assoc_type)
 			}
 		})
 	}
@@ -586,7 +691,7 @@ impl SemanticAnalyzer {
 		name: String,
 		generics: Vec<p::DefinitionType>,
 		members: Vec<p::ClassMember>
-	) -> Result<hir::Statement, Error> {
+	) -> Result<hir::Statement> {
 		use p::GeneralModifier::*;
 
 		let original_scope = self.scope.clone();
@@ -650,7 +755,7 @@ impl SemanticAnalyzer {
 		Ok(hir::Statement::ClassDefinition(class))
 	}
 
-	fn analyze_return(&mut self, value: Option<p::Expression>) -> Result<hir::Statement, Error> {
+	fn analyze_return(&mut self, value: Option<p::Expression>) -> Result<hir::Statement> {
 		if !self.scope.flags.in_function {
 			bail!("`return` statements are not permitted outside of functions");
 		}
@@ -665,7 +770,7 @@ impl SemanticAnalyzer {
 		class_name: String,
 		class_generics: Vec<p::Type>,
 		_members: Vec<p::ClassMember>
-	) -> Result<hir::Statement, Error> {
+	) -> Result<hir::Statement> {
 		let _interface = match self.scope.get_symbol(&interface_name)? {
 			Symbol::Interface(interface) => interface,
 			symbol => bail!("Expected a symbol of type `Interface`, got `{}`", symbol.to_string())

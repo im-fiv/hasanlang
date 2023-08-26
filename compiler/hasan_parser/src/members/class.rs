@@ -10,14 +10,16 @@ use indent::indent_all_by;
 #[derive(Debug, Clone, PartialEq)]
 pub enum ClassMember {
 	Variable(ClassVariable),
-	Function(ClassFunction)
+	Function(ClassFunction),
+	AssocType(ClassAssocType)
 }
 
 impl HasanCodegen for ClassMember {
 	fn codegen(&self) -> String {
 		match self {
 			Self::Variable(variable) => variable.codegen(),
-			Self::Function(function) => function.codegen()
+			Self::Function(function) => function.codegen(),
+			Self::AssocType(assoc_type) => assoc_type.codegen()
 		}
 	}
 }
@@ -76,17 +78,39 @@ impl ClassFunction {
 
 impl HasanCodegen for ClassFunction {
 	fn codegen(&self) -> String {
-		let attributes = &self.attributes;
-		let statements = &self.body;
-
-		let attributes = cond_vec_transform!(attributes, |value| value.to_string(), ", ", "#[{}]\n");
-		let statements = vec_transform_str(statements, |value| value.codegen(), "\n");
+		let attributes = cond_vec_transform!(&self.attributes, |value| value.to_string(), ", ", "#[{}]\n");
+		let statements = vec_transform_str(&self.body, |value| value.codegen(), "\n");
 
 		format!(
 			"{}{} do\n{}\nend",
+
 			attributes,
 			self.prototype.codegen(),
 			indent_all_by(NUM_SPACES, statements)
+		)
+	}
+}
+
+//-----------------------------------------------------------------//
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ClassAssocType {
+	pub modifiers: GeneralModifiers,
+
+	pub name: String,
+	pub kind: Type
+}
+
+impl HasanCodegen for ClassAssocType {
+	fn codegen(&self) -> String {
+		let modifiers = cond_vec_transform!(&self.modifiers, |value| value.to_string(), " ", "{} ");
+
+		format!(
+			"{}type {} = {};",
+
+			modifiers,
+			self.name,
+			self.kind.codegen()
 		)
 	}
 }

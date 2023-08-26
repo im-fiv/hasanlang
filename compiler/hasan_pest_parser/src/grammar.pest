@@ -65,7 +65,8 @@ interface_impl_stmt = { "impl" ~ identifier ~ call_generics? ~ "for" ~ identifie
 
 return_stmt = { "return" ~ expression? ~ stmt_sep }
 
-function_call_stmt = { term_without_recursion ~ recursive_operator+ ~ stmt_sep } // this is wrong, but it will be handled inside the parser
+// This is wrong, but it will be handled inside the parser
+function_call_stmt = { term_without_recursion ~ recursive_operator+ ~ stmt_sep }
 
 function_definition_stmt = { function_header ~ do_block ~ stmt_sep? }
 function_declaration_stmt = { function_header ~ stmt_sep }
@@ -80,12 +81,17 @@ variable_assign_stmt = { (recursive_expression | expression) ~ "=" ~ expression 
 enum_definition_stmt = { general_modifiers ~ "enum" ~ identifier ~ (enum_variant ~ ("," ~ enum_variant)*)? ~ "end" }
 
 //* Interfaces *//
-interface_members = { (interface_variable | interface_function)* }
-	interface_member = { interface_variable | interface_function }
+interface_members = { interface_member* }
+	interface_member = _{
+		interface_variable |
+		interface_function |
+		interface_type
+	}
 
 interface_variable = { general_modifiers ~ "var" ~ identifier ~ ":" ~ type ~ stmt_sep }
 interface_function = { attributes? ~ general_modifiers ~ "func" ~ identifier ~ definition_generics? ~ "(" ~ interface_function_arguments? ~ ")" ~ "->" ~ type ~ stmt_sep }
 	interface_function_arguments = { type ~ ("," ~ type)* }
+interface_type = { general_modifiers ~ "type" ~ identifier ~ stmt_sep }
 
 //* Control flow *//
 if_stmt = { "if" ~ expression ~ "then" ~ statements ~ if_elseif* ~ if_else? ~ "end" }
@@ -108,10 +114,16 @@ do_block = { "do" ~ statement* ~ "end" }
 
 //* Class definition *//
 class_definition = { general_modifiers ~ "class" ~ identifier ~ definition_generics? ~ class_definition_member* ~ "end" ~ stmt_sep? }
-class_definition_member = { class_definition_function | class_definition_variable }
+class_definition_member = {
+	class_definition_function |
+	class_definition_variable |
+	class_definition_type
+}
 
 class_definition_function = { attributes? ~ function_definition_stmt ~ stmt_sep? }
 class_definition_variable = { general_modifiers ~ "var" ~ identifier ~ ":" ~ type ~ ("=" ~ expression)? ~ stmt_sep }
+// Note: All associated types must be defined immediately
+class_definition_type = { general_modifiers ~ "type" ~ identifier ~ "=" ~ type ~ stmt_sep }
 
 // Other class features //
 attributes = { "#[" ~ attribute_identifier ~ ("," ~ attribute_identifier)* ~ "]" }
@@ -124,7 +136,7 @@ enum_variant = { identifier }
 type = { array_type | regular_type | function_type }
 
 regular_type = { identifier ~ call_generics? }
-// NOTE: `array_type` is a part of `regular_type` and is parsed into a regular type with the `array` field set to true
+// Note: `array_type` is a part of `regular_type` and is parsed into a regular type with the `array` field set to true
 array_type = { regular_type ~ "[" ~ "]" }
 
 function_type = { definition_generics? ~ "(" ~ function_type_arguments ~ ")" ~ "->" ~ type }

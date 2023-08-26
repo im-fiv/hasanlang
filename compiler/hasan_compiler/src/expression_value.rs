@@ -305,7 +305,7 @@ impl<'ctx> TryFrom<AnyValueEnum<'ctx>> for ExpressionValue<'ctx> {
 		match value {
 			AnyValueEnum::IntValue(value) => Self::resolve_from_int(value),
 			AnyValueEnum::FloatValue(value) => Ok(Self::Float(value)),
-			// NOTE: No string value here because it is a global value
+			// Note: No string value here because it is a global value
 			AnyValueEnum::PointerValue(value) => Ok(Self::Pointer(value)),
 			AnyValueEnum::FunctionValue(value) => Ok(Self::Function(value)),
 			

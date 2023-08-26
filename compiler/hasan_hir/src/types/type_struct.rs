@@ -1,8 +1,4 @@
-use crate::{
-	ClassMember, HirCodegen, HirDiagnostics,
-	FunctionPrototype, Function, IntrinsicInterface,
-	IntrinsicType
-};
+use crate::{ClassMember, HirCodegen, HirDiagnostics};
 
 use hasan_parser::NUM_SPACES;
 use indent::indent_all_by;
@@ -17,11 +13,6 @@ pub struct Type {
 }
 
 impl Type {
-	pub fn from_intrinsic(kind: IntrinsicType, table: &hasan_analyzer::SymbolTable) -> Self {
-		// TODO
-		todo!()
-	}
-
 	pub fn member_by_name(&self, name: &str) -> Option<ClassMember> {
 		self
 			.members
@@ -39,7 +30,8 @@ impl HirDiagnostics for Type {
 			.map(|member| {
 				match member {
 					ClassMember::Variable(variable) => variable.info_string(),
-					ClassMember::Function(function) => function.info_string()
+					ClassMember::Function(function) => function.info_string(),
+					ClassMember::AssocType(kind) => kind.info_string()
 				}
 			})
 			.collect::<Vec<_>>()
@@ -79,45 +71,5 @@ impl HirDiagnostics for Type {
 impl HirCodegen for Type {
 	fn codegen(&self) -> String {
 		self.name.clone()
-	}
-}
-
-impl From<FunctionPrototype> for Type {
-	fn from(prototype: FunctionPrototype) -> Self {
-		Self::from(Function::from(prototype))
-	}
-}
-
-impl From<Function> for Type {
-	fn from(function: Function) -> Self {
-		let inner_function = {
-			let prototype = FunctionPrototype {
-				name: IntrinsicInterface::Function.members().get(0).unwrap().name(),
-				arguments: function.prototype.arguments,
-				return_type: function.prototype.return_type
-			};
-
-			Function {
-				prototype,
-				body: function.body
-			}
-		};
-
-		let class_function = crate::ClassFunction {
-			attributes: vec![],
-			function: inner_function,
-			modifiers: crate::ClassFunctionModifiers {
-				is_public: true,
-				is_static: false
-			}
-		};
-
-		let class_member = crate::ClassMember::Function(class_function);
-
-		Self {
-			name: function.prototype.name,
-			members: vec![class_member],
-			implements_interfaces: vec![IntrinsicInterface::Function.codegen()]
-		}
 	}
 }

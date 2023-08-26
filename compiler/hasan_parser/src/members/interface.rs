@@ -7,14 +7,16 @@ use crate::{
 #[derive(Debug, Clone, PartialEq)]
 pub enum InterfaceMember {
 	Variable(InterfaceVariable),
-	Function(InterfaceFunction)
+	Function(InterfaceFunction),
+	AssocType(InterfaceAssocType)
 }
 
 impl HasanCodegen for InterfaceMember {
 	fn codegen(&self) -> String {
 		match self {
 			Self::Variable(variable) => variable.codegen(),
-			Self::Function(function) => function.codegen()
+			Self::Function(function) => function.codegen(),
+			Self::AssocType(assoc_type) => assoc_type.codegen()
 		}
 	}
 }
@@ -98,6 +100,26 @@ impl HasanCodegen for InterfaceFunctionPrototype {
 			generics,
 			argument_types,
 			self.return_type.codegen()
+		)
+	}
+}
+
+//-----------------------------------------------------------------//
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct InterfaceAssocType {
+	pub modifiers: GeneralModifiers,
+	pub name: String
+}
+
+impl HasanCodegen for InterfaceAssocType {
+	fn codegen(&self) -> String {
+		let modifiers = cond_vec_transform!(&self.modifiers, |value| value.to_string(), " ", "{} ");
+
+		format!(
+			"{}type {};",
+			modifiers,
+			self.name
 		)
 	}
 }

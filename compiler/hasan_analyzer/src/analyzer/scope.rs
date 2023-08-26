@@ -1,4 +1,4 @@
-use crate::Symbol;
+use crate::{Symbol, GenericTable};
 
 use hasan_hir as hir;
 
@@ -6,8 +6,6 @@ use std::collections::HashMap;
 use anyhow::{Error, bail};
 
 pub type SymbolTable = HashMap<String, Symbol>;
-/// Contains a "generics map" for a given symbol
-pub type GenericTable = HashMap<Symbol, Vec<Symbol>>;
 
 // TODO: One possible way of implementing the generics table:
 //
@@ -33,55 +31,55 @@ impl Scope {
 	pub fn new() -> Self {
 		Self {
 			symbol_table: Self::populated_sym_table(),
-			generic_table: HashMap::new(),
+			generic_table: GenericTable::new(),
 			flags: ScopeFlags::default()
 		}
 	}
 
 	pub fn populated_sym_table() -> SymbolTable {
-		let mut result = HashMap::new();
+		let result = HashMap::new();
 
-		macro_rules! intrinsic {
-			(interface $variant:ident$(<$($generic:ident),*>)?) => {
-				{
-					let variant = hir::IntrinsicInterface::$variant$(($(stringify!($generic).to_owned()),*))?;
-					let name = variant.to_string();
-					let interface = crate::Interface::from_intrinsic(variant, &result);
+		// macro_rules! intrinsic {
+		// 	(interface $variant:ident$(<$($generic:ident),*>)?) => {
+		// 		{
+		// 			let variant = hir::IntrinsicInterface::$variant$(($(stringify!($generic).to_owned()),*))?;
+		// 			let name = variant.to_string();
+		// 			let interface = crate::Interface::from_intrinsic(variant, &result);
 
-					result.insert(name, Symbol::Interface(interface));
-				}
-			};
+		// 			result.insert(name, Symbol::Interface(interface));
+		// 		}
+		// 	};
 
-			(type $variant:ident) => {
-				{
-					let variant = hir::IntrinsicType::$variant;
-					let name = variant.name();
-					let class = hir::Type::from_intrinsic(variant, &result);
+		// 	(type $variant:ident) => {
+		// 		{
+		// 			let variant = intr::IntrinsicType::$variant;
+		// 			let name = variant.name();
+		// 			let class = hir::Type::from_intrinsic(variant, &result);
 
-					result.insert(name, Symbol::Class(class));
-				}
-			};
-		}
+		// 			result.insert(name, Symbol::Class(class));
+		// 		}
+		// 	};
+		// }
 		
-		// Adding intrinsic types
-		intrinsic!(type Integer);
-		intrinsic!(type Float);
-		intrinsic!(type String);
-		intrinsic!(type Boolean);
-		intrinsic!(type Void);
+		// // Adding intrinsic types
+		// intrinsic!(type Integer);
+		// intrinsic!(type Float);
+		// intrinsic!(type String);
+		// intrinsic!(type Boolean);
+		// intrinsic!(type Void);
 
-		// Adding intrinsic interfaces
-		intrinsic!(interface AddOp<Rhs>);
-		intrinsic!(interface SubOp<Rhs>);
-		intrinsic!(interface NegOp);
-		intrinsic!(interface DivOp<Rhs>);
-		intrinsic!(interface MulOp<Rhs>);
-		intrinsic!(interface RemOp<Rhs>);
-		intrinsic!(interface EqOps<Rhs>);
-		intrinsic!(interface LogicOps<Rhs>);
-		intrinsic!(interface CmpOps<Rhs>);
-		intrinsic!(interface CmpEqOps<Rhs>);
-		intrinsic!(interface Function);
+		// // Adding intrinsic interfaces
+		// intrinsic!(interface AddOp<Rhs>);
+		// intrinsic!(interface SubOp<Rhs>);
+		// intrinsic!(interface NegOp);
+		// intrinsic!(interface DivOp<Rhs>);
+		// intrinsic!(interface MulOp<Rhs>);
+		// intrinsic!(interface RemOp<Rhs>);
+		// intrinsic!(interface EqOps<Rhs>);
+		// intrinsic!(interface LogicOps<Rhs>);
+		// intrinsic!(interface CmpOps<Rhs>);
+		// intrinsic!(interface CmpEqOps<Rhs>);
+		// intrinsic!(interface Function);
 
 		result
 	}
@@ -90,9 +88,9 @@ impl Scope {
 	pub fn create_child_scope(&self) -> Self {
 		Self {
 			symbol_table: self.symbol_table.clone(),
-			generic_table: HashMap::new(), // Create a new generic table for easier merging
+			generic_table: GenericTable::new(), // Create a new generic table for easier merging
 			flags: self.flags
-		} 
+		}
 	}
 
 	/// Inserts a symbol into the symbol table. Panics if a symbol with the provided name already exists
@@ -136,18 +134,13 @@ impl hir::HirDiagnostics for Scope {
 
 		let generic_table = self
 			.generic_table
+			.0
 			.iter()
-			.map(|(symbol, table)| {
-				let mut table_str = String::new();
-
-				for table_entry in table {
-					table_str.push_str(&table_entry.info_string());
-				}
-
+			.map(|(symbol, data)| {
 				format!(
 					"{}:\n{}",
 					symbol.name(),
-					table_str
+					indent_all_by(NUM_SPACES, data.info_string())
 				)
 			})
 			.collect::<Vec<_>>()

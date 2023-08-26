@@ -1,13 +1,15 @@
+mod assoc_type;
 mod function;
 mod member;
 mod variable;
 
+pub use assoc_type::*;
 pub use function::*;
 pub use member::*;
 pub use variable::*;
 
-use crate::SymbolTable;
-use hasan_hir::{IntrinsicInterface, HirDiagnostics};
+use hasan_hir::HirDiagnostics;
+use hasan_intrinsics::IntrinsicInterface;
 use hasan_parser::{vec_transform_str, NUM_SPACES};
 
 use indent::indent_all_by;
@@ -22,6 +24,13 @@ pub struct Interface {
 
 	/// Shows whether an interface is intrinsic
 	pub intrinsic: Option<IntrinsicInterface>
+}
+
+impl Interface {
+	pub fn unique_name(&self) -> String {
+		// TODO: Rewrite this function with generics in mind
+		self.name.clone()
+	}
 }
 
 impl HirDiagnostics for Interface {
