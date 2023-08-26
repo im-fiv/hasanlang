@@ -37,8 +37,6 @@ impl Scope {
 	}
 
 	pub fn populated_sym_table() -> SymbolTable {
-		let result = HashMap::new();
-
 		// macro_rules! intrinsic {
 		// 	(interface $variant:ident$(<$($generic:ident),*>)?) => {
 		// 		{
@@ -81,7 +79,7 @@ impl Scope {
 		// intrinsic!(interface CmpEqOps<Rhs>);
 		// intrinsic!(interface Function);
 
-		result
+		HashMap::new()
 	}
 
 	/// Creates a child scope while keeping all of the variables in scope

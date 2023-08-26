@@ -48,7 +48,7 @@ impl HirDiagnostics for Interface {
 			indent_all_by(NUM_SPACES, members_str)
 		);
 
-		match self.intrinsic.clone() {
+		match self.intrinsic {
 			Some(intrinsic) => format!("intrinsic({}) {}", intrinsic, base),
 			None => base
 		}
