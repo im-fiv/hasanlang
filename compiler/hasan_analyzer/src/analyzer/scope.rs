@@ -3,7 +3,7 @@ use crate::{Symbol, GenericTable};
 use hasan_hir as hir;
 
 use std::collections::HashMap;
-use anyhow::{Error, bail};
+use anyhow::{Result, bail};
 
 pub type SymbolTable = HashMap<String, Symbol>;
 
@@ -92,7 +92,7 @@ impl Scope {
 	}
 
 	/// Inserts a symbol into the symbol table. Panics if a symbol with the provided name already exists
-	pub fn insert_symbol(&mut self, name: String, symbol: Symbol) -> Result<(), Error> {
+	pub fn insert_symbol(&mut self, name: String, symbol: Symbol) -> Result<()> {
 		if self.symbol_table.insert(name.clone(), symbol).is_some() {
 			bail!("Cannot overwrite symbol with name `{}`", name);
 		}
@@ -101,7 +101,7 @@ impl Scope {
 	}
 
 	/// Gets a symbol from the symbol table. Panics if a symbol does not exist
-	pub fn get_symbol(&self, name: &str) -> Result<Symbol, Error> {
+	pub fn get_symbol(&self, name: &str) -> Result<Symbol> {
 		if let Some(symbol) = self.symbol_table.get(name) {
 			return Ok(symbol.to_owned());
 		}
@@ -109,7 +109,7 @@ impl Scope {
 		bail!("Symbol with name `{}` does not exist", name);
 	}
 
-	pub fn update_symbol(&mut self, name: String, symbol: Symbol) -> Result<(), Error> {
+	pub fn update_symbol(&mut self, name: String, symbol: Symbol) -> Result<()> {
 		if self.symbol_table.insert(name.clone(), symbol).is_none() {
 			bail!("Symbol with name `{}` does not exist", name);
 		}

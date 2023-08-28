@@ -14,7 +14,7 @@ use inkwell::types::{BasicMetadataTypeEnum, BasicTypeEnum};
 use inkwell::values::{FunctionValue, PointerValue, IntValue, FloatValue, GlobalValue, AnyValue, BasicMetadataValueEnum};
 
 use std::collections::HashMap;
-use anyhow::{Error, bail};
+use anyhow::{Result, bail};
 
 use hasan_parser as parser;
 use hasan_hir as hir;
@@ -66,7 +66,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 		}
 	}
 	
-	pub fn compile(&mut self, program: &hir::Program) -> Result<(), Error> {
+	pub fn compile(&mut self, program: &hir::Program) -> Result<()> {
 		self.compile_statements(&program.statements)?;
 		
 		if self.get_function(ENTRY_FUNCTION_NAME).is_none() {
@@ -76,7 +76,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 		Ok(())
 	}
 	
-	fn compile_statements(&mut self, statements: &Vec<hir::Statement>) -> Result<(), Error> {
+	fn compile_statements(&mut self, statements: &Vec<hir::Statement>) -> Result<()> {
 		for statement in statements {
 			match statement.to_owned() {
 				hir::Statement::FunctionDefinition(function) => self.compile_function(function)?,
@@ -182,7 +182,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	}
 	
 	/// Resolves a parser type into a LLVM type
-	pub fn compile_type(&self, kind: &hir::TypeRef) -> Result<Option<BasicTypeEnum<'ctx>>, Error> {
+	pub fn compile_type(&self, kind: &hir::TypeRef) -> Result<Option<BasicTypeEnum<'ctx>>> {
 		// TODO: Allow for resolving non-built-in types
 		let hir::TypeRef(kind, _dimensions) = kind;
 		
@@ -195,7 +195,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	}
 	
 	/// Compiles the provided function prototype
-	fn compile_function_prototype(&self, prototype: &hir::FunctionPrototype) -> Result<FunctionValue<'ctx>, Error> {
+	fn compile_function_prototype(&self, prototype: &hir::FunctionPrototype) -> Result<FunctionValue<'ctx>> {
 		let return_type = self.compile_type(&prototype.return_type)?;
 		
 		let argument_types = prototype.arguments
@@ -253,7 +253,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	}
 	
 	/// Compiles the provided `Function` into LLVM `FunctionValue`
-	fn compile_function(&mut self, function: hir::Function) -> Result<(), Error> {
+	fn compile_function(&mut self, function: hir::Function) -> Result<()> {
 		// BUG: Nested functions do not work. Reason is yet to be determined
 		
 		let old_function_value = self.current_function;
@@ -318,7 +318,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	}
 	
 	/// Compiles the return statement
-	fn compile_return(&mut self, value: Option<parser::Expression>) -> Result<(), Error> {
+	fn compile_return(&mut self, value: Option<parser::Expression>) -> Result<()> {
 		if value.is_none() {
 			self.builder.build_return(None);
 			return Ok(());
@@ -334,7 +334,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	}
 	
 	/// Compiles the provided `Expression` into LLVM number value (`FloatValue` or `IntValue`)
-	fn compile_expression(&mut self, expression: &parser::Expression) -> Result<ExpressionValue<'ctx>, Error> {
+	fn compile_expression(&mut self, expression: &parser::Expression) -> Result<ExpressionValue<'ctx>> {
 		use parser::Expression as e;
 		
 		match expression.to_owned() {
@@ -357,7 +357,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	}
 	
 	/// Resolves the passed identifier into an `ExpressionValue`. Errors if the identifier has not been found
-	fn resolve_identifier(&mut self, name: String) -> Result<ExpressionValue<'ctx>, Error> {
+	fn resolve_identifier(&mut self, name: String) -> Result<ExpressionValue<'ctx>> {
 		let variable = self.variables.get(&name);
 		let function = self.get_function(&name);
 		let global = self.module.get_global(&name);
@@ -382,7 +382,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	}
 	
 	/// Compiles a unary expression given the operator and operand
-	fn compile_unary_expression(&mut self, operator: parser::UnaryOperator, operand: Box<parser::Expression>) -> Result<ExpressionValue<'ctx>, Error> {
+	fn compile_unary_expression(&mut self, operator: parser::UnaryOperator, operand: Box<parser::Expression>) -> Result<ExpressionValue<'ctx>> {
 		let compiled_expression = self.compile_expression(operand.as_ref())?;
 		
 		match operator {
@@ -391,7 +391,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 		}
 	}
 	
-	fn compile_binary_expression(&mut self, lhs: parser::Expression, operator: parser::BinaryOperator, rhs: parser::Expression) -> Result<ExpressionValue<'ctx>, Error> {
+	fn compile_binary_expression(&mut self, lhs: parser::Expression, operator: parser::BinaryOperator, rhs: parser::Expression) -> Result<ExpressionValue<'ctx>> {
 		use parser::BinaryOperator as b;
 		
 		let compiled_lhs = self.compile_expression(&lhs)?;
@@ -417,7 +417,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 		})
 	}
 	
-	fn compile_variable_definition(&mut self, variable: hir::Variable) -> Result<(), Error> {
+	fn compile_variable_definition(&mut self, variable: hir::Variable) -> Result<()> {
 		// BUG: Constant string variables seem to cause access violation exception
 		let inside_function = self.current_function.is_some();
 		
@@ -447,7 +447,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 		Ok(())
 	}
 	
-	fn compile_function_call(&mut self, callee: parser::Expression, arguments: Vec<parser::Expression>) -> Result<ExpressionValue<'ctx>, Error> {
+	fn compile_function_call(&mut self, callee: parser::Expression, arguments: Vec<parser::Expression>) -> Result<ExpressionValue<'ctx>> {
 		let callee = self.compile_expression(&callee)?;
 		let resolved_callee = callee.unwrap_any_value()?;
 		

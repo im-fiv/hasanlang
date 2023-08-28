@@ -3,7 +3,7 @@ use inkwell::context::Context;
 use inkwell::AddressSpace;
 
 use strum_macros::Display;
-use anyhow::{Error, bail};
+use anyhow::bail;
 
 /// An enum containing all of the built-in types (typically types that have their default behavior explicitly defined by the compiler)
 #[derive(Debug, Clone, Display)]
@@ -30,7 +30,7 @@ impl<'ctx> IntrinsicType {
 }
 
 impl TryFrom<&str> for IntrinsicType {
-	type Error = Error;
+	type Error = anyhow::Error;
 
 	fn try_from(value: &str) -> Result<Self, Self::Error> {
 		match value {

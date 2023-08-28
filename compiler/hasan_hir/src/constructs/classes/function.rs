@@ -1,7 +1,7 @@
 use hasan_parser::vec_transform_str;
 use crate::{Function, HirCodegen, HirDiagnostics, ClassMember};
 
-use anyhow::{Error, bail};
+use anyhow::bail;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct ClassFunction {
@@ -41,7 +41,7 @@ impl HirCodegen for ClassFunction {
 }
 
 impl TryFrom<ClassMember> for ClassFunction {
-	type Error = Error;
+	type Error = anyhow::Error;
 
 	fn try_from(member: ClassMember) -> Result<Self, Self::Error> {
 		if let ClassMember::Function(function) = member {

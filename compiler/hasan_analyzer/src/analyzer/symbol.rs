@@ -1,7 +1,7 @@
 use crate::Interface;
 use hasan_hir::{Class, Variable, Enum, HirDiagnostics};
 
-use anyhow::{Error, bail};
+use anyhow::bail;
 use strum_macros::Display;
 use paste::paste;
 
@@ -55,7 +55,7 @@ macro_rules! impl_conv {
 
 		$(
 			impl TryInto<$variant> for $enum {
-				type Error = Error;
+				type Error = anyhow::Error;
 
 				fn try_into(self) -> Result<$variant, Self::Error> {
 					if let Self::$variant(value) = self.clone() {

@@ -1,7 +1,7 @@
 use crate::{TypeRef, HirCodegen, HirDiagnostics, ClassMember};
 use hasan_parser::HasanCodegen;
 
-use anyhow::{Error, bail};
+use anyhow::bail;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct ClassVariable {
@@ -42,7 +42,7 @@ impl HirCodegen for ClassVariable {
 }
 
 impl TryFrom<ClassMember> for ClassVariable {
-	type Error = Error;
+	type Error = anyhow::Error;
 
 	fn try_from(member: ClassMember) -> Result<Self, Self::Error> {
 		if let ClassMember::Variable(variable) = member {

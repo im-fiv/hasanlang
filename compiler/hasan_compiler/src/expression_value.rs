@@ -2,7 +2,7 @@ use inkwell::values::{IntValue, FloatValue, GlobalValue, PointerValue, BasicValu
 use inkwell::builder::Builder;
 
 use strum_macros::Display;
-use anyhow::{Error, bail};
+use anyhow::{Result, bail};
 
 use hasan_parser as p;
 
@@ -18,7 +18,7 @@ pub enum ExpressionValue<'ctx> {
 
 impl<'ctx, 'a> ExpressionValue<'ctx> {
 	/// Resolves a LLVM `IntValue` into `Int` or `Boolean` based on bits
-	pub fn resolve_from_int(value: IntValue<'ctx>) -> Result<Self, Error> {
+	pub fn resolve_from_int(value: IntValue<'ctx>) -> Result<Self> {
 		let kind = value.get_type();
 		let width = kind.get_bit_width();
 
@@ -31,7 +31,7 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 	}
 
 	/// Unwraps inner LLVM value and converts it into `BasicValueEnum`
-	pub fn unwrap_basic_value(&self) -> Result<BasicValueEnum<'ctx>, Error> {
+	pub fn unwrap_basic_value(&self) -> Result<BasicValueEnum<'ctx>> {
 		/// Allows to get rid of repetition while having to write the same piece of code for every match arm
 		macro_rules! v {
 			($value:ident) => {
@@ -51,7 +51,7 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 	}
 
 	/// Unwraps inner LLVM value and converts it into `AnyValueEnum`
-	pub fn unwrap_any_value(&self) -> Result<AnyValueEnum<'ctx>, Error> {
+	pub fn unwrap_any_value(&self) -> Result<AnyValueEnum<'ctx>> {
 		// Allows to get rid of repetition while having to write the same piece of code for every match arm
 		macro_rules! v {
 			($value:ident) => {
@@ -71,7 +71,7 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 
 	/// Applies unary `-` to the inner LLVM value.
 	/// Errors if the operation is performed on an incompatible type
-	pub fn apply_unary_minus(&self) -> Result<Self, Error> {
+	pub fn apply_unary_minus(&self) -> Result<Self> {
 		match self {
 			Self::Int(value) => Ok(Self::Int(value.const_neg())),
 			Self::Float(value) => Ok(Self::Float(value.const_neg())),
@@ -82,7 +82,7 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 
 	/// Applies unary `not` to the inner LLVM value.
 	/// Errors if the operation is performed on an incompatible type
-	pub fn apply_unary_not(&self) -> Result<Self, Error> {
+	pub fn apply_unary_not(&self) -> Result<Self> {
 		match self {
 			Self::Boolean(value) => Ok(Self::Boolean(value.const_not())),
 			_ => bail!("Cannot perform unary operation `{}` on a value of type `{}`", "not", self.to_string())
@@ -94,7 +94,7 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 
 	/// Compiles binary `+` with the inner LLVM value and the provided right-hand-side.
 	/// Errors if the operation is performed on incompatible types
-	pub fn compile_add(&self, other: &Self, builder: &'a Builder<'ctx>) -> Result<Self, Error> {
+	pub fn compile_add(&self, other: &Self, builder: &'a Builder<'ctx>) -> Result<Self> {
 		use BasicValueEnum as B;
 		
 		let self_unwrap = self.unwrap_basic_value()?;
@@ -121,7 +121,7 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 
 	/// Compiles binary `-` with the inner LLVM value and the provided right-hand-side.
 	/// Errors if the operation is performed on incompatible types
-	pub fn compile_subtract(&self, other: &Self, builder: &'a Builder<'ctx>) -> Result<Self, Error> {
+	pub fn compile_subtract(&self, other: &Self, builder: &'a Builder<'ctx>) -> Result<Self> {
 		use BasicValueEnum as B;
 		
 		let self_unwrap = self.unwrap_basic_value()?;
@@ -148,7 +148,7 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 
 	/// Compiles binary `/` with the inner LLVM value and the provided right-hand-side.
 	/// Errors if the operation is performed on incompatible types
-	pub fn compile_divide(&self, other: &Self, builder: &'a Builder<'ctx>) -> Result<Self, Error> {
+	pub fn compile_divide(&self, other: &Self, builder: &'a Builder<'ctx>) -> Result<Self> {
 		use BasicValueEnum as B;
 		
 		let self_unwrap = self.unwrap_basic_value()?;
@@ -175,7 +175,7 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 
 	/// Compiles binary `*` with the inner LLVM value and the provided right-hand-side.
 	/// Errors if the operation is performed on incompatible types
-	pub fn compile_multiply(&self, other: &Self, builder: &'a Builder<'ctx>) -> Result<Self, Error> {
+	pub fn compile_multiply(&self, other: &Self, builder: &'a Builder<'ctx>) -> Result<Self> {
 		use BasicValueEnum as B;
 		
 		let self_unwrap = self.unwrap_basic_value()?;
@@ -202,7 +202,7 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 
 	/// Compiles binary `%` with the inner LLVM value and the provided right-hand-side.
 	/// Errors if the operation is performed on incompatible types
-	pub fn compile_modulo(&self, other: &Self, builder: &'a Builder<'ctx>) -> Result<Self, Error> {
+	pub fn compile_modulo(&self, other: &Self, builder: &'a Builder<'ctx>) -> Result<Self> {
 		use BasicValueEnum as B;
 		
 		let self_unwrap = self.unwrap_basic_value()?;
@@ -229,63 +229,63 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 
 	/// Compiles binary `==` with the inner LLVM value and the provided right-hand-side.
 	/// Errors if the operation is performed on incompatible types
-	pub fn compile_equals(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self, Error> {
+	pub fn compile_equals(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self> {
 		// TODO: Implement this function
 		unimplemented!()
 	}
 
 	/// Compiles binary `!=` with the inner LLVM value and the provided right-hand-side.
 	/// Errors if the operation is performed on incompatible types
-	pub fn compile_not_equals(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self, Error> {
+	pub fn compile_not_equals(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self> {
 		// TODO: Implement this function
 		unimplemented!()
 	}
 
 	/// Compiles binary `and` with the inner LLVM value and the provided right-hand-side.
 	/// Errors if the operation is performed on incompatible types
-	pub fn compile_and(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self, Error> {
+	pub fn compile_and(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self> {
 		// TODO: Implement this function
 		unimplemented!()
 	}
 
 	/// Compiles binary `or` with the inner LLVM value and the provided right-hand-side.
 	/// Errors if the operation is performed on incompatible types
-	pub fn compile_or(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self, Error> {
+	pub fn compile_or(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self> {
 		// TODO: Implement this function
 		unimplemented!()
 	}
 
 	/// Compiles binary `>` with the inner LLVM value and the provided right-hand-side.
 	/// Errors if the operation is performed on incompatible types
-	pub fn compile_gt(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self, Error> {
+	pub fn compile_gt(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self> {
 		// TODO: Implement this function
 		unimplemented!()
 	}
 
 	/// Compiles binary `<` with the inner LLVM value and the provided right-hand-side.
 	/// Errors if the operation is performed on incompatible types
-	pub fn compile_lt(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self, Error> {
+	pub fn compile_lt(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self> {
 		// TODO: Implement this function
 		unimplemented!()
 	}
 
 	/// Compiles binary `>=` with the inner LLVM value and the provided right-hand-side.
 	/// Errors if the operation is performed on incompatible types
-	pub fn compile_gte(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self, Error> {
+	pub fn compile_gte(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self> {
 		// TODO: Implement this function
 		unimplemented!()
 	}
 
 	/// Compiles binary `<=` with the inner LLVM value and the provided right-hand-side.
 	/// Errors if the operation is performed on incompatible types
-	pub fn compile_lte(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self, Error> {
+	pub fn compile_lte(&self, _other: &Self, _builder: &'a Builder<'ctx>) -> Result<Self> {
 		// TODO: Implement this function
 		unimplemented!()
 	}
 }
 
 impl<'ctx> TryFrom<BasicValueEnum<'ctx>> for ExpressionValue<'ctx> {
-	type Error = Error;
+	type Error = anyhow::Error;
 
 	fn try_from(value: BasicValueEnum<'ctx>) -> Result<Self, Self::Error> {
 		match value {
@@ -299,7 +299,7 @@ impl<'ctx> TryFrom<BasicValueEnum<'ctx>> for ExpressionValue<'ctx> {
 }
 
 impl<'ctx> TryFrom<AnyValueEnum<'ctx>> for ExpressionValue<'ctx> {
-	type Error = Error;
+	type Error = anyhow::Error;
 
 	fn try_from(value: AnyValueEnum<'ctx>) -> Result<Self, Self::Error> {
 		match value {
