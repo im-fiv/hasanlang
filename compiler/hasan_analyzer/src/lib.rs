@@ -45,14 +45,6 @@ fn type_from_function(function: hir::Function) -> hir::Type {
 	}
 }
 
-#[inline]
-fn function_from_prototype(prototype: hir::FunctionPrototype) -> hir::Function {
-	hir::Function {
-		prototype,
-		body: None
-	}
-}
-
 /// Converts a binary operator into an intrinsic interface member index
 fn bin_op_intr_member(operator: &p::BinaryOperator) -> usize {
 	use p::BinaryOperator::*;
@@ -494,7 +486,7 @@ impl SemanticAnalyzer {
 			prototype.name.clone(),
 			Symbol::Class(
 				type_from_function(
-					function_from_prototype(prototype.clone())
+					hir::Function::from(prototype.clone())
 				)
 			)
 		)?;
