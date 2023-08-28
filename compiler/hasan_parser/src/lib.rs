@@ -22,10 +22,7 @@ use hasan_pest_parser::Rule;
 
 pub const NUM_SPACES: usize = 4;
 
-pub fn vec_transform_str<Elem, Func>(vec: &[Elem], func: Func, sep: &str) -> String
-where
-	Func: Fn(&Elem) -> String
-{
+pub fn vec_transform_str<Elem, Func: Fn(&Elem) -> String>(vec: &[Elem], func: Func, sep: &str) -> String {
 	vec
 		.iter()
 		.map(func)
