@@ -43,7 +43,9 @@ end
 
 In this example, `ExampleClass` implements `ExampleInterface` by providing `some_variable` and `some_function` as required. When implementing an interface, the types of variables and functions must match the definitions in the interface.
 
-**Note:** Future versions of the language may allow flexibility in not having to strictly specify types of variables and functions when implementing an interface.
+> **Note**
+>
+> Future versions of the language may allow flexibility in not having to strictly specify types of variables and functions when implementing an interface.
 
 ## Type Restriction with Interfaces
 

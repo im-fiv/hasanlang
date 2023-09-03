@@ -70,7 +70,9 @@ end
 
 In this example, we define an interface `SomeComplexInterface` with a set of generic parameters. We then implement the interface for a specific type `Something` while explicitly specifying the corresponding types for the generics.
 
-Note that if at least one generic parameter has been denoted using the keyword generic syntax, all other generic parameters must be denoted in the same way as well. This helps prevent confusion and allows for easier and less error-prone generic substitution system.
+> **Note**
+>
+> If at least one generic parameter has been denoted using the keyword generic syntax, all other generic parameters must be denoted in the same way as well. This helps prevent confusion and allows for easier and less error-prone generic substitution system.
 
 ## Combination of the two
 
