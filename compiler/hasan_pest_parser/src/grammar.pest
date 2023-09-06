@@ -164,11 +164,11 @@ term = _{ anonymous_function | unary_expression | array_expression | recursive_e
 term_without_recursion = _{ literal | identifier | "(" ~ expression ~ ")" }
 
 // Recursive expressions //
-recursive_operator = _{ recursive_call | recursive_array | recursive_dot | recursive_arrow | recursive_as }
+recursive_operator = _{ recursive_call | recursive_array | recursive_dot | recursive_double_colon | recursive_as }
 	recursive_call = { call_generics? ~ "(" ~ function_call_arguments? ~ ")" }
 	recursive_array = { "[" ~ expression ~ "]" }
 	recursive_dot = { "." ~ identifier }
-	recursive_arrow = { "->" ~ identifier }
+	recursive_double_colon = { "::" ~ identifier }
 	recursive_as = { "as" ~ type }
 
 recursive_expression = { term_without_recursion ~ recursive_operator+ }

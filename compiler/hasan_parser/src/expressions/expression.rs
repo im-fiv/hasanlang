@@ -43,7 +43,7 @@ pub enum Expression {
 		accessor: Box<Expression>
 	},
 
-	ArrowAccess {
+	ColonAccess {
 		expression: Box<Expression>,
 		accessor: Box<Expression>
 	},
@@ -93,7 +93,7 @@ impl HasanCodegen for Expression {
 
 			Self::ArrayAccess { expression, accessor } => format!("{}[{}]", expression.codegen(), accessor.codegen()),
 			Self::DotAccess { expression, accessor } => format!("{}.{}", expression.codegen(), accessor.codegen()),
-			Self::ArrowAccess { expression, accessor } => format!("{}->{}", expression.codegen(), accessor.codegen()),
+			Self::ColonAccess { expression, accessor } => format!("{}::{}", expression.codegen(), accessor.codegen()),
 
 			Self::Array(values) => {
 				let values = vec_transform_str(

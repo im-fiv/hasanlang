@@ -953,7 +953,7 @@ impl<'p> HasanParser<'p> {
 				Rule::recursive_call => self.parse_function_call_expression(current_expression, pair),
 				Rule::recursive_array => self.parse_array_access_expression(current_expression, pair),
 				Rule::recursive_dot => self.parse_dot_access_expression(current_expression, pair),
-				Rule::recursive_arrow => self.parse_arrow_access_expression(current_expression, pair),
+				Rule::recursive_double_colon => self.parse_double_colon_access_expression(current_expression, pair),
 				Rule::recursive_as => self.parse_type_cast_expression(current_expression, pair),
 
 				rule => error!("expected a recursive expression term, got '{:?}'", pair.as_span(), rule)
@@ -1022,8 +1022,8 @@ impl<'p> HasanParser<'p> {
 		}
 	}
 
-	fn parse_arrow_access_expression(&self, expression: Expression, pair: Pair<Rule>) -> Expression {
-		Expression::ArrowAccess {
+	fn parse_double_colon_access_expression(&self, expression: Expression, pair: Pair<Rule>) -> Expression {
+		Expression::ColonAccess {
 			expression: Box::new(expression),
 			accessor: Box::new(self.parse_expression(pair))
 		}

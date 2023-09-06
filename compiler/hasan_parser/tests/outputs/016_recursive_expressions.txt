@@ -205,7 +205,7 @@ Program {
             name: "f",
             kind: None,
             value: Binary {
-                lhs: ArrowAccess {
+                lhs: ColonAccess {
                     expression: Identifier(
                         "some_class",
                     ),
@@ -215,7 +215,7 @@ Program {
                 },
                 operator: Plus,
                 rhs: FunctionCall {
-                    callee: ArrowAccess {
+                    callee: ColonAccess {
                         expression: Identifier(
                             "some_class",
                         ),
@@ -436,8 +436,8 @@ Program {
                         operator: Times,
                         rhs: FunctionCall {
                             callee: DotAccess {
-                                expression: ArrowAccess {
-                                    expression: ArrowAccess {
+                                expression: ColonAccess {
+                                    expression: ColonAccess {
                                         expression: ArrayAccess {
                                             expression: ArrayAccess {
                                                 expression: Identifier(

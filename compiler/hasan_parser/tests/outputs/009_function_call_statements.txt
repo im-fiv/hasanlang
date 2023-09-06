@@ -27,7 +27,7 @@ Program {
             ),
         },
         VariableAssign {
-            name: ArrowAccess {
+            name: ColonAccess {
                 expression: DotAccess {
                     expression: FunctionCall {
                         callee: DotAccess {
