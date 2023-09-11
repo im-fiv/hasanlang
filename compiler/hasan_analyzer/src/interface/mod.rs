@@ -35,21 +35,20 @@ impl Interface {
 
 impl HirDiagnostics for Interface {
 	fn info_string(&self) -> String {
-		let members_str = vec_transform_str(
-			&self.members,
-			|member| member.info_string(),
-			"\n\n"
+		let name = self.name.clone();
+		let members = indent_all_by(
+			NUM_SPACES,
+			vec_transform_str(
+				&self.members,
+				|member| member.info_string(),
+				"\n\n"
+			)
 		);
 
-		let base = format!(
-			"interface {}:\n{}",
-			
-			self.name,
-			indent_all_by(NUM_SPACES, members_str)
-		);
+		let base = format!("interface {name}:\n{members}");
 
 		match self.intrinsic {
-			Some(intrinsic) => format!("intrinsic({}) {}", intrinsic, base),
+			Some(intrinsic) => format!("intrinsic({intrinsic}) {base}"),
 			None => base
 		}
 	}

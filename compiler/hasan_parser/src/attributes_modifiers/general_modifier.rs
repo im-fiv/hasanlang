@@ -24,7 +24,7 @@ impl TryFrom<&str> for GeneralModifier {
 			"const" => Ok(Self::Constant),
 			"static" => Ok(Self::Static),
 
-			_ => Err(format!("Unknown modifier '{}'", value))
+			_ => Err(format!("Unknown modifier '{value}'"))
 		}
 	}
 }

@@ -36,7 +36,10 @@ pub enum IntrinsicInterface {
 	CmpEqOps,
 
 	/// For representing functions
-	Function
+	Function,
+
+	/// For representing arrays
+	Array
 }
 
 impl IntrinsicInterface {

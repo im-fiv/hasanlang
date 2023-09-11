@@ -3,6 +3,7 @@ use super::Type;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct RegularType {
+	pub path: Vec<String>,
 	pub name: String,
 	pub generics: Vec<Type>,
 
@@ -12,6 +13,12 @@ pub struct RegularType {
 
 impl HasanCodegen for RegularType {
 	fn codegen(&self) -> String {
+		let path_str = if !self.path.is_empty() {
+			format!("{}::", self.path.join("::"))
+		} else {
+			String::new()
+		};
+
 		let array_str = if self.array { "[]" } else { "" };
 
 		let generics = self
@@ -22,11 +29,12 @@ impl HasanCodegen for RegularType {
 			.join(", ");
 
 		let generics_str = if !generics.is_empty() {
-			format!("<{}>", generics)
+			format!("<{generics}>")
 		} else {
 			String::new()
 		};
 
-		format!("{}{}{}", self.name, generics_str, array_str)
+		let name = self.name.clone();
+		format!("{path_str}{name}{generics_str}{array_str}")
 	}
 }

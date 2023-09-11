@@ -23,7 +23,8 @@ impl HirCodegen for Program {
 		let statements = vec_transform_str(&self.statements, |statement| statement.codegen(), "\n");
 
 		if let Some(info) = self.module_info.clone() {
-			format!("{}\n{}", info.codegen(), statements)
+			let info = info.codegen();
+			format!("{info}\n{statements}")
 		} else {
 			statements
 		}
@@ -40,10 +41,13 @@ pub struct ModuleInfo {
 
 impl HirCodegen for ModuleInfo {
 	fn codegen(&self) -> String {
+		let name = self.name.clone();
+		let path = self.path.join(".");
+
 		if self.path.is_empty() {
-			format!("module {}", self.name)
+			format!("module {name}")
 		} else {
-			format!("module {}.{}", self.path.join("."), self.name)
+			format!("module {path}.{name}")
 		}
 	}
 }
@@ -61,11 +65,15 @@ pub struct Variable {
 
 impl HirDiagnostics for Variable {
 	fn info_string(&self) -> String {
-		let base = format!("var {}: {}", self.name, self.kind.info_string());
+		let name = self.name.clone();
+		let kind = self.kind.info_string();
 
-		match self.is_constant {
-			true => format!("const {}", base),
-			false => base
+		let base = format!("var {name}: {kind}");
+
+		if self.is_constant {
+			format!("const {base}")
+		} else {
+			base
 		}
 	}
 }
@@ -80,6 +88,10 @@ impl HirCodegen for Variable {
 			""
 		}.to_owned();
 
-		format!("{}var {}: {} = {};", prefix, self.name, self.kind.codegen(), self.value.codegen())
+		let name = self.name.clone();
+		let kind = self.kind.codegen();
+		let value = self.value.codegen();
+
+		format!("{prefix}var {name}: {kind} = {value};")
 	}
 }

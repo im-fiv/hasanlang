@@ -358,10 +358,8 @@ impl SemanticAnalyzer {
 				Ok(hir::TypeRef(class, dimensions))
 			},
 
-			p::Type::Function(_kind) => {
-				// TODO: Function type converting
-				todo!("function type converting")
-			}
+			p::Type::Function(_) => todo!("function type converting"),
+			p::Type::Tuple(_) => todo!("tuple type converting")
 		}
 	}
 

@@ -61,17 +61,20 @@ impl HasanCodegen for InterfaceFunction {
 					|value| value.to_string(),
 					", "
 				);
-	
-				match !attributes.is_empty() {
-					true => format!("#[{}]\n", attributes),
-					false => String::new()
+
+				if !attributes.is_empty() {
+					format!("#[{attributes}]\n")
+				} else {
+					String::new()
 				}
 			},
 
 			None => String::new()
 		};
 
-		format!("{}{};", attributes, self.prototype.codegen())
+		let prototype = self.prototype.codegen();
+
+		format!("{attributes}{prototype};")
 	}
 }
 
@@ -90,17 +93,12 @@ pub struct InterfaceFunctionPrototype {
 impl HasanCodegen for InterfaceFunctionPrototype {
 	fn codegen(&self) -> String {
 		let modifiers = cond_vec_transform!(&self.modifiers, |value| value.to_string(), " ", "{} ");
+		let name = self.name.clone();
 		let generics = cond_vec_transform!(&self.generics, |value| value.codegen(), ", ", "<{}>");
 		let argument_types = vec_transform_str(&self.argument_types, |value| value.codegen(), ", ");
+		let return_type = self.return_type.codegen();
 
-		format!(
-			"{}func {}{}({}) -> {}",
-			modifiers,
-			self.name,
-			generics,
-			argument_types,
-			self.return_type.codegen()
-		)
+		format!("{modifiers}func {name}{generics}({argument_types}) -> {return_type}")
 	}
 }
 
@@ -115,11 +113,8 @@ pub struct InterfaceAssocType {
 impl HasanCodegen for InterfaceAssocType {
 	fn codegen(&self) -> String {
 		let modifiers = cond_vec_transform!(&self.modifiers, |value| value.to_string(), " ", "{} ");
+		let name = self.name.clone();
 
-		format!(
-			"{}type {};",
-			modifiers,
-			self.name
-		)
+		format!("{modifiers}type {name};")
 	}
 }

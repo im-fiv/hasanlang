@@ -13,25 +13,32 @@ impl HasanCodegen for Statement {
 				let modifiers = cond_vec_transform!(modifiers, |value| value.to_string(), " ", "{} ");
 				let generics = cond_vec_transform!(generics, |value| value.codegen(), ", ", "<{}>");
 
-				format!("{}type {}{} = {};", modifiers, name, generics, definition.codegen())
+				let definition = definition.codegen();
+				format!("{modifiers}type {name}{generics} = {definition};")
 			},
 
 			Self::ClassDefinition { modifiers, name, generics, members } => {
 				let modifiers = cond_vec_transform!(modifiers, |value| value.to_string(), " ", "{} ");
 				let generics = cond_vec_transform!(generics, |value| value.codegen(), ", ", "<{}>");
 
-				let members = vec_transform_str(members, |value| value.codegen(), "\n");
+				let members = indent_all_by(
+					NUM_SPACES,
+					vec_transform_str(members, |value| value.codegen(), "\n")
+				);
 
-				format!("{}class {}{}\n{}\nend", modifiers, name, generics, indent_all_by(NUM_SPACES, members))
+				format!("{modifiers}class {name}{generics}\n{members}\nend")
 			},
 
 			Self::VariableDefinition { modifiers, name, kind, value } => {
 				let modifiers = cond_vec_transform!(modifiers, |value| value.to_string(), " ", "{} ");
 
+				let value = value.codegen();
+
 				if let Some(kind) = kind {
-					format!("{}var {}: {} = {};", modifiers, name, kind.codegen(), value.codegen())
+					let kind = kind.codegen();
+					format!("{modifiers}var {name}: {kind} = {value};")
 				} else {
-					format!("{}var {} = {};", modifiers, name, value.codegen())
+					format!("{modifiers}var {name} = {value};")
 				}
 			},
 
@@ -41,7 +48,8 @@ impl HasanCodegen for Statement {
 				let generics = cond_vec_transform!(generics, |value| value.codegen(), ", ", "<{}>");
 				let arguments = vec_transform_str(arguments, |value| value.codegen(), ", ");
 
-				format!("{}{}({});", callee.codegen(), generics, arguments)
+				let callee = callee.codegen();
+				format!("{callee}{generics}({arguments});")
 			},
 
 			Self::Return(value) => if let Some(value) = value {
@@ -52,15 +60,12 @@ impl HasanCodegen for Statement {
 
 			Self::EnumDefinition { modifiers, name, variants } => {
 				let modifiers = cond_vec_transform!(modifiers, |value| value.to_string(), " ", "{} ");
-				let variants = vec_transform_str(variants, |value| value.codegen(), ",\n");
+				let variants = indent_all_by(
+					NUM_SPACES,
+					vec_transform_str(variants, |value| value.codegen(), ",\n")
+				);
 				
-				format!(
-					"{}enum {}\n{}\nend",
-					
-					modifiers,
-					name,
-					indent_all_by(NUM_SPACES, variants)
-				)
+				format!("{modifiers}enum {name}\n{variants}\nend")
 			},
 
 			Self::If { condition, statements, elseif_branches, else_branch } => {
@@ -153,69 +158,55 @@ impl HasanCodegen for Statement {
 				let modifiers = cond_vec_transform!(modifiers, |value| value.to_string(), " ", "{} ");
 				let generics = cond_vec_transform!(generics, |value| value.codegen(), ", ", "<{}>");
 
-				let members = vec_transform_str(members, |value| value.codegen(), "\n");
+				let members = indent_all_by(
+					NUM_SPACES,
+					vec_transform_str(members, |value| value.codegen(), "\n")
+				);
 
-				format!(
-					"{}interface {}{}\n{}\nend",
-
-					modifiers,
-					name,
-					generics,
-					indent_all_by(NUM_SPACES, members)
-				)
+				format!("{modifiers}interface {name}{generics}\n{members}\nend")
 			},
 
 			Self::InterfaceImplementation { interface_name, interface_generics, class_name, class_generics, members } => {
 				let interface_generics = cond_vec_transform!(interface_generics, |value| value.codegen(), ", ", "<{}>");
 				let class_generics = cond_vec_transform!(class_generics, |value| value.codegen(), ", ", "<{}>");
 
-				let members = vec_transform_str(members, |value| value.codegen(), "\n");
+				let members = indent_all_by(
+					NUM_SPACES,
+					vec_transform_str(members, |value| value.codegen(), "\n")
+				);
 
-				format!(
-					"impl {}{} for {}{}\n{}\nend",
-
-					interface_name,
-					interface_generics,
-					class_name,
-					class_generics,
-					indent_all_by(NUM_SPACES, members)
-				)
+				format!("impl {interface_name}{interface_generics} for {class_name}{class_generics}\n{members}\nend")
 			},
 
 			Self::ModuleUse { path, name } => {
 				if path.is_empty() {
-					format!("use module {}", name)
+					format!("use module {name}")
 				} else {
-					format!("use module {}.{}", path.join("."), name)
+					let path = path.join(".");
+					format!("use module {path}.{name}")
 				}
 			},
 
 			Self::ModuleUseAll { path, name } => {
 				if path.is_empty() {
-					format!("use module {}.*", name)
+					format!("use module {name}.*")
 				} else {
-					format!("use module {}.{}.*", path.join("."), name)
+					let path = path.join(".");
+					format!("use module {path}.{name}.*")
 				}
 			},
 			
 			Self::ModuleUseItems { path, name, items } => {
-				let items = vec_transform_str(items, |value| value.codegen(), ",\n");
+				let items = indent_all_by(
+					NUM_SPACES,
+					vec_transform_str(items, |value| value.codegen(), ",\n")
+				);
 
 				if path.is_empty() {
-					format!(
-						"use module {}\n{}\nend",
-						
-						name,
-						indent_all_by(NUM_SPACES, items)
-					)
+					format!("use module {name}\n{items}\nend")
 				} else {
-					format!(
-						"use module {}.{}\n{}\nend",
-						
-						path.join("."),
-						name,
-						indent_all_by(NUM_SPACES, items)
-					)
+					let path = path.join(".");
+					format!("use module {path}.{name}\n{items}\nend")
 				}
 			},
 

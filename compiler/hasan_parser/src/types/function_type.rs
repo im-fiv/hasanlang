@@ -25,11 +25,12 @@ impl FunctionType {
 			.join(", ");
 
 		let generics_str = if !generics.is_empty() {
-			format!("<{}>", generics)
+			format!("<{generics}>")
 		} else {
 			String::new()
 		};
 
-		format!("{}({}) -> {}", generics_str, argument_types, self.return_type.codegen())
+		let return_type = self.return_type.codegen();
+		format!("{generics_str}({argument_types}) -> {return_type}")
 	}
 }

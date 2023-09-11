@@ -8,6 +8,9 @@ pub struct InterfaceAssocType {
 
 impl HirDiagnostics for InterfaceAssocType {
 	fn info_string(&self) -> String {
-		format!("type {} = {}", self.name, self.kind.info_string())
+		let name = self.name.clone();
+		let kind = self.kind.info_string();
+
+		format!("type {name} = {kind}")
 	}
 }

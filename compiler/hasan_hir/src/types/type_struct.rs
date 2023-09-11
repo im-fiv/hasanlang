@@ -24,6 +24,8 @@ impl Type {
 
 impl HirDiagnostics for Type {
 	fn info_string(&self) -> String {
+		let name = self.name.clone();
+
 		let members = self
 			.members
 			.iter()
@@ -38,7 +40,10 @@ impl HirDiagnostics for Type {
 			.join(", ");
 
 		let members = if !members.is_empty() {
-			format!("{}\n", members)
+			indent_all_by(
+				NUM_SPACES,
+				format!("{members}\n")
+			)
 		} else {
 			String::new()
 		};
@@ -46,24 +51,14 @@ impl HirDiagnostics for Type {
 		let interfaces = self.implements_interfaces.join(", ");
 
 		if interfaces.is_empty() && members.is_empty() {
-			return format!("type {} end", self.name);
+			return format!("type {name} end");
 		}
 
 		if interfaces.is_empty() {
-			format!(
-				"type {}\n{}end",
-			
-				self.name,
-				indent_all_by(NUM_SPACES, members)
-			)
+			format!("type {name}\n{members}end")
 		} else {
-			format!(
-				"type {}\n{}\n{}end",
-			
-				self.name,
-				indent_all_by(NUM_SPACES, format!("impl {}", interfaces)),
-				indent_all_by(NUM_SPACES, members)
-			)
+			let impls = format!("impl {interfaces}");
+			format!("type {name}\n{impls}\n{members}end")
 		}
 	}
 }

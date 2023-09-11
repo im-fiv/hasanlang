@@ -72,28 +72,37 @@ pub enum Expression {
 impl HasanCodegen for Expression {
 	fn codegen(&self) -> String {
 		match self {
-			Self::Integer(value) => format!("{}", value),
-			Self::Float(value) => format!("{}", value),
-			Self::String(value) => format!("\"{}\"", value),
-			Self::Boolean(value) => format!("{}", value),
+			Self::Integer(value) => format!("{value}"),
+			Self::Float(value) => format!("{value}"),
+			Self::String(value) => format!("\"{value}\""),
+			Self::Boolean(value) => format!("{value}"),
 
-			Self::Unary { operator, operand } => format!("({}{})", operator.to_string(), operand.codegen()),
-			Self::Binary { lhs, operator, rhs } => format!("({} {} {})", lhs.codegen(), operator.to_string(), rhs.codegen()),
+			Self::Unary { operator, operand } =>
+				format!("({}{})", operator.to_string(), operand.codegen()),
+			
+			Self::Binary { lhs, operator, rhs } =>
+				format!("({} {} {})", lhs.codegen(), operator.to_string(), rhs.codegen()),
 			
 			Self::FunctionCall { callee, generics, arguments } => {
+				let callee = callee.codegen();
 				let generics = vec_transform_str(generics, |generic| generic.codegen(), ", ");
 				let arguments = vec_transform_str(arguments, |argument| argument.codegen(), ", ");
-				
+
 				if generics.is_empty() {
-					format!("{}({})", callee.codegen(), arguments)
+					format!("{callee}({arguments})")
 				} else {
-					format!("{}<{}>({})", callee.codegen(), generics, arguments)
+					format!("{callee}<{generics}>({arguments})")
 				}
 			},
 
-			Self::ArrayAccess { expression, accessor } => format!("{}[{}]", expression.codegen(), accessor.codegen()),
-			Self::DotAccess { expression, accessor } => format!("{}.{}", expression.codegen(), accessor.codegen()),
-			Self::ColonAccess { expression, accessor } => format!("{}::{}", expression.codegen(), accessor.codegen()),
+			Self::ArrayAccess { expression, accessor } =>
+				format!("{}[{}]", expression.codegen(), accessor.codegen()),
+
+			Self::DotAccess { expression, accessor } =>
+				format!("{}.{}", expression.codegen(), accessor.codegen()),
+
+			Self::ColonAccess { expression, accessor } =>
+				format!("{}::{}", expression.codegen(), accessor.codegen()),
 
 			Self::Array(values) => {
 				let values = vec_transform_str(
@@ -102,41 +111,43 @@ impl HasanCodegen for Expression {
 					", "
 				);
 
-				format!("([{}])", values)
+				format!("([{values}])")
 			},
 
 			Self::Identifier(value) => value.to_owned(),
 
 			Self::Type(value) => value.codegen(),
 
-			Self::TypeCast { value, kind } => format!("({} as {})", value.codegen(), kind.codegen()),
+			Self::TypeCast { value, kind } =>
+				format!("({} as {})", value.codegen(), kind.codegen()),
 
-			Self::AnonymousFunction { generics, arguments, return_type, statements } => {
+			Self::AnonymousFunction {
+				generics,
+				arguments,
+				return_type,
+				statements
+			} => {
 				let generics = vec_transform_str(generics, |generic| generic.codegen(), ", ");
 				let arguments = vec_transform_str(arguments, |argument| argument.codegen(), ", ");
-				let statements = vec_transform_str(statements, |statement| statement.codegen(), "\n");
+				let statements = indent_all_by(
+					NUM_SPACES,
+					vec_transform_str(statements, |statement| statement.codegen(), "\n")
+				);
 
 				let return_type = *return_type.to_owned();
 				
-				let generics_str = if generics.is_empty() {
-					String::new()
+				let generics = if !generics.is_empty() {
+					format!("<{generics}>")
 				} else {
-					format!("<{}>", generics)
+					String::new()
 				};
 
-				let return_type_str = if return_type.is_none() {
-					String::new()
-				} else {
-					format!(" -> {}", return_type.unwrap().codegen())
+				let return_type = match return_type {
+					Some(return_type) => format!(" -> {}", return_type.codegen()),
+					None => String::new()
 				};
 
-				format!(
-					"(func{}({}){} do\n{}\nend)",
-					generics_str,
-					arguments,
-					return_type_str,
-					indent_all_by(NUM_SPACES, statements)
-				)
+				format!("(func{generics}({arguments}){return_type} do\n{statements}\nend)")
 			},
 
 			Self::Empty => String::new(),

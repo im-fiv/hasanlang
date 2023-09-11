@@ -15,7 +15,7 @@ impl HasanCodegen for ModuleItem {
 	fn codegen(&self) -> String {
 		match self {
 			Self::Regular(value) => value.to_owned(),
-			Self::Renamed { from, to } => format!("{} as {}", from, to)
+			Self::Renamed { from, to } => format!("{from} as {to}")
 		}
 	}
 }

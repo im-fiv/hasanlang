@@ -1,5 +1,9 @@
-use super::{InterfaceVariable, InterfaceFunction, InterfaceAssocType};
 use hasan_hir::HirDiagnostics;
+use super::{
+	InterfaceVariable,
+	InterfaceFunction,
+	InterfaceAssocType
+};
 
 #[derive(Debug, Clone)]
 pub enum InterfaceMember {

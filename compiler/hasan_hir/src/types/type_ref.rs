@@ -11,7 +11,10 @@ pub struct TypeRef(
 impl TypeRef {
 	#[inline]
 	pub fn display(&self) -> String {
-		format!("{}{}", self.0.name, "[]".repeat(self.1))
+		let name = self.0.name.clone();
+		let suffix = "[]".repeat(self.1);
+
+		format!("{name}{suffix}")
 	}
 }
 
@@ -25,7 +28,10 @@ impl HirDiagnostics for TypeRef {
 impl HirCodegen for TypeRef {
 	#[inline]
 	fn codegen(&self) -> String {
-		format!("{}{}", self.0.codegen(), "[]".repeat(self.1))
+		let kind = self.0.codegen();
+		let suffix = "[]".repeat(self.1);
+
+		format!("{kind}{suffix}")
 	}
 }
 

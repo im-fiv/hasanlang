@@ -44,13 +44,10 @@ impl HasanCodegen for ClassVariable {
 			None => String::new()
 		};
 
-		format!(
-			"{}var {}: {}{};",
-			modifiers,
-			self.name,
-			self.kind.codegen(),
-			default_value
-		)
+		let name = self.name.clone();
+		let kind = self.kind.codegen();
+
+		format!("{modifiers}var {name}: {kind}{default_value};")
 	}
 }
 
@@ -79,15 +76,13 @@ impl ClassFunction {
 impl HasanCodegen for ClassFunction {
 	fn codegen(&self) -> String {
 		let attributes = cond_vec_transform!(&self.attributes, |value| value.to_string(), ", ", "#[{}]\n");
-		let statements = vec_transform_str(&self.body, |value| value.codegen(), "\n");
-
-		format!(
-			"{}{} do\n{}\nend",
-
-			attributes,
-			self.prototype.codegen(),
-			indent_all_by(NUM_SPACES, statements)
-		)
+		let statements = indent_all_by(
+			NUM_SPACES,
+			vec_transform_str(&self.body, |value| value.codegen(), "\n")
+		);
+		
+		let prototype = self.prototype.codegen();
+		format!("{attributes}{prototype} do\n{statements}\nend")
 	}
 }
 
@@ -104,13 +99,9 @@ pub struct ClassAssocType {
 impl HasanCodegen for ClassAssocType {
 	fn codegen(&self) -> String {
 		let modifiers = cond_vec_transform!(&self.modifiers, |value| value.to_string(), " ", "{} ");
+		let name = self.name.clone();
+		let kind = self.kind.codegen();
 
-		format!(
-			"{}type {} = {};",
-
-			modifiers,
-			self.name,
-			self.kind.codegen()
-		)
+		format!("{modifiers}type {name} = {kind};")
 	}
 }

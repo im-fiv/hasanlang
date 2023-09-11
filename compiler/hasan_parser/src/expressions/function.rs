@@ -20,16 +20,19 @@ impl HasanCodegen for Function {
 
 		match self.body.clone() {
 			Some(body) => {
-				let body = vec_transform_str(
-					&body,
-					|statement| statement.codegen(),
-					"\n"
+				let body = indent_all_by(
+					NUM_SPACES,
+					vec_transform_str(
+						&body,
+						|statement| statement.codegen(),
+						"\n"
+					)
 				);
 
-				format!("{} do\n{}\nend", prototype, indent_all_by(NUM_SPACES, body))
+				format!("{prototype} do\n{body}\nend")
 			},
 
-			None => format!("{};", prototype)
+			None => format!("{prototype};")
 		}
 	}
 }
@@ -47,8 +50,8 @@ pub struct FunctionPrototype {
 impl HasanCodegen for FunctionPrototype {
 	fn codegen(&self) -> String {
 		let modifiers = cond_vec_transform!(&self.modifiers, |modifier| modifier.to_string(), " ", "{} ");
+		let name = self.name.clone();
 		let generics = cond_vec_transform!(&self.generics, |generic| generic.codegen(), ", ", "<{}>");
-
 
 		let return_type = match self.return_type.clone() {
 			Some(kind) => format!(" -> {}", kind.codegen()),
@@ -61,14 +64,7 @@ impl HasanCodegen for FunctionPrototype {
 			", "
 		);
 
-		format!(
-			"{}func {}{}({}){}",
-			modifiers,
-			self.name,
-			generics,
-			arguments,
-			return_type
-		)
+		format!("{modifiers}func {name}{generics}({arguments}){return_type}")
 	}
 }
 
@@ -86,6 +82,9 @@ impl FunctionArgument {
 
 impl HasanCodegen for FunctionArgument {
 	fn codegen(&self) -> String {
-		format!("{}: {}", self.name, self.kind.codegen())
+		let name = self.name.clone();
+		let kind = self.kind.codegen();
+
+		format!("{name}: {kind}")
 	}
 }

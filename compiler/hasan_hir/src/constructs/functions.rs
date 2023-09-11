@@ -33,20 +33,21 @@ impl HirDiagnostics for Function {
 
 impl HirCodegen for Function {
 	fn codegen(&self) -> String {
+		let prototype = self.prototype.codegen();
+
 		if let Some(body) = self.body.clone() {
-			let body = vec_transform_str(
-				&body,
-				|statement| statement.codegen(),
-				"\n"
+			let body = indent_all_by(
+				NUM_SPACES,
+				vec_transform_str(
+					&body,
+					|statement| statement.codegen(),
+					"\n"
+				)	
 			);
 
-			format!(
-				"{} do\n{}\nend",
-				self.prototype.codegen(),
-				indent_all_by(NUM_SPACES, body)
-			)
+			format!("{prototype} do\n{body}\nend")
 		} else {
-			format!("{};", self.prototype.codegen())
+			format!("{prototype};")
 		}
 	}	
 }
@@ -77,8 +78,11 @@ impl HirDiagnostics for FunctionPrototype {
 
 impl HirCodegen for FunctionPrototype {
 	fn codegen(&self) -> String {
+		let name = self.name.clone();
 		let arguments = vec_transform_str(&self.arguments, |argument| argument.codegen(), ", ");
-		format!("func {}({}) -> {}", self.name, arguments, self.return_type.codegen())
+		let return_type = self.return_type.codegen();
+
+		format!("func {name}({arguments}) -> {return_type}")
 	}
 }
 
@@ -92,6 +96,9 @@ pub struct FunctionArgument {
 
 impl HirCodegen for FunctionArgument {
 	fn codegen(&self) -> String {
-		format!("{}: {}", self.name, self.kind.codegen())
+		let name = self.name.clone();
+		let kind = self.kind.codegen();
+
+		format!("{name}: {kind}")
 	}
 }

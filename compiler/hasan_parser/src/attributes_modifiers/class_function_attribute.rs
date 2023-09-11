@@ -24,7 +24,7 @@ impl TryFrom<&str> for ClassFunctionAttribute {
 			"get" => Ok(Self::Get),
 			"set" => Ok(Self::Set),
 
-			_ => Err(format!("Unknown class function attribute '{}'", value))
+			_ => Err(format!("Unknown class function attribute '{value}'"))
 		}
 	}
 }

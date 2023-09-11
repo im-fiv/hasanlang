@@ -13,13 +13,13 @@ fn read_file(path: std::path::PathBuf) -> String {
 	let display = path_clone.display();
 
 	let file = File::open(path)
-		.expect(&format!("Failed to open file {} (read)", display));
+		.expect(&format!("Failed to open file {display} (read)"));
 
 	let mut reader = BufReader::new(file);
 	let mut contents = String::new();
 
 	reader.read_to_string(&mut contents)
-		.expect(&format!("Failed to read from file {}", display));
+		.expect(&format!("Failed to read from file {display}"));
 	
 	contents.replace("\r\n", "\n")
 }
@@ -43,7 +43,7 @@ fn parse_all_files() {
 			.to_str()
 			.unwrap_or_else(|| unreachable!("Failed to convert filename to str"));
 
-		let match_filename = format!("./tests/outputs/{}.txt", filename_str);
+		let match_filename = format!("./tests/outputs/{filename_str}.txt");
 
 		// Parse the file
 		let contents = read_file(path.clone());
@@ -69,7 +69,7 @@ fn parse_all_files() {
 		assert_ne!(ast.statements.len(), 0);
 
 		// Confirm generated AST
-		let ast_string = format!("{:#?}", ast).replace("\r\n", "\n");
+		let ast_string = format!("{ast:#?}").replace("\r\n", "\n");
 		let expected_output = read_file(std::path::PathBuf::from(match_filename));
 
 		assert_eq!(ast_string, expected_output, "AST does not match expected output for file {:?}", filename);

@@ -36,9 +36,9 @@ macro_rules! job {
 fn compile(command: cli::CompileCommand) {
 	let code = job!(read_file, SOURCE_FN, |result| result, &command.file_path);
 
-	let pairs = job!(pest_parse, PEST_AST_FN, |result| format!("{:#?}", result), &code, command.debug);
+	let pairs = job!(pest_parse, PEST_AST_FN, |result| format!("{result:#?}"), &code, command.debug);
 
-	let ast = job!(hasan_parse, HASAN_AST_FN, |result| format!("{:#?}", result), pairs, command.debug);
+	let ast = job!(hasan_parse, HASAN_AST_FN, |result| format!("{result:#?}"), pairs, command.debug);
 	write_file(&fmt_c(HASAN_AST_CODEGEN_FN), ast.codegen());
 
 	let hir = job!(
@@ -59,9 +59,9 @@ fn compile(command: cli::CompileCommand) {
 fn parse(command: cli::ParseCommand) {
 	let code = job!(read_file, SOURCE_FN, |result| result, &command.file_path);
 
-	let pairs = job!(pest_parse, PEST_AST_FN, |result| format!("{:#?}", result), &code, command.debug);
+	let pairs = job!(pest_parse, PEST_AST_FN, |result| format!("{result:#?}"), &code, command.debug);
 
-	let ast = job!(hasan_parse, HASAN_AST_FN, |result| format!("{:#?}", result), pairs, command.debug);
+	let ast = job!(hasan_parse, HASAN_AST_FN, |result| format!("{result:#?}"), pairs, command.debug);
 	write_file(&fmt_c(HASAN_AST_CODEGEN_FN), ast.codegen());
 
 	let hir = job!(

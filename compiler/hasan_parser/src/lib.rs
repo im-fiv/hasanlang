@@ -1200,40 +1200,63 @@ impl<'p> HasanParser<'p> {
 		Statement::EnumDefinition { modifiers, name, variants }
 	}
 
-	fn parse_regular_type(&self, pair: Pair<Rule>) -> RegularType {
-		// Note: `array_type` is a part of regular type
-		if pair.as_rule() == Rule::array_type {
-			// Unwrapping the `regular_type` from `array_type`
-			let pair = pair
-				.into_inner()
-				.next()
-				.expect("Failed to parse type: inner pairs are empty");
-
-			// Send the type to itself
-			let mut parsed = self.parse_regular_type(pair);
-
-			// Set the array flag
-			parsed.array = true;
-
-			return parsed;
+	// Note: `array_type` is a part of regular type
+	fn parse_array_type(&self, pair: Pair<Rule>) -> RegularType {
+		if pair.as_rule() != Rule::array_type {
+			error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::array_type, pair.as_rule());
 		}
 
+		// Unwrapping the `regular_type` from `array_type`
+		let pair = pair
+			.into_inner()
+			.next()
+			.expect("Failed to parse type: inner pairs are empty");
+
+		// Parse the inner regular type
+		let mut parsed = self.parse_regular_type(pair);
+
+		// Set the array flag
+		parsed.array = true;
+
+		parsed
+	}
+
+	fn parse_regular_type(&self, pair: Pair<Rule>) -> RegularType {
+		if pair.as_rule() == Rule::array_type {
+			return self.parse_array_type(pair);
+		}
+
+		// Note: this check only for `regular_type` is intentional
 		if pair.as_rule() != Rule::regular_type {
 			error!("expected '{:?}' or '{:?}', got '{:?}'", pair.as_span(), Rule::regular_type, Rule::array_type, pair.as_rule());
 		}
 
 		let mut pairs = pair.into_inner();
 
-		let name_pair = pairs
+		let path_pairs = pairs
 			.next()
-			.expect("Failed to parse type: expected identifier, got nothing");
-		
-		let name = self.pair_str(name_pair);			
+			.expect("Failed to parse type: expected identifier, got nothing")
+			.into_inner();
+
+		let mut name: Option<String> = None;
+		let mut path: Vec<String> = vec![];
+
+		for (i, path_fragment) in path_pairs.clone().enumerate() {
+			if i >= path_pairs.len() - 1 {
+				name = Some(self.pair_str(path_fragment));
+				break;
+			}
+
+			path.push(self.pair_str(path_fragment));
+		}
+
+		let name = name.unwrap_or_else(|| unreachable!("Name is always expected to be initialized here"));
 
 		let next_pair = pairs.next();
 
 		if next_pair.is_none() {
 			return RegularType {
+				path,
 				name,
 				generics: vec![],
 				array: false
@@ -1249,6 +1272,7 @@ impl<'p> HasanParser<'p> {
 		let generics = self.parse_generics_as_types(next_pair);
 
 		RegularType {
+			path,
 			name,
 			generics,
 			array: false
@@ -1301,6 +1325,26 @@ impl<'p> HasanParser<'p> {
 		}
 	}
 
+	fn parse_tuple_type(&self, pair: Pair<Rule>) -> TupleType {
+		if pair.as_rule() != Rule::tuple_type {
+			error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::tuple_type, pair.as_rule());
+		}
+
+		let pairs = pair.into_inner();
+		let mut types: Vec<Type> = vec![];
+
+		for pair in pairs {
+			if pair.as_rule() != Rule::r#type {
+				error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::r#type, pair.as_rule());
+			}
+
+			let parsed = self.parse_type(pair);
+			types.push(parsed);
+		}
+
+		TupleType(types)
+	}
+
 	fn parse_type(&self, pair: Pair<Rule>) -> Type {
 		if pair.as_rule() != Rule::r#type {
 			error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::r#type, pair.as_rule());
@@ -1315,13 +1359,16 @@ impl<'p> HasanParser<'p> {
 		match inner_type_pair.as_rule() {
 			Rule::regular_type | Rule::array_type => Type::Regular(self.parse_regular_type(inner_type_pair)),
 			Rule::function_type => Type::Function(self.parse_function_type(inner_type_pair)),
+			Rule::tuple_type => Type::Tuple(self.parse_tuple_type(inner_type_pair)),
 
 			rule => error!(
-				"expected '{:?}' or '{:?}', got '{:?}'",
+				"expected '{:?}', '{:?}', or '{:?}', got '{:?}'",
 				inner_type_pair.as_span(),
 
 				Rule::regular_type,
 				Rule::function_type,
+				Rule::tuple_type,
+
 				rule
 			)
 		}

@@ -1,5 +1,8 @@
 use crate::Interface;
-use hasan_hir::{Class, Variable, Enum, HirDiagnostics};
+use hasan_hir::{
+	HirDiagnostics, Class,
+	Variable, Enum
+};
 
 use anyhow::bail;
 use strum_macros::Display;

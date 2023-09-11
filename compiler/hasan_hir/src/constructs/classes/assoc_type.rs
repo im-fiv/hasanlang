@@ -8,12 +8,18 @@ pub struct ClassAssocType {
 
 impl HirDiagnostics for ClassAssocType {
 	fn info_string(&self) -> String {
-		format!("type {} = {}", self.name, self.kind.info_string())
+		let name = self.name.clone();
+		let kind = self.kind.info_string();
+
+		format!("type {name} = {kind}")
 	}
 }
 
 impl HirCodegen for ClassAssocType {
 	fn codegen(&self) -> String {
-		format!("type {} = {};", self.name, self.kind.codegen())
+		let name = self.name.clone();
+		let kind = self.kind.codegen();
+
+		format!("type {name} = {kind};")
 	}
 }

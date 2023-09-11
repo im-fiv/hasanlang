@@ -158,7 +158,7 @@ impl hir::HirDiagnostics for Scope {
 			))
 		));
 
-		format!("/*\n{}\n*/", scope_info)
+		format!("/*\n{scope_info}\n*/")
 	}
 }
 
@@ -217,6 +217,10 @@ impl Default for ScopeFlags {
 
 impl ToString for ScopeFlags {
 	fn to_string(&self) -> String {
-		format!("ScopeFlags({})", self.as_string_vec().join(", "))
+		let flags = self
+			.as_string_vec()
+			.join(", ");
+		
+		format!("ScopeFlags({flags})")
 	}
 }

@@ -15,7 +15,8 @@ impl HasanCodegen for Program {
 		);
 
 		if let Some(info) = self.module_info.clone() {
-			format!("{}\n{}", info.codegen(), statements)
+			let info = info.codegen();
+			format!("{info}\n{statements}")
 		} else {
 			statements
 		}
@@ -32,10 +33,13 @@ pub struct ModuleInfo {
 
 impl HasanCodegen for ModuleInfo {
 	fn codegen(&self) -> String {
+		let name = self.name.clone();
+		let path = self.path.join(".");
+
 		if self.path.is_empty() {
-			format!("module {}", self.name)
+			format!("module {name}")
 		} else {
-			format!("module {}.{}", self.path.join("."), self.name)
+			format!("module {path}.{name}")
 		}
 	}
 }

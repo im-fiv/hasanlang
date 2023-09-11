@@ -1,10 +1,11 @@
 use crate::HasanCodegen;
-use super::{RegularType, FunctionType};
+use super::{RegularType, FunctionType, TupleType};
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Type {
 	Regular(RegularType),
-	Function(FunctionType)
+	Function(FunctionType),
+	Tuple(TupleType)
 }
 
 impl Type {
@@ -12,6 +13,7 @@ impl Type {
 		match self {
 			Self::Regular(kind) => kind.codegen(),
 			Self::Function(kind) => kind.codegen(),
+			Self::Tuple(kind) => kind.codegen()
 		}
 	}
 }

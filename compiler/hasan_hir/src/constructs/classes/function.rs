@@ -13,11 +13,12 @@ pub struct ClassFunction {
 impl HirDiagnostics for ClassFunction {
 	fn info_string(&self) -> String {
 		let flags = self.modifiers.info_string();
+		let function = self.function.info_string();
 
 		if !flags.is_empty() {
-			format!("{} {}", flags, self.function.info_string())
+			format!("{flags} {function}")
 		} else {
-			self.function.info_string()
+			function
 		}
 	}
 }
@@ -31,12 +32,15 @@ impl HirCodegen for ClassFunction {
 		);
 		
 		let attributes = if !attributes.is_empty() {
-			format!("#[{}]\n", attributes)
+			format!("#[{attributes}]\n")
 		} else {
 			String::new()
 		};
 
-		format!("{}{}{}", self.modifiers.codegen(), attributes, self.function.codegen())
+		let modifiers = self.modifiers.codegen();
+		let function = self.function.codegen();
+
+		format!("{modifiers}{attributes}{function}")
 	}
 }
 

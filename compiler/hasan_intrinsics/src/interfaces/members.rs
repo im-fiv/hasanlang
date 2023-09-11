@@ -119,6 +119,11 @@ pub enum FunctionMembers {
 
 //-----------------------------------------------------------------//
 
+#[derive(Debug, Clone, Copy, PartialEq, Hash, Display)]
+pub enum ArrayMembers {}
+
+//-----------------------------------------------------------------//
+
 impl_name!(
 	AddOpMembers,
 	SubOpMembers,
@@ -130,5 +135,6 @@ impl_name!(
 	LogicOpsMembers,
 	CmpOpsMembers,
 	CmpEqOpsMembers,
-	FunctionMembers
+	FunctionMembers,
+	ArrayMembers
 );

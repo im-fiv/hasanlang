@@ -17,17 +17,16 @@ impl HirDiagnostics for Enum {
 
 impl HirCodegen for Enum {
 	fn codegen(&self) -> String {
-		let variants = vec_transform_str(
-			&self.variants,
-			|variant| variant.codegen(),
-			",\n"
+		let name = self.name.clone();
+		let variants = indent_all_by(
+			NUM_SPACES,
+			vec_transform_str(
+				&self.variants,
+				|variant| variant.codegen(),
+				",\n"
+			)
 		);
 		
-		format!(
-			"enum {}\n{}\nend",
-
-			self.name,
-			indent_all_by(NUM_SPACES, variants)
-		)
+		format!("enum {name}\n{variants}\nend")
 	}
 }

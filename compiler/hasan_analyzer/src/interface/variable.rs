@@ -8,6 +8,9 @@ pub struct InterfaceVariable {
 
 impl HirDiagnostics for InterfaceVariable {
 	fn info_string(&self) -> String {
-		format!("var {}: {}", self.name, self.kind.info_string())
+		let name = self.name.clone();
+		let kind = self.kind.info_string();
+		
+		format!("var {name}: {kind}")
 	}
 }

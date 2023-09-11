@@ -17,10 +17,12 @@ impl HasanCodegen for DefinitionType {
 			", "
 		);
 
+		let name = self.name.clone();
+
 		if requires_impls.is_empty() {
-			self.name.clone()
+			name
 		} else {
-			format!("{}: impl<{}>", self.name, requires_impls)
+			format!("{name}: impl<{requires_impls}>")
 		}
 	}
 }
