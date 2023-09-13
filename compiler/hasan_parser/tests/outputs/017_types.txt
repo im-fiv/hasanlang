@@ -15,10 +15,12 @@ Program {
             ],
             definition: Regular(
                 RegularType {
+                    path: [],
                     name: "Generic1",
                     generics: [
                         Regular(
                             RegularType {
+                                path: [],
                                 name: "Generic2",
                                 generics: [],
                                 array: false,
@@ -35,6 +37,7 @@ Program {
             generics: [],
             definition: Regular(
                 RegularType {
+                    path: [],
                     name: "int",
                     generics: [],
                     array: false,
@@ -47,6 +50,7 @@ Program {
             generics: [],
             definition: Regular(
                 RegularType {
+                    path: [],
                     name: "int",
                     generics: [],
                     array: true,
@@ -64,10 +68,12 @@ Program {
             ],
             definition: Regular(
                 RegularType {
+                    path: [],
                     name: "A",
                     generics: [
                         Regular(
                             RegularType {
+                                path: [],
                                 name: "A",
                                 generics: [],
                                 array: false,
@@ -89,10 +95,12 @@ Program {
             ],
             definition: Regular(
                 RegularType {
+                    path: [],
                     name: "B",
                     generics: [
                         Regular(
                             RegularType {
+                                path: [],
                                 name: "B",
                                 generics: [],
                                 array: false,
@@ -101,6 +109,154 @@ Program {
                     ],
                     array: true,
                 },
+            ),
+        },
+        TypeAlias {
+            modifiers: [],
+            name: "NormalTuple",
+            generics: [],
+            definition: Tuple(
+                TupleType(
+                    [
+                        Regular(
+                            RegularType {
+                                path: [],
+                                name: "int",
+                                generics: [],
+                                array: false,
+                            },
+                        ),
+                        Regular(
+                            RegularType {
+                                path: [],
+                                name: "float",
+                                generics: [],
+                                array: false,
+                            },
+                        ),
+                        Regular(
+                            RegularType {
+                                path: [],
+                                name: "bool",
+                                generics: [],
+                                array: false,
+                            },
+                        ),
+                    ],
+                ),
+            ),
+        },
+        TypeAlias {
+            modifiers: [],
+            name: "GenericTuple",
+            generics: [
+                DefinitionType {
+                    name: "T",
+                    requires_implementations: [],
+                },
+            ],
+            definition: Tuple(
+                TupleType(
+                    [
+                        Regular(
+                            RegularType {
+                                path: [],
+                                name: "T",
+                                generics: [],
+                                array: false,
+                            },
+                        ),
+                        Regular(
+                            RegularType {
+                                path: [],
+                                name: "T",
+                                generics: [],
+                                array: false,
+                            },
+                        ),
+                        Regular(
+                            RegularType {
+                                path: [],
+                                name: "T",
+                                generics: [],
+                                array: false,
+                            },
+                        ),
+                    ],
+                ),
+            ),
+        },
+        TypeAlias {
+            modifiers: [],
+            name: "EmptyTuple",
+            generics: [],
+            definition: Tuple(
+                TupleType(
+                    [],
+                ),
+            ),
+        },
+        TypeAlias {
+            modifiers: [],
+            name: "NestedTuples",
+            generics: [],
+            definition: Tuple(
+                TupleType(
+                    [
+                        Tuple(
+                            TupleType(
+                                [
+                                    Regular(
+                                        RegularType {
+                                            path: [],
+                                            name: "int",
+                                            generics: [],
+                                            array: false,
+                                        },
+                                    ),
+                                    Regular(
+                                        RegularType {
+                                            path: [],
+                                            name: "int",
+                                            generics: [],
+                                            array: false,
+                                        },
+                                    ),
+                                ],
+                            ),
+                        ),
+                        Tuple(
+                            TupleType(
+                                [
+                                    Regular(
+                                        RegularType {
+                                            path: [],
+                                            name: "float",
+                                            generics: [],
+                                            array: false,
+                                        },
+                                    ),
+                                    Regular(
+                                        RegularType {
+                                            path: [],
+                                            name: "float",
+                                            generics: [],
+                                            array: false,
+                                        },
+                                    ),
+                                ],
+                            ),
+                        ),
+                        Regular(
+                            RegularType {
+                                path: [],
+                                name: "bool",
+                                generics: [],
+                                array: false,
+                            },
+                        ),
+                    ],
+                ),
             ),
         },
         FunctionDefinition(
@@ -118,10 +274,12 @@ Program {
                     return_type: Some(
                         Regular(
                             RegularType {
+                                path: [],
                                 name: "AType",
                                 generics: [
                                     Regular(
                                         RegularType {
+                                            path: [],
                                             name: "int",
                                             generics: [],
                                             array: false,
@@ -129,6 +287,7 @@ Program {
                                     ),
                                     Regular(
                                         RegularType {
+                                            path: [],
                                             name: "Generic2",
                                             generics: [],
                                             array: false,
@@ -177,6 +336,7 @@ Program {
                             name: "input",
                             kind: Regular(
                                 RegularType {
+                                    path: [],
                                     name: "From",
                                     generics: [],
                                     array: false,
@@ -187,6 +347,7 @@ Program {
                     return_type: Some(
                         Regular(
                             RegularType {
+                                path: [],
                                 name: "To",
                                 generics: [],
                                 array: false,
@@ -204,6 +365,7 @@ Program {
                                     ),
                                     kind: Regular(
                                         RegularType {
+                                            path: [],
                                             name: "To",
                                             generics: [],
                                             array: false,
@@ -232,6 +394,7 @@ Program {
                                         ),
                                         kind: Regular(
                                             RegularType {
+                                                path: [],
                                                 name: "a",
                                                 generics: [],
                                                 array: false,
@@ -240,6 +403,7 @@ Program {
                                     },
                                     kind: Regular(
                                         RegularType {
+                                            path: [],
                                             name: "b",
                                             generics: [],
                                             array: false,
@@ -248,6 +412,7 @@ Program {
                                 },
                                 kind: Regular(
                                     RegularType {
+                                        path: [],
                                         name: "c",
                                         generics: [],
                                         array: false,
@@ -256,6 +421,7 @@ Program {
                             },
                             kind: Regular(
                                 RegularType {
+                                    path: [],
                                     name: "d",
                                     generics: [],
                                     array: false,
@@ -264,6 +430,7 @@ Program {
                         },
                         kind: Regular(
                             RegularType {
+                                path: [],
                                 name: "e",
                                 generics: [],
                                 array: false,
@@ -272,6 +439,7 @@ Program {
                     },
                     kind: Regular(
                         RegularType {
+                            path: [],
                             name: "f",
                             generics: [],
                             array: false,
@@ -280,6 +448,7 @@ Program {
                 },
                 kind: Regular(
                     RegularType {
+                        path: [],
                         name: "g",
                         generics: [],
                         array: false,
@@ -296,6 +465,7 @@ Program {
                     generics: [
                         Regular(
                             RegularType {
+                                path: [],
                                 name: "int",
                                 generics: [],
                                 array: false,
@@ -303,6 +473,7 @@ Program {
                         ),
                         Regular(
                             RegularType {
+                                path: [],
                                 name: "float",
                                 generics: [],
                                 array: false,

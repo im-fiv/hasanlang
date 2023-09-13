@@ -99,6 +99,7 @@ Program {
                 generics: [
                     Regular(
                         RegularType {
+                            path: [],
                             name: "B",
                             generics: [],
                             array: true,
@@ -114,6 +115,7 @@ Program {
             generics: [
                 Regular(
                     RegularType {
+                        path: [],
                         name: "A",
                         generics: [],
                         array: false,

@@ -16,6 +16,7 @@ Program {
                             name: "input",
                             kind: Regular(
                                 RegularType {
+                                    path: [],
                                     name: "T",
                                     generics: [],
                                     array: false,
@@ -26,6 +27,7 @@ Program {
                     return_type: Some(
                         Regular(
                             RegularType {
+                                path: [],
                                 name: "T",
                                 generics: [],
                                 array: true,
@@ -66,6 +68,7 @@ Program {
                         name: "inner_value",
                         kind: Regular(
                             RegularType {
+                                path: [],
                                 name: "T",
                                 generics: [],
                                 array: false,
@@ -87,6 +90,7 @@ Program {
                             return_type: Some(
                                 Regular(
                                     RegularType {
+                                        path: [],
                                         name: "T",
                                         generics: [],
                                         array: false,
@@ -134,6 +138,7 @@ Program {
                                 generics: [
                                     Regular(
                                         RegularType {
+                                            path: [],
                                             name: "int",
                                             generics: [],
                                             array: false,

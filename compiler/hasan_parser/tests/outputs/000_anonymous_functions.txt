@@ -31,6 +31,7 @@ Program {
                 return_type: Some(
                     Regular(
                         RegularType {
+                            path: [],
                             name: "int",
                             generics: [],
                             array: false,
@@ -65,6 +66,7 @@ Program {
                         name: "a",
                         kind: Regular(
                             RegularType {
+                                path: [],
                                 name: "int",
                                 generics: [],
                                 array: false,
@@ -75,6 +77,7 @@ Program {
                         name: "b",
                         kind: Regular(
                             RegularType {
+                                path: [],
                                 name: "int",
                                 generics: [],
                                 array: false,
@@ -126,6 +129,7 @@ Program {
                         name: "a",
                         kind: Regular(
                             RegularType {
+                                path: [],
                                 name: "int",
                                 generics: [],
                                 array: false,
@@ -150,6 +154,7 @@ Program {
                         name: "a",
                         kind: Regular(
                             RegularType {
+                                path: [],
                                 name: "int",
                                 generics: [],
                                 array: false,
@@ -160,6 +165,7 @@ Program {
                 return_type: Some(
                     Regular(
                         RegularType {
+                            path: [],
                             name: "int",
                             generics: [],
                             array: false,
@@ -181,6 +187,7 @@ Program {
                 return_type: Some(
                     Regular(
                         RegularType {
+                            path: [],
                             name: "int",
                             generics: [],
                             array: false,
@@ -210,6 +217,7 @@ Program {
                         name: "a",
                         kind: Regular(
                             RegularType {
+                                path: [],
                                 name: "A",
                                 generics: [],
                                 array: false,
@@ -220,6 +228,7 @@ Program {
                         name: "b",
                         kind: Regular(
                             RegularType {
+                                path: [],
                                 name: "B",
                                 generics: [],
                                 array: false,
@@ -276,6 +285,7 @@ Program {
                         name: "input",
                         kind: Regular(
                             RegularType {
+                                path: [],
                                 name: "string",
                                 generics: [],
                                 array: false,
@@ -319,6 +329,7 @@ Program {
                         generics: [
                             Regular(
                                 RegularType {
+                                    path: [],
                                     name: "int",
                                     generics: [],
                                     array: false,
@@ -326,6 +337,7 @@ Program {
                             ),
                             Regular(
                                 RegularType {
+                                    path: [],
                                     name: "int",
                                     generics: [],
                                     array: false,

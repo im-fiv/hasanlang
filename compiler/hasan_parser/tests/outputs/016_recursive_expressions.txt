@@ -272,6 +272,7 @@ Program {
                                         ),
                                         kind: Regular(
                                             RegularType {
+                                                path: [],
                                                 name: "a",
                                                 generics: [],
                                                 array: false,
@@ -280,6 +281,7 @@ Program {
                                     },
                                     kind: Regular(
                                         RegularType {
+                                            path: [],
                                             name: "b",
                                             generics: [],
                                             array: false,
@@ -288,6 +290,7 @@ Program {
                                 },
                                 kind: Regular(
                                     RegularType {
+                                        path: [],
                                         name: "c",
                                         generics: [],
                                         array: false,
@@ -296,6 +299,7 @@ Program {
                             },
                             kind: Regular(
                                 RegularType {
+                                    path: [],
                                     name: "d",
                                     generics: [],
                                     array: false,
@@ -304,6 +308,7 @@ Program {
                         },
                         kind: Regular(
                             RegularType {
+                                path: [],
                                 name: "e",
                                 generics: [],
                                 array: false,
@@ -312,6 +317,7 @@ Program {
                     },
                     kind: Regular(
                         RegularType {
+                            path: [],
                             name: "f",
                             generics: [],
                             array: false,
@@ -320,6 +326,7 @@ Program {
                 },
                 kind: Regular(
                     RegularType {
+                        path: [],
                         name: "g",
                         generics: [],
                         array: false,

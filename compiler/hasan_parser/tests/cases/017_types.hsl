@@ -6,6 +6,12 @@ type Reg_ArrayT = int[];
 type Reg_GenericT<A> = A<A>;
 type Reg_GenericArrayT<B> = B<B>[];
 
+// Tuple types
+type NormalTuple = [int, float, bool];
+type GenericTuple<T> = [T, T, T];
+type EmptyTuple = [];
+type NestedTuples = [[int, int], [float, float], bool];
+
 // This isn't supposed to make sense
 func _<Generic2>() -> AType<int, Generic2> do
 	return [5];

@@ -38,6 +38,7 @@ Program {
             kind: Some(
                 Regular(
                     RegularType {
+                        path: [],
                         name: "Light",
                         generics: [],
                         array: false,

@@ -30,6 +30,7 @@ Program {
                         name: "hello",
                         kind: Regular(
                             RegularType {
+                                path: [],
                                 name: "string",
                                 generics: [],
                                 array: true,
@@ -43,6 +44,7 @@ Program {
                         name: "reg_var",
                         kind: Regular(
                             RegularType {
+                                path: [],
                                 name: "int",
                                 generics: [],
                                 array: false,
@@ -71,6 +73,7 @@ Program {
                             argument_types: [
                                 Regular(
                                     RegularType {
+                                        path: [],
                                         name: "int",
                                         generics: [],
                                         array: false,
@@ -78,6 +81,7 @@ Program {
                                 ),
                                 Regular(
                                     RegularType {
+                                        path: [],
                                         name: "int",
                                         generics: [],
                                         array: false,
@@ -86,6 +90,7 @@ Program {
                             ],
                             return_type: Regular(
                                 RegularType {
+                                    path: [],
                                     name: "int",
                                     generics: [],
                                     array: false,
@@ -109,6 +114,7 @@ Program {
                             argument_types: [],
                             return_type: Regular(
                                 RegularType {
+                                    path: [],
                                     name: "B",
                                     generics: [],
                                     array: true,
@@ -131,6 +137,7 @@ Program {
                                     argument_types: [
                                         Regular(
                                             RegularType {
+                                                path: [],
                                                 name: "int",
                                                 generics: [],
                                                 array: false,
@@ -138,6 +145,7 @@ Program {
                                         ),
                                         Regular(
                                             RegularType {
+                                                path: [],
                                                 name: "int",
                                                 generics: [],
                                                 array: false,
@@ -150,6 +158,7 @@ Program {
                                             argument_types: [
                                                 Regular(
                                                     RegularType {
+                                                        path: [],
                                                         name: "int",
                                                         generics: [],
                                                         array: false,
@@ -157,6 +166,7 @@ Program {
                                                 ),
                                                 Regular(
                                                     RegularType {
+                                                        path: [],
                                                         name: "C",
                                                         generics: [],
                                                         array: false,
@@ -165,6 +175,7 @@ Program {
                                             ],
                                             return_type: Regular(
                                                 RegularType {
+                                                    path: [],
                                                     name: "void",
                                                     generics: [],
                                                     array: false,
@@ -190,6 +201,7 @@ Program {
                         name: "some_variable",
                         kind: Regular(
                             RegularType {
+                                path: [],
                                 name: "int",
                                 generics: [],
                                 array: false,
@@ -207,6 +219,7 @@ Program {
                             argument_types: [],
                             return_type: Regular(
                                 RegularType {
+                                    path: [],
                                     name: "void",
                                     generics: [],
                                     array: false,
@@ -239,6 +252,7 @@ Program {
                         name: "hello",
                         kind: Regular(
                             RegularType {
+                                path: [],
                                 name: "T",
                                 generics: [],
                                 array: false,
@@ -256,6 +270,7 @@ Program {
                             argument_types: [],
                             return_type: Regular(
                                 RegularType {
+                                    path: [],
                                     name: "int",
                                     generics: [],
                                     array: false,
@@ -271,6 +286,7 @@ Program {
             interface_generics: [
                 Regular(
                     RegularType {
+                        path: [],
                         name: "world",
                         generics: [],
                         array: false,
@@ -286,6 +302,7 @@ Program {
                         name: "hello",
                         kind: Regular(
                             RegularType {
+                                path: [],
                                 name: "world",
                                 generics: [],
                                 array: false,
@@ -305,6 +322,7 @@ Program {
                             return_type: Some(
                                 Regular(
                                     RegularType {
+                                        path: [],
                                         name: "int",
                                         generics: [],
                                         array: false,
@@ -342,6 +360,7 @@ Program {
                             argument_types: [],
                             return_type: Regular(
                                 RegularType {
+                                    path: [],
                                     name: "void",
                                     generics: [],
                                     array: false,
@@ -362,6 +381,7 @@ Program {
                             name: "T",
                             requires_implementations: [
                                 RegularType {
+                                    path: [],
                                     name: "Callable",
                                     generics: [],
                                     array: false,
@@ -374,6 +394,7 @@ Program {
                             name: "something",
                             kind: Regular(
                                 RegularType {
+                                    path: [],
                                     name: "T",
                                     generics: [],
                                     array: false,
@@ -384,6 +405,7 @@ Program {
                     return_type: Some(
                         Regular(
                             RegularType {
+                                path: [],
                                 name: "void",
                                 generics: [],
                                 array: false,

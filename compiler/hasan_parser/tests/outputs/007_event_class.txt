@@ -11,6 +11,7 @@ Program {
                         name: "event",
                         kind: Regular(
                             RegularType {
+                                path: [],
                                 name: "Event",
                                 generics: [],
                                 array: false,
@@ -25,6 +26,7 @@ Program {
                         name: "id",
                         kind: Regular(
                             RegularType {
+                                path: [],
                                 name: "int",
                                 generics: [],
                                 array: false,
@@ -47,6 +49,7 @@ Program {
                                     name: "event",
                                     kind: Regular(
                                         RegularType {
+                                            path: [],
                                             name: "Event",
                                             generics: [],
                                             array: false,
@@ -57,6 +60,7 @@ Program {
                                     name: "id",
                                     kind: Regular(
                                         RegularType {
+                                            path: [],
                                             name: "int",
                                             generics: [],
                                             array: false,
@@ -67,6 +71,7 @@ Program {
                             return_type: Some(
                                 Regular(
                                     RegularType {
+                                        path: [],
                                         name: "this",
                                         generics: [],
                                         array: false,
@@ -156,6 +161,7 @@ Program {
                     argument_types: [],
                     return_type: Regular(
                         RegularType {
+                            path: [],
                             name: "void",
                             generics: [],
                             array: false,
@@ -175,6 +181,7 @@ Program {
                         name: "name",
                         kind: Regular(
                             RegularType {
+                                path: [],
                                 name: "string",
                                 generics: [],
                                 array: false,
@@ -189,6 +196,7 @@ Program {
                         name: "functions",
                         kind: Regular(
                             RegularType {
+                                path: [],
                                 name: "FuncType",
                                 generics: [],
                                 array: true,
@@ -211,6 +219,7 @@ Program {
                                     name: "name",
                                     kind: Regular(
                                         RegularType {
+                                            path: [],
                                             name: "string",
                                             generics: [],
                                             array: false,
@@ -221,6 +230,7 @@ Program {
                             return_type: Some(
                                 Regular(
                                     RegularType {
+                                        path: [],
                                         name: "this",
                                         generics: [],
                                         array: false,
@@ -257,6 +267,7 @@ Program {
                                     name: "function",
                                     kind: Regular(
                                         RegularType {
+                                            path: [],
                                             name: "FuncType",
                                             generics: [],
                                             array: false,
@@ -267,6 +278,7 @@ Program {
                             return_type: Some(
                                 Regular(
                                     RegularType {
+                                        path: [],
                                         name: "Connection",
                                         generics: [],
                                         array: false,
@@ -352,6 +364,7 @@ Program {
                                     name: "id",
                                     kind: Regular(
                                         RegularType {
+                                            path: [],
                                             name: "int",
                                             generics: [],
                                             array: false,
@@ -420,6 +433,7 @@ Program {
                                                 name: "function",
                                                 kind: Regular(
                                                     RegularType {
+                                                        path: [],
                                                         name: "FuncType",
                                                         generics: [],
                                                         array: false,
