@@ -105,7 +105,6 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 - [x] Implement booleans
 - [x] Implement enums
 - [x] Make tests check the generated AST
-- [x] ~~Add raw types *(direct LLVM types, should not have any methods on them, intended for compiler usage only)* that can be denoted with an exclamation mark: `AType!`, `ArrayType![]`, `GenericType!<...>`, `GenericArrType!<...>[]`~~
 - [x] Add type cast operator to *recursive* expressions
 - [x] Fix *recursive* expressions
 - [x] Remove `inputX.hsl` code samples from root directory
@@ -113,10 +112,9 @@ Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
 
 ## Side tasks
 
-- [ ] Implement type expressions (e.g. `this->SomeType`, `(int, float)`, ...)
-
 ### Corrective Parser:
 - [ ] Overhaul the CLI
 - [ ] Add spans for better semantic analysis error reporting
+- [X] Implement type expressions (e.g. `this->SomeType`, `(int, float)`, ...)
 - [x] Allow for generics in function type annotation
 - [x] Rewrite `parse_type` function along with the grammar of types
