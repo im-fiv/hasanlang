@@ -1,15 +1,21 @@
 use crate::{TypeRef, HirCodegen, HirDiagnostics, ClassMember};
-use hasan_parser::HasanCodegen;
+use hasan_parser::{HasanCodegen, GeneralModifiers};
 
 use anyhow::bail;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct ClassVariable {
+	pub modifiers: GeneralModifiers,
+
 	pub name: String,
 	pub kind: TypeRef,
-	pub default_value: Option<hasan_parser::Expression>,
+	pub default_value: Option<hasan_parser::Expression>
+}
 
-	pub modifiers: ClassVariableModifiers
+impl ClassVariable {
+	pub fn name(&self) -> String {
+		self.name.clone()
+	}
 }
 
 impl HirDiagnostics for ClassVariable {
@@ -17,7 +23,7 @@ impl HirDiagnostics for ClassVariable {
 		format!(
 			"{}var {}: {}",
 			
-			self.modifiers.info_string(),
+			self.modifiers.to_string(),
 			self.name,
 			self.kind.info_string()
 		)
@@ -26,18 +32,24 @@ impl HirDiagnostics for ClassVariable {
 
 impl HirCodegen for ClassVariable {
 	fn codegen(&self) -> String {
-		if let Some(value) = self.default_value.clone() {
-			return format!(
+		match self.default_value.clone() {
+			Some(default_value) => format!(
 				"{}var {}: {} = {};",
-				
-				self.modifiers.codegen(),
+
+				self.modifiers.to_string(),
 				self.name,
 				self.kind.codegen(),
-				value.codegen()
-			);
-		}
+				default_value.codegen()
+			),
 
-		format!("{}var {}: {};", self.modifiers.codegen(), self.name, self.kind.codegen())
+			None => format!(
+				"{}var {}: {};",
+
+				self.modifiers.to_string(),
+				self.name,
+				self.kind.codegen()
+			)
+		}
 	}
 }
 
@@ -50,42 +62,5 @@ impl TryFrom<ClassMember> for ClassVariable {
 		}
 
 		bail!("Class member `{}` is not a variable", member.name());
-	}
-}
-
-//-----------------------------------------------------------------//
-
-#[derive(Debug, Clone, Copy, PartialEq, Default)]
-pub struct ClassVariableModifiers {
-	pub is_public: bool,
-	pub is_const: bool,
-	pub is_static: bool
-}
-
-impl ClassVariableModifiers {
-	pub fn new(is_public: bool, is_const: bool, is_static: bool) -> Self {
-		Self {
-			is_public,
-			is_const,
-			is_static
-		}
-	}
-}
-
-impl HirDiagnostics for ClassVariableModifiers {
-	fn info_string(&self) -> String {
-		self.codegen()
-	}
-}
-
-impl HirCodegen for ClassVariableModifiers {
-	fn codegen(&self) -> String {
-		let mut truthy_values: Vec<String> = vec![];
-
-		if self.is_public { truthy_values.push("pub".to_owned()) }
-		if self.is_const { truthy_values.push("const".to_owned()) }
-		if self.is_static { truthy_values.push("static".to_owned()) }
-
-		truthy_values.join(" ")
 	}
 }

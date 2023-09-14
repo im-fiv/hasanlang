@@ -33,11 +33,10 @@ pub struct InterfaceVariable {
 
 impl HasanCodegen for InterfaceVariable {
 	fn codegen(&self) -> String {
-		let modifiers = cond_vec_transform!(&self.modifiers, |modifier| modifier.to_string(), " ", "{} ");
+		let modifiers = self.modifiers.to_string();
 
 		format!(
-			"{}var {}: {};",
-			modifiers,
+			"{modifiers}var {}: {};",
 			self.name,
 			self.kind.codegen()
 		)
@@ -92,7 +91,7 @@ pub struct InterfaceFunctionPrototype {
 
 impl HasanCodegen for InterfaceFunctionPrototype {
 	fn codegen(&self) -> String {
-		let modifiers = cond_vec_transform!(&self.modifiers, |value| value.to_string(), " ", "{} ");
+		let modifiers = self.modifiers.to_string();
 		let name = self.name.clone();
 		let generics = cond_vec_transform!(&self.generics, |value| value.codegen(), ", ", "<{}>");
 		let argument_types = vec_transform_str(&self.argument_types, |value| value.codegen(), ", ");
@@ -112,7 +111,7 @@ pub struct InterfaceAssocType {
 
 impl HasanCodegen for InterfaceAssocType {
 	fn codegen(&self) -> String {
-		let modifiers = cond_vec_transform!(&self.modifiers, |value| value.to_string(), " ", "{} ");
+		let modifiers = self.modifiers.to_string();
 		let name = self.name.clone();
 
 		format!("{modifiers}type {name};")

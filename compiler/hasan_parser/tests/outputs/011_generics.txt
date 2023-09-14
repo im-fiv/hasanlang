@@ -3,7 +3,9 @@ Program {
         FunctionDefinition(
             Function {
                 prototype: FunctionPrototype {
-                    modifiers: [],
+                    modifiers: GeneralModifiers(
+                        [],
+                    ),
                     name: "generic_function",
                     generics: [
                         DefinitionType {
@@ -53,7 +55,9 @@ Program {
             },
         ),
         ClassDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "generic_class",
             generics: [
                 DefinitionType {
@@ -64,7 +68,9 @@ Program {
             members: [
                 Variable(
                     ClassVariable {
-                        modifiers: [],
+                        modifiers: GeneralModifiers(
+                            [],
+                        ),
                         name: "inner_value",
                         kind: Regular(
                             RegularType {
@@ -83,7 +89,9 @@ Program {
                             Get,
                         ],
                         prototype: FunctionPrototype {
-                            modifiers: [],
+                            modifiers: GeneralModifiers(
+                                [],
+                            ),
                             name: "value",
                             generics: [],
                             arguments: [],
@@ -119,7 +127,9 @@ Program {
         FunctionDefinition(
             Function {
                 prototype: FunctionPrototype {
-                    modifiers: [],
+                    modifiers: GeneralModifiers(
+                        [],
+                    ),
                     name: "main",
                     generics: [],
                     arguments: [],
@@ -128,7 +138,9 @@ Program {
                 body: Some(
                     [
                         VariableDefinition {
-                            modifiers: [],
+                            modifiers: GeneralModifiers(
+                                [],
+                            ),
                             name: "wrapped",
                             kind: None,
                             value: FunctionCall {

@@ -1,11 +1,13 @@
 Program {
     statements: [
         InterfaceDefinition {
-            modifiers: [
-                Public,
-                Constant,
-                Static,
-            ],
+            modifiers: GeneralModifiers(
+                [
+                    Public,
+                    Constant,
+                    Static,
+                ],
+            ),
             name: "ComplexInterface",
             generics: [
                 DefinitionType {
@@ -24,9 +26,11 @@ Program {
             members: [
                 Variable(
                     InterfaceVariable {
-                        modifiers: [
-                            Static,
-                        ],
+                        modifiers: GeneralModifiers(
+                            [
+                                Static,
+                            ],
+                        ),
                         name: "hello",
                         kind: Regular(
                             RegularType {
@@ -40,7 +44,9 @@ Program {
                 ),
                 Variable(
                     InterfaceVariable {
-                        modifiers: [],
+                        modifiers: GeneralModifiers(
+                            [],
+                        ),
                         name: "reg_var",
                         kind: Regular(
                             RegularType {
@@ -60,9 +66,11 @@ Program {
                             ],
                         ),
                         prototype: InterfaceFunctionPrototype {
-                            modifiers: [
-                                Public,
-                            ],
+                            modifiers: GeneralModifiers(
+                                [
+                                    Public,
+                                ],
+                            ),
                             name: "world",
                             generics: [
                                 DefinitionType {
@@ -103,7 +111,9 @@ Program {
                     InterfaceFunction {
                         attributes: None,
                         prototype: InterfaceFunctionPrototype {
-                            modifiers: [],
+                            modifiers: GeneralModifiers(
+                                [],
+                            ),
                             name: "bye",
                             generics: [
                                 DefinitionType {
@@ -127,7 +137,9 @@ Program {
                     InterfaceFunction {
                         attributes: None,
                         prototype: InterfaceFunctionPrototype {
-                            modifiers: [],
+                            modifiers: GeneralModifiers(
+                                [],
+                            ),
                             name: "test",
                             generics: [],
                             argument_types: [],
@@ -191,13 +203,17 @@ Program {
             ],
         },
         InterfaceDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "SimpleInterface",
             generics: [],
             members: [
                 Variable(
                     InterfaceVariable {
-                        modifiers: [],
+                        modifiers: GeneralModifiers(
+                            [],
+                        ),
                         name: "some_variable",
                         kind: Regular(
                             RegularType {
@@ -213,7 +229,9 @@ Program {
                     InterfaceFunction {
                         attributes: None,
                         prototype: InterfaceFunctionPrototype {
-                            modifiers: [],
+                            modifiers: GeneralModifiers(
+                                [],
+                            ),
                             name: "some_function",
                             generics: [],
                             argument_types: [],
@@ -231,13 +249,17 @@ Program {
             ],
         },
         ClassDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "ExampleClass",
             generics: [],
             members: [],
         },
         InterfaceDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "ExampleInterface",
             generics: [
                 DefinitionType {
@@ -248,7 +270,9 @@ Program {
             members: [
                 Variable(
                     InterfaceVariable {
-                        modifiers: [],
+                        modifiers: GeneralModifiers(
+                            [],
+                        ),
                         name: "hello",
                         kind: Regular(
                             RegularType {
@@ -264,7 +288,9 @@ Program {
                     InterfaceFunction {
                         attributes: None,
                         prototype: InterfaceFunctionPrototype {
-                            modifiers: [],
+                            modifiers: GeneralModifiers(
+                                [],
+                            ),
                             name: "function",
                             generics: [],
                             argument_types: [],
@@ -298,7 +324,9 @@ Program {
             members: [
                 Variable(
                     ClassVariable {
-                        modifiers: [],
+                        modifiers: GeneralModifiers(
+                            [],
+                        ),
                         name: "hello",
                         kind: Regular(
                             RegularType {
@@ -315,7 +343,9 @@ Program {
                     ClassFunction {
                         attributes: [],
                         prototype: FunctionPrototype {
-                            modifiers: [],
+                            modifiers: GeneralModifiers(
+                                [],
+                            ),
                             name: "function",
                             generics: [],
                             arguments: [],
@@ -344,7 +374,9 @@ Program {
             ],
         },
         InterfaceDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "Callable",
             generics: [],
             members: [
@@ -352,9 +384,11 @@ Program {
                     InterfaceFunction {
                         attributes: None,
                         prototype: InterfaceFunctionPrototype {
-                            modifiers: [
-                                Public,
-                            ],
+                            modifiers: GeneralModifiers(
+                                [
+                                    Public,
+                                ],
+                            ),
                             name: "call",
                             generics: [],
                             argument_types: [],
@@ -374,7 +408,9 @@ Program {
         FunctionDefinition(
             Function {
                 prototype: FunctionPrototype {
-                    modifiers: [],
+                    modifiers: GeneralModifiers(
+                        [],
+                    ),
                     name: "call_anything",
                     generics: [
                         DefinitionType {

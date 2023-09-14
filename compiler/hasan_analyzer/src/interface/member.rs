@@ -1,11 +1,14 @@
 use hasan_hir::HirDiagnostics;
+use crate::impl_conv;
 use super::{
 	InterfaceVariable,
 	InterfaceFunction,
 	InterfaceAssocType
 };
 
-#[derive(Debug, Clone)]
+use strum_macros::Display;
+
+#[derive(Debug, Clone, Display)]
 pub enum InterfaceMember {
 	Variable(InterfaceVariable),
 	Function(InterfaceFunction),
@@ -31,3 +34,9 @@ impl HirDiagnostics for InterfaceMember {
 		}
 	}
 }
+
+impl_conv!(InterfaceMember {
+	Variable -> InterfaceVariable,
+	Function -> InterfaceFunction,
+	AssocType -> InterfaceAssocType
+});

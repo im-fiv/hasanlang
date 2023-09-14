@@ -1,7 +1,9 @@
 Program {
     statements: [
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "counter",
             kind: None,
             value: Integer(

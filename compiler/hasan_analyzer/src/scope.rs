@@ -83,7 +83,7 @@ impl Scope {
 	}
 
 	/// Creates a child scope while keeping all of the variables in scope
-	pub fn create_child_scope(&self) -> Self {
+	pub fn new_child(&self) -> Self {
 		Self {
 			symbol_table: self.symbol_table.clone(),
 			generic_table: GenericTable::new(), // Create a new generic table for easier merging
@@ -101,7 +101,7 @@ impl Scope {
 	}
 
 	/// Gets a symbol from the symbol table. Panics if a symbol does not exist
-	pub fn get_symbol(&self, name: &str) -> Result<Symbol> {
+	pub fn get_symbol(&self, name: &String) -> Result<Symbol> {
 		if let Some(symbol) = self.symbol_table.get(name) {
 			return Ok(symbol.to_owned());
 		}
@@ -176,24 +176,28 @@ pub struct ScopeFlags {
 
 	pub in_function: bool,
 	pub in_loop: bool,
-	pub in_class: bool
+	pub in_class: bool,
+	pub in_interface: bool
 }
 
 impl ScopeFlags {
 	pub fn as_string_vec(&self) -> Vec<String> {
 		let mut flags = vec![];
 
-		if self.global {
-			flags.push("global".to_owned());
+		macro_rules! flag {
+			($property:ident) => {
+				if self.$property {
+					flags.push(stringify!($property).to_owned());
+				}
+			};
 		}
 
-		if self.in_function {
-			flags.push("in_function".to_owned());
-		}
+		flag!(global);
 
-		if self.in_loop {
-			flags.push("in_loop".to_owned());
-		}
+		flag!(in_function);
+		flag!(in_loop);
+		flag!(in_class);
+		flag!(in_interface);
 
 		flags
 	}
@@ -210,7 +214,8 @@ impl Default for ScopeFlags {
 
 			in_function: false,
 			in_loop: false,
-			in_class: false
+			in_class: false,
+			in_interface: false
 		}
 	}
 }

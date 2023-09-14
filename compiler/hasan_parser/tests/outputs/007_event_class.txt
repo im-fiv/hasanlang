@@ -1,13 +1,17 @@
 Program {
     statements: [
         ClassDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "Connection",
             generics: [],
             members: [
                 Variable(
                     ClassVariable {
-                        modifiers: [],
+                        modifiers: GeneralModifiers(
+                            [],
+                        ),
                         name: "event",
                         kind: Regular(
                             RegularType {
@@ -22,7 +26,9 @@ Program {
                 ),
                 Variable(
                     ClassVariable {
-                        modifiers: [],
+                        modifiers: GeneralModifiers(
+                            [],
+                        ),
                         name: "id",
                         kind: Regular(
                             RegularType {
@@ -41,7 +47,9 @@ Program {
                             Constructor,
                         ],
                         prototype: FunctionPrototype {
-                            modifiers: [],
+                            modifiers: GeneralModifiers(
+                                [],
+                            ),
                             name: "new",
                             generics: [],
                             arguments: [
@@ -113,7 +121,9 @@ Program {
                     ClassFunction {
                         attributes: [],
                         prototype: FunctionPrototype {
-                            modifiers: [],
+                            modifiers: GeneralModifiers(
+                                [],
+                            ),
                             name: "disconnect",
                             generics: [],
                             arguments: [],
@@ -152,7 +162,9 @@ Program {
             ],
         },
         TypeAlias {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "FuncType",
             generics: [],
             definition: Function(
@@ -171,13 +183,17 @@ Program {
             ),
         },
         ClassDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "Event",
             generics: [],
             members: [
                 Variable(
                     ClassVariable {
-                        modifiers: [],
+                        modifiers: GeneralModifiers(
+                            [],
+                        ),
                         name: "name",
                         kind: Regular(
                             RegularType {
@@ -192,7 +208,9 @@ Program {
                 ),
                 Variable(
                     ClassVariable {
-                        modifiers: [],
+                        modifiers: GeneralModifiers(
+                            [],
+                        ),
                         name: "functions",
                         kind: Regular(
                             RegularType {
@@ -211,7 +229,9 @@ Program {
                             Constructor,
                         ],
                         prototype: FunctionPrototype {
-                            modifiers: [],
+                            modifiers: GeneralModifiers(
+                                [],
+                            ),
                             name: "new",
                             generics: [],
                             arguments: [
@@ -259,7 +279,9 @@ Program {
                     ClassFunction {
                         attributes: [],
                         prototype: FunctionPrototype {
-                            modifiers: [],
+                            modifiers: GeneralModifiers(
+                                [],
+                            ),
                             name: "connect",
                             generics: [],
                             arguments: [
@@ -288,7 +310,9 @@ Program {
                         },
                         body: [
                             VariableDefinition {
-                                modifiers: [],
+                                modifiers: GeneralModifiers(
+                                    [],
+                                ),
                                 name: "connection",
                                 kind: None,
                                 value: FunctionCall {
@@ -356,7 +380,9 @@ Program {
                     ClassFunction {
                         attributes: [],
                         prototype: FunctionPrototype {
-                            modifiers: [],
+                            modifiers: GeneralModifiers(
+                                [],
+                            ),
                             name: "_disconnect",
                             generics: [],
                             arguments: [
@@ -403,7 +429,9 @@ Program {
                     ClassFunction {
                         attributes: [],
                         prototype: FunctionPrototype {
-                            modifiers: [],
+                            modifiers: GeneralModifiers(
+                                [],
+                            ),
                             name: "fire",
                             generics: [],
                             arguments: [],
@@ -460,7 +488,9 @@ Program {
             ],
         },
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "event",
             kind: None,
             value: FunctionCall {
@@ -481,7 +511,9 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "connection",
             kind: None,
             value: FunctionCall {
@@ -504,7 +536,9 @@ Program {
         FunctionDefinition(
             Function {
                 prototype: FunctionPrototype {
-                    modifiers: [],
+                    modifiers: GeneralModifiers(
+                        [],
+                    ),
                     name: "onChanged",
                     generics: [],
                     arguments: [],

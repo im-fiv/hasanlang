@@ -1,7 +1,9 @@
 Program {
     statements: [
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "a",
             kind: None,
             value: Unary {
@@ -12,7 +14,9 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "b",
             kind: None,
             value: Binary {

@@ -10,7 +10,7 @@ impl HasanCodegen for Statement {
 			Self::FunctionDeclaration(function) => function.codegen(),
 
 			Self::TypeAlias { modifiers, name, generics, definition } => {
-				let modifiers = cond_vec_transform!(modifiers, |value| value.to_string(), " ", "{} ");
+				let modifiers = modifiers.to_string();
 				let generics = cond_vec_transform!(generics, |value| value.codegen(), ", ", "<{}>");
 
 				let definition = definition.codegen();
@@ -18,7 +18,7 @@ impl HasanCodegen for Statement {
 			},
 
 			Self::ClassDefinition { modifiers, name, generics, members } => {
-				let modifiers = cond_vec_transform!(modifiers, |value| value.to_string(), " ", "{} ");
+				let modifiers = modifiers.to_string();
 				let generics = cond_vec_transform!(generics, |value| value.codegen(), ", ", "<{}>");
 
 				let members = indent_all_by(
@@ -30,7 +30,7 @@ impl HasanCodegen for Statement {
 			},
 
 			Self::VariableDefinition { modifiers, name, kind, value } => {
-				let modifiers = cond_vec_transform!(modifiers, |value| value.to_string(), " ", "{} ");
+				let modifiers = modifiers.to_string();
 
 				let value = value.codegen();
 
@@ -59,7 +59,7 @@ impl HasanCodegen for Statement {
 			},
 
 			Self::EnumDefinition { modifiers, name, variants } => {
-				let modifiers = cond_vec_transform!(modifiers, |value| value.to_string(), " ", "{} ");
+				let modifiers = modifiers.to_string();
 				let variants = indent_all_by(
 					NUM_SPACES,
 					vec_transform_str(variants, |value| value.codegen(), ",\n")
@@ -155,7 +155,7 @@ impl HasanCodegen for Statement {
 			Self::Break => "break;".to_owned(),
 
 			Self::InterfaceDefinition { modifiers, name, generics, members } => {
-				let modifiers = cond_vec_transform!(modifiers, |value| value.to_string(), " ", "{} ");
+				let modifiers = modifiers.to_string();
 				let generics = cond_vec_transform!(generics, |value| value.codegen(), ", ", "<{}>");
 
 				let members = indent_all_by(

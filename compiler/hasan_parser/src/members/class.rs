@@ -1,17 +1,29 @@
 use crate::{
 	HasanCodegen, GeneralModifiers, Type,
-	Expression, cond_vec_transform, ClassFunctionAttributes,
-	FunctionPrototype, Statement, Function,
-	NUM_SPACES, vec_transform_str
+	Expression, cond_vec_transform,
+	ClassFunctionAttributes, FunctionPrototype,
+	Statement, Function, NUM_SPACES,
+	vec_transform_str
 };
 
 use indent::indent_all_by;
+use strum_macros::Display;
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Display)]
 pub enum ClassMember {
 	Variable(ClassVariable),
 	Function(ClassFunction),
 	AssocType(ClassAssocType)
+}
+
+impl ClassMember {
+	pub fn name(&self) -> String {
+		match self {
+			Self::Variable(value) => value.name.to_owned(),
+			Self::Function(value) => value.prototype.name.to_owned(),
+			Self::AssocType(value) => value.name.to_owned()
+		}
+	}
 }
 
 impl HasanCodegen for ClassMember {
@@ -37,7 +49,7 @@ pub struct ClassVariable {
 
 impl HasanCodegen for ClassVariable {
 	fn codegen(&self) -> String {
-		let modifiers = cond_vec_transform!(&self.modifiers, |value| value.to_string(), " ", "{} ");
+		let modifiers = self.modifiers.to_string();
 
 		let default_value = match self.default_value.clone() {
 			Some(value) => format!(" = {}", value.codegen()),
@@ -98,7 +110,7 @@ pub struct ClassAssocType {
 
 impl HasanCodegen for ClassAssocType {
 	fn codegen(&self) -> String {
-		let modifiers = cond_vec_transform!(&self.modifiers, |value| value.to_string(), " ", "{} ");
+		let modifiers = self.modifiers.to_string();
 		let name = self.name.clone();
 		let kind = self.kind.codegen();
 

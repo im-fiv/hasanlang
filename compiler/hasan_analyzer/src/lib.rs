@@ -31,9 +31,13 @@ fn type_from_function(function: hir::Function) -> hir::Type {
 	};
 
 	let class_function = hir::ClassFunction {
+		modifiers: p::GeneralModifiers::from(vec![
+			p::GeneralModifier::Public,
+			p::GeneralModifier::Static
+		]),
+
 		attributes: vec![],
-		function: inner_function,
-		modifiers: hir::ClassFunctionModifiers::new(true, true)
+		function: inner_function
 	};
 
 	let wrapped_function = hir::ClassMember::Function(class_function);
@@ -112,8 +116,20 @@ impl SemanticAnalyzer {
 
 			Return(value) => self.analyze_return(value),
 
-			InterfaceImplementation { interface_name, interface_generics, class_name, class_generics, members } =>
-				self.analyze_interface_impl(interface_name, interface_generics, class_name, class_generics, members),
+			InterfaceDefinition {
+				modifiers,
+				name,
+				generics,
+				members
+			} => self.analyze_interface_def(modifiers, name, generics, members),
+
+			InterfaceImplementation {
+				interface_name,
+				interface_generics,
+				class_name,
+				class_generics,
+				members
+			} => self.analyze_interface_impl(interface_name, interface_generics, class_name, class_generics, members),
 
 			_ => bail!("Encountered unsupported statement `{}`", statement.to_string())
 		}
@@ -399,11 +415,11 @@ impl SemanticAnalyzer {
 		}
 
 		let variable = hir::Variable {
+			modifiers,
+
 			name: name.clone(),
 			kind: kind_resolved,
-			value,
-
-			is_constant: m_const
+			value
 		};
 
 		self.scope.insert_symbol(name, Symbol::Variable(variable.clone()))?;
@@ -493,7 +509,7 @@ impl SemanticAnalyzer {
 			let original_scope = self.scope.clone();
 			let mut converted = vec![];
 
-			let mut new_scope = original_scope.create_child_scope();
+			let mut new_scope = original_scope.new_child();
 			new_scope.flags.in_function = true;
 			new_scope.flags.global = false;
 
@@ -553,7 +569,6 @@ impl SemanticAnalyzer {
 					default_value
 				} = variable;
 
-				let m_public = modifiers.contains(&Public);
 				let m_const = modifiers.contains(&Constant);
 				let m_static = modifiers.contains(&Static);
 
@@ -576,18 +591,12 @@ impl SemanticAnalyzer {
 					}
 				}
 
-				let flags = hir::ClassVariableModifiers {
-					is_public: m_public,
-					is_const: m_const,
-					is_static: m_static
-				};
-
 				let variable = hir::ClassVariable {
+					modifiers,
+					
 					name,
 					kind: converted_kind,
-					default_value,
-
-					modifiers: flags
+					default_value
 				};
 
 				hir::ClassMember::Variable(variable)
@@ -604,11 +613,9 @@ impl SemanticAnalyzer {
 				} = function;
 
 				// Checking modifiers
-				let m_public = prototype.modifiers.contains(&Public);
-				let m_const = prototype.modifiers.contains(&Constant);
-				let m_static = prototype.modifiers.contains(&Static);
+				let modifiers = prototype.modifiers.clone();
 
-				if m_const {
+				if modifiers.contains(&Constant) {
 					bail!("`const` modifiers are not permitted inside function prototypes");
 				}
 
@@ -634,15 +641,11 @@ impl SemanticAnalyzer {
 					body: Some(body)
 				})?;
 
-				let flags = hir::ClassFunctionModifiers {
-					is_public: m_public,
-					is_static: m_static
-				};
-
 				let class_function = hir::ClassFunction {
+					modifiers,
+
 					attributes,
-					function,
-					modifiers: flags
+					function
 				};
 
 				hir::ClassMember::Function(class_function)
@@ -686,7 +689,7 @@ impl SemanticAnalyzer {
 
 		let original_scope = self.scope.clone();
 
-		let mut new_scope = original_scope.create_child_scope();
+		let mut new_scope = original_scope.new_child();
 		new_scope.flags.in_class = true;
 
 		self.scope = new_scope;
@@ -753,15 +756,130 @@ impl SemanticAnalyzer {
 		Ok(hir::Statement::Return(value))
 	}
 
+	fn analyze_interface_def(
+		&mut self,
+		modifiers: p::GeneralModifiers,
+		name: String,
+		generics: Vec<p::DefinitionType>,
+		members: Vec<p::InterfaceMember>
+	) -> Result<hir::Statement> {
+		use p::GeneralModifier::*;
+
+		let m_public = modifiers.contains(&Public);
+		let m_const = modifiers.contains(&Constant);
+		let m_static = modifiers.contains(&Static);
+
+		if m_public && self.ast.module_info.is_none() {
+			bail!("`pub` modifiers are not permitted outside of modules");
+		}
+
+		if m_const {
+			bail!("`const` modifiers are not permitted in interface definitions");
+		}
+
+		if m_static {
+			bail!("`static` modifiers are not permitted in interface definitions")
+		}
+
+		// TODO: Generics
+		if !generics.is_empty() {
+			bail!("Generics are not yet supported");
+		}
+
+		let interface_scope = self.scope.new_child();
+		let old_scope = self.scope.clone();
+
+		let interface = Interface {
+			name: name.clone(),
+			members: vec![],
+			intrinsic: None // TODO: Determine `intrinsic` field
+		};
+
+		self.scope = interface_scope;
+		self.scope.insert_symbol(String::from("this"), Symbol::Interface(interface))?;
+
+		for member in members {
+			self.analyze_interface_member(member)?;
+		}
+
+		let updated_interface = self
+			.scope
+			.get_symbol(&String::from("this"))?;
+
+		self.scope = old_scope;
+		self.scope.insert_symbol(name, updated_interface)?;
+
+		Ok(hir::Statement::Omitted)
+	}
+
+	fn analyze_interface_member(&mut self, member: p::InterfaceMember) -> Result<()> {
+		use p::GeneralModifier::*;
+
+		macro_rules! try_insert {
+			($member:ident) => {
+				{
+					let mut interface: Interface = self
+						.scope
+						.get_symbol(&String::from("this"))?
+						.try_into()?;
+
+					for member in interface.members.clone() {
+						if member.name() == $member.name() {
+							bail!("Cannot redefine a symbol with name `{}`", stringify!($member));
+						}
+					}
+
+					interface.members.push($member);
+
+					self.scope.update_symbol(
+						String::from("this"),
+						Symbol::Interface(interface)
+					)?;
+				}
+			};
+		}
+
+		match member {
+			p::InterfaceMember::Variable(variable) => {
+				let p::InterfaceVariable { modifiers, name, kind } = variable;
+
+				let m_const = modifiers.contains(&Constant);
+				let m_static = modifiers.contains(&Static);
+
+				if m_const && m_static {
+					bail!("`const` and `static` modifiers cannot be used together. Modifier `static` already implies `const`");
+				}
+
+				let kind = self.convert_type(&kind)?;
+				let converted_member = InterfaceMember::Variable(InterfaceVariable {
+					modifiers,
+
+					name,
+					kind
+				});
+
+				try_insert!(converted_member);
+			},
+
+			p::InterfaceMember::Function(_) => {
+				todo!()
+			},
+
+			p::InterfaceMember::AssocType(_) => todo!()
+		};
+
+		Ok(())
+	}
+
 	fn analyze_interface_impl(
 		&mut self,
 		interface_name: String,
 		interface_generics: Vec<p::Type>,
 		class_name: String,
 		class_generics: Vec<p::Type>,
-		_members: Vec<p::ClassMember>
+		members: Vec<p::ClassMember>
 	) -> Result<hir::Statement> {
-		let _interface = match self.scope.get_symbol(&interface_name)? {
+		let interface = match self.scope.get_symbol(&interface_name)? {
 			Symbol::Interface(interface) => interface,
 			symbol => bail!("Expected a symbol of type `Interface`, got `{}`", symbol.to_string())
 		};
@@ -771,7 +889,7 @@ impl SemanticAnalyzer {
 			bail!("Generics are not yet supported");
 		}
 
-		let _class = match self.scope.get_symbol(&class_name)? {
+		let mut class = match self.scope.get_symbol(&class_name)? {
 			Symbol::Class(class) => class,
 			symbol => bail!("Expected a symbol of type `Class`, got `{}`", symbol.to_string())
 		};
@@ -781,8 +899,125 @@ impl SemanticAnalyzer {
 			bail!("Generics are not yet supported");
 		}
 
-		// TODO: Check member collisions, exhaustive implementation, and signatures
+		if class.implements_interfaces.contains(&interface.unique_name()) {
+			bail!(
+				"Conflicting implementations of interface `{}` for type `{}`",
+				interface.unique_name(),
+				class.name
+			);
+		}
+
+		let class_scope = self.scope.new_child();
+		let old_scope = self.scope.clone();
+
+		self.scope = class_scope;
+		self.scope.insert_symbol(
+			String::from("ths"),
+			Symbol::Class(class.clone())
+		)?;
+
+		let mut new_members = vec![];
+
+		for member in members {
+			let analyzed = self.analyze_interface_impl_member(&class, &interface, member)?;
+			new_members.push(analyzed);
+		}
+
+		class.implements_interfaces.push(interface.unique_name());
+		class.members = new_members;
+
+		self.scope = old_scope;
+		self.scope.update_symbol(class_name, Symbol::Class(class))?;
 
 		Ok(hir::Statement::Omitted)
+	}
+
+	fn analyze_interface_impl_member(
+		&mut self,
+		class: &hir::Type,
+		interface: &Interface,
+		member: p::ClassMember
+	) -> Result<hir::ClassMember> {
+		use p::GeneralModifier::*;
+
+		let class = class.to_owned();
+
+		macro_rules! redef_check {
+			($name:ident) => {
+				for member in class.members.iter() {
+					if member.name() == $name {
+						bail!("Cannot redefine class member `{}`", $name);
+					}		
+				}
+			};
+		}
+
+		// Search for the member
+		let interface_member = interface
+			.members
+			.iter()
+			.find(
+				|search_member| search_member.name() == member.name()
+			)
+			.ok_or(
+				anyhow::format_err!("Interface `{}` has no member named `{}`", interface.unique_name(), member.name())
+			)?
+			.to_owned();
+
+		// Compare member type
+		match (&interface_member, &member) {
+			(InterfaceMember::Variable(_), p::ClassMember::Variable(_)) |
+			(InterfaceMember::Function(_), p::ClassMember::Function(_)) |
+			(InterfaceMember::AssocType(_), p::ClassMember::AssocType(_)) => (),
+
+			_ => bail!(
+				"Mismatched implementation signature for member `{}`. Expected `{}`, got `{}`",
+				interface_member.name(),
+				interface_member.to_string(),
+				member.to_string()
+			)
+		}
+
+		Ok(match member {
+			p::ClassMember::Variable(variable) => {
+				let p::ClassVariable { modifiers, name, kind, default_value } = variable;
+				
+				let m_const = modifiers.contains(&Constant);
+				let m_static = modifiers.contains(&Static);
+
+				if m_const && m_static {
+					bail!("`const` and `static` modifiers cannot be used together. Modifier `static` already implies `const`");
+				}
+
+				let resolved_type = match default_value {
+					Some(ref default_value) => self.type_from_expression(default_value)?,
+					None => self.convert_type(&kind)?
+				};
+
+				let converted_type = self.convert_type(&kind)?;
+
+				if converted_type != resolved_type {
+					bail!(
+						"Mismatched types for class variable `{name}`. Expected `{}`, found `{}`",
+						resolved_type.codegen(),
+						converted_type.codegen()
+					);
+				}
+
+				let class_variable = hir::ClassVariable {
+					modifiers,
+
+					name: name.clone(),
+					kind: resolved_type,
+					default_value
+				};
+
+				redef_check!(name);
+				hir::ClassMember::Variable(class_variable)
+			},
+
+			p::ClassMember::Function(_) => todo!(),
+			p::ClassMember::AssocType(_) => todo!()
+		})
 	}
 }

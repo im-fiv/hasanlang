@@ -1,7 +1,9 @@
 Program {
     statements: [
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "a",
             kind: None,
             value: Binary {
@@ -21,7 +23,9 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "b",
             kind: None,
             value: Binary {
@@ -51,7 +55,9 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "c",
             kind: None,
             value: Binary {
@@ -101,7 +107,9 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "d",
             kind: None,
             value: Binary {
@@ -155,7 +163,9 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "e",
             kind: None,
             value: ArrayAccess {
@@ -201,7 +211,9 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "f",
             kind: None,
             value: Binary {
@@ -229,7 +241,9 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "e",
             kind: None,
             value: Binary {
@@ -257,7 +271,9 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "type_cast",
             kind: None,
             value: TypeCast {
@@ -346,7 +362,9 @@ Program {
             ],
         },
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "arr",
             kind: None,
             value: FunctionCall {
@@ -363,7 +381,9 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "var1",
             kind: None,
             value: Identifier(
@@ -371,7 +391,9 @@ Program {
             ),
         },
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "var2",
             kind: None,
             value: Binary {
@@ -385,7 +407,9 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "complex_expression",
             kind: None,
             value: Binary {

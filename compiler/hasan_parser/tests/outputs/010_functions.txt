@@ -3,7 +3,9 @@ Program {
         FunctionDefinition(
             Function {
                 prototype: FunctionPrototype {
-                    modifiers: [],
+                    modifiers: GeneralModifiers(
+                        [],
+                    ),
                     name: "print_hello_world",
                     generics: [],
                     arguments: [],
@@ -45,7 +47,9 @@ Program {
         FunctionDefinition(
             Function {
                 prototype: FunctionPrototype {
-                    modifiers: [],
+                    modifiers: GeneralModifiers(
+                        [],
+                    ),
                     name: "random_number",
                     generics: [
                         DefinitionType {
@@ -81,7 +85,9 @@ Program {
         FunctionDefinition(
             Function {
                 prototype: FunctionPrototype {
-                    modifiers: [],
+                    modifiers: GeneralModifiers(
+                        [],
+                    ),
                     name: "arguments",
                     generics: [],
                     arguments: [
@@ -158,7 +164,9 @@ Program {
         FunctionDefinition(
             Function {
                 prototype: FunctionPrototype {
-                    modifiers: [],
+                    modifiers: GeneralModifiers(
+                        [],
+                    ),
                     name: "no_return_type",
                     generics: [],
                     arguments: [
@@ -192,7 +200,9 @@ Program {
         FunctionDefinition(
             Function {
                 prototype: FunctionPrototype {
-                    modifiers: [],
+                    modifiers: GeneralModifiers(
+                        [],
+                    ),
                     name: "main",
                     generics: [],
                     arguments: [],
@@ -201,7 +211,9 @@ Program {
                 body: Some(
                     [
                         VariableDefinition {
-                            modifiers: [],
+                            modifiers: GeneralModifiers(
+                                [],
+                            ),
                             name: "add",
                             kind: None,
                             value: Integer(
@@ -241,7 +253,9 @@ Program {
         FunctionDeclaration(
             Function {
                 prototype: FunctionPrototype {
-                    modifiers: [],
+                    modifiers: GeneralModifiers(
+                        [],
+                    ),
                     name: "function_declaration",
                     generics: [
                         DefinitionType {

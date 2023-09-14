@@ -1,7 +1,9 @@
 Program {
     statements: [
         TypeAlias {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "AType",
             generics: [
                 DefinitionType {
@@ -32,7 +34,9 @@ Program {
             ),
         },
         TypeAlias {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "Reg_T",
             generics: [],
             definition: Regular(
@@ -45,7 +49,9 @@ Program {
             ),
         },
         TypeAlias {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "Reg_ArrayT",
             generics: [],
             definition: Regular(
@@ -58,7 +64,9 @@ Program {
             ),
         },
         TypeAlias {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "Reg_GenericT",
             generics: [
                 DefinitionType {
@@ -85,7 +93,9 @@ Program {
             ),
         },
         TypeAlias {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "Reg_GenericArrayT",
             generics: [
                 DefinitionType {
@@ -112,7 +122,9 @@ Program {
             ),
         },
         TypeAlias {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "NormalTuple",
             generics: [],
             definition: Tuple(
@@ -147,7 +159,9 @@ Program {
             ),
         },
         TypeAlias {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "GenericTuple",
             generics: [
                 DefinitionType {
@@ -187,7 +201,9 @@ Program {
             ),
         },
         TypeAlias {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "EmptyTuple",
             generics: [],
             definition: Tuple(
@@ -197,7 +213,9 @@ Program {
             ),
         },
         TypeAlias {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "NestedTuples",
             generics: [],
             definition: Tuple(
@@ -262,7 +280,9 @@ Program {
         FunctionDefinition(
             Function {
                 prototype: FunctionPrototype {
-                    modifiers: [],
+                    modifiers: GeneralModifiers(
+                        [],
+                    ),
                     name: "_",
                     generics: [
                         DefinitionType {
@@ -319,7 +339,9 @@ Program {
         FunctionDefinition(
             Function {
                 prototype: FunctionPrototype {
-                    modifiers: [],
+                    modifiers: GeneralModifiers(
+                        [],
+                    ),
                     name: "cast",
                     generics: [
                         DefinitionType {
@@ -379,7 +401,9 @@ Program {
             },
         ),
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "long_cast",
             kind: None,
             value: TypeCast {

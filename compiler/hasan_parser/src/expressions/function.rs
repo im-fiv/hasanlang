@@ -49,9 +49,21 @@ pub struct FunctionPrototype {
 
 impl HasanCodegen for FunctionPrototype {
 	fn codegen(&self) -> String {
-		let modifiers = cond_vec_transform!(&self.modifiers, |modifier| modifier.to_string(), " ", "{} ");
+		let modifiers = cond_vec_transform!(
+			&self.modifiers.0,
+			|modifier| modifier.to_string(),
+			" ",
+			"{} "
+		);
+
 		let name = self.name.clone();
-		let generics = cond_vec_transform!(&self.generics, |generic| generic.codegen(), ", ", "<{}>");
+
+		let generics = cond_vec_transform!(
+			&self.generics,
+			|generic| generic.codegen(),
+			", ",
+			"<{}>"
+		);
 
 		let return_type = match self.return_type.clone() {
 			Some(kind) => format!(" -> {}", kind.codegen()),

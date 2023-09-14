@@ -1,9 +1,11 @@
 Program {
     statements: [
         VariableDefinition {
-            modifiers: [
-                Constant,
-            ],
+            modifiers: GeneralModifiers(
+                [
+                    Constant,
+                ],
+            ),
             name: "a",
             kind: None,
             value: Integer(
@@ -19,9 +21,11 @@ Program {
             ),
         },
         EnumDefinition {
-            modifiers: [
-                Constant,
-            ],
+            modifiers: GeneralModifiers(
+                [
+                    Constant,
+                ],
+            ),
             name: "Hello",
             variants: [
                 EnumVariant {

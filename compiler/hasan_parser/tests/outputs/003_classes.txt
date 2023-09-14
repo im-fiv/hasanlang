@@ -1,15 +1,19 @@
 Program {
     statements: [
         ClassDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "ClassDefinition",
             generics: [],
             members: [
                 Variable(
                     ClassVariable {
-                        modifiers: [
-                            Public,
-                        ],
+                        modifiers: GeneralModifiers(
+                            [
+                                Public,
+                            ],
+                        ),
                         name: "a",
                         kind: Regular(
                             RegularType {
@@ -28,9 +32,11 @@ Program {
                 ),
                 Variable(
                     ClassVariable {
-                        modifiers: [
-                            Public,
-                        ],
+                        modifiers: GeneralModifiers(
+                            [
+                                Public,
+                            ],
+                        ),
                         name: "b",
                         kind: Regular(
                             RegularType {
@@ -58,9 +64,11 @@ Program {
                             Constructor,
                         ],
                         prototype: FunctionPrototype {
-                            modifiers: [
-                                Static,
-                            ],
+                            modifiers: GeneralModifiers(
+                                [
+                                    Static,
+                                ],
+                            ),
                             name: "some_function",
                             generics: [],
                             arguments: [],
@@ -80,7 +88,9 @@ Program {
                 ),
                 Variable(
                     ClassVariable {
-                        modifiers: [],
+                        modifiers: GeneralModifiers(
+                            [],
+                        ),
                         name: "c",
                         kind: Regular(
                             RegularType {
@@ -97,7 +107,9 @@ Program {
                     ClassFunction {
                         attributes: [],
                         prototype: FunctionPrototype {
-                            modifiers: [],
+                            modifiers: GeneralModifiers(
+                                [],
+                            ),
                             name: "another_function",
                             generics: [],
                             arguments: [],
@@ -118,15 +130,19 @@ Program {
             ],
         },
         ClassDefinition {
-            modifiers: [
-                Public,
-            ],
+            modifiers: GeneralModifiers(
+                [
+                    Public,
+                ],
+            ),
             name: "ClassDeclaraction",
             generics: [],
             members: [
                 Variable(
                     ClassVariable {
-                        modifiers: [],
+                        modifiers: GeneralModifiers(
+                            [],
+                        ),
                         name: "a",
                         kind: Regular(
                             RegularType {
@@ -145,7 +161,9 @@ Program {
                             Constructor,
                         ],
                         prototype: FunctionPrototype {
-                            modifiers: [],
+                            modifiers: GeneralModifiers(
+                                [],
+                            ),
                             name: "some_function",
                             generics: [],
                             arguments: [],
@@ -167,9 +185,11 @@ Program {
                     ClassFunction {
                         attributes: [],
                         prototype: FunctionPrototype {
-                            modifiers: [
-                                Public,
-                            ],
+                            modifiers: GeneralModifiers(
+                                [
+                                    Public,
+                                ],
+                            ),
                             name: "other_function",
                             generics: [],
                             arguments: [],
@@ -190,9 +210,11 @@ Program {
             ],
         },
         ClassDefinition {
-            modifiers: [
-                Static,
-            ],
+            modifiers: GeneralModifiers(
+                [
+                    Static,
+                ],
+            ),
             name: "Array",
             generics: [
                 DefinitionType {
@@ -207,7 +229,9 @@ Program {
                             Get,
                         ],
                         prototype: FunctionPrototype {
-                            modifiers: [],
+                            modifiers: GeneralModifiers(
+                                [],
+                            ),
                             name: "length",
                             generics: [],
                             arguments: [],
@@ -229,9 +253,11 @@ Program {
                     ClassFunction {
                         attributes: [],
                         prototype: FunctionPrototype {
-                            modifiers: [
-                                Static,
-                            ],
+                            modifiers: GeneralModifiers(
+                                [
+                                    Static,
+                                ],
+                            ),
                             name: "append",
                             generics: [],
                             arguments: [
@@ -265,7 +291,9 @@ Program {
                     ClassFunction {
                         attributes: [],
                         prototype: FunctionPrototype {
-                            modifiers: [],
+                            modifiers: GeneralModifiers(
+                                [],
+                            ),
                             name: "copy",
                             generics: [],
                             arguments: [],
@@ -286,7 +314,9 @@ Program {
             ],
         },
         ClassDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "Array",
             generics: [
                 DefinitionType {
@@ -301,7 +331,9 @@ Program {
                             Get,
                         ],
                         prototype: FunctionPrototype {
-                            modifiers: [],
+                            modifiers: GeneralModifiers(
+                                [],
+                            ),
                             name: "length",
                             generics: [],
                             arguments: [],
@@ -323,9 +355,11 @@ Program {
                     ClassFunction {
                         attributes: [],
                         prototype: FunctionPrototype {
-                            modifiers: [
-                                Static,
-                            ],
+                            modifiers: GeneralModifiers(
+                                [
+                                    Static,
+                                ],
+                            ),
                             name: "append",
                             generics: [],
                             arguments: [
@@ -359,7 +393,9 @@ Program {
                     ClassFunction {
                         attributes: [],
                         prototype: FunctionPrototype {
-                            modifiers: [],
+                            modifiers: GeneralModifiers(
+                                [],
+                            ),
                             name: "copy",
                             generics: [],
                             arguments: [],

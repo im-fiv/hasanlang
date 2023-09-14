@@ -4,9 +4,7 @@ use hasan_hir::{
 	Variable, Enum
 };
 
-use anyhow::bail;
 use strum_macros::Display;
-use paste::paste;
 
 #[derive(Debug, Clone, Display)]
 pub enum Symbol {
@@ -41,8 +39,16 @@ impl HirDiagnostics for Symbol {
 
 /// A macro to implement `is_$variant` and `TryInto<$variant>` for all enum variants
 macro_rules! impl_conv {
-	($enum:ident { $($variant:ident),* }) => {
-		paste! {
+	//* Note: for internal usage only
+	($variant:ident) => ($variant);
+	($variant:ident -> $mapped:path) => ($mapped);
+
+	($enum:ident {
+		$(
+			$variant:ident $(-> $mapped:path)?
+		),*
+	}) => {
+		paste::paste! {
 			impl $enum {
 				$(
 					pub fn [<is_ $variant:lower>](&self) -> bool {
@@ -57,15 +63,20 @@ macro_rules! impl_conv {
 		}
 
 		$(
-			impl TryInto<$variant> for $enum {
+			impl TryInto<
+				crate::impl_conv!($variant $(-> $mapped)?)
+			> for $enum {
 				type Error = anyhow::Error;
 
-				fn try_into(self) -> Result<$variant, Self::Error> {
+				fn try_into(self) -> Result<
+					crate::impl_conv!($variant $(-> $mapped)?),
+					Self::Error
+				> {
 					if let Self::$variant(value) = self.clone() {
 						return Ok(value);
 					}
 
-					bail!("Failed to convert a symbol `{}` into `{}`", self.name(), stringify!($variant));
+					anyhow::bail!("Failed to convert an enum variant `{}::{}` into `{}`", stringify!($enum), self.name(), stringify!($variant));
 				}
 			}
 		)*
@@ -78,3 +89,6 @@ impl_conv!(Symbol {
 	Variable,
 	Enum
 });
+
+// Export the macro to be used elsewhere
+pub(crate) use impl_conv;

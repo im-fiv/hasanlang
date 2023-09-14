@@ -1,7 +1,9 @@
 Program {
     statements: [
         EnumDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "Light",
             variants: [
                 EnumVariant {
@@ -16,9 +18,11 @@ Program {
             ],
         },
         EnumDefinition {
-            modifiers: [
-                Public,
-            ],
+            modifiers: GeneralModifiers(
+                [
+                    Public,
+                ],
+            ),
             name: "Light",
             variants: [
                 EnumVariant {
@@ -33,7 +37,9 @@ Program {
             ],
         },
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "current_light",
             kind: Some(
                 Regular(

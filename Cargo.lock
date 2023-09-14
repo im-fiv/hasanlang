@@ -302,6 +302,7 @@ dependencies = [
 name = "hasan_parser"
 version = "0.0.0"
 dependencies = [
+ "clap",
  "hasan_pest_parser",
  "indent",
  "pest",

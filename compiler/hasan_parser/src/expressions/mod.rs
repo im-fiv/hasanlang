@@ -12,10 +12,11 @@ pub use unary_operator::*;
 /// Expands to `crate::vec_transform_str($value, $func, $sep)`.
 /// If the resulting value is not empty, formats it with `$format`.
 /// Otherwise, returns an empty owned string.
+#[macro_export]
 macro_rules! cond_vec_transform {
 	($value:expr, $func:expr, $sep:expr, $format:expr) => {
 		{
-			let result = crate::vec_transform_str($value, $func, $sep);
+			let result = $crate::vec_transform_str($value, $func, $sep);
 
 			if !result.is_empty() {
 				format!($format, result)
@@ -25,5 +26,3 @@ macro_rules! cond_vec_transform {
 		}
 	};
 }
-
-pub(crate) use cond_vec_transform;

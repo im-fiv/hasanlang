@@ -1,9 +1,11 @@
 Program {
     statements: [
         VariableDefinition {
-            modifiers: [
-                Public,
-            ],
+            modifiers: GeneralModifiers(
+                [
+                    Public,
+                ],
+            ),
             name: "no_args_return",
             kind: None,
             value: AnonymousFunction {
@@ -22,7 +24,9 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "no_args",
             kind: None,
             value: AnonymousFunction {
@@ -56,7 +60,9 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "no_return",
             kind: None,
             value: AnonymousFunction {
@@ -104,9 +110,11 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: [
-                Public,
-            ],
+            modifiers: GeneralModifiers(
+                [
+                    Public,
+                ],
+            ),
             name: "no_statements",
             kind: None,
             value: AnonymousFunction {
@@ -117,9 +125,11 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: [
-                Public,
-            ],
+            modifiers: GeneralModifiers(
+                [
+                    Public,
+                ],
+            ),
             name: "no_statements",
             kind: None,
             value: AnonymousFunction {
@@ -142,9 +152,11 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: [
-                Public,
-            ],
+            modifiers: GeneralModifiers(
+                [
+                    Public,
+                ],
+            ),
             name: "no_statements",
             kind: None,
             value: AnonymousFunction {
@@ -176,9 +188,11 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: [
-                Public,
-            ],
+            modifiers: GeneralModifiers(
+                [
+                    Public,
+                ],
+            ),
             name: "no_statements",
             kind: None,
             value: AnonymousFunction {
@@ -198,7 +212,9 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "generics",
             kind: None,
             value: AnonymousFunction {
@@ -255,7 +271,9 @@ Program {
             },
         },
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "immediate_call",
             kind: None,
             value: FunctionCall {

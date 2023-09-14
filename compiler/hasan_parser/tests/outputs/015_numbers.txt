@@ -1,7 +1,9 @@
 Program {
     statements: [
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "pi",
             kind: None,
             value: Float(
@@ -9,7 +11,9 @@ Program {
             ),
         },
         VariableDefinition {
-            modifiers: [],
+            modifiers: GeneralModifiers(
+                [],
+            ),
             name: "meaning_of_life",
             kind: None,
             value: Integer(

@@ -56,25 +56,21 @@ impl HirCodegen for ModuleInfo {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Variable {
+	pub modifiers: hasan_parser::GeneralModifiers,
+
 	pub name: String,
 	pub kind: TypeRef,
-	pub value: hasan_parser::Expression,
-
-	pub is_constant: bool
+	pub value: hasan_parser::Expression
 }
 
 impl HirDiagnostics for Variable {
 	fn info_string(&self) -> String {
+		let modifiers = self.modifiers.to_string();
 		let name = self.name.clone();
 		let kind = self.kind.info_string();
 
 		let base = format!("var {name}: {kind}");
-
-		if self.is_constant {
-			format!("const {base}")
-		} else {
-			base
-		}
+		format!("{modifiers}{base}")
 	}
 }
 
@@ -82,16 +78,12 @@ impl HirCodegen for Variable {
 	fn codegen(&self) -> String {
 		use hasan_parser::HasanCodegen;
 
-		let prefix = if self.is_constant {
-			"const "
-		} else {
-			""
-		}.to_owned();
-
+		let modifiers = self.modifiers.to_string();
 		let name = self.name.clone();
 		let kind = self.kind.codegen();
 		let value = self.value.codegen();
 
-		format!("{prefix}var {name}: {kind} = {value};")
+		let base = format!("var {name}: {kind} = {value};");
+		format!("{modifiers}{base}")
 	}
 }

@@ -1443,7 +1443,7 @@ impl<'p> HasanParser<'p> {
 			error!("expected '{:?}', got '{:?}'", pair.as_span(), Rule::general_modifiers, pair.as_rule());
 		}
 
-		let mut modifiers: GeneralModifiers = vec![];
+		let mut modifiers = GeneralModifiers::new();
 		let pairs = pair.into_inner();
 
 		let mut met_modifiers: Vec<String> = vec![];
