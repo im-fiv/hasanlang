@@ -202,8 +202,8 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 			.iter()
 			.map(|argument| {
 				let compiled = self
-				.compile_type(&argument.kind)
-				.expect("Failed to compile type");
+					.compile_type(&argument.kind)
+					.expect("Failed to compile type");
 				
 				BasicMetadataTypeEnum::from(compiled.unwrap())
 			})

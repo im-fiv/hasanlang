@@ -55,7 +55,7 @@ impl HasanCodegen for Statement {
 			Self::Return(value) => if let Some(value) = value {
 				format!("return {};", value.codegen())
 			} else {
-				"return;".to_owned()
+				String::from("return;")
 			},
 
 			Self::EnumDefinition { modifiers, name, variants } => {
@@ -152,7 +152,7 @@ impl HasanCodegen for Statement {
 				)
 			},
 
-			Self::Break => "break;".to_owned(),
+			Self::Break => String::from("break;"),
 
 			Self::InterfaceDefinition { modifiers, name, generics, members } => {
 				let modifiers = modifiers.to_string();
@@ -210,7 +210,7 @@ impl HasanCodegen for Statement {
 				}
 			},
 
-			Self::Unimplemented => "/* unimplemented */".to_owned()
+			Self::Unimplemented => String::from("/* unimplemented */")
 		}
 	}
 }

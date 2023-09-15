@@ -105,7 +105,7 @@ impl Scope {
 		if let Some(symbol) = self.symbol_table.get(name) {
 			return Ok(symbol.to_owned());
 		}
-
+		
 		bail!("Symbol with name `{}` does not exist", name);
 	}
 

@@ -6,7 +6,6 @@ use anyhow::bail;
 #[derive(Debug, Clone, PartialEq)]
 pub struct ClassVariable {
 	pub modifiers: GeneralModifiers,
-
 	pub name: String,
 	pub kind: TypeRef,
 	pub default_value: Option<hasan_parser::Expression>

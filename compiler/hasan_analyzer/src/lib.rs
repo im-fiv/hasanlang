@@ -16,7 +16,11 @@ use hasan_intrinsics as intr;
 
 use hir::HirCodegen;
 
-fn type_from_function(function: hir::Function) -> hir::Type {
+// TODO: The design of type references is flawed:
+// the updates are not properly propagated when
+// the type has been updated.
+
+fn function_into_type(function: hir::Function) -> hir::Type {
 	let inner_function = {
 		let prototype = hir::FunctionPrototype {
 			name: intr::FunctionMembers::Call.name(),
@@ -32,7 +36,6 @@ fn type_from_function(function: hir::Function) -> hir::Type {
 
 	let class_function = hir::ClassFunction {
 		modifiers: p::GeneralModifiers::from(vec![
-			p::GeneralModifier::Public,
 			p::GeneralModifier::Static
 		]),
 
@@ -45,8 +48,17 @@ fn type_from_function(function: hir::Function) -> hir::Type {
 	hir::Type {
 		name: function.prototype.name,
 		members: vec![wrapped_function],
-		implements_interfaces: vec![intr::IntrinsicInterface::Function.name()]
+		implements_interfaces: vec![
+			intr::IntrinsicInterface::Function.name()
+		]
 	}
+}
+
+/// Converts a class function into a type (function)
+/// 
+/// Note: class function attributes are stripped during this process
+fn class_function_into_type(class_function: hir::ClassFunction) -> hir::Type {
+	function_into_type(class_function.function)
 }
 
 /// Converts a binary operator into an intrinsic interface member index
@@ -162,14 +174,14 @@ impl SemanticAnalyzer {
 		def_builtin!(t_string, String);
 		def_builtin!(t_bool, Boolean);
 		
-		match expression.to_owned() {
+		match expression {
 			Integer(_) => wrap_ok_ref!(t_int),
 			Float(_) => wrap_ok_ref!(t_float),
 			String(_) => wrap_ok_ref!(t_string),
 			Boolean(_) => wrap_ok_ref!(t_bool),
 
 			Unary { operator, operand } => {
-				let expression_type = self.type_from_expression(&operand)?;
+				let expression_type = self.type_from_expression(operand)?;
 
 				use p::UnaryOperator::*;
 				use intr::IntrinsicInterface::*;
@@ -200,8 +212,8 @@ impl SemanticAnalyzer {
 			},
 
 			Binary { lhs, operator, rhs } => {
-				let lhs_type = self.type_from_expression(&lhs)?;
-				let rhs_type = self.type_from_expression(&rhs)?;
+				let lhs_type = self.type_from_expression(lhs)?;
+				let rhs_type = self.type_from_expression(rhs)?;
 
 				use p::BinaryOperator::*;
 				use intr::IntrinsicInterface::*;
@@ -234,7 +246,7 @@ impl SemanticAnalyzer {
 					bail!("Type `{}` does not implement interface `{}`", lhs_type.codegen(), interface.unique_name());
 				}
 
-				let interface_member_index = bin_op_intr_member(&operator);
+				let interface_member_index = bin_op_intr_member(operator);
 
 				let interface_member = interface
 					.members
@@ -254,7 +266,7 @@ impl SemanticAnalyzer {
 			},
 
 			FunctionCall { callee, generics, arguments } => {
-				let callee_type = self.type_from_expression(&callee)?;
+				let callee_type = self.type_from_expression(callee)?;
 
 				let function_interface: Interface = self.scope.get_symbol(
 					&intr::IntrinsicInterface::Function.name()
@@ -330,8 +342,51 @@ impl SemanticAnalyzer {
 				Ok(prototype.return_type)
 			},
 
+			DotAccess { expression, accessor } => {
+				let expression = *expression.to_owned();
+				let accessor = match *accessor.to_owned() {
+					Identifier(ident) => ident,
+					_ => bail!("Expected an identifier as a property access index, got `{}`", accessor.to_string())
+				};
+
+				let expression_type = self.type_from_expression(&expression)?;
+
+				// TODO: This is incorrect
+				// The type should be checked with account for array dimensions
+				// rather than the underlying type
+				let member = expression_type
+					.0
+					.member_by_name(&accessor)
+					.ok_or_else(|| anyhow::format_err!(
+						"Type `{}` does not have a member with name `{}`",
+						expression_type.codegen(),
+						accessor
+					))?;
+
+				let modifiers = member.modifiers();
+				
+				if !modifiers.contains(&p::GeneralModifier::Public) {
+					bail!("Member `{}` of type `{}` is private", member.name(), expression_type.codegen());
+				}
+
+				if modifiers.contains(&p::GeneralModifier::Static) {
+					bail!("Member `{}` of type `{}` is static", member.name(), expression_type.codegen());
+				}
+
+				Ok(match member {
+					hir::ClassMember::Variable(variable) => variable.kind,
+					// TODO: Check the correctness of this when class functions are implemented in the analyzer
+					hir::ClassMember::Function(function) => class_function_into_type(function).into(),
+					hir::ClassMember::AssocType(_) => bail!(
+						"Member `{}` of type `{}` is an associated type",
+						member.name(),
+						expression_type.codegen()
+					)
+				})
+			},
+
 			Identifier(identifier) => {
-				let symbol = self.scope.get_symbol(&identifier)?;
+				let symbol = self.scope.get_symbol(identifier)?;
 
 				Ok(match symbol {
 					Symbol::Class(class) => class.into(),
@@ -499,7 +554,7 @@ impl SemanticAnalyzer {
 		self.scope.insert_symbol(
 			prototype.name.clone(),
 			Symbol::Class(
-				type_from_function(
+				function_into_type(
 					hir::Function::from(prototype.clone())
 				)
 			)
@@ -510,6 +565,7 @@ impl SemanticAnalyzer {
 			let mut converted = vec![];
 
 			let mut new_scope = original_scope.new_child();
+
 			new_scope.flags.in_function = true;
 			new_scope.flags.global = false;
 
@@ -533,7 +589,7 @@ impl SemanticAnalyzer {
 		self.scope.update_symbol(
 			prototype.name.clone(),
 			Symbol::Class(
-				type_from_function(function.clone())
+				function_into_type(function.clone())
 			)
 		)?;
 
@@ -669,6 +725,7 @@ impl SemanticAnalyzer {
 				}
 
 				let assoc_type = hir::ClassAssocType {
+					modifiers,
 					name,
 					kind: self.convert_type(&kind)?
 				};
@@ -687,14 +744,29 @@ impl SemanticAnalyzer {
 	) -> Result<hir::Statement> {
 		use p::GeneralModifier::*;
 
-		let original_scope = self.scope.clone();
+		let mut class = hir::Type {
+			name: name.clone(),
+			members: vec![],
+			implements_interfaces: vec![]
+		};
 
-		let mut new_scope = original_scope.new_child();
+		self.scope.insert_symbol(
+			name.clone(),
+			Symbol::Class(class.clone())
+		)?;
+
+		let old_scope = self.scope.clone();
+
+		let mut new_scope = old_scope.new_child();
+
 		new_scope.flags.in_class = true;
+		new_scope.flags.global = false;
 
 		self.scope = new_scope;
-
-		// TODO: Add `this` into scope
+		self.scope.insert_symbol(
+			String::from("this"),
+			Symbol::Class(class.clone())
+		)?;
 
 		let m_public = modifiers.contains(&Public);
 		let m_const = modifiers.contains(&Constant);
@@ -736,15 +808,14 @@ impl SemanticAnalyzer {
 			converted_vec
 		};
 
-		let class = hir::Class {
-			name: name.clone(),
-			members,
-			implements_interfaces: vec![]
-		};
+		class.members = members;
 
-		self.scope = original_scope;
+		self.scope = old_scope;
+		self.scope.update_symbol(
+			name,
+			Symbol::Class(class.clone())
+		)?;
 
-		self.scope.insert_symbol(name, Symbol::Class(class.clone()))?;
 		Ok(hir::Statement::ClassDefinition(class))
 	}
 
@@ -752,6 +823,8 @@ impl SemanticAnalyzer {
 		if !self.scope.flags.in_function {
 			bail!("`return` statements are not permitted outside of functions");
 		}
+
+		// TODO: Return type inference
 
 		Ok(hir::Statement::Return(value))
 	}
@@ -813,8 +886,6 @@ impl SemanticAnalyzer {
 	}
 
 	fn analyze_interface_member(&mut self, member: p::InterfaceMember) -> Result<()> {
-		use p::GeneralModifier::*;
-
 		macro_rules! try_insert {
 			($member:ident) => {
 				{
@@ -843,8 +914,8 @@ impl SemanticAnalyzer {
 			p::InterfaceMember::Variable(variable) => {
 				let p::InterfaceVariable { modifiers, name, kind } = variable;
 
-				let m_const = modifiers.contains(&Constant);
-				let m_static = modifiers.contains(&Static);
+				let m_const = modifiers.contains(&p::GeneralModifier::Constant);
+				let m_static = modifiers.contains(&p::GeneralModifier::Static);
 
 				if m_const && m_static {
 					bail!("`const` and `static` modifiers cannot be used together. Modifier `static` already implies `const`");
@@ -861,11 +932,59 @@ impl SemanticAnalyzer {
 				try_insert!(converted_member);
 			},
 
-			p::InterfaceMember::Function(_) => {
-				todo!()
+			p::InterfaceMember::Function(function) => {
+				let p::InterfaceFunction { attributes, prototype } = function;
+
+				let p::InterfaceFunctionPrototype {
+					modifiers,
+					name,
+					generics,
+					argument_types,
+					return_type
+				} = prototype;
+
+				let m_const = modifiers.contains(&p::GeneralModifier::Constant);
+				let m_static = modifiers.contains(&p::GeneralModifier::Static);
+
+				if m_const && m_static {
+					bail!("`const` and `static` modifiers cannot be used together. Modifier `static` already implies `const`");
+				}
+
+				let a_constructor = attributes.contains(&p::ClassFunctionAttribute::Constructor);
+				let a_get = attributes.contains(&p::ClassFunctionAttribute::Get);
+				let a_set = attributes.contains(&p::ClassFunctionAttribute::Set);
+
+				if a_constructor && (a_get || a_set) {
+					bail!("Invalid interface function attributes for `{}`: `constructor` cannot be used with `get` or `set`", name);
+				}
+
+				if a_get && a_set {
+					bail!("Invalid interface function attributes for `{}`: `get` cannot be used with `set`", name);
+				}
+
+				// TODO: Generics
+				if !generics.is_empty() {
+					bail!("Generics are not yet supported");
+				}
+
+				let argument_types = argument_types
+					.iter()
+					.map(|kind| self.convert_type(kind))
+					.collect::<Result<Vec<_>>>()?;
+
+				let return_type = self.convert_type(&return_type)?;
+
+				let converted_member = InterfaceMember::Function(InterfaceFunction {
+					modifiers,
+					name,
+					argument_types,
+					return_type
+				});
+
+				try_insert!(converted_member);
 			},
 
-			p::InterfaceMember::AssocType(_) => todo!()
+			p::InterfaceMember::AssocType(_) => todo!() // TODO
 		};
 
 		Ok(())
@@ -944,7 +1063,7 @@ impl SemanticAnalyzer {
 
 		macro_rules! redef_check {
 			($name:ident) => {
-				for member in class.members.iter() {
+				for member in class.members {
 					if member.name() == $name {
 						bail!("Cannot redefine class member `{}`", $name);
 					}		
@@ -964,7 +1083,7 @@ impl SemanticAnalyzer {
 			)?
 			.to_owned();
 
-		// Compare member type
+		// Comparing member types
 		match (&interface_member, &member) {
 			(InterfaceMember::Variable(_), p::ClassMember::Variable(_)) |
 			(InterfaceMember::Function(_), p::ClassMember::Function(_)) |
@@ -1016,8 +1135,191 @@ impl SemanticAnalyzer {
 				hir::ClassMember::Variable(class_variable)
 			},
 
-			p::ClassMember::Function(_) => todo!(),
-			p::ClassMember::AssocType(_) => todo!()
+			p::ClassMember::Function(function) => {
+				let p::ClassFunction {
+					attributes,
+					prototype,
+					body
+				} = function;
+
+				// Checking modifiers
+				let m_const = prototype.modifiers.contains(&Constant);
+				let m_static = prototype.modifiers.contains(&Static);
+
+				if m_const && m_static {
+					bail!("`const` and `static` modifiers cannot be used together. Modifier `static` already implies `const`");
+				}
+
+				// Checking attributes
+				let a_constructor = attributes.contains(&p::ClassFunctionAttribute::Constructor);
+				let a_get = attributes.contains(&p::ClassFunctionAttribute::Get);
+				let a_set = attributes.contains(&p::ClassFunctionAttribute::Set);
+
+				if a_constructor && (a_get || a_set) {
+					bail!("Invalid class function attributes for `{}`: `constructor` cannot be used with `get` or `set`", prototype.name);
+				}
+
+				if a_get && a_set {
+					bail!("Invalid class function attributes for `{}`: `get` cannot be used with `set`", prototype.name);
+				}
+
+				// Unwrapping function prototype
+				let p::FunctionPrototype {
+					modifiers,
+					name,
+					generics,
+					arguments,
+					return_type
+				} = prototype;
+
+				// TODO: Generics
+				if !generics.is_empty() {
+					bail!("Generics are not yet supported");
+				}
+
+				// Converting arguments
+				let arguments = arguments
+					.into_iter()
+					.map(|arg| {
+						let p::FunctionArgument { name, kind } = arg;
+						let kind = self.convert_type(&kind);
+
+						match kind {
+							Ok(kind) => Ok(hir::FunctionArgument { name, kind }),
+							Err(error) => Err(error)
+						}
+					})
+					.collect::<Result<Vec<_>>>()?;
+
+				// Converting return type
+				let return_type = match return_type {
+					Some(ref return_type) => self.convert_type(return_type)?,
+					// TODO: Default to return type of `void`
+					None => unimplemented!("implicit return type")
+				};
+
+				// Converting body
+				let body = {
+					// Creating and assigning current scope to the function's inner scope
+					let old_scope = self.scope.clone();
+					let mut child_scope = self.scope.new_child();
+
+					child_scope.flags.in_function = true;
+					child_scope.flags.global = false;
+
+					self.scope = child_scope;
+
+					// Converting arguments into variables
+					let argument_variables = arguments
+						.clone()
+						.into_iter()
+						.map(|argument| hir::Variable {
+							modifiers: vec![].into(),
+
+							name: argument.name,
+							kind: argument.kind,
+							//* Note: this is likely the only place where `Expression::Empty` should be used
+							value: p::Expression::Empty
+						})
+						.collect::<Vec<_>>();
+
+					// Inserting function arguments into scope as variables
+					for variable in argument_variables {
+						self.scope.insert_symbol(
+							variable.name.clone(),
+							Symbol::Variable(variable)
+						)?;
+					}
+
+					// Parsing the body
+					let new_body = body
+						.into_iter()
+						.map(|statement| self.analyze_statement(statement))
+						.collect::<Result<Vec<_>>>()?;
+
+					// Cleaning up
+					self.scope = old_scope;
+
+					// Returning the new body
+					new_body
+				};
+
+				// TODO: Return type validation
+
+				// Creating the new function structures
+				let prototype = hir::FunctionPrototype {
+					name: name.clone(),
+					arguments,
+					return_type
+				};
+
+				let function = hir::Function {
+					prototype: prototype.clone(),
+					body: Some(body)
+				};
+
+				let class_function = hir::ClassFunction {
+					attributes,
+					modifiers,
+					function
+				};
+
+				// Checking the function signature against the interface signature
+				{
+					let interface_function: InterfaceFunction =
+						interface_member
+							.try_into()
+							.expect("Interface member is guaranteed to be of type function here");
+					
+					// Checking argument types
+					let len_expected = interface_function.argument_types.len();
+					let len_got = prototype.arguments.len();
+
+					if len_got != len_expected {
+						bail!(
+							"Incorrect amount of arguments for function `{}`. Expected {} arguments, got {}",
+							prototype.name,
+							len_expected,
+							len_got
+						);
+					}
+
+					for (index, argument) in prototype.arguments.iter().enumerate() {
+						let interface_argument = interface_function
+							.argument_types
+							.get(index)
+							.unwrap_or_else(|| unreachable!("Interface function is guaranteed to have at least {} arguments", index))
+							.to_owned();
+
+						if argument.kind != interface_argument {
+							bail!(
+								"Incorrect type for argument #{} for function `{}`. Expected type `{}`, got `{}`",
+								index,
+								prototype.name,
+								interface_argument.codegen(),
+								argument.kind.codegen()
+							);
+						}
+					}
+
+					// Checking return type
+					if prototype.return_type != interface_function.return_type {
+						bail!(
+							"Mismatched return type for function `{}`. Expected type `{}`, got `{}`",
+							prototype.name,
+							interface_function.return_type.codegen(),
+							prototype.return_type.codegen()
+						);
+					}
+
+					// TODO: Check modifiers and attributes
+				};
+
+				redef_check!(name);
+				hir::ClassMember::Function(class_function)
+			},
+
+			p::ClassMember::AssocType(_) => todo!() // TODO
 		})
 	}
 }

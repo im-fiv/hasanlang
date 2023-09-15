@@ -515,10 +515,10 @@ impl<'p> HasanParser<'p> {
 			.next()
 			.expect("Failed to parse interface function: expected attributes/modifiers, got nothing");
 
-		let mut attributes: Option<ClassFunctionAttributes> = None;
+		let mut attributes: ClassFunctionAttributes = vec![];
 		
 		if next_pair.as_rule() == Rule::attributes {
-			attributes = Some(self.parse_class_function_attributes(next_pair));
+			attributes = self.parse_class_function_attributes(next_pair);
 
 			// Next pair is guaranteed to be `general_modifiers`, even if it's empty
 			next_pair = pairs

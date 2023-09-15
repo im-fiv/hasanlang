@@ -45,14 +45,14 @@ impl HirCodegen for Statement {
 			Self::Return(value) => if let Some(expression) = value {
 				format!("return {};", expression.codegen())
 			} else {
-				"return;".to_owned()
+				String::from("return;")
 			},
 
 			Self::EnumDefinition(value) => value.codegen(),
 			Self::If(value) => value.codegen(),
 			Self::While(value) => value.codegen(),
 			Self::For(value) => value.codegen(),
-			Self::Break => "break;".to_owned(),
+			Self::Break => String::from("break;"),
 
 			Self::ModuleUse(info) => {
 				let path = info.path.join(".");

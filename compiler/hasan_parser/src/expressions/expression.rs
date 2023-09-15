@@ -151,7 +151,7 @@ impl HasanCodegen for Expression {
 			},
 
 			Self::Empty => String::new(),
-			Self::Unimplemented => "/* unimplemented */".to_owned()
+			Self::Unimplemented => String::from("/* unimplemented */")
 		}
 	}
 }

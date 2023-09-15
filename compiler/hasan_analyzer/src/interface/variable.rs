@@ -11,7 +11,6 @@ pub struct InterfaceVariable {
 
 impl HirDiagnostics for InterfaceVariable {
 	fn info_string(&self) -> String {
-		
 		let name = self.name.clone();
 		let kind = self.kind.info_string();
 		

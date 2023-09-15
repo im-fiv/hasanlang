@@ -15,6 +15,14 @@ impl ClassMember {
 			Self::AssocType(kind) => kind.name.to_owned()
 		}
 	}
+
+	pub fn modifiers(&self) -> hasan_parser::GeneralModifiers {
+		match self {
+			Self::Variable(variable) => variable.modifiers.to_owned(),
+			Self::Function(function) => function.modifiers.to_owned(),
+			Self::AssocType(kind) => kind.modifiers.to_owned()
+		}
+	}
 }
 
 impl HirCodegen for ClassMember {

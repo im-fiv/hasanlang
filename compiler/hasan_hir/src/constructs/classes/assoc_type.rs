@@ -2,6 +2,7 @@ use crate::{TypeRef, HirDiagnostics, HirCodegen};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct ClassAssocType {
+	pub modifiers: hasan_parser::GeneralModifiers,
 	pub name: String,
 	pub kind: TypeRef
 }
