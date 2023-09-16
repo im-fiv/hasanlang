@@ -64,12 +64,12 @@ macro_rules! impl_conv {
 
 		$(
 			impl TryInto<
-				crate::impl_conv!($variant $(-> $mapped)?)
+				$crate::impl_conv!($variant $(-> $mapped)?)
 			> for $enum {
 				type Error = anyhow::Error;
 
 				fn try_into(self) -> Result<
-					crate::impl_conv!($variant $(-> $mapped)?),
+					$crate::impl_conv!($variant $(-> $mapped)?),
 					Self::Error
 				> {
 					if let Self::$variant(value) = self.clone() {
