@@ -48,7 +48,7 @@ macro_rules! impl_conv {
 			$variant:ident $(-> $mapped:path)?
 		),*
 	}) => {
-		paste::paste! {
+		::paste::paste! {
 			impl $enum {
 				$(
 					pub fn [<is_ $variant:lower>](&self) -> bool {
@@ -66,7 +66,7 @@ macro_rules! impl_conv {
 			impl TryInto<
 				$crate::impl_conv!($variant $(-> $mapped)?)
 			> for $enum {
-				type Error = anyhow::Error;
+				type Error = ::anyhow::Error;
 
 				fn try_into(self) -> Result<
 					$crate::impl_conv!($variant $(-> $mapped)?),
@@ -76,19 +76,21 @@ macro_rules! impl_conv {
 						return Ok(value);
 					}
 
-					anyhow::bail!("Failed to convert an enum variant `{}::{}` into `{}`", stringify!($enum), self.name(), stringify!($variant));
+					::anyhow::bail!("Failed to convert an enum variant `{}::{}` into `{}`", stringify!($enum), self.name(), stringify!($variant));
 				}
 			}
 		)*
 	};
 }
 
-impl_conv!(Symbol {
-	Class,
-	Interface,
-	Variable,
-	Enum
-});
+impl_conv![
+	Symbol {
+		Class,
+		Interface,
+		Variable,
+		Enum
+	}
+];
 
 // Export the macro to be used elsewhere
 pub(crate) use impl_conv;
