@@ -76,7 +76,12 @@ macro_rules! impl_conv {
 						return Ok(value);
 					}
 
-					::anyhow::bail!("Failed to convert an enum variant `{}::{}` into `{}`", stringify!($enum), self.name(), stringify!($variant));
+					::anyhow::bail!(
+						"Failed to convert an enum variant `{}::{}` into `{}`",
+						stringify!($enum),
+						self.name(),
+						stringify!($variant)
+					);
 				}
 			}
 		)*
