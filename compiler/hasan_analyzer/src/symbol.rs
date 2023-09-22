@@ -52,7 +52,7 @@ macro_rules! impl_conv {
 			impl $enum {
 				$(
 					pub fn [<is_ $variant:lower>](&self) -> bool {
-						if let Self::$variant(_) = self.clone() {
+						if let Self::$variant(_) = self {
 							return true;
 						}
 		
@@ -72,7 +72,7 @@ macro_rules! impl_conv {
 					$crate::impl_conv!($variant $(: $mapped)?),
 					Self::Error
 				> {
-					if let Self::$variant(value) = self.clone() {
+					if let Self::$variant(value) = self {
 						return Ok(value);
 					}
 
