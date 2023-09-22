@@ -36,7 +36,7 @@ impl HirDiagnostics for InterfaceMember {
 }
 
 impl_conv!(InterfaceMember {
-	Variable -> InterfaceVariable,
-	Function -> InterfaceFunction,
-	AssocType -> InterfaceAssocType
+	Variable: InterfaceVariable,
+	Function: InterfaceFunction,
+	AssocType: InterfaceAssocType
 });

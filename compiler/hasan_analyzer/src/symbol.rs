@@ -41,11 +41,11 @@ impl HirDiagnostics for Symbol {
 macro_rules! impl_conv {
 	//* Note: for internal usage only
 	($variant:ident) => ($variant);
-	($variant:ident -> $mapped:path) => ($mapped);
+	($variant:ident : $mapped:ty) => ($mapped);
 
 	($enum:ident {
 		$(
-			$variant:ident $(-> $mapped:path)?
+			$variant:ident $(: $mapped:ty)?
 		),*
 	}) => {
 		::paste::paste! {
@@ -64,12 +64,12 @@ macro_rules! impl_conv {
 
 		$(
 			impl TryInto<
-				$crate::impl_conv!($variant $(-> $mapped)?)
+				$crate::impl_conv!($variant $(: $mapped)?)
 			> for $enum {
 				type Error = ::anyhow::Error;
 
 				fn try_into(self) -> Result<
-					$crate::impl_conv!($variant $(-> $mapped)?),
+					$crate::impl_conv!($variant $(: $mapped)?),
 					Self::Error
 				> {
 					if let Self::$variant(value) = self.clone() {
