@@ -48,7 +48,7 @@ fn function_into_type(function: hir::Function) -> hir::Type {
 	hir::Type {
 		name: function.prototype.name,
 		members: vec![wrapped_function],
-		implements_interfaces: vec![
+		impls: vec![
 			intr::IntrinsicInterface::Function.name()
 		]
 	}
@@ -204,7 +204,7 @@ impl SemanticAnalyzer {
 				// TODO: This is incorrect
 				// The type should be checked with account for array dimensions
 				// rather than the underlying type
-				if !expression_type.0.implements_interfaces.contains(&interface.unique_name()) {
+				if !expression_type.0.impls.contains(&interface.unique_name()) {
 					bail!("Type `{}` does not implement interface `{}`", expression_type.codegen(), interface.unique_name());
 				}
 
@@ -242,7 +242,7 @@ impl SemanticAnalyzer {
 				// TODO: This is incorrect
 				// The type should be checked with account for array dimensions
 				// rather than the underlying type
-				if !lhs_type.0.implements_interfaces.contains(&interface.unique_name()) {
+				if !lhs_type.0.impls.contains(&interface.unique_name()) {
 					bail!("Type `{}` does not implement interface `{}`", lhs_type.codegen(), interface.unique_name());
 				}
 
@@ -272,7 +272,7 @@ impl SemanticAnalyzer {
 					&intr::IntrinsicInterface::Function.name()
 				)?.try_into()?;
 
-				if !callee_type.0.implements_interfaces.contains(&function_interface.unique_name()) || (callee_type.1 > 0) {
+				if !callee_type.0.impls.contains(&function_interface.unique_name()) || (callee_type.1 > 0) {
 					bail!(
 						"Type `{}` does not implement interface `{}`",
 						callee_type.codegen(),
@@ -293,7 +293,7 @@ impl SemanticAnalyzer {
 						.get(0)
 						.unwrap_or_else(|| {
 							let interfaces = callee_type
-								.implements_interfaces
+								.impls
 								.join(", ");
 
 							unreachable!("Type `impl<{}>` is empty", interfaces)
@@ -429,8 +429,30 @@ impl SemanticAnalyzer {
 				Ok(hir::TypeRef(class, dimensions))
 			},
 
-			p::Type::Function(_) => todo!("function type converting"),
-			p::Type::Tuple(_) => todo!("tuple type converting")
+			p::Type::Function(_) => todo!("function type converting"), // TODO
+			p::Type::Tuple(_) => todo!("tuple type converting") // TODO
+		}
+	}
+
+	/// Converts a parser type into a HIR type reference
+	/// with account for `this` markers
+	fn convert_type_marker(
+		&mut self,
+		kind: &p::Type,
+		resolves_to: String
+	) -> Result<hir::TypeRef> {
+		match kind.to_owned() {
+			p::Type::Regular(mut kind) => {
+				if kind.path.is_empty() && (kind.name == *"this") {
+					kind.name = resolves_to;
+				}
+
+				let wrapped = p::Type::Regular(kind);
+				self.convert_type(&wrapped)
+			},
+
+			p::Type::Function(_) => todo!("function type converting"), // TODO
+			p::Type::Tuple(_) => todo!("tuple type converting") // TODO
 		}
 	}
 
@@ -747,7 +769,7 @@ impl SemanticAnalyzer {
 		let mut class = hir::Type {
 			name: name.clone(),
 			members: vec![],
-			implements_interfaces: vec![]
+			impls: vec![]
 		};
 
 		self.scope.insert_symbol(
@@ -868,16 +890,26 @@ impl SemanticAnalyzer {
 			intrinsic: None // TODO: Determine `intrinsic` field
 		};
 
+		let this_marker = Symbol::Class(hir::Type {
+			name: String::from("this"),
+			members: vec![],
+			impls: vec![
+				String::from("ThisMarker")
+			]
+		});
+
 		self.scope = interface_scope;
-		self.scope.insert_symbol(String::from("this"), Symbol::Interface(interface))?;
+		
+		self.scope.insert_symbol(String::from("this"), this_marker)?;
+		self.scope.insert_symbol(name.clone(), Symbol::Interface(interface))?;
 
 		for member in members {
-			self.analyze_interface_member(member)?;
+			self.analyze_interface_member(name.clone(), member)?;
 		}
 
 		let updated_interface = self
 			.scope
-			.get_symbol(&String::from("this"))?;
+			.get_symbol(&name)?;
 
 		self.scope = old_scope;
 		self.scope.insert_symbol(name, updated_interface)?;
@@ -885,13 +917,13 @@ impl SemanticAnalyzer {
 		Ok(hir::Statement::Omitted)
 	}
 
-	fn analyze_interface_member(&mut self, member: p::InterfaceMember) -> Result<()> {
+	fn analyze_interface_member(&mut self, interface_name: String, member: p::InterfaceMember) -> Result<()> {
 		macro_rules! try_insert {
 			($member:ident) => {
 				{
 					let mut interface: Interface = self
 						.scope
-						.get_symbol(&String::from("this"))?
+						.get_symbol(&interface_name)?
 						.try_into()?;
 
 					for member in interface.members.clone() {
@@ -903,7 +935,7 @@ impl SemanticAnalyzer {
 					interface.members.push($member);
 
 					self.scope.update_symbol(
-						String::from("this"),
+						interface_name,
 						Symbol::Interface(interface)
 					)?;
 				}
@@ -1018,7 +1050,7 @@ impl SemanticAnalyzer {
 			bail!("Generics are not yet supported");
 		}
 
-		if class.implements_interfaces.contains(&interface.unique_name()) {
+		if class.impls.contains(&interface.unique_name()) {
 			bail!(
 				"Conflicting implementations of interface `{}` for type `{}`",
 				interface.unique_name(),
@@ -1031,18 +1063,19 @@ impl SemanticAnalyzer {
 
 		self.scope = class_scope;
 		self.scope.insert_symbol(
-			String::from("ths"),
+			String::from("this"),
 			Symbol::Class(class.clone())
 		)?;
 
 		let mut new_members = vec![];
 
 		for member in members {
+			// Analyze and convert the impl member
 			let analyzed = self.analyze_interface_impl_member(&class, &interface, member)?;
 			new_members.push(analyzed);
 		}
 
-		class.implements_interfaces.push(interface.unique_name());
+		class.impls.push(interface.unique_name());
 		class.members = new_members;
 
 		self.scope = old_scope;
@@ -1097,10 +1130,13 @@ impl SemanticAnalyzer {
 			)
 		}
 
+		// Performing the conversion
 		Ok(match member {
 			p::ClassMember::Variable(variable) => {
+				// Unwrapping variable
 				let p::ClassVariable { modifiers, name, kind, default_value } = variable;
 				
+				// Checking modifiers
 				let m_const = modifiers.contains(&Constant);
 				let m_static = modifiers.contains(&Static);
 
@@ -1108,11 +1144,13 @@ impl SemanticAnalyzer {
 					bail!("`const` and `static` modifiers cannot be used together. Modifier `static` already implies `const`");
 				}
 
+				// Attempting to resolve the type from default value
 				let resolved_type = match default_value {
 					Some(ref default_value) => self.type_from_expression(default_value)?,
-					None => self.convert_type(&kind)?
+					None => self.convert_type_marker(&kind, class.name.clone())?
 				};
 
+				// Comparing the resolved type to the explicitly annotated one
 				let converted_type = self.convert_type(&kind)?;
 
 				if converted_type != resolved_type {
@@ -1123,6 +1161,7 @@ impl SemanticAnalyzer {
 					);
 				}
 
+				// Constructing a converted class member
 				let class_variable = hir::ClassVariable {
 					modifiers,
 
@@ -1181,26 +1220,30 @@ impl SemanticAnalyzer {
 				let arguments = arguments
 					.into_iter()
 					.map(|arg| {
+						// Unwrap the argument
 						let p::FunctionArgument { name, kind } = arg;
-						let kind = self.convert_type(&kind);
 
-						match kind {
-							Ok(kind) => Ok(hir::FunctionArgument { name, kind }),
-							Err(error) => Err(error)
-						}
+						// Convert the type
+						let kind = self.convert_type_marker(
+							&kind,
+							class.name.clone()
+						);
+
+						// Map to a function argument
+						kind.map(|kind| hir::FunctionArgument { name, kind })
 					})
 					.collect::<Result<Vec<_>>>()?;
 
-				// Converting return type
+				// Converting the return type
 				let return_type = match return_type {
-					Some(ref return_type) => self.convert_type(return_type)?,
+					Some(ref return_type) => self.convert_type_marker(return_type, class.name.clone())?,
 					// TODO: Default to return type of `void`
 					None => unimplemented!("implicit return type")
 				};
 
-				// Converting body
+				// Converting the body
 				let body = {
-					// Creating and assigning current scope to the function's inner scope
+					// Creating a separate scope for the function's body
 					let old_scope = self.scope.clone();
 					let mut child_scope = self.scope.new_child();
 
@@ -1266,10 +1309,39 @@ impl SemanticAnalyzer {
 
 				// Checking the function signature against the interface signature
 				{
-					let interface_function: InterfaceFunction =
+					#[inline]
+					fn is_this_marker(kind: &hir::TypeRef) -> bool {
+						(kind.0.name == *"this") || kind.0.impls.contains(&String::from("ThisMarker"))
+					}
+
+					let mut interface_function: InterfaceFunction =
 						interface_member
 							.try_into()
-							.expect("Interface member is guaranteed to be of type function here");
+							.unwrap_or_else(|_| unreachable!("Interface member is guaranteed to be of type function here"));
+
+					// Replacing `this` markers for the interface function
+					// with the according class type
+
+					// For argument types
+					let temp_arg_type_iter = interface_function
+						.clone()
+						.argument_types
+						.into_iter()
+						.enumerate();
+
+					for (index, mut kind) in temp_arg_type_iter {
+						if !is_this_marker(&kind) {
+							continue;
+						}
+
+						kind.0 = class.clone();
+						interface_function.argument_types[index] = kind;
+					}
+
+					// For return type
+					if is_this_marker(&interface_function.return_type) {
+						interface_function.return_type.0 = class.clone();
+					}
 					
 					// Checking argument types
 					let len_expected = interface_function.argument_types.len();

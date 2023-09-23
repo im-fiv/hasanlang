@@ -9,7 +9,7 @@ use indent::indent_all_by;
 pub struct Type {
 	pub name: String,
 	pub members: Vec<ClassMember>,
-	pub implements_interfaces: Vec<String>
+	pub impls: Vec<String>
 }
 
 impl Type {
@@ -48,7 +48,7 @@ impl HirDiagnostics for Type {
 			String::new()
 		};
 
-		let interfaces = self.implements_interfaces.join(", ");
+		let interfaces = self.impls.join(", ");
 
 		if interfaces.is_empty() && members.is_empty() {
 			return format!("type {name} end");
