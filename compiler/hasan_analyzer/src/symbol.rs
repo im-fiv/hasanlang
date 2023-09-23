@@ -18,6 +18,15 @@ pub enum Symbol {
 impl Symbol {
 	pub fn name(&self) -> String {
 		match self {
+			Self::Class(ref value) => value.name.to_owned(),
+			Self::Interface(ref value) => value.name.to_owned(),
+			Self::Variable(ref value) => value.name.to_owned(),
+			Self::Enum(ref value) => value.name.to_owned()
+		}
+	}
+
+	pub fn variant_name(&self) -> String {
+		match self {
 			Self::Class(_) => "Class",
 			Self::Interface(_) => "Interface",
 			Self::Variable(_) => "Variable",
@@ -79,7 +88,7 @@ macro_rules! impl_conv {
 					::anyhow::bail!(
 						"Failed to convert an enum variant `{}::{}` into `{}`",
 						stringify!($enum),
-						self.name(),
+						self.variant_name(),
 						stringify!($variant)
 					);
 				}

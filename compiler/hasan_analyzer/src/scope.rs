@@ -94,7 +94,7 @@ impl Scope {
 	/// Inserts a symbol into the symbol table. Panics if a symbol with the provided name already exists
 	pub fn insert_symbol(&mut self, name: String, symbol: Symbol) -> Result<()> {
 		if self.symbol_table.insert(name.clone(), symbol).is_some() {
-			bail!("Cannot overwrite symbol with name `{}`", name);
+			bail!("Cannot insert symbol with name `{}` because it already exists", name);
 		}
 
 		Ok(())
@@ -106,12 +106,12 @@ impl Scope {
 			return Ok(symbol.to_owned());
 		}
 
-		bail!("Symbol with name `{}` does not exist", name);
+		bail!("Cannot get symbol with name `{}` because it does not exist", name);
 	}
 
 	pub fn update_symbol(&mut self, name: String, symbol: Symbol) -> Result<()> {
 		if self.symbol_table.insert(name.clone(), symbol).is_none() {
-			bail!("Symbol with name `{}` does not exist", name);
+			bail!("Cannot update symbol with name `{}` because it does not exist", name);
 		}
 
 		Ok(())

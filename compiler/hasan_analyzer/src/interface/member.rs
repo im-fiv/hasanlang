@@ -23,6 +23,14 @@ impl InterfaceMember {
 			Self::AssocType(kind) => kind.name.to_owned()
 		}
 	}
+
+	pub fn variant_name(&self) -> String {
+		match self {
+			Self::Variable(_) => "Variable",
+			Self::Function(_) => "Function",
+			Self::AssocType(_) => "AssocType"
+		}.to_owned()
+	}
 }
 
 impl HirDiagnostics for InterfaceMember {
