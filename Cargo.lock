@@ -256,11 +256,9 @@ dependencies = [
  "anyhow",
  "hasan_hir",
  "hasan_intrinsics",
+ "hasan_macros",
  "hasan_parser",
  "indent",
- "paste",
- "strum",
- "strum_macros",
 ]
 
 [[package]]
@@ -296,6 +294,16 @@ version = "0.0.0"
 dependencies = [
  "strum",
  "strum_macros",
+]
+
+[[package]]
+name = "hasan_macros"
+version = "0.0.0"
+dependencies = [
+ "anyhow",
+ "proc-macro2",
+ "quote",
+ "syn",
 ]
 
 [[package]]
@@ -460,12 +468,6 @@ dependencies = [
  "smallvec",
  "windows-targets",
 ]
-
-[[package]]
-name = "paste"
-version = "1.0.14"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "de3145af08024dea9fa9914f381a17b8fc6034dfb00f3a84013f7ff43f29ed4c"
 
 [[package]]
 name = "pest"

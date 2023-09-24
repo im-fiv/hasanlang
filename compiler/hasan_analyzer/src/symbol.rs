@@ -1,12 +1,12 @@
 use crate::Interface;
+
+use hasan_macros::{VariantName, Conversion};
 use hasan_hir::{
 	HirDiagnostics, Class,
 	Variable, Enum
 };
 
-use strum_macros::Display;
-
-#[derive(Debug, Clone, Display)]
+#[derive(Debug, Clone, VariantName, Conversion)]
 pub enum Symbol {
 	// Note: Functions are considered classes that implement the according function interface
 	Class(Class),
@@ -24,15 +24,6 @@ impl Symbol {
 			Self::Enum(value) => value.name.to_owned()
 		}
 	}
-
-	pub fn variant_name(&self) -> String {
-		match self {
-			Self::Class(_) => "Class",
-			Self::Interface(_) => "Interface",
-			Self::Variable(_) => "Variable",
-			Self::Enum(_) => "Enum"
-		}.to_owned()
-	}
 }
 
 impl HirDiagnostics for Symbol {
@@ -45,66 +36,3 @@ impl HirDiagnostics for Symbol {
 		}
 	}
 }
-
-/// A macro to implement `is_$variant` and `TryInto<$variant>` for all enum variants
-macro_rules! impl_conv {
-	//* Note: for internal usage only
-	($variant:ident) => ($variant);
-	($variant:ident : $mapped:ty) => ($mapped);
-
-	($enum:ident {
-		$(
-			$variant:ident $(: $mapped:ty)?
-		),*
-	}) => {
-		::paste::paste! {
-			impl $enum {
-				$(
-					pub fn [<is_ $variant:lower>](&self) -> bool {
-						if let Self::$variant(_) = self {
-							return true;
-						}
-		
-						false
-					}
-				)*
-			}
-		}
-
-		$(
-			impl TryInto<
-				$crate::impl_conv!($variant $(: $mapped)?)
-			> for $enum {
-				type Error = ::anyhow::Error;
-
-				fn try_into(self) -> Result<
-					$crate::impl_conv!($variant $(: $mapped)?),
-					Self::Error
-				> {
-					if let Self::$variant(value) = self {
-						return Ok(value);
-					}
-
-					::anyhow::bail!(
-						"Failed to convert an enum variant `{}::{}` into `{}`",
-						stringify!($enum),
-						self.variant_name(),
-						stringify!($variant)
-					);
-				}
-			}
-		)*
-	};
-}
-
-impl_conv![
-	Symbol {
-		Class,
-		Interface,
-		Variable,
-		Enum
-	}
-];
-
-// Export the macro to be used elsewhere
-pub(crate) use impl_conv;

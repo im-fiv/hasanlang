@@ -152,10 +152,10 @@ impl SemanticAnalyzer {
 
 		macro_rules! def_builtin {
 			($name:ident, $variant:ident) => {
-				let $name: hir::Class = self
+				let $name = self
 					.scope
 					.get_symbol(&intr::IntrinsicType::$variant.to_string())?
-					.try_into()?;
+					.as_class()?;
 			};
 		}
 
@@ -197,7 +197,7 @@ impl SemanticAnalyzer {
 					bail!("Intrinsic interface `{}` is not an interface in the symbol table", intrinsic_interface.name());
 				}
 
-				let interface: Interface = interface.try_into()?;
+				let interface = interface.as_interface()?;
 
 				// TODO: Generic interface substitution
 
@@ -232,10 +232,10 @@ impl SemanticAnalyzer {
 					GreaterThanEqual | LessThanEqual => CmpEqOps
 				};
 
-				let interface: Interface = self
+				let interface = self
 					.scope
 					.get_symbol(&intrinsic_interface.name())?
-					.try_into()?;
+					.as_interface()?;
 
 				// TODO: Generic interface substitution
 
@@ -268,9 +268,9 @@ impl SemanticAnalyzer {
 			FunctionCall { callee, generics, arguments } => {
 				let callee_type = self.type_from_expression(callee)?;
 
-				let function_interface: Interface = self.scope.get_symbol(
+				let function_interface = self.scope.get_symbol(
 					&intr::IntrinsicInterface::Function.name()
-				)?.try_into()?;
+				)?.as_interface()?;
 
 				if !callee_type.0.impls.contains(&function_interface.unique_name()) || (callee_type.1 > 0) {
 					bail!(
@@ -392,7 +392,7 @@ impl SemanticAnalyzer {
 					Symbol::Class(class) => class.into(),
 					Symbol::Variable(variable) => variable.kind,
 
-					_ => bail!("Cannot use symbol of type `{}` as a value", symbol.to_string())
+					_ => bail!("Cannot use symbol of type `{}` as a value", symbol.variant_name())
 				})
 			},
 
@@ -424,7 +424,7 @@ impl SemanticAnalyzer {
 					bail!("Symbol `{}` is not a type", kind.name);
 				}
 
-				let class: hir::Class = symbol.try_into()?;
+				let class = symbol.as_class()?;
 
 				Ok(hir::TypeRef(class, dimensions))
 			},
@@ -921,10 +921,10 @@ impl SemanticAnalyzer {
 		macro_rules! try_insert {
 			($member:ident) => {
 				{
-					let mut interface: Interface = self
+					let mut interface = self
 						.scope
 						.get_symbol(&interface_name)?
-						.try_into()?;
+						.as_interface()?;
 
 					for member in interface.members.clone() {
 						if member.name() == $member.name() {
@@ -1032,7 +1032,7 @@ impl SemanticAnalyzer {
 	) -> Result<hir::Statement> {
 		let interface = match self.scope.get_symbol(&interface_name)? {
 			Symbol::Interface(interface) => interface,
-			symbol => bail!("Expected a symbol of type `Interface`, got `{}`", symbol.to_string())
+			symbol => bail!("Expected a symbol of type `Interface`, got `{}`", symbol.variant_name())
 		};
 
 		// TODO: Generics
@@ -1042,7 +1042,7 @@ impl SemanticAnalyzer {
 
 		let mut class = match self.scope.get_symbol(&class_name)? {
 			Symbol::Class(class) => class,
-			symbol => bail!("Expected a symbol of type `Class`, got `{}`", symbol.to_string())
+			symbol => bail!("Expected a symbol of type `Class`, got `{}`", symbol.variant_name())
 		};
 
 		// TODO: Generics
@@ -1125,7 +1125,7 @@ impl SemanticAnalyzer {
 			_ => bail!(
 				"Mismatched implementation signature for member `{}`. Expected `{}`, got `{}`",
 				interface_member.name(),
-				interface_member.to_string(),
+				interface_member.variant_name(),
 				member.to_string()
 			)
 		}
@@ -1314,9 +1314,9 @@ impl SemanticAnalyzer {
 						(kind.0.name == *"this") || kind.0.impls.contains(&String::from("ThisMarker"))
 					}
 
-					let mut interface_function: InterfaceFunction =
+					let mut interface_function =
 						interface_member
-							.try_into()
+							.as_function()
 							.unwrap_or_else(|_| unreachable!("Interface member is guaranteed to be of type function here"));
 
 					// Replacing `this` markers for the interface function

@@ -1,14 +1,13 @@
-use hasan_hir::HirDiagnostics;
-use crate::impl_conv;
 use super::{
 	InterfaceVariable,
 	InterfaceFunction,
 	InterfaceAssocType
 };
 
-use strum_macros::Display;
+use hasan_hir::HirDiagnostics;
+use hasan_macros::{VariantName, Conversion};
 
-#[derive(Debug, Clone, Display)]
+#[derive(Debug, Clone, VariantName, Conversion)]
 pub enum InterfaceMember {
 	Variable(InterfaceVariable),
 	Function(InterfaceFunction),
@@ -23,14 +22,6 @@ impl InterfaceMember {
 			Self::AssocType(kind) => kind.name.to_owned()
 		}
 	}
-
-	pub fn variant_name(&self) -> String {
-		match self {
-			Self::Variable(_) => "Variable",
-			Self::Function(_) => "Function",
-			Self::AssocType(_) => "AssocType"
-		}.to_owned()
-	}
 }
 
 impl HirDiagnostics for InterfaceMember {
@@ -42,9 +33,3 @@ impl HirDiagnostics for InterfaceMember {
 		}
 	}
 }
-
-impl_conv!(InterfaceMember {
-	Variable: InterfaceVariable,
-	Function: InterfaceFunction,
-	AssocType: InterfaceAssocType
-});
