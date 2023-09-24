@@ -18,10 +18,10 @@ pub enum Symbol {
 impl Symbol {
 	pub fn name(&self) -> String {
 		match self {
-			Self::Class(ref value) => value.name.to_owned(),
-			Self::Interface(ref value) => value.name.to_owned(),
-			Self::Variable(ref value) => value.name.to_owned(),
-			Self::Enum(ref value) => value.name.to_owned()
+			Self::Class(value) => value.name.to_owned(),
+			Self::Interface(value) => value.name.to_owned(),
+			Self::Variable(value) => value.name.to_owned(),
+			Self::Enum(value) => value.name.to_owned()
 		}
 	}
 
