@@ -92,7 +92,7 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 					})?;
 				},
 				
-				_ => panic!("Encountered unknown statement `{}`", statement)
+				_ => panic!("Encountered unknown statement `{}`", statement.variant_name())
 			};
 		}
 		

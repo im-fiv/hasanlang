@@ -1,11 +1,11 @@
 use crate::{Function, Class, Variable, Enum, If, While, For, ModuleInfo, HirCodegen};
 
 use hasan_parser::{HasanCodegen, vec_transform_str, NUM_SPACES};
+use hasan_macros::VariantName;
 
-use strum_macros::Display;
 use indent::indent_all_by;
 
-#[derive(Debug, Clone, PartialEq, Display)]
+#[derive(Debug, Clone, PartialEq, VariantName)]
 pub enum Statement {
 	FunctionDefinition(Function),
 	FunctionDeclaration(Function),

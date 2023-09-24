@@ -266,15 +266,13 @@ name = "hasan_compiler"
 version = "0.0.0"
 dependencies = [
  "anyhow",
- "hasan_analyzer",
  "hasan_hir",
+ "hasan_macros",
  "hasan_parser",
  "hasan_pest_parser",
  "inkwell",
  "pest",
  "rand",
- "strum",
- "strum_macros",
 ]
 
 [[package]]
@@ -282,17 +280,15 @@ name = "hasan_hir"
 version = "0.0.0"
 dependencies = [
  "anyhow",
+ "hasan_macros",
  "hasan_parser",
  "indent",
- "strum",
- "strum_macros",
 ]
 
 [[package]]
 name = "hasan_intrinsics"
 version = "0.0.0"
 dependencies = [
- "strum",
  "strum_macros",
 ]
 
@@ -301,6 +297,7 @@ name = "hasan_macros"
 version = "0.0.0"
 dependencies = [
  "anyhow",
+ "paste",
  "proc-macro2",
  "quote",
  "syn",
@@ -314,7 +311,6 @@ dependencies = [
  "hasan_pest_parser",
  "indent",
  "pest",
- "strum",
  "strum_macros",
 ]
 
@@ -468,6 +464,12 @@ dependencies = [
  "smallvec",
  "windows-targets",
 ]
+
+[[package]]
+name = "paste"
+version = "1.0.14"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "de3145af08024dea9fa9914f381a17b8fc6034dfb00f3a84013f7ff43f29ed4c"
 
 [[package]]
 name = "pest"
@@ -646,12 +648,6 @@ name = "strsim"
 version = "0.10.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "73473c0e59e6d5812c5dfe2a064a6444949f089e20eec9a2e5506596494e4623"
-
-[[package]]
-name = "strum"
-version = "0.25.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "290d54ea6f91c969195bdbcd7442c8c2a2ba87da8bf60a7ee86a235d4bc1e125"
 
 [[package]]
 name = "strum_macros"

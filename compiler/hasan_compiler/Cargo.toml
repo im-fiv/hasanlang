@@ -8,11 +8,9 @@ edition = "2021"
 [dependencies]
 hasan_pest_parser = { path = "../hasan_pest_parser" }
 hasan_parser = { path = "../hasan_parser" }
-hasan_analyzer = { path = "../hasan_analyzer" }
 hasan_hir = { path = "../hasan_hir" }
+hasan_macros = { path = "../hasan_macros" }
 inkwell = { git = "https://github.com/TheDan64/inkwell", branch = "master", features = ["llvm15-0"] }
 pest = "2.7.0"
 rand = "0.8.5"
 anyhow = "1.0.72"
-strum = "0.25.0"
-strum_macros = "0.25.1"

@@ -1,12 +1,12 @@
 use inkwell::values::{IntValue, FloatValue, GlobalValue, PointerValue, BasicValue, BasicValueEnum, FunctionValue, AnyValueEnum, AnyValue};
 use inkwell::builder::Builder;
 
-use strum_macros::Display;
 use anyhow::{Result, bail};
 
 use hasan_parser as p;
+use hasan_macros::VariantName;
 
-#[derive(Debug, Clone, Display)]
+#[derive(Debug, Clone, VariantName)]
 pub enum ExpressionValue<'ctx> {
 	Int(IntValue<'ctx>),
 	Float(FloatValue<'ctx>),
@@ -46,7 +46,7 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 			Self::Boolean(value) => v!(value),
 			Self::Pointer(value) => v!(value),
 
-			_ => bail!("Cannot unwrap LLVM value of type `{}` as a basic value", self.to_string())
+			_ => bail!("Cannot unwrap LLVM value of type `{}` as a basic value", self.variant_name())
 		}
 	}
 
@@ -76,7 +76,7 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 			Self::Int(value) => Ok(Self::Int(value.const_neg())),
 			Self::Float(value) => Ok(Self::Float(value.const_neg())),
 
-			_ => bail!("Cannot perform unary operation `{}` on a value of type `{}`", "-", self.to_string())
+			_ => bail!("Cannot perform unary operation `{}` on a value of type `{}`", "-", self.variant_name())
 		}
 	}
 
@@ -85,7 +85,7 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 	pub fn apply_unary_not(&self) -> Result<Self> {
 		match self {
 			Self::Boolean(value) => Ok(Self::Boolean(value.const_not())),
-			_ => bail!("Cannot perform unary operation `{}` on a value of type `{}`", "not", self.to_string())
+			_ => bail!("Cannot perform unary operation `{}` on a value of type `{}`", "not", self.variant_name())
 		}
 	}
 

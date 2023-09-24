@@ -2,11 +2,12 @@ use inkwell::types::BasicTypeEnum;
 use inkwell::context::Context;
 use inkwell::AddressSpace;
 
-use strum_macros::Display;
+use hasan_macros::VariantName;
+
 use anyhow::bail;
 
 /// An enum containing all of the built-in types (typically types that have their default behavior explicitly defined by the compiler)
-#[derive(Debug, Clone, Display)]
+#[derive(Debug, Clone, VariantName)]
 pub enum IntrinsicType {
 	Int,
 	Float,

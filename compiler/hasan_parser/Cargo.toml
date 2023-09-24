@@ -9,6 +9,5 @@ edition = "2021"
 hasan_pest_parser = { path = "../hasan_pest_parser" }
 clap = { version = "4.3.19", features = ["derive"] }
 pest = "2.7.0"
-strum = "0.25.0"
 strum_macros = "0.25.1"
 indent = "0.1.1"
