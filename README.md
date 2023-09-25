@@ -5,7 +5,7 @@
 ![Lines of Code](https://raw.githubusercontent.com/greenbush5/hasanlang/image-data/badge.svg)
 [![Hits-of-Code](https://hitsofcode.com/github/greenbush5/hasanlang?branch=main)](https://hitsofcode.com/github/greenbush5/hasanlang/view?branch=main)
 
-Hasanlang is a work-in-progress programming language, made for fun, that aims to be self-hosted. The goal of this project is to extend my knowledge about compilers, programming languages, and how they are made. Currently, this is my primary project.
+Hasanlang is a work-in-progress programming language, made for fun, that aims to be self-hosted. The goal of this project is to extend my knowledge about compilers, programming languages, and how they are created. Currently, this is my primary project.
 
 ## Project Status
 This project is in the early stages. The language specifications, parser, and basic compiler are under active development. Plans to become self-hosted are underway. I'm not certain whether I will have the will to finish this, but as it seems, the likelihood of giving up is relatively low.
@@ -42,7 +42,7 @@ Here are ways you can contribute:
 - by writing code and submitting pull requests
 
 ## Bugs
-As I said before, this is my first time making a project as complex as this, so my code is particularly prone to errors. Due to the complexity of this project, your help in finding and/or fixing bugs would significantly contribute to its advancement. With your help, this entire project may become possible to complete!
+As I said before, this is my first time making a project as complex as this one, so my code is particularly prone to errors. Due to the sheer complexity of this project, your help in finding and/or fixing bugs would significantly contribute to its advancement. With your help, this entire project may become possible to complete!
 
 ## License
 Hasanlang is [MIT licensed](https://en.wikipedia.org/wiki/MIT_License).
