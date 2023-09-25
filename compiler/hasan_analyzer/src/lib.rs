@@ -16,9 +16,7 @@ use hasan_intrinsics as intr;
 
 use hir::HirCodegen;
 
-// TODO: The design of type references is flawed:
-// the updates are not properly propagated when
-// the type has been updated.
+// TODO: See issue #9 <https://github.com/greenbush5/hasanlang/issues/9>
 
 fn function_into_type(function: hir::Function) -> hir::Type {
 	let inner_function = {

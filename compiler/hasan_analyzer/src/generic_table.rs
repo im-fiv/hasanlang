@@ -15,12 +15,13 @@ impl GenericTable {
 	}
 }
 
+// TODO: See issue #8 <https://github.com/greenbush5/hasanlang/issues/8>
+
 #[derive(Debug, Clone, Default)]
 pub struct GenericData;
 
 impl HirDiagnostics for GenericData {
 	fn info_string(&self) -> String {
-		// TODO
 		String::from("UNIMPLEMENTED")
 	}
 }

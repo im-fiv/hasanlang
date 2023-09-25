@@ -42,6 +42,8 @@ pub fn conversion(item: pm::TokenStream) -> pm::TokenStream {
 	let item = parse_macro_input!(item as DeriveInput);
 	let enum_name = item.ident;
 
+	// TODO: See issue #6 <https://github.com/greenbush5/hasanlang/issues/6>
+
 	// Unwrapping enum data
 	let data = match item.data {
 		syn::Data::Enum(enum_data) => enum_data,
@@ -58,7 +60,7 @@ pub fn conversion(item: pm::TokenStream) -> pm::TokenStream {
 		Err(err) => return err.to_compile_error().into()
 	};
 
-	// TODO
+	// TODO: See issue #7 <https://github.com/greenbush5/hasanlang/issues/7>
 	if !attributes.anyhow_results {
 		unimplemented!("std results are not yet supported");
 	}
@@ -120,7 +122,8 @@ pub fn conversion(item: pm::TokenStream) -> pm::TokenStream {
 
 			let conv_return_type = match attributes.anyhow_results {
 				true => quote! { ::anyhow::Result<#variant_fields> },
-				false => unimplemented!() // TODO
+				// TODO: See issue #7 <https://github.com/greenbush5/hasanlang/issues/7>
+				false => unimplemented!()
 			};
 
 			let error_call = match attributes.anyhow_results {
@@ -134,7 +137,8 @@ pub fn conversion(item: pm::TokenStream) -> pm::TokenStream {
 					)
 				},
 
-				false => unimplemented!() // TODO
+				// TODO: See issue #7 <https://github.com/greenbush5/hasanlang/issues/7>
+				false => unimplemented!()
 			};
 
 			let expanded_variant = quote! {
