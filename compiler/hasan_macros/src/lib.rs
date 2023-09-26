@@ -42,7 +42,12 @@ pub fn conversion(item: pm::TokenStream) -> pm::TokenStream {
 	let item = parse_macro_input!(item as DeriveInput);
 	let enum_name = item.ident;
 
-	// TODO: See issue #6 <https://github.com/greenbush5/hasanlang/issues/6>
+	// Getting generics data
+	let (
+		impl_generics,
+		type_generics,
+		where_clause
+	) = item.generics.split_for_impl();
 
 	// Unwrapping enum data
 	let data = match item.data {
@@ -65,108 +70,130 @@ pub fn conversion(item: pm::TokenStream) -> pm::TokenStream {
 		unimplemented!("std results are not yet supported");
 	}
 
-	let expanded = {
-		let mut expanded_variants = pm2::TokenStream::new();
+	let mut expanded_variants = vec![];
 
-		for variant in data.variants {
-			let variant_name = variant.clone().ident;
+	for variant in data.variants {
+		let variant_name = variant.clone().ident;
 
-			// Only allow unnamed fields
-			match variant.fields.clone() {
-				syn::Fields::Unnamed(unnamed_fields) => unnamed_fields,
-				_ => panic!("Derive of this macro is only allowed for enums with variants containing unnamed fields")
-			};
+		// Only allow unnamed fields
+		match variant.fields.clone() {
+			syn::Fields::Unnamed(unnamed_fields) => unnamed_fields,
+			_ => panic!("Derive of this macro is only allowed for enums with variants containing unnamed fields")
+		};
 
-			let variant_fields = match variant.fields.len() {
-				0 => panic!("Enum field `{}` must contain at least one unnamed field", variant_name),
+		let fields_len = variant.fields.len();
 
-				1 => {
-					let temp_type = variant
-						.fields
-						.clone()
-						.iter()
-						.next()
-						.unwrap()
-						.ty
-						.clone();
+		let variant_fields = match fields_len {
+			0 => return syn::Error::new_spanned(
+				variant,
+				"Variant must contain at least one unnamed field"
+			).to_compile_error().into(),
 
-					quote!(#temp_type)
-				},
+			1 => {
+				let temp_type = variant
+					.fields
+					.clone()
+					.iter()
+					.next()
+					.unwrap()
+					.ty
+					.clone();
 
-				_ => {
-					let mut expanded_fields = pm2::TokenStream::new();
+				quote!(#temp_type)
+			},
 
-					for field in variant.fields {
-						let field_type = field.ty;
-						expanded_fields.extend(quote!(#field_type));
-					}
+			_ => {
+				let mut field_types = vec![];
 
-					expanded_fields
+				for field in variant.fields {
+					field_types.push(field.ty);
 				}
-			};
 
-			let name_is = pm2::Ident::new(
-				&format!("is_{}", variant_name.to_string().to_lowercase()),
-				pm2::Span::call_site()
-			);
-
-			let name_as = pm2::Ident::new(
-				&format!("as_{}", variant_name.to_string().to_lowercase()),
-				pm2::Span::call_site()
-			);
-
-			let _crate_path = pm2::Ident::new(
-				std::module_path!(),
-				pm2::Span::call_site()
-			);
-
-			let conv_return_type = match attributes.anyhow_results {
-				true => quote! { ::anyhow::Result<#variant_fields> },
-				// TODO: See issue #7 <https://github.com/greenbush5/hasanlang/issues/7>
-				false => unimplemented!()
-			};
-
-			let error_call = match attributes.anyhow_results {
-				true => quote! {
-					::anyhow::bail!(
-						"Cannot convert variant `{}` of enum `{}` into `{}`",
-
-						self.variant_name(),
-						stringify!(#enum_name),
-						stringify!(#variant_name)
-					)
-				},
-
-				// TODO: See issue #7 <https://github.com/greenbush5/hasanlang/issues/7>
-				false => unimplemented!()
-			};
-
-			let expanded_variant = quote! {
-				impl #enum_name {
-					pub fn #name_is(&self) -> bool {
-						if let Self::#variant_name(_) = self {
-							return true;
-						}
-
-						false
-					}
-
-					pub fn #name_as(self) -> #conv_return_type {
-						if let Self::#variant_name(value) = self {
-							return ::std::result::Result::Ok(value);
-						}
-
-						#error_call
-					}
+				quote! {
+					( #(#field_types),* )
 				}
+			}
+		};
+
+		let name_is = pm2::Ident::new(
+			&format!("is_{}", variant_name.to_string().to_lowercase()),
+			pm2::Span::call_site()
+		);
+
+		let name_as = pm2::Ident::new(
+			&format!("as_{}", variant_name.to_string().to_lowercase()),
+			pm2::Span::call_site()
+		);
+
+		let _crate_path = pm2::Ident::new(
+			std::module_path!(),
+			pm2::Span::call_site()
+		);
+
+		let conv_return_type = match attributes.anyhow_results {
+			true => quote! { ::anyhow::Result<#variant_fields> },
+			// TODO: See issue #7 <https://github.com/greenbush5/hasanlang/issues/7>
+			false => unimplemented!()
+		};
+
+		let error_call = match attributes.anyhow_results {
+			true => quote! {
+				::anyhow::bail!(
+					"Cannot convert variant `{}` of enum `{}` into `{}`",
+
+					self.variant_name(),
+					stringify!(#enum_name),
+					stringify!(#variant_name)
+				)
+			},
+
+			// TODO: See issue #7 <https://github.com/greenbush5/hasanlang/issues/7>
+			false => unimplemented!()
+		};
+
+		let (destructure_suffix, ok_value) = if fields_len == 1 {
+			(quote! { (value) }, quote! { value })
+		} else {
+			let mut value_names = vec![];
+
+			for index in 0..fields_len {
+				value_names.push(pm2::Ident::new(
+					&format!("value{}", index),
+					pm2::Span::call_site()
+				));
+			}
+
+			let expanded = quote! {
+				(#(#value_names),*)
 			};
 
-			expanded_variants.extend(expanded_variant);
-		}
+			(expanded.clone(), expanded)
+		};
 
-		expanded_variants
-	};
+		let expanded_variant = quote! {
+			impl #impl_generics #enum_name #type_generics #where_clause {
+				pub fn #name_is(&self) -> bool {
+					if let Self::#variant_name(..) = self {
+						return true;
+					}
 
+					false
+				}
+
+				pub fn #name_as(self) -> #conv_return_type {
+					if let Self::#variant_name #destructure_suffix = self {
+						return ::std::result::Result::Ok(#ok_value);
+					}
+
+					#error_call
+				}
+			}
+		};
+
+		expanded_variants.push(expanded_variant);
+	}
+
+	let expanded = quote! { #(#expanded_variants)* };
 	expanded.into()
 }
 
