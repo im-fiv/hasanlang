@@ -37,3 +37,17 @@ fn tuple_enum() {
 	let a = TupleEnum::A(5, 3.14, true);
 	assert_eq!(a.as_a().unwrap(), (5, 3.14, true));
 }
+
+#[test]
+fn std_results() {
+	#[derive(VariantName, Conversion)]
+	#[conversion(anyhow_results = false)]
+	#[allow(dead_code)]
+	enum TestEnum {
+		Integer(i32),
+		Float(f32)
+	}
+
+	let a = TestEnum::Integer(5);
+	assert_eq!(a.as_float().is_err(), true);
+}

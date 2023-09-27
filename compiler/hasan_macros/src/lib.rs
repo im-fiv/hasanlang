@@ -65,11 +65,6 @@ pub fn conversion(item: pm::TokenStream) -> pm::TokenStream {
 		Err(err) => return err.to_compile_error().into()
 	};
 
-	// TODO: See issue #7 <https://github.com/greenbush5/hasanlang/issues/7>
-	if !attributes.anyhow_results {
-		unimplemented!("std results are not yet supported");
-	}
-
 	let mut expanded_variants = vec![];
 
 	for variant in data.variants {
@@ -132,23 +127,26 @@ pub fn conversion(item: pm::TokenStream) -> pm::TokenStream {
 
 		let conv_return_type = match attributes.anyhow_results {
 			true => quote! { ::anyhow::Result<#variant_fields> },
-			// TODO: See issue #7 <https://github.com/greenbush5/hasanlang/issues/7>
-			false => unimplemented!()
+			false => quote! { ::std::result::Result<#variant_fields, String> }
 		};
 
-		let error_call = match attributes.anyhow_results {
-			true => quote! {
-				::anyhow::bail!(
-					"Cannot convert variant `{}` of enum `{}` into `{}`",
+		let error_call = {
+			let error_call_args = quote! {
+				"Cannot convert variant `{}` of enum `{}` into variant `{}`",
+				self.variant_name(),
+				stringify!(#enum_name),
+				stringify!(#variant_name)
+			};
 
-					self.variant_name(),
-					stringify!(#enum_name),
-					stringify!(#variant_name)
-				)
-			},
-
-			// TODO: See issue #7 <https://github.com/greenbush5/hasanlang/issues/7>
-			false => unimplemented!()
+			match attributes.anyhow_results {
+				true => quote! {
+					::anyhow::bail!(#error_call_args)
+				},
+	
+				false => quote! {
+					::std::result::Result::Err(format!(#error_call_args))
+				}
+			}
 		};
 
 		let (destructure_suffix, ok_value) = if fields_len == 1 {
