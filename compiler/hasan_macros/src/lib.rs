@@ -8,6 +8,21 @@ use proc_macro2 as pm2;
 use quote::quote;
 use syn::{parse_macro_input, DeriveInput};
 
+/// Unwraps the enum data of a given item data if item is an enum
+fn get_enum_data(item_data: syn::Data) -> syn::Result<syn::DataEnum> {
+	let enum_data = match item_data {
+		syn::Data::Enum(enum_data) => enum_data,
+
+		// If item is not an enum, throw an error
+		_ => return Err(syn::Error::new(
+			pm2::Span::call_site(),
+			"Derive of this macro is only allowed for enums"
+		))
+	};
+
+	Ok(enum_data)
+}
+
 /// Implements methods such as `.is_$variant()` and `.as_$variant()`
 /// for all variants of a given enum. **Only compatible with enums**
 /// 
@@ -42,159 +57,36 @@ pub fn conversion(item: pm::TokenStream) -> pm::TokenStream {
 	let item = parse_macro_input!(item as DeriveInput);
 	let enum_name = item.ident;
 
-	// Getting generics data
-	let (
-		impl_generics,
-		type_generics,
-		where_clause
-	) = item.generics.split_for_impl();
-
 	// Unwrapping enum data
-	let data = match item.data {
-		syn::Data::Enum(enum_data) => enum_data,
-
-		// If item is not an enum, throw an error
-		_ => return syn::Error::new(
-			pm2::Span::call_site(),
-			"Derive of this macro is only allowed for enums"
-		).to_compile_error().into()
+	let data = match get_enum_data(item.data) {
+		Ok(data) => data,
+		Err(err) => return err.to_compile_error().into()
 	};
 
+	// Parsing attributes
 	let attributes = match conversion_inner::parse_attributes(item.attrs) {
 		Ok(attrs) => attrs,
 		Err(err) => return err.to_compile_error().into()
 	};
 
+	// Expanding variants
 	let mut expanded_variants = vec![];
 
 	for variant in data.variants {
-		let variant_name = variant.clone().ident;
-
-		// Only allow unnamed fields
-		match variant.fields.clone() {
-			syn::Fields::Unnamed(unnamed_fields) => unnamed_fields,
-
-			_ => return syn::Error::new_spanned(
-				variant.fields,
-				"Derive of this macro is only allowed for enums with variants containing unnamed fields"
-			).to_compile_error().into()
-		};
-
-		let fields_len = variant.fields.len();
-
-		let variant_fields = match fields_len {
-			0 => return syn::Error::new_spanned(
-				variant,
-				"Variant must contain at least one unnamed field"
-			).to_compile_error().into(),
-
-			1 => {
-				let temp_type = variant
-					.fields
-					.clone()
-					.iter()
-					.next()
-					.unwrap()
-					.ty
-					.clone();
-
-				quote!(#temp_type)
-			},
-
-			_ => {
-				let mut field_types = vec![];
-
-				for field in variant.fields {
-					field_types.push(field.ty);
-				}
-
-				quote! {
-					( #(#field_types),* )
-				}
-			}
-		};
-
-		let name_is = pm2::Ident::new(
-			&format!("is_{}", variant_name.to_string().to_lowercase()),
-			pm2::Span::call_site()
+		let expanded = conversion_inner::expand_variant(
+			variant,
+			&enum_name,
+			&item.generics,
+			attributes
 		);
 
-		let name_as = pm2::Ident::new(
-			&format!("as_{}", variant_name.to_string().to_lowercase()),
-			pm2::Span::call_site()
-		);
-
-		let _crate_path = pm2::Ident::new(
-			std::module_path!(),
-			pm2::Span::call_site()
-		);
-
-		let conv_return_type = match attributes.anyhow_results {
-			true => quote! { ::anyhow::Result<#variant_fields> },
-			false => quote! { ::std::result::Result<#variant_fields, String> }
-		};
-
-		let error_call = {
-			let error_call_args = quote! {
-				"Cannot convert variant `{}` of enum `{}` into variant `{}`",
-				self.variant_name(),
-				stringify!(#enum_name),
-				stringify!(#variant_name)
-			};
-
-			match attributes.anyhow_results {
-				true => quote! {
-					::anyhow::bail!(#error_call_args)
-				},
-	
-				false => quote! {
-					::std::result::Result::Err(format!(#error_call_args))
-				}
-			}
-		};
-
-		let (destructure_suffix, ok_value) = if fields_len == 1 {
-			(quote! { (value) }, quote! { value })
-		} else {
-			let mut value_names = vec![];
-
-			for index in 0..fields_len {
-				value_names.push(pm2::Ident::new(
-					&format!("value{}", index),
-					pm2::Span::call_site()
-				));
-			}
-
-			let expanded = quote! {
-				(#(#value_names),*)
-			};
-
-			(expanded.clone(), expanded)
-		};
-
-		let expanded_variant = quote! {
-			impl #impl_generics #enum_name #type_generics #where_clause {
-				pub fn #name_is(&self) -> bool {
-					if let Self::#variant_name(..) = self {
-						return true;
-					}
-
-					false
-				}
-
-				pub fn #name_as(self) -> #conv_return_type {
-					if let Self::#variant_name #destructure_suffix = self {
-						return ::std::result::Result::Ok(#ok_value);
-					}
-
-					#error_call
-				}
-			}
-		};
-
-		expanded_variants.push(expanded_variant);
+		expanded_variants.push(match expanded {
+			Ok(expanded) => expanded,
+			Err(err) => return err.to_compile_error().into()
+		});
 	}
 
+	// Concatenating and returning
 	let expanded = quote! { #(#expanded_variants)* };
 	expanded.into()
 }
@@ -230,14 +122,9 @@ pub fn variant_name(item: pm::TokenStream) -> pm::TokenStream {
 	) = item.generics.split_for_impl();
 
 	// Unwrapping enum data
-	let data = match item.data {
-		syn::Data::Enum(enum_data) => enum_data,
-
-		// If item is not an enum, throw an error
-		_ => return syn::Error::new(
-			pm2::Span::call_site(),
-			"Derive of this macro is only allowed for enums"
-		).to_compile_error().into()
+	let data = match get_enum_data(item.data) {
+		Ok(data) => data,
+		Err(err) => return err.to_compile_error().into()
 	};
 
 	// If the enum is empty, throw an error
@@ -271,9 +158,7 @@ pub fn variant_name(item: pm::TokenStream) -> pm::TokenStream {
 		impl #impl_generics #enum_name #type_generics #where_clause {
 			pub fn variant_name(&self) -> String {
 				match self {
-					#(
-						#match_arms
-					),*
+					#(#match_arms),*
 				}.to_owned()
 			}
 		}
