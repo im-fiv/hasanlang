@@ -73,7 +73,11 @@ pub fn conversion(item: pm::TokenStream) -> pm::TokenStream {
 		// Only allow unnamed fields
 		match variant.fields.clone() {
 			syn::Fields::Unnamed(unnamed_fields) => unnamed_fields,
-			_ => panic!("Derive of this macro is only allowed for enums with variants containing unnamed fields")
+
+			_ => return syn::Error::new_spanned(
+				variant.fields,
+				"Derive of this macro is only allowed for enums with variants containing unnamed fields"
+			).to_compile_error().into()
 		};
 
 		let fields_len = variant.fields.len();
