@@ -264,7 +264,7 @@ pub(crate) fn expand_variant(
 
 	let (fn_name_is, fn_name_as) = format_fn_names(&variant_name);
 
-	let error_call = expand_error_call(&attributes, &enum_name, &variant_name);
+	let error_call = expand_error_call(&attributes, enum_name, &variant_name);
 
 	let conversion_return_type = expand_conversion_result_type(&fields_type, &attributes);
 
