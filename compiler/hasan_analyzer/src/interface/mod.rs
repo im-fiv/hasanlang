@@ -48,7 +48,7 @@ impl HirDiagnostics for Interface {
 		let base = format!("interface {name}:\n{members}");
 
 		match self.intrinsic {
-			Some(intrinsic) => format!("intrinsic({intrinsic}) {base}"),
+			Some(intrinsic) => format!("intrinsic({}) {base}", intrinsic.name()),
 			None => base
 		}
 	}

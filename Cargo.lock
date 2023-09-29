@@ -289,6 +289,7 @@ dependencies = [
 name = "hasan_intrinsics"
 version = "0.0.0"
 dependencies = [
+ "hasan_macros",
  "strum_macros",
 ]
 

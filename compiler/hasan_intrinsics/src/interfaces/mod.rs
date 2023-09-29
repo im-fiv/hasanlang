@@ -1,9 +1,9 @@
 mod members;
 pub use members::*;
 
-use strum_macros::Display;
+use hasan_macros::VariantName;
 
-#[derive(Debug, Clone, Copy, PartialEq, Display)]
+#[derive(Debug, Clone, Copy, PartialEq, VariantName)]
 pub enum IntrinsicInterface {
 	/// `+` operator
 	AddOp,
@@ -44,6 +44,6 @@ pub enum IntrinsicInterface {
 
 impl IntrinsicInterface {
 	pub fn name(&self) -> String {
-		self.to_string()
+		self.variant_name()
 	}
 }
