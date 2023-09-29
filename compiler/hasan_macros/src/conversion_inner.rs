@@ -169,7 +169,7 @@ fn expand_fields_type(fields: &FieldsUnnamed, fields_len: usize) -> Result<Token
 	})
 }
 
-/// Formats `$variant_name` into `(is_$variant_name, as_$variant_name)`
+/// Formats `$variant_name` into (`is_$variant_name`, `as_$variant_name`)
 fn format_fn_names(variant_name: &Ident) -> (Ident, Ident) {
 	let name_is = Ident::new(
 		&format!("is_{}", variant_name.to_string().to_lowercase()),
@@ -236,7 +236,7 @@ fn expand_ok_value_pattern(fields_len: usize) -> TokenStream {
 	if fields_len == 1 {
 		quote! { value }
 	} else {
-		// Same token stream output as in the function below
+		// Same token stream output as in the function call below
 		expand_destructure_pattern(fields_len)
 	}
 }
