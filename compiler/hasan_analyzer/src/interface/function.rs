@@ -1,12 +1,12 @@
-use hasan_hir::{TypeRef, HirDiagnostics};
+use hasan_hir::{DimType, HirDiagnostics};
 use hasan_parser::{vec_transform_str, GeneralModifiers};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct InterfaceFunction {
 	pub modifiers: GeneralModifiers,
 	pub name: String,
-	pub argument_types: Vec<TypeRef>,
-	pub return_type: TypeRef
+	pub argument_types: Vec<DimType>,
+	pub return_type: DimType
 }
 
 impl HirDiagnostics for InterfaceFunction {

@@ -1,4 +1,4 @@
-use crate::{TypeRef, HirCodegen, HirDiagnostics, ClassMember};
+use crate::{DimType, HirCodegen, HirDiagnostics, ClassMember};
 use hasan_parser::{HasanCodegen, GeneralModifiers};
 
 use anyhow::bail;
@@ -7,7 +7,7 @@ use anyhow::bail;
 pub struct ClassVariable {
 	pub modifiers: GeneralModifiers,
 	pub name: String,
-	pub kind: TypeRef,
+	pub kind: DimType,
 	pub default_value: Option<hasan_parser::Expression>
 }
 

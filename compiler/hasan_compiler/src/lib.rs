@@ -182,9 +182,9 @@ impl<'a, 'ctx> Compiler<'a, 'ctx> {
 	}
 	
 	/// Resolves a parser type into a LLVM type
-	pub fn compile_type(&self, kind: &hir::TypeRef) -> Result<Option<BasicTypeEnum<'ctx>>> {
+	pub fn compile_type(&self, kind: &hir::DimType) -> Result<Option<BasicTypeEnum<'ctx>>> {
 		// TODO: Allow for resolving non-built-in types
-		let hir::TypeRef(kind, _dimensions) = kind;
+		let hir::DimType(kind, _dimensions) = kind;
 		
 		let resolved_type = IntrinsicType::try_from(kind.name.as_str())?
 			.as_llvm_type(self.context);

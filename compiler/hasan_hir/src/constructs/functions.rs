@@ -1,6 +1,6 @@
 use hasan_parser::{vec_transform_str, NUM_SPACES};
 use crate::{
-	TypeRef, Statement,
+	DimType, Statement,
 	HirCodegen, HirDiagnostics,
 };
 
@@ -67,7 +67,7 @@ impl From<FunctionPrototype> for Function {
 pub struct FunctionPrototype {
 	pub name: String,
 	pub arguments: Vec<FunctionArgument>,
-	pub return_type: TypeRef
+	pub return_type: DimType
 }
 
 impl HirDiagnostics for FunctionPrototype {
@@ -91,7 +91,7 @@ impl HirCodegen for FunctionPrototype {
 #[derive(Debug, Clone, PartialEq)]
 pub struct FunctionArgument {
 	pub name: String,
-	pub kind: TypeRef
+	pub kind: DimType
 }
 
 impl HirCodegen for FunctionArgument {

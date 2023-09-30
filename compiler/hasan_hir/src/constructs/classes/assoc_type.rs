@@ -1,10 +1,10 @@
-use crate::{TypeRef, HirDiagnostics, HirCodegen};
+use crate::{DimType, HirDiagnostics, HirCodegen};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct ClassAssocType {
 	pub modifiers: hasan_parser::GeneralModifiers,
 	pub name: String,
-	pub kind: TypeRef
+	pub kind: DimType
 }
 
 impl HirDiagnostics for ClassAssocType {

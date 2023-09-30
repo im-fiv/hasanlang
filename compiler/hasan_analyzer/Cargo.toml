@@ -10,5 +10,6 @@ hasan_parser = { path = "../hasan_parser" }
 hasan_hir = { path = "../hasan_hir" }
 hasan_intrinsics = { path = "../hasan_intrinsics" }
 hasan_macros = { path = "../hasan_macros" }
+uuid = { version = "1.4.1", features = ["v4", "fast-rng", "macro-diagnostics"] }
 anyhow = "1.0.72"
 indent = "0.1.1"

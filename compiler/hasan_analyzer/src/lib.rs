@@ -9,14 +9,13 @@ pub use scope::*;
 pub use symbol::*;
 
 use anyhow::{Result, bail};
+use uuid::Uuid;
 
 use hasan_parser as p;
 use hasan_hir as hir;
 use hasan_intrinsics as intr;
 
 use hir::HirCodegen;
-
-// TODO: See issue #9 <https://github.com/greenbush5/hasanlang/issues/9>
 
 fn function_into_type(function: hir::Function) -> hir::Type {
 	let inner_function = {
@@ -48,7 +47,9 @@ fn function_into_type(function: hir::Function) -> hir::Type {
 		members: vec![wrapped_function],
 		impls: vec![
 			intr::IntrinsicInterface::Function.name()
-		]
+		],
+
+		id: Uuid::new_v4()
 	}
 }
 
@@ -145,7 +146,7 @@ impl SemanticAnalyzer {
 		}
 	}
 
-	fn type_from_expression(&self, expression: &p::Expression) -> Result<hir::TypeRef> {
+	fn type_from_expression(&self, expression: &p::Expression) -> Result<hir::DimType> {
 		use p::Expression::*;
 
 		macro_rules! def_builtin {
@@ -163,10 +164,10 @@ impl SemanticAnalyzer {
 		def_builtin!(t_bool, Boolean);
 		
 		match expression {
-			Integer(_) => Ok(hir::TypeRef::from(t_int)),
-			Float(_) => Ok(hir::TypeRef::from(t_float)),
-			String(_) => Ok(hir::TypeRef::from(t_string)),
-			Boolean(_) => Ok(hir::TypeRef::from(t_bool)),
+			Integer(_) => Ok(hir::DimType::from(t_int)),
+			Float(_) => Ok(hir::DimType::from(t_float)),
+			String(_) => Ok(hir::DimType::from(t_string)),
+			Boolean(_) => Ok(hir::DimType::from(t_bool)),
 
 			Unary { operator, operand } => {
 				let expression_type = self.type_from_expression(operand)?;
@@ -390,7 +391,7 @@ impl SemanticAnalyzer {
 		}
 	}
 
-	fn convert_type(&self, kind: &p::Type) -> Result<hir::TypeRef> {
+	fn convert_type(&self, kind: &p::Type) -> Result<hir::DimType> {
 		match kind.to_owned() {
 			p::Type::Regular(kind) => {
 				// TODO: Recursively resolve type aliases
@@ -414,7 +415,7 @@ impl SemanticAnalyzer {
 
 				let class = symbol.as_class()?;
 
-				Ok(hir::TypeRef(class, dimensions))
+				Ok(hir::DimType(class, dimensions))
 			},
 
 			p::Type::Function(_) => todo!("function type converting"), // TODO
@@ -428,7 +429,7 @@ impl SemanticAnalyzer {
 		&mut self,
 		kind: &p::Type,
 		resolves_to: String
-	) -> Result<hir::TypeRef> {
+	) -> Result<hir::DimType> {
 		match kind.to_owned() {
 			p::Type::Regular(mut kind) => {
 				if kind.path.is_empty() && (kind.name == *"this") {
@@ -757,7 +758,8 @@ impl SemanticAnalyzer {
 		let mut class = hir::Type {
 			name: name.clone(),
 			members: vec![],
-			impls: vec![]
+			impls: vec![],
+			id: Uuid::new_v4()
 		};
 
 		self.scope.insert_symbol(
@@ -883,7 +885,8 @@ impl SemanticAnalyzer {
 			members: vec![],
 			impls: vec![
 				String::from("ThisMarker")
-			]
+			],
+			id: Uuid::new_v4()
 		});
 
 		self.scope = interface_scope;
@@ -1298,7 +1301,7 @@ impl SemanticAnalyzer {
 				// Checking the function signature against the interface signature
 				{
 					#[inline]
-					fn is_this_marker(kind: &hir::TypeRef) -> bool {
+					fn is_this_marker(kind: &hir::DimType) -> bool {
 						(kind.0.name == *"this") || kind.0.impls.contains(&String::from("ThisMarker"))
 					}
 

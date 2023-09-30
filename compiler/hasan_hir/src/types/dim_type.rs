@@ -1,14 +1,14 @@
 use crate::{HirCodegen, HirDiagnostics};
 use super::Type;
 
-/// A reference to a type with the second parameter being the dimensions of array (if present)
+/// An owned type with the second parameter being the dimensions of array (if present)
 #[derive(Debug, Clone, PartialEq)]
-pub struct TypeRef(
+pub struct DimType(
 	pub Type,
 	pub usize
 );
 
-impl TypeRef {
+impl DimType {
 	#[inline]
 	pub fn display(&self) -> String {
 		let name = self.0.name.clone();
@@ -18,14 +18,14 @@ impl TypeRef {
 	}
 }
 
-impl HirDiagnostics for TypeRef {
+impl HirDiagnostics for DimType {
 	#[inline]
 	fn info_string(&self) -> String {
 		self.codegen()
 	}
 }
 
-impl HirCodegen for TypeRef {
+impl HirCodegen for DimType {
 	#[inline]
 	fn codegen(&self) -> String {
 		let kind = self.0.codegen();
@@ -35,7 +35,7 @@ impl HirCodegen for TypeRef {
 	}
 }
 
-impl From<Type> for TypeRef {
+impl From<Type> for DimType {
 	fn from(kind: Type) -> Self {
 		Self(kind, 0)
 	}

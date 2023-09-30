@@ -8,5 +8,6 @@ edition = "2021"
 [dependencies]
 hasan_parser = { path = "../hasan_parser" }
 hasan_macros = { path = "../hasan_macros" }
+uuid = { version = "1.4.1", features = ["v4", "fast-rng", "macro-diagnostics"] }
 indent = "0.1.1"
 anyhow = "1.0.72"

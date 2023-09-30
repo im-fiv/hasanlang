@@ -1,9 +1,9 @@
-use hasan_hir::{TypeRef, HirDiagnostics};
+use hasan_hir::{DimType, HirDiagnostics};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct InterfaceAssocType {
 	pub name: String,
-	pub kind: TypeRef
+	pub kind: DimType
 }
 
 impl HirDiagnostics for InterfaceAssocType {

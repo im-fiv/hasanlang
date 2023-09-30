@@ -1,5 +1,5 @@
-mod type_ref;
+mod dim_type;
 mod type_struct;
 
-pub use type_ref::*;
+pub use dim_type::*;
 pub use type_struct::*;

@@ -1,15 +1,19 @@
 use crate::{ClassMember, HirCodegen, HirDiagnostics};
 
 use hasan_parser::NUM_SPACES;
+
 use indent::indent_all_by;
+use uuid::Uuid;
 
 /// Every type is essentially a class, even functions.
 /// All functions/closures automatically implement their according intrinsic interface
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone)]
 pub struct Type {
 	pub name: String,
 	pub members: Vec<ClassMember>,
-	pub impls: Vec<String>
+	pub impls: Vec<String>,
+
+	pub id: Uuid
 }
 
 impl Type {
@@ -19,6 +23,12 @@ impl Type {
 			.clone()
 			.into_iter()
 			.find(|member| member.name() == *name)
+	}
+}
+
+impl PartialEq for Type {
+	fn eq(&self, other: &Self) -> bool {
+		self.id == other.id
 	}
 }
 

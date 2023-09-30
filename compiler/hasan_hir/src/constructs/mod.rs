@@ -8,7 +8,7 @@ pub use conditionals::*;
 pub use enums::*;
 pub use functions::*;
 
-pub use crate::{Statement, TypeRef, Type, HirCodegen, HirDiagnostics};
+pub use crate::{Statement, DimType, Type, HirCodegen, HirDiagnostics};
 use hasan_parser::vec_transform_str;
 
 #[derive(Debug, Clone, Default)]
@@ -59,7 +59,7 @@ pub struct Variable {
 	pub modifiers: hasan_parser::GeneralModifiers,
 
 	pub name: String,
-	pub kind: TypeRef,
+	pub kind: DimType,
 	pub value: hasan_parser::Expression
 }
 
