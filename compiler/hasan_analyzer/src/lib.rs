@@ -1058,16 +1058,13 @@ impl SemanticAnalyzer {
 			Symbol::Class(class.clone())
 		)?;
 
-		let mut new_members = vec![];
-
 		for member in members {
 			// Analyze and convert the impl member
-			let analyzed = self.analyze_interface_impl_member(&class, &interface, member)?;
-			new_members.push(analyzed);
+			let analyzed = self.analyze_interface_impl_member(&mut class, &interface, member)?;
+			class.members.push(analyzed);
 		}
 
 		class.impls.push(interface.unique_name());
-		class.members = new_members;
 
 		self.scope = old_scope;
 		self.scope.update_symbol(class_name, Symbol::Class(class))?;
