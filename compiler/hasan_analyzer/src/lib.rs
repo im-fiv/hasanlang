@@ -142,7 +142,7 @@ impl SemanticAnalyzer {
 				members
 			} => self.analyze_interface_impl(interface_name, interface_generics, class_name, class_generics, members),
 
-			_ => bail!("Encountered unsupported statement `{}`", statement.to_string())
+			_ => bail!("Encountered unsupported statement `{}`", statement.variant_name())
 		}
 	}
 
@@ -335,7 +335,7 @@ impl SemanticAnalyzer {
 				let expression = *expression.to_owned();
 				let accessor = match *accessor.to_owned() {
 					Identifier(ident) => ident,
-					_ => bail!("Expected an identifier as a property access index, got `{}`", accessor.to_string())
+					_ => bail!("Expected an identifier as a field access index, got `{}`", accessor.to_string())
 				};
 
 				let expression_type = self.type_from_expression(&expression)?;
@@ -364,8 +364,12 @@ impl SemanticAnalyzer {
 
 				Ok(match member {
 					hir::ClassMember::Variable(variable) => variable.kind,
+
 					// TODO: Check the correctness of this when class functions are implemented in the analyzer
-					hir::ClassMember::Function(function) => class_function_into_type(function).into(),
+					hir::ClassMember::Function(function) => hir::DimType::from(
+						class_function_into_type(function)
+					),
+
 					hir::ClassMember::AssocType(_) => bail!(
 						"Member `{}` of type `{}` is an associated type",
 						member.name(),
@@ -505,6 +509,7 @@ impl SemanticAnalyzer {
 	fn analyze_function_prototype(&mut self, prototype: p::FunctionPrototype) -> Result<hir::FunctionPrototype> {
 		use p::GeneralModifier::*;
 		
+		// Unwrapping the function prototype
 		let p::FunctionPrototype {
 			modifiers,
 			name,
@@ -513,11 +518,12 @@ impl SemanticAnalyzer {
 			return_type
 		} = prototype;
 
+		// Checking modifiers
 		let m_public = modifiers.contains(&Public);
 		let m_const = modifiers.contains(&Constant);
 		let m_static = modifiers.contains(&Static);
 
-		if m_public && self.ast.module_info.is_none() {
+		if m_public && self.ast.module_info.is_none() && !self.scope.flags.in_class {
 			bail!("`pub` modifiers are not permitted outside of modules");
 		}
 
@@ -525,7 +531,7 @@ impl SemanticAnalyzer {
 			bail!("`const` modifiers are not permitted in function prototypes");
 		}
 
-		if m_static {
+		if m_static && !self.scope.flags.in_class {
 			bail!("`static` modifiers are not permitted outside of classes");
 		}
 
@@ -534,15 +540,11 @@ impl SemanticAnalyzer {
 			bail!("Generics are not yet supported");
 		}
 
-		let arguments = {
-			let mut result = vec![];
-
-			for argument in arguments {
-				result.push(self.convert_function_argument(argument)?);
-			}
-
-			result
-		};
+		// Converting function arguments
+		let arguments = arguments
+			.into_iter()
+			.map(|arg| self.convert_function_argument(arg))
+			.collect::<Result<_>>()?;
 
 		// TODO: Attempt to infer the return type
 
@@ -552,11 +554,14 @@ impl SemanticAnalyzer {
 
 		let return_type = self.convert_type(&return_type.unwrap())?;
 
-		Ok(hir::FunctionPrototype {
+		// Constructing and returning
+		let prototype = hir::FunctionPrototype {
 			name,
 			arguments,
 			return_type
-		})
+		};
+		
+		Ok(prototype)
 	}
 
 	fn analyze_function(&mut self, function: p::Function) -> Result<hir::Function> {
@@ -612,7 +617,10 @@ impl SemanticAnalyzer {
 			p::Statement::FunctionDefinition(function) |
 			p::Statement::FunctionDeclaration(function) => function,
 
-			_ => unreachable!()
+			_ => bail!(
+				"Got an unexpected statement `{}` when expecting a function definition/declaration statement",
+				statement.variant_name()
+			)
 		};
 
 		let function = self.analyze_function(function)?;
@@ -624,125 +632,148 @@ impl SemanticAnalyzer {
 		Ok(hir::Statement::FunctionDefinition(function))
 	}
 
+	fn analyze_class_variable(&mut self, variable: p::ClassVariable) -> Result<hir::ClassVariable> {
+		use p::GeneralModifier::*;
+
+		// Unwrapping the variable
+		let p::ClassVariable {
+			modifiers,
+			name,
+			kind,
+			default_value
+		} = variable;
+
+		// Checking modifiers
+		let m_const = modifiers.contains(&Constant);
+		let m_static = modifiers.contains(&Static);
+
+		if m_const && m_static {
+			bail!("`const` and `static` modifiers cannot be used together");
+		}
+
+		// Converting the type
+		let converted_kind = self.convert_type(&kind)?;
+
+		// Match the converted type against a resolved type
+		if let Some(value) = default_value.clone() {
+			let resolved_kind = self.type_from_expression(&value)?;
+
+			if converted_kind != resolved_kind {
+				bail!(
+					"Mismatched types for class member `{}`: type `{}` was specified, got `{}`",
+					name,
+					converted_kind.display(),
+					resolved_kind.display()
+				)
+			}
+		}
+
+		// Constructing and returning
+		let variable = hir::ClassVariable {
+			modifiers,
+			
+			name,
+			kind: converted_kind,
+			default_value
+		};
+
+		Ok(variable)
+	}
+
+	fn analyze_class_function(&mut self, function: p::ClassFunction) -> Result<hir::ClassFunction> {
+		use p::GeneralModifier::*;
+		use p::ClassFunctionAttribute::*;
+
+		// Unwrapping the function
+		let p::ClassFunction {
+			attributes,
+			prototype,
+			body
+		} = function;
+
+		// Checking modifiers
+		let modifiers = prototype.modifiers.clone();
+
+		if modifiers.contains(&Constant) {
+			bail!("`const` modifiers are not permitted inside function prototypes");
+		}
+
+		// Checking attributes
+		let a_constructor = attributes.contains(&Constructor);
+		let a_get = attributes.contains(&Get);
+		let a_set = attributes.contains(&Set);
+
+		if a_constructor && (prototype.name != *"new") {
+			bail!("Class constructor function should always be named `new`");
+		}
+
+		if a_constructor && (a_get || a_set) {
+			bail!("Class constructor function cannot have `get` or `set` attributes");
+		}
+
+		if a_get && a_set {
+			bail!("Class function cannot have both `get` and `set` attributes");
+		}
+
+		// Analyzing the function as a standalone
+		let function = self.analyze_function(p::Function {
+			prototype,
+			body: Some(body)
+		})?;
+
+		// Constructing and returning
+		let class_function = hir::ClassFunction {
+			modifiers,
+
+			attributes,
+			function
+		};
+
+		Ok(class_function)
+	}
+
+	fn analyze_class_assoc_type(&mut self, kind: p::ClassAssocType) -> Result<hir::ClassAssocType> {
+		use p::GeneralModifier::*;
+
+		// Unwrapping the associated type
+		let p::ClassAssocType {
+			modifiers,
+			name,
+			kind
+		} = kind;
+
+		// Checking modifiers
+		let m_const = modifiers.contains(&Constant);
+		let m_static = modifiers.contains(&Static);
+
+		if m_const {
+			bail!("`const` modifiers are not permitted for associated types");
+		}
+
+		if m_static {
+			bail!("Associated class types are implicitly static");
+		}
+
+		// Constructing and returning
+		let class_assoc_type = hir::ClassAssocType {
+			modifiers,
+			name,
+			kind: self.convert_type(&kind)?
+		};
+
+		Ok(class_assoc_type)
+	}
+
 	fn analyze_class_member(&mut self, member: p::ClassMember) -> Result<hir::ClassMember> {
 		Ok(match member {
-			p::ClassMember::Variable(variable) => {
-				use p::GeneralModifier::*;
+			p::ClassMember::Variable(variable) =>
+				hir::ClassMember::Variable(self.analyze_class_variable(variable)?),
 
-				let p::ClassVariable {
-					modifiers,
-					name,
-					kind,
-					default_value
-				} = variable;
+			p::ClassMember::Function(function) => 
+				hir::ClassMember::Function(self.analyze_class_function(function)?),
 
-				let m_const = modifiers.contains(&Constant);
-				let m_static = modifiers.contains(&Static);
-
-				if m_const && m_static {
-					bail!("`const` and `static` modifiers cannot be used together");
-				}
-
-				let converted_kind = self.convert_type(&kind)?;
-				
-				if let Some(value) = default_value.clone() {
-					let resolved_kind = self.type_from_expression(&value)?;
-
-					if converted_kind != resolved_kind {
-						bail!(
-							"Mismatched types for class member `{}`: type `{}` was specified, got `{}`",
-							name,
-							converted_kind.display(),
-							resolved_kind.display()
-						)
-					}
-				}
-
-				let variable = hir::ClassVariable {
-					modifiers,
-					
-					name,
-					kind: converted_kind,
-					default_value
-				};
-
-				hir::ClassMember::Variable(variable)
-			},
-
-			p::ClassMember::Function(function) => {
-				use p::GeneralModifier::*;
-				use p::ClassFunctionAttribute::*;
-
-				let p::ClassFunction {
-					attributes,
-					prototype,
-					body
-				} = function;
-
-				// Checking modifiers
-				let modifiers = prototype.modifiers.clone();
-
-				if modifiers.contains(&Constant) {
-					bail!("`const` modifiers are not permitted inside function prototypes");
-				}
-
-				// Checking attributes
-				let a_constructor = attributes.contains(&Constructor);
-				let a_get = attributes.contains(&Get);
-				let a_set = attributes.contains(&Set);
-
-				if a_constructor && (prototype.name != *"new") {
-					bail!("Class constructor function should always be named `new`");
-				}
-
-				if a_constructor && (a_get || a_set) {
-					bail!("Class constructor function cannot have `get` or `set` attributes");
-				}
-
-				if a_get && a_set {
-					bail!("Class function cannot have both `get` and `set` attributes");
-				}
-
-				let function = self.analyze_function(p::Function {
-					prototype,
-					body: Some(body)
-				})?;
-
-				let class_function = hir::ClassFunction {
-					modifiers,
-
-					attributes,
-					function
-				};
-
-				hir::ClassMember::Function(class_function)
-			},
-
-			p::ClassMember::AssocType(kind) => {
-				use p::GeneralModifier::*;
-
-				let p::ClassAssocType { modifiers, name, kind } = kind;
-
-				// Checking modifiers
-				let m_const = modifiers.contains(&Constant);
-				let m_static = modifiers.contains(&Static);
-
-				if m_const {
-					bail!("`const` modifiers are not permitted for associated types");
-				}
-
-				if m_static {
-					bail!("Associated class types are implicitly static");
-				}
-
-				let assoc_type = hir::ClassAssocType {
-					modifiers,
-					name,
-					kind: self.convert_type(&kind)?
-				};
-
-				hir::ClassMember::AssocType(assoc_type)
-			}
+			p::ClassMember::AssocType(kind) =>
+				hir::ClassMember::AssocType(self.analyze_class_assoc_type(kind)?),
 		})
 	}
 

@@ -5,9 +5,9 @@ use crate::{
 
 use super::{EnumVariant, ConditionBranch, ModuleItem};
 
-use strum_macros::Display;
+use hasan_macros::VariantName;
 
-#[derive(Debug, Clone, PartialEq, Display)]
+#[derive(Debug, Clone, PartialEq, VariantName)]
 pub enum Statement {
 	FunctionDefinition(Function),
 	FunctionDeclaration(Function),
