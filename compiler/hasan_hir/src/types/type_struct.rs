@@ -47,7 +47,7 @@ impl HirDiagnostics for Type {
 				}
 			})
 			.collect::<Vec<_>>()
-			.join(", ");
+			.join("\n\n");
 
 		let members = if !members.is_empty() {
 			indent_all_by(
@@ -61,14 +61,16 @@ impl HirDiagnostics for Type {
 		let interfaces = self.impls.join(", ");
 
 		if interfaces.is_empty() && members.is_empty() {
-			return format!("type {name} end");
+			return format!(
+				"type {name}\n{}\nend",
+				indent_all_by(NUM_SPACES, "<empty>")
+			);
 		}
 
 		if interfaces.is_empty() {
 			format!("type {name}\n{members}end")
 		} else {
-			let impls = format!("impl {interfaces}");
-			format!("type {name}\n{impls}\n{members}end")
+			format!("type {name}: impl<{interfaces}>\n{members}end")
 		}
 	}
 }

@@ -45,7 +45,14 @@ impl HirDiagnostics for Interface {
 			)
 		);
 
-		let base = format!("interface {name}:\n{members}");
+		if self.members.is_empty() {
+			return format!(
+				"interface {name}\n{}\nend",
+				indent_all_by(NUM_SPACES, "<empty>")
+			);
+		}
+
+		let base = format!("interface {name}\n{members}\nend");
 
 		match self.intrinsic {
 			Some(intrinsic) => format!("intrinsic({}) {base}", intrinsic.name()),
