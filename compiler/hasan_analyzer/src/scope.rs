@@ -4,6 +4,7 @@ use hasan_hir as hir;
 
 use std::collections::HashMap;
 use anyhow::{Result, bail};
+use uuid::Uuid;
 
 pub type SymbolTable = HashMap<String, Symbol>;
 
@@ -91,7 +92,8 @@ impl Scope {
 		}
 	}
 
-	/// Inserts a symbol into the symbol table. Panics if a symbol with the provided name already exists
+	/// Attempts to insert a symbol into the symbol table.
+	/// Errors if a symbol with provided name already exists
 	pub fn insert_symbol(&mut self, name: String, symbol: Symbol) -> Result<()> {
 		if self.symbol_table.insert(name.clone(), symbol).is_some() {
 			bail!("Cannot insert symbol with name `{}` because it already exists", name);
@@ -100,7 +102,8 @@ impl Scope {
 		Ok(())
 	}
 
-	/// Gets a symbol from the symbol table. Panics if a symbol does not exist
+	/// Attempts to get a symbol with the given name from the symbol table.
+	/// Errors if the symbol with specified name does not exist
 	pub fn get_symbol(&self, name: &String) -> Result<Symbol> {
 		if let Some(symbol) = self.symbol_table.get(name) {
 			return Ok(symbol.to_owned());
@@ -109,6 +112,31 @@ impl Scope {
 		bail!("Cannot get symbol with name `{}` because it does not exist", name);
 	}
 
+	/// Attempts to get a type with the given UUID.
+	/// Errors if the type with specified UUID does not exist
+	pub fn class_by_uuid(&self, uuid: Uuid) -> Result<hir::Type> {
+		self.symbol_table.iter().find_map(|(_, symbol)| {
+			if !symbol.is_class() {
+				return None;
+			}
+
+			let class = symbol
+				.to_owned()
+				.as_class()
+				.unwrap_or_else(|_| unreachable!("Symbol is guaranteed to be of variant `Class`"));
+
+			if class.id == uuid {
+				Some(class)
+			} else {
+				None
+			}
+		}).ok_or(
+			anyhow::format_err!("Cannot get symbol with UUID `{}` because it does not exist", uuid)
+		)
+	}
+
+	/// Attempts to update a symbol with the given name.
+	/// Errors if the symbol with specified name does not exist
 	pub fn update_symbol(&mut self, name: String, symbol: Symbol) -> Result<()> {
 		if self.symbol_table.insert(name.clone(), symbol).is_none() {
 			bail!("Cannot update symbol with name `{}` because it does not exist", name);
