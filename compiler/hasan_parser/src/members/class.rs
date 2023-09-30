@@ -7,9 +7,9 @@ use crate::{
 };
 
 use indent::indent_all_by;
-use strum_macros::Display;
+use hasan_macros::VariantName;
 
-#[derive(Debug, Clone, PartialEq, Display)]
+#[derive(Debug, Clone, PartialEq, VariantName)]
 pub enum ClassMember {
 	Variable(ClassVariable),
 	Function(ClassFunction),
