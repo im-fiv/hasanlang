@@ -157,26 +157,16 @@ impl SemanticAnalyzer {
 			};
 		}
 
-		macro_rules! wrap_ok_ref {
-			($value:expr) => {
-				Ok($value.into())
-			};
-
-			($value:expr, $dimensions:expr) => {
-				Ok(hir::TypeRef($value, $dimensions))
-			};
-		}
-
 		def_builtin!(t_int, Integer);
 		def_builtin!(t_float, Float);
 		def_builtin!(t_string, String);
 		def_builtin!(t_bool, Boolean);
 		
 		match expression {
-			Integer(_) => wrap_ok_ref!(t_int),
-			Float(_) => wrap_ok_ref!(t_float),
-			String(_) => wrap_ok_ref!(t_string),
-			Boolean(_) => wrap_ok_ref!(t_bool),
+			Integer(_) => Ok(hir::TypeRef::from(t_int)),
+			Float(_) => Ok(hir::TypeRef::from(t_float)),
+			String(_) => Ok(hir::TypeRef::from(t_string)),
+			Boolean(_) => Ok(hir::TypeRef::from(t_bool)),
 
 			Unary { operator, operand } => {
 				let expression_type = self.type_from_expression(operand)?;
