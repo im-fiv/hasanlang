@@ -1077,7 +1077,7 @@ impl SemanticAnalyzer {
 		class: &hir::Type,
 		variable: p::ClassVariable,
 		redef_check: impl Fn(String) -> Result<()>
-	) -> Result<hir::ClassMember> {
+	) -> Result<hir::ClassVariable> {
 		use p::GeneralModifier::*;
 
 		// Unwrapping the variable
@@ -1123,7 +1123,7 @@ impl SemanticAnalyzer {
 		};
 
 		redef_check(name)?;
-		Ok(hir::ClassMember::Variable(class_variable))
+		Ok(class_variable)
 	}
 
 	fn analyze_interface_impl_function(
@@ -1132,7 +1132,7 @@ impl SemanticAnalyzer {
 		function: p::ClassFunction,
 		interface_member: InterfaceMember,
 		redef_check: impl Fn(String) -> Result<()>
-	) -> Result<hir::ClassMember> {
+	) -> Result<hir::ClassFunction> {
 		use p::GeneralModifier::*;
 
 		// Unwrapping the function
@@ -1349,7 +1349,7 @@ impl SemanticAnalyzer {
 		};
 
 		redef_check(name)?;
-		Ok(hir::ClassMember::Function(class_function))
+		Ok(class_function)
 	}
 
 	fn analyze_interface_impl_member(
@@ -1396,11 +1396,13 @@ impl SemanticAnalyzer {
 
 		// Performing the conversion
 		Ok(match member {
-			p::ClassMember::Variable(variable) =>
-				self.analyze_interface_impl_variable(class, variable, redef_check)?,
+			p::ClassMember::Variable(variable) => hir::ClassMember::Variable(
+				self.analyze_interface_impl_variable(class, variable, redef_check)?
+			),
 
-			p::ClassMember::Function(function) =>
-				self.analyze_interface_impl_function(class, function, interface_member, redef_check)?,
+			p::ClassMember::Function(function) => hir::ClassMember::Function(
+				self.analyze_interface_impl_function(class, function, interface_member, redef_check)?
+			),
 
 			p::ClassMember::AssocType(_) => todo!() // TODO
 		})
