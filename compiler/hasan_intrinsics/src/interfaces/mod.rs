@@ -39,7 +39,10 @@ pub enum IntrinsicInterface {
 	Function,
 
 	/// For representing arrays
-	Array
+	Array,
+
+	/// For representing type instances
+	Instance
 }
 
 impl IntrinsicInterface {

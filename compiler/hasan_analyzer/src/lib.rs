@@ -17,6 +17,7 @@ use hasan_intrinsics as intr;
 
 use hir::HirCodegen;
 
+/// As the name suggests, converts a given function into a type (class)
 fn function_into_type(function: hir::Function) -> hir::Type {
 	let inner_function = {
 		let prototype = hir::FunctionPrototype {
@@ -382,7 +383,7 @@ impl SemanticAnalyzer {
 				let symbol = self.scope.get_symbol(identifier)?;
 
 				Ok(match symbol {
-					Symbol::Class(class) => class.into(),
+					Symbol::Class(class) => hir::DimType::from(class),
 					Symbol::Variable(variable) => variable.kind,
 
 					_ => bail!("Cannot use symbol of type `{}` as a value", symbol.variant_name())

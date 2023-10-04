@@ -124,6 +124,11 @@ pub enum ArrayMembers {}
 
 //-----------------------------------------------------------------//
 
+#[derive(Debug, Clone, Copy, PartialEq, Hash, Display)]
+pub enum InstanceMembers {}
+
+//-----------------------------------------------------------------//
+
 impl_name!(
 	AddOpMembers,
 	SubOpMembers,
