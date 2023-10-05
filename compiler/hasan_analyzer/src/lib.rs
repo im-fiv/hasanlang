@@ -1,10 +1,12 @@
 mod interface;
 mod generic_table;
+mod scope_context;
 mod scope;
 mod symbol;
 
 pub use interface::*;
 pub use generic_table::*;
+pub use scope_context::*;
 pub use scope::*;
 pub use symbol::*;
 
@@ -21,7 +23,7 @@ use hir::HirCodegen;
 fn function_into_type(function: hir::Function) -> hir::Type {
 	let inner_function = {
 		let prototype = hir::FunctionPrototype {
-			name: intr::FunctionMembers::Call.name(),
+			name: intr::interfaces::members::FunctionMembers::Call.name(),
 			arguments: function.prototype.arguments,
 			return_type: function.prototype.return_type
 		};
@@ -47,7 +49,7 @@ fn function_into_type(function: hir::Function) -> hir::Type {
 		name: function.prototype.name,
 		members: vec![wrapped_function],
 		impls: vec![
-			intr::IntrinsicInterface::Function.name()
+			intr::interfaces::IntrinsicInterface::Function.name()
 		],
 
 		id: Uuid::new_v4()
@@ -57,6 +59,7 @@ fn function_into_type(function: hir::Function) -> hir::Type {
 /// Converts a class function into a type (function)
 /// 
 /// Note: class function attributes are stripped during this process
+#[inline]
 fn class_function_into_type(class_function: hir::ClassFunction) -> hir::Type {
 	function_into_type(class_function.function)
 }
@@ -67,7 +70,7 @@ fn bin_op_intr_member(operator: &p::BinaryOperator) -> usize {
 
 	macro_rules! to_num {
 		($enum:ident::$variant:ident) => (
-			intr::$enum::$variant as usize
+			intr::interfaces::members::$enum::$variant as usize
 		);
 	}
 
@@ -86,6 +89,28 @@ fn bin_op_intr_member(operator: &p::BinaryOperator) -> usize {
 		GreaterThanEqual => to_num!(CmpEqOpsMembers::Gte),
 		LessThanEqual => to_num!(CmpEqOpsMembers::Lte)
 	}
+}
+
+/// Creates a predictable, linked UUID from the one provided.
+/// By passing in the linked UUID, the original one can be retrieved back
+fn linked_uuid(uuid: Uuid) -> Uuid {
+	let mut bytes = uuid.into_bytes();
+	bytes.reverse();
+
+	Uuid::from_bytes(bytes)
+}
+
+/// Creates a class (type) instance type from a given type
+fn instance_from_type(kind: &hir::Type) -> hir::Type {
+	let mut kind = kind.clone();
+
+	kind.impls.push(
+		intr::interfaces::IntrinsicInterface::Instance.name()
+	);
+
+	kind.id = linked_uuid(kind.id);
+
+	kind
 }
 
 #[derive(Debug, Clone)]
@@ -154,7 +179,7 @@ impl SemanticAnalyzer {
 			($name:ident, $variant:ident) => {
 				let $name = self
 					.scope
-					.get_symbol(&intr::IntrinsicType::$variant.to_string())?
+					.get_symbol(&intr::types::IntrinsicType::$variant.to_string())?
 					.as_class()?;
 			};
 		}
@@ -174,7 +199,7 @@ impl SemanticAnalyzer {
 				let expression_type = self.type_from_expression(operand)?;
 
 				use p::UnaryOperator::*;
-				use intr::IntrinsicInterface::*;
+				use intr::interfaces::IntrinsicInterface::*;
 
 				let intrinsic_interface = match operator {
 					Minus => NegOp,
@@ -206,7 +231,7 @@ impl SemanticAnalyzer {
 				let rhs_type = self.type_from_expression(rhs)?;
 
 				use p::BinaryOperator::*;
-				use intr::IntrinsicInterface::*;
+				use intr::interfaces::IntrinsicInterface::*;
 
 				let _rhs_string = rhs_type.codegen();
 
@@ -259,7 +284,7 @@ impl SemanticAnalyzer {
 				let callee_type = self.type_from_expression(callee)?;
 
 				let function_interface = self.scope.get_symbol(
-					&intr::IntrinsicInterface::Function.name()
+					&intr::interfaces::IntrinsicInterface::Function.name()
 				)?.as_interface()?;
 
 				if !callee_type.0.impls.contains(&function_interface.unique_name()) || (callee_type.1 > 0) {
@@ -384,7 +409,12 @@ impl SemanticAnalyzer {
 
 				Ok(match symbol {
 					Symbol::Class(class) => hir::DimType::from(class),
-					Symbol::Variable(variable) => variable.kind,
+
+					// Type has to be re-fetched to be kept up to date
+					Symbol::Variable(variable) => hir::DimType::new(
+						self.scope.get_symbol(&variable.kind.0.name)?.as_class()?,
+						variable.kind.1
+					),
 
 					_ => bail!("Cannot use symbol of type `{}` as a value", symbol.variant_name())
 				})
@@ -467,7 +497,7 @@ impl SemanticAnalyzer {
 			bail!("`pub` modifiers are not permitted outside of modules");
 		}
 
-		if !m_public && !m_const && !self.scope.flags.in_function {
+		if !m_public && !m_const && self.scope.context.function_name.is_none() {
 			bail!("Cannot define a variable outside of a function");
 		}
 
@@ -524,7 +554,7 @@ impl SemanticAnalyzer {
 		let m_const = modifiers.contains(&Constant);
 		let m_static = modifiers.contains(&Static);
 
-		if m_public && self.ast.module_info.is_none() && !self.scope.flags.in_class {
+		if m_public && self.ast.module_info.is_none() && self.scope.context.class_name.is_none() {
 			bail!("`pub` modifiers are not permitted outside of modules");
 		}
 
@@ -532,7 +562,7 @@ impl SemanticAnalyzer {
 			bail!("`const` modifiers are not permitted in function prototypes");
 		}
 
-		if m_static && !self.scope.flags.in_class {
+		if m_static && self.scope.context.class_name.is_none() {
 			bail!("`static` modifiers are not permitted outside of classes");
 		}
 
@@ -582,9 +612,7 @@ impl SemanticAnalyzer {
 			let mut converted = vec![];
 
 			let mut new_scope = original_scope.new_child();
-
-			new_scope.flags.in_function = true;
-			new_scope.flags.global = false;
+			new_scope.context.function_name = Some(prototype.name.clone());
 
 			self.scope = new_scope;
 
@@ -802,9 +830,7 @@ impl SemanticAnalyzer {
 		let old_scope = self.scope.clone();
 
 		let mut new_scope = old_scope.new_child();
-
-		new_scope.flags.in_class = true;
-		new_scope.flags.global = false;
+		new_scope.context.class_name = Some(name.clone());
 
 		self.scope = new_scope;
 		self.scope.insert_symbol(
@@ -864,7 +890,7 @@ impl SemanticAnalyzer {
 	}
 
 	fn analyze_return(&mut self, value: Option<p::Expression>) -> Result<hir::Statement> {
-		if !self.scope.flags.in_function {
+		if self.scope.context.function_name.is_none() {
 			bail!("`return` statements are not permitted outside of functions");
 		}
 
@@ -1092,7 +1118,7 @@ impl SemanticAnalyzer {
 
 		for member in members {
 			// Analyze and convert the impl member
-			let analyzed = self.analyze_interface_impl_member(&mut class, &interface, member)?;
+			let analyzed = self.analyze_interface_impl_member(&class, &interface, member)?;
 			class.members.push(analyzed);
 		}
 
@@ -1238,10 +1264,9 @@ impl SemanticAnalyzer {
 		let body = {
 			// Creating a separate scope for the function's body
 			let old_scope = self.scope.clone();
+			
 			let mut child_scope = self.scope.new_child();
-
-			child_scope.flags.in_function = true;
-			child_scope.flags.global = false;
+			child_scope.context.function_name = Some(name.clone());
 
 			self.scope = child_scope;
 

@@ -1,9 +1,11 @@
 mod binary_operator;
+mod expression_impl;
 mod expression;
 mod function;
 mod unary_operator;
 
 pub use binary_operator::*;
+pub use expression_impl::*;
 pub use expression::*;
 pub use function::*;
 pub use unary_operator::*;

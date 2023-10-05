@@ -1,18 +1,15 @@
-#[derive(Debug, Clone, PartialEq)]
-pub enum ClassFunctionAttribute {
-	Constructor,
-	Get,
-	Set
-}
+use strum_macros::Display;
 
-impl ToString for ClassFunctionAttribute {
-	fn to_string(&self) -> String {
-		match self {
-			Self::Constructor => "constructor",
-			Self::Get => "get",
-			Self::Set => "set"
-		}.to_owned()
-	}
+#[derive(Debug, Clone, PartialEq, Display)]
+pub enum ClassFunctionAttribute {
+	#[strum(serialize = "constructor")]
+	Constructor,
+
+	#[strum(serialize = "get")]
+	Get,
+
+	#[strum(serialize = "set")]
+	Set
 }
 
 impl TryFrom<&str> for ClassFunctionAttribute {

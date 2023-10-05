@@ -9,7 +9,7 @@ pub use member::*;
 pub use variable::*;
 
 use hasan_hir::HirDiagnostics;
-use hasan_intrinsics::IntrinsicInterface;
+use hasan_intrinsics::interfaces::IntrinsicInterface;
 use hasan_parser::{vec_transform_str, NUM_SPACES};
 
 use indent::indent_all_by;

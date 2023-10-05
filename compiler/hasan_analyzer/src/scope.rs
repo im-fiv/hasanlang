@@ -1,4 +1,4 @@
-use crate::{Symbol, GenericTable};
+use crate::{Symbol, GenericTable, ScopeContext};
 
 use hasan_hir as hir;
 
@@ -25,62 +25,16 @@ pub type SymbolTable = HashMap<String, Symbol>;
 pub struct Scope {
 	pub symbol_table: SymbolTable,
 	pub generic_table: GenericTable,
-	pub flags: ScopeFlags
+	pub context: ScopeContext
 }
 
 impl Scope {
 	pub fn new() -> Self {
 		Self {
-			symbol_table: Self::populated_sym_table(),
+			symbol_table: SymbolTable::new(),
 			generic_table: GenericTable::new(),
-			flags: ScopeFlags::default()
+			context: ScopeContext::default()
 		}
-	}
-
-	pub fn populated_sym_table() -> SymbolTable {
-		// macro_rules! intrinsic {
-		// 	(interface $variant:ident$(<$($generic:ident),*>)?) => {
-		// 		{
-		// 			let variant = hir::IntrinsicInterface::$variant$(($(stringify!($generic).to_owned()),*))?;
-		// 			let name = variant.to_string();
-		// 			let interface = crate::Interface::from_intrinsic(variant, &result);
-
-		// 			result.insert(name, Symbol::Interface(interface));
-		// 		}
-		// 	};
-
-		// 	(type $variant:ident) => {
-		// 		{
-		// 			let variant = intr::IntrinsicType::$variant;
-		// 			let name = variant.name();
-		// 			let class = hir::Type::from_intrinsic(variant, &result);
-
-		// 			result.insert(name, Symbol::Class(class));
-		// 		}
-		// 	};
-		// }
-		
-		// // Adding intrinsic types
-		// intrinsic!(type Integer);
-		// intrinsic!(type Float);
-		// intrinsic!(type String);
-		// intrinsic!(type Boolean);
-		// intrinsic!(type Void);
-
-		// // Adding intrinsic interfaces
-		// intrinsic!(interface AddOp<Rhs>);
-		// intrinsic!(interface SubOp<Rhs>);
-		// intrinsic!(interface NegOp);
-		// intrinsic!(interface DivOp<Rhs>);
-		// intrinsic!(interface MulOp<Rhs>);
-		// intrinsic!(interface RemOp<Rhs>);
-		// intrinsic!(interface EqOps<Rhs>);
-		// intrinsic!(interface LogicOps<Rhs>);
-		// intrinsic!(interface CmpOps<Rhs>);
-		// intrinsic!(interface CmpEqOps<Rhs>);
-		// intrinsic!(interface Function);
-
-		HashMap::new()
 	}
 
 	/// Creates a child scope while keeping all of the variables in scope
@@ -88,7 +42,7 @@ impl Scope {
 		Self {
 			symbol_table: self.symbol_table.clone(),
 			generic_table: GenericTable::new(), // Create a new generic table for easier merging
-			flags: self.flags
+			context: self.context.clone()
 		}
 	}
 
@@ -172,7 +126,7 @@ impl hir::HirDiagnostics for Scope {
 			.collect::<Vec<_>>()
 			.join("\n");
 
-		let flags = self.flags.info_string();
+		let flags = self.context.info_string();
 
 		let scope_info = indent_all_by(NUM_SPACES, format!(
 			"Scope Info:\n{}",
@@ -193,67 +147,5 @@ impl hir::HirDiagnostics for Scope {
 impl Default for Scope {
 	fn default() -> Self {
 		Self::new()
-	}
-}
-
-//-----------------------------------------------------------------//
-
-#[derive(Debug, Clone, Copy)]
-pub struct ScopeFlags {
-	pub global: bool,
-
-	pub in_function: bool,
-	pub in_loop: bool,
-	pub in_class: bool,
-	pub in_interface: bool
-}
-
-impl ScopeFlags {
-	pub fn as_string_vec(&self) -> Vec<String> {
-		let mut flags = vec![];
-
-		macro_rules! flag {
-			($property:ident) => {
-				if self.$property {
-					flags.push(stringify!($property).to_owned());
-				}
-			};
-		}
-
-		flag!(global);
-
-		flag!(in_function);
-		flag!(in_loop);
-		flag!(in_class);
-		flag!(in_interface);
-
-		flags
-	}
-
-	pub fn info_string(&self) -> String {
-		self.as_string_vec().join(",\n")
-	}
-}
-
-impl Default for ScopeFlags {
-	fn default() -> Self {
-		Self {
-			global: true,
-
-			in_function: false,
-			in_loop: false,
-			in_class: false,
-			in_interface: false
-		}
-	}
-}
-
-impl ToString for ScopeFlags {
-	fn to_string(&self) -> String {
-		let flags = self
-			.as_string_vec()
-			.join(", ");
-		
-		format!("ScopeFlags({flags})")
 	}
 }

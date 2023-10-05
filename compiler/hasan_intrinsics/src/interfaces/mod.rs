@@ -1,5 +1,4 @@
-mod members;
-pub use members::*;
+pub mod members;
 
 use hasan_macros::VariantName;
 

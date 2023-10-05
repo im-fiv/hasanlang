@@ -16,6 +16,11 @@ impl DimType {
 
 		format!("{name}{suffix}")
 	}
+
+	#[inline]
+	pub fn new(kind: Type, dimensions: usize) -> Self {
+		Self(kind, dimensions)
+	}
 }
 
 impl HirDiagnostics for DimType {
