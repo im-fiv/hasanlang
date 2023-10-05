@@ -11,7 +11,7 @@ pub fn pest_parse(input: &str, debug: bool) -> Pairs<'_, Rule> {
 	let result = PestParser::parse(Rule::program, input);
 
 	if let Err(error) = result {
-		panic!("{}", error)
+		panic!("{}", error);
 	}
 
 	let result = result.unwrap();
