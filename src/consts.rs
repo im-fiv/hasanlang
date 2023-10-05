@@ -3,7 +3,6 @@ use const_format::formatcp;
 type CStr = &'static str;
 
 /// Formats the input string into `./build/{string}`
-#[inline]
 pub fn fmt_c(input: CStr) -> String {
 	format!("{OUT_DIR_PATH}/{input}")
 }

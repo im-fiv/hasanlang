@@ -9,7 +9,6 @@ pub struct DimType(
 );
 
 impl DimType {
-	#[inline]
 	pub fn display(&self) -> String {
 		let name = self.0.name.clone();
 		let suffix = "[]".repeat(self.1);
@@ -17,21 +16,18 @@ impl DimType {
 		format!("{name}{suffix}")
 	}
 
-	#[inline]
 	pub fn new(kind: Type, dimensions: usize) -> Self {
 		Self(kind, dimensions)
 	}
 }
 
 impl HirDiagnostics for DimType {
-	#[inline]
 	fn info_string(&self) -> String {
 		self.codegen()
 	}
 }
 
 impl HirCodegen for DimType {
-	#[inline]
 	fn codegen(&self) -> String {
 		let kind = self.0.codegen();
 		let suffix = "[]".repeat(self.1);

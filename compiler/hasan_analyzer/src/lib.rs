@@ -59,7 +59,6 @@ fn function_into_type(function: hir::Function) -> hir::Type {
 /// Converts a class function into a type (function)
 /// 
 /// Note: class function attributes are stripped during this process
-#[inline]
 fn class_function_into_type(class_function: hir::ClassFunction) -> hir::Type {
 	function_into_type(class_function.function)
 }
@@ -1327,7 +1326,6 @@ impl SemanticAnalyzer {
 
 		// Checking the function signature against the interface signature
 		{
-			#[inline]
 			fn is_this_marker(kind: &hir::DimType) -> bool {
 				(kind.0.name == *"this") || kind.0.impls.contains(&String::from("ThisMarker"))
 			}

@@ -157,7 +157,6 @@ impl<'p> HasanParser<'p> {
 		statements
 	}
 
-	#[inline]
 	pub fn pair_str(&self, pair: Pair<Rule>) -> String {
 		pair.as_str().to_owned()
 	}
