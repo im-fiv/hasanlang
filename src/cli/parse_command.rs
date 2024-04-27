@@ -8,6 +8,6 @@ pub struct ParseCommand {
 	pub file_path: String,
 
 	#[arg(short, long, default_value_t = false)]
-	/// Show debug information (currently does nothing)
+	/// Show debug information
 	pub debug: bool
 }
