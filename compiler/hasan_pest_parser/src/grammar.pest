@@ -152,7 +152,7 @@ call_generics = { "<" ~ type ~ ("," ~ type)* ~ ">" }
 
 //* Expressions *//
 expression = { anonymous_function | unary_expression | binary_expression | array_expression | recursive_expression | term }
-binary_operator = { "+" | "-" | "/" | "*" | "%" | "==" | "!=" | "and" | "or" | ">" | "<" | ">=" | "<=" }
+binary_operator = { "+" | "-" | "/" | "*" | "%" | "==" | "!=" | "and" | "or" | ">=" | "<=" | ">" | "<" }
 unary_operator = { "-" | "not" }
 
 // General expression features //
