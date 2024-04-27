@@ -1,9 +1,9 @@
 # Hasanlang
-![Build Status](https://github.com/greenbush5/hasanlang/actions/workflows/build.yml/badge.svg)
+![Build Status](https://github.com/im-fiv/hasanlang/actions/workflows/build.yml/badge.svg)
 ![Language](https://img.shields.io/badge/Language-Rust-orange)
 ![Contributions](https://img.shields.io/badge/Contributions-Welcome-brightgreen)
-![Lines of Code](https://raw.githubusercontent.com/greenbush5/hasanlang/image-data/badge.svg)
-[![Hits-of-Code](https://hitsofcode.com/github/greenbush5/hasanlang?branch=main)](https://hitsofcode.com/github/greenbush5/hasanlang/view?branch=main)
+![Lines of Code](https://raw.githubusercontent.com/im-fiv/hasanlang/image-data/badge.svg)
+[![Hits-of-Code](https://hitsofcode.com/github/im-fiv/hasanlang?branch=main)](https://hitsofcode.com/github/im-fiv/hasanlang/view?branch=main)
 
 Hasanlang is a work-in-progress programming language, made for fun, that aims to be self-hosted. The goal of this project is to extend my knowledge about compilers, programming languages, and how they are created. Currently, this is my primary project.
 
@@ -23,12 +23,12 @@ This project is in the early stages. The language specifications, parser, and ba
 To set up Hasanlang, you will need to have [Rust](https://www.rust-lang.org/tools/install) and [LLVM 15.0](https://releases.llvm.org/download.html) on your system. Then you can clone this repository and build the project using `cargo`, the Rust package manager.
 
 ```bash
-git clone https://github.com/greenbush5/hasanlang.git
+git clone https://github.com/im-fiv/hasanlang.git
 cd hasanlang
 cargo build --release
 ```
 
-Additionally, you can install [Hasanlang syntax highlighting extension](https://github.com/greenbush5/hasanlang-syntax-extension) for VS Code. This is my first time making a syntax highlighting extension, so feel free to contribute to this extension as well!
+Additionally, you can install [Hasanlang syntax highlighting extension](https://github.com/im-fiv/hasanlang-syntax-extension) for VS Code. This is my first time making a syntax highlighting extension, so feel free to contribute to this extension as well!
 
 ## Contributing
 I would love to have your help in making Hasanlang better, contributions are very welcome.
