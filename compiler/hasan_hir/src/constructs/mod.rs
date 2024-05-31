@@ -8,7 +8,7 @@ pub use conditionals::*;
 pub use enums::*;
 pub use functions::*;
 
-pub use crate::{Statement, DimType, Type, HirCodegen, HirDiagnostics};
+pub use crate::{Statement, DimType, HirCodegen, HirDiagnostics};
 use hasan_parser::vec_transform_str;
 
 #[derive(Debug, Clone, Default)]

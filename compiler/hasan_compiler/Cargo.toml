@@ -6,11 +6,11 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-hasan_pest_parser = { path = "../hasan_pest_parser" }
-hasan_parser = { path = "../hasan_parser" }
-hasan_hir = { path = "../hasan_hir" }
-hasan_macros = { path = "../hasan_macros" }
+hasan_pest_parser = { workspace = true }
+hasan_parser = { workspace = true }
+hasan_hir = { workspace = true }
+hasan_macros = { workspace = true }
 inkwell = { git = "https://github.com/TheDan64/inkwell", branch = "master", features = ["llvm15-0"] }
-pest = "2.7.0"
+pest = { workspace = true }
+anyhow = { workspace = true }
 rand = "0.8.5"
-anyhow = "1.0.72"

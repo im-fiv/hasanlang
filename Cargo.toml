@@ -8,12 +8,26 @@ edition = "2021"
 [workspace]
 members = ["compiler/*"]
 
-[dependencies]
+[workspace.dependencies]
 hasan_pest_parser = { path = "./compiler/hasan_pest_parser" }
 hasan_parser = { path = "./compiler/hasan_parser" }
 hasan_analyzer = { path = "./compiler/hasan_analyzer" }
 hasan_hir = { path = "./compiler/hasan_hir" }
 hasan_compiler = { path = "./compiler/hasan_compiler" }
+hasan_intrinsics = { path = "./compiler/hasan_intrinsics" }
+hasan_macros = { path = "./compiler/hasan_macros" }
+uuid = { version = "1.4.1", features = ["v4", "fast-rng", "macro-diagnostics"] }
+anyhow = "1.0.72"
+pest = "2.7.0"
+strum_macros = "0.26.2"
+indent = "0.1.1"
+
+[dependencies]
+hasan_pest_parser = { workspace = true }
+hasan_parser = { workspace = true }
+hasan_analyzer = { workspace = true }
+hasan_hir = { workspace = true }
+hasan_compiler = { workspace = true }
 inkwell = { git = "https://github.com/TheDan64/inkwell", branch = "master", features = ["llvm15-0"] }
 pest = "2.7.0"
 clap = { version = "4.3.19", features = ["derive"] }

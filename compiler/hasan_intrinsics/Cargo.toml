@@ -6,5 +6,5 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-hasan_macros = { path = "../hasan_macros" }
-strum_macros = "0.25.1"
+hasan_macros = { workspace = true }
+strum_macros = { workspace = true }

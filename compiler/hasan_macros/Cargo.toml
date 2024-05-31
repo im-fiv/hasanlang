@@ -9,11 +9,11 @@ edition = "2021"
 proc-macro = true
 
 [dependencies]
+anyhow = { workspace = true }
 syn = { version = "*", features = ["extra-traits"] }
 paste = "1.0.14"
 quote = "*"
 proc-macro2 = "*"
-anyhow = "1.0.72"
 
 [package.metadata.cargo-udeps.ignore]
 normal = ["anyhow"] # Used in doc-tests
