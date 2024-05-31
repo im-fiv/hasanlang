@@ -76,6 +76,7 @@ fn parse(command: cli::ParseCommand) {
 }
 
 fn main() {
+	std::fs::create_dir_all(OUT_DIR_PATH).unwrap();
 	let args = cli::Cli::parse_custom();
 	
 	match args.subcommand {
