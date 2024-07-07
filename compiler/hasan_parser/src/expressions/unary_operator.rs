@@ -9,6 +9,7 @@ impl ToString for UnaryOperator {
 		match self {
 			Self::Minus => "-",
 			Self::Not => "not"
-		}.to_owned()
+		}
+		.to_owned()
 	}
 }

@@ -1,14 +1,11 @@
-use crate::{HasanCodegen, Expression};
 use super::Statement;
+use crate::{Expression, HasanCodegen};
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum ModuleItem {
 	Regular(String),
 
-	Renamed {
-		from: String,
-		to: String
-	}
+	Renamed { from: String, to: String }
 }
 
 impl HasanCodegen for ModuleItem {
@@ -36,7 +33,5 @@ pub struct EnumVariant {
 }
 
 impl HasanCodegen for EnumVariant {
-	fn codegen(&self) -> String {
-		self.name.clone()
-	}
+	fn codegen(&self) -> String { self.name.clone() }
 }

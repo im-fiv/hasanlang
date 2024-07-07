@@ -1,7 +1,7 @@
-use crate::Interface;
+use hasan_hir::{Class, Enum, HirDiagnostics, Variable};
+use hasan_macros::{Conversion, VariantName};
 
-use hasan_macros::{VariantName, Conversion};
-use hasan_hir::{Class, Variable, Enum, HirDiagnostics};
+use crate::Interface;
 
 #[derive(Debug, Clone, VariantName, Conversion)]
 pub enum Symbol {

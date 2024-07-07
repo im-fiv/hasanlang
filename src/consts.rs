@@ -3,9 +3,7 @@ use const_format::formatcp;
 type CStr = &'static str;
 
 /// Formats the input string into `./build/{string}`
-pub fn fmt_c(input: CStr) -> String {
-	format!("{OUT_DIR_PATH}/{input}")
-}
+pub fn fmt_c(input: CStr) -> String { format!("{OUT_DIR_PATH}/{input}") }
 
 pub const DEFAULT_INPUT_FP: CStr = "./input.hsl";
 pub const OUT_DIR_PATH: CStr = "./build";

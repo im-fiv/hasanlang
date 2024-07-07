@@ -1,10 +1,10 @@
-use crate::{Symbol, GenericTable, ScopeContext};
-
-use hasan_hir as hir;
-
 use std::collections::HashMap;
-use anyhow::{Result, bail};
+
+use anyhow::{bail, Result};
+use hasan_hir as hir;
 use uuid::Uuid;
+
+use crate::{GenericTable, ScopeContext, Symbol};
 
 pub type SymbolTable = HashMap<String, Symbol>;
 
@@ -50,7 +50,10 @@ impl Scope {
 	/// Errors if a symbol with provided name already exists
 	pub fn insert_symbol(&mut self, name: String, symbol: Symbol) -> Result<()> {
 		if self.symbol_table.insert(name.clone(), symbol).is_some() {
-			bail!("Cannot insert symbol with name `{}` because it already exists", name);
+			bail!(
+				"Cannot insert symbol with name `{}` because it already exists",
+				name
+			);
 		}
 
 		Ok(())
@@ -63,37 +66,46 @@ impl Scope {
 			return Ok(symbol.to_owned());
 		}
 
-		bail!("Cannot get symbol with name `{}` because it does not exist", name);
+		bail!(
+			"Cannot get symbol with name `{}` because it does not exist",
+			name
+		);
 	}
 
 	/// Attempts to get a type with the given UUID.
 	/// Errors if the type with specified UUID does not exist
 	pub fn class_by_uuid(&self, uuid: Uuid) -> Result<hir::Type> {
-		self.symbol_table.iter().find_map(|(_, symbol)| {
-			if !symbol.is_class() {
-				return None;
-			}
+		self.symbol_table
+			.iter()
+			.find_map(|(_, symbol)| {
+				if !symbol.is_class() {
+					return None;
+				}
 
-			let class = symbol
-				.to_owned()
-				.as_class()
-				.unwrap_or_else(|_| unreachable!("Symbol is guaranteed to be of variant `Class`"));
+				let class = symbol.to_owned().as_class().unwrap_or_else(|_| {
+					unreachable!("Symbol is guaranteed to be of variant `Class`")
+				});
 
-			if class.id == uuid {
-				Some(class)
-			} else {
-				None
-			}
-		}).ok_or(
-			anyhow::format_err!("Cannot get symbol with UUID `{}` because it does not exist", uuid)
-		)
+				if class.id == uuid {
+					Some(class)
+				} else {
+					None
+				}
+			})
+			.ok_or(anyhow::format_err!(
+				"Cannot get symbol with UUID `{}` because it does not exist",
+				uuid
+			))
 	}
 
 	/// Attempts to update a symbol with the given name.
 	/// Errors if the symbol with specified name does not exist
 	pub fn update_symbol(&mut self, name: String, symbol: Symbol) -> Result<()> {
 		if self.symbol_table.insert(name.clone(), symbol).is_none() {
-			bail!("Cannot update symbol with name `{}` because it does not exist", name);
+			bail!(
+				"Cannot update symbol with name `{}` because it does not exist",
+				name
+			);
 		}
 
 		Ok(())
@@ -102,8 +114,8 @@ impl Scope {
 
 impl hir::HirDiagnostics for Scope {
 	fn info_string(&self) -> String {
-		use indent::{indent_all_by, indent_all_with};
 		use hasan_parser::NUM_SPACES;
+		use indent::{indent_all_by, indent_all_with};
 
 		let symbol_table = self
 			.symbol_table
@@ -128,24 +140,26 @@ impl hir::HirDiagnostics for Scope {
 
 		let flags = self.context.info_string();
 
-		let scope_info = indent_all_by(NUM_SPACES, format!(
-			"Scope Info:\n{}",
-
-			indent_all_by(hasan_parser::NUM_SPACES, format!(
-				"Symbol Table:\n{}\n\nGeneric Table:\n{}\n\nFlags:\n{}",
-
-				indent_all_by(NUM_SPACES, symbol_table),
-				indent_all_by(NUM_SPACES, generic_table),
-				indent_all_by(NUM_SPACES, indent_all_with("- ", flags))
-			))
-		));
+		let scope_info = indent_all_by(
+			NUM_SPACES,
+			format!(
+				"Scope Info:\n{}",
+				indent_all_by(
+					hasan_parser::NUM_SPACES,
+					format!(
+						"Symbol Table:\n{}\n\nGeneric Table:\n{}\n\nFlags:\n{}",
+						indent_all_by(NUM_SPACES, symbol_table),
+						indent_all_by(NUM_SPACES, generic_table),
+						indent_all_by(NUM_SPACES, indent_all_with("- ", flags))
+					)
+				)
+			)
+		);
 
 		format!("/*\n{scope_info}\n*/")
 	}
 }
 
 impl Default for Scope {
-	fn default() -> Self {
-		Self::new()
-	}
+	fn default() -> Self { Self::new() }
 }

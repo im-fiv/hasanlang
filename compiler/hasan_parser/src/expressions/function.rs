@@ -1,10 +1,9 @@
-use crate::{
-	Statement, vec_transform_str, HasanCodegen,
-	NUM_SPACES, GeneralModifiers, DefinitionType,
-	Type, cond_vec_transform
-};
-
 use indent::indent_all_by;
+
+use crate::{
+	cond_vec_transform, vec_transform_str, DefinitionType, GeneralModifiers, HasanCodegen,
+	Statement, Type, NUM_SPACES
+};
 
 pub type FunctionBody = Option<Vec<Statement>>;
 
@@ -22,15 +21,11 @@ impl HasanCodegen for Function {
 			Some(body) => {
 				let body = indent_all_by(
 					NUM_SPACES,
-					vec_transform_str(
-						&body,
-						|statement| statement.codegen(),
-						"\n"
-					)
+					vec_transform_str(&body, |statement| statement.codegen(), "\n")
 				);
 
 				format!("{prototype} do\n{body}\nend")
-			},
+			}
 
 			None => format!("{prototype};")
 		}
@@ -58,23 +53,15 @@ impl HasanCodegen for FunctionPrototype {
 
 		let name = self.name.clone();
 
-		let generics = cond_vec_transform!(
-			&self.generics,
-			|generic| generic.codegen(),
-			", ",
-			"<{}>"
-		);
+		let generics =
+			cond_vec_transform!(&self.generics, |generic| generic.codegen(), ", ", "<{}>");
 
 		let return_type = match self.return_type.clone() {
 			Some(kind) => format!(" -> {}", kind.codegen()),
 			None => String::new()
 		};
 
-		let arguments = vec_transform_str(
-			&self.arguments,
-			|argument| argument.codegen(),
-			", "
-		);
+		let arguments = vec_transform_str(&self.arguments, |argument| argument.codegen(), ", ");
 
 		format!("{modifiers}func {name}{generics}({arguments}){return_type}")
 	}
@@ -87,9 +74,7 @@ pub struct FunctionArgument {
 }
 
 impl FunctionArgument {
-	pub fn new(name: String, kind: Type) -> Self {
-		FunctionArgument { name, kind }
-	}
+	pub fn new(name: String, kind: Type) -> Self { FunctionArgument { name, kind } }
 }
 
 impl HasanCodegen for FunctionArgument {

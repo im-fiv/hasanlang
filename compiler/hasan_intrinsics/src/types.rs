@@ -19,7 +19,5 @@ pub enum IntrinsicType {
 }
 
 impl IntrinsicType {
-	pub fn name(&self) -> String {
-		self.to_string()
-	}
+	pub fn name(&self) -> String { self.to_string() }
 }

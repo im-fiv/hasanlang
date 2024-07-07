@@ -1,5 +1,5 @@
-use crate::{HasanCodegen, vec_transform_str};
 use super::RegularType;
+use crate::{vec_transform_str, HasanCodegen};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct DefinitionType {

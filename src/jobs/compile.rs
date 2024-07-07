@@ -1,9 +1,8 @@
+use hasan_compiler::Compiler;
+use hasan_hir::Program;
 use inkwell::context::Context;
 use inkwell::passes::PassManager;
 use inkwell::targets::{InitializationConfig, Target, TargetMachine};
-
-use hasan_hir::Program;
-use hasan_compiler::Compiler;
 
 pub fn compile(hir: Program, no_opt: bool, debug: bool) -> String {
 	if debug {
@@ -47,9 +46,7 @@ pub fn compile(hir: Program, no_opt: bool, debug: bool) -> String {
 		panic!("{:?}", error);
 	}
 
-	let codegen_data = module
-		.print_to_string()
-		.to_string();
+	let codegen_data = module.print_to_string().to_string();
 
 	if debug {
 		println!("Compiled IR: {}", codegen_data);

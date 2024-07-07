@@ -1,10 +1,7 @@
 use hasan_parser::{vec_transform_str, NUM_SPACES};
-use crate::{
-	DimType, Statement,
-	HirCodegen, HirDiagnostics,
-};
-
 use indent::indent_all_by;
+
+use crate::{DimType, HirCodegen, HirDiagnostics, Statement};
 
 pub type FunctionBody = Option<Vec<Statement>>;
 
@@ -19,12 +16,13 @@ impl HirDiagnostics for Function {
 		let prototype = self.prototype.info_string();
 
 		match self.body.clone() {
-			Some(_) => format!(
-				"{} do\n{}\nend",
-
-				prototype,
-				indent_all_by(NUM_SPACES, "...")
-			),
+			Some(_) => {
+				format!(
+					"{} do\n{}\nend",
+					prototype,
+					indent_all_by(NUM_SPACES, "...")
+				)
+			}
 
 			None => prototype
 		}
@@ -38,18 +36,14 @@ impl HirCodegen for Function {
 		if let Some(body) = self.body.clone() {
 			let body = indent_all_by(
 				NUM_SPACES,
-				vec_transform_str(
-					&body,
-					|statement| statement.codegen(),
-					"\n"
-				)	
+				vec_transform_str(&body, |statement| statement.codegen(), "\n")
 			);
 
 			format!("{prototype} do\n{body}\nend")
 		} else {
 			format!("{prototype};")
 		}
-	}	
+	}
 }
 
 impl From<FunctionPrototype> for Function {
@@ -71,9 +65,7 @@ pub struct FunctionPrototype {
 }
 
 impl HirDiagnostics for FunctionPrototype {
-	fn info_string(&self) -> String {
-		self.codegen()
-	}
+	fn info_string(&self) -> String { self.codegen() }
 }
 
 impl HirCodegen for FunctionPrototype {

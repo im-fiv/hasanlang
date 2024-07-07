@@ -2,21 +2,19 @@ mod cli;
 mod jobs;
 mod consts;
 
-use consts::*;
-
 use std::fs::File;
 use std::io::Write;
 
+use consts::*;
 use hasan_hir::{HirCodegen, HirDiagnostics};
 use hasan_parser::HasanCodegen;
 
 //* Helper functions *//
 fn write_file(path: &str, contents: String) {
-	let mut file = File::create(path)
-		.unwrap_or_else(|_| panic!("Failed to open file `{}` (write)", path));
+	let mut file =
+		File::create(path).unwrap_or_else(|_| panic!("Failed to open file `{}` (write)", path));
 
-	file
-		.write_all(contents.as_bytes())
+	file.write_all(contents.as_bytes())
 		.unwrap_or_else(|_| panic!("Failed to write to file `{}`", path))
 }
 
@@ -36,9 +34,21 @@ macro_rules! job {
 fn compile(command: cli::CompileCommand) {
 	let code = job!(read_file, SOURCE_FN, |result| result, &command.file_path);
 
-	let pairs = job!(pest_parse, PEST_AST_FN, |result| format!("{result:#?}"), &code, command.debug);
+	let pairs = job!(
+		pest_parse,
+		PEST_AST_FN,
+		|result| format!("{result:#?}"),
+		&code,
+		command.debug
+	);
 
-	let ast = job!(hasan_parse, HASAN_AST_FN, |result| format!("{result:#?}"), pairs, command.debug);
+	let ast = job!(
+		hasan_parse,
+		HASAN_AST_FN,
+		|result| format!("{result:#?}"),
+		pairs,
+		command.debug
+	);
 	write_file(&fmt_c(HASAN_AST_CODEGEN_FN), ast.codegen());
 
 	let hir = job!(
@@ -49,19 +59,41 @@ fn compile(command: cli::CompileCommand) {
 		command.debug
 	);
 
-	write_file(&fmt_c(ANALYZED_CODEGEN_FN), format!("{}\n\n{}", hir.1.info_string(), hir.0.codegen()));
+	write_file(
+		&fmt_c(ANALYZED_CODEGEN_FN),
+		format!("{}\n\n{}", hir.1.info_string(), hir.0.codegen())
+	);
 
-	job!(compile, IR_FN, |result| result, hir.0, command.no_opt, command.debug);
-	
+	job!(
+		compile,
+		IR_FN,
+		|result| result,
+		hir.0,
+		command.no_opt,
+		command.debug
+	);
+
 	jobs::link(command.debug);
 }
 
 fn parse(command: cli::ParseCommand) {
 	let code = job!(read_file, SOURCE_FN, |result| result, &command.file_path);
 
-	let pairs = job!(pest_parse, PEST_AST_FN, |result| format!("{result:#?}"), &code, command.debug);
+	let pairs = job!(
+		pest_parse,
+		PEST_AST_FN,
+		|result| format!("{result:#?}"),
+		&code,
+		command.debug
+	);
 
-	let ast = job!(hasan_parse, HASAN_AST_FN, |result| format!("{result:#?}"), pairs, command.debug);
+	let ast = job!(
+		hasan_parse,
+		HASAN_AST_FN,
+		|result| format!("{result:#?}"),
+		pairs,
+		command.debug
+	);
 	write_file(&fmt_c(HASAN_AST_CODEGEN_FN), ast.codegen());
 
 	let hir = job!(
@@ -72,13 +104,16 @@ fn parse(command: cli::ParseCommand) {
 		command.debug
 	);
 
-	write_file(&fmt_c(ANALYZED_CODEGEN_FN), format!("{}\n\n{}", hir.1.info_string(), hir.0.codegen()));
+	write_file(
+		&fmt_c(ANALYZED_CODEGEN_FN),
+		format!("{}\n\n{}", hir.1.info_string(), hir.0.codegen())
+	);
 }
 
 fn main() {
 	std::fs::create_dir_all(OUT_DIR_PATH).unwrap();
 	let args = cli::Cli::parse_custom();
-	
+
 	match args.subcommand {
 		cli::CLISubcommand::Compile(command) => compile(command),
 		cli::CLISubcommand::Parse(command) => parse(command)

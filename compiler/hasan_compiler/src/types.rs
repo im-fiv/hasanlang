@@ -1,10 +1,8 @@
-use inkwell::types::BasicTypeEnum;
-use inkwell::context::Context;
-use inkwell::AddressSpace;
-
-use hasan_macros::VariantName;
-
 use anyhow::bail;
+use hasan_macros::VariantName;
+use inkwell::context::Context;
+use inkwell::types::BasicTypeEnum;
+use inkwell::AddressSpace;
 
 /// An enum containing all of the built-in types (typically types that have their default behavior explicitly defined by the compiler)
 #[derive(Debug, Clone, VariantName)]
@@ -22,7 +20,11 @@ impl<'ctx> IntrinsicType {
 		match self {
 			Self::Int => Some(BasicTypeEnum::IntType(context.i64_type())),
 			Self::Float => Some(BasicTypeEnum::FloatType(context.f64_type())),
-			Self::String => Some(BasicTypeEnum::PointerType(context.i8_type().ptr_type(AddressSpace::default()))),
+			Self::String => {
+				Some(BasicTypeEnum::PointerType(
+					context.i8_type().ptr_type(AddressSpace::default())
+				))
+			}
 			Self::Boolean => Some(BasicTypeEnum::IntType(context.bool_type())),
 
 			Self::Void => None

@@ -1,4 +1,4 @@
-use crate::{DimType, HirDiagnostics, HirCodegen};
+use crate::{DimType, HirCodegen, HirDiagnostics};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct ClassAssocType {

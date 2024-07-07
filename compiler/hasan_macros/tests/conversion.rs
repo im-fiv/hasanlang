@@ -1,5 +1,5 @@
 extern crate hasan_macros;
-use hasan_macros::{VariantName, Conversion};
+use hasan_macros::{Conversion, VariantName};
 
 #[test]
 fn generic_enum() {

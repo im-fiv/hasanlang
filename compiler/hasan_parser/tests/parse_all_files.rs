@@ -1,26 +1,25 @@
-use std::panic;
 use std::fs::File;
-use std::io::BufReader;
 use std::io::prelude::*;
+use std::io::BufReader;
+use std::panic;
 
-use pest::Parser;
-
-use hasan_pest_parser::{PestParser, Rule};
 use hasan_parser::HasanParser;
+use hasan_pest_parser::{PestParser, Rule};
+use pest::Parser;
 
 fn read_file(path: std::path::PathBuf) -> String {
 	let path_clone = path.clone();
 	let display = path_clone.display();
 
-	let file = File::open(path)
-		.expect(&format!("Failed to open file {display} (read)"));
+	let file = File::open(path).expect(&format!("Failed to open file {display} (read)"));
 
 	let mut reader = BufReader::new(file);
 	let mut contents = String::new();
 
-	reader.read_to_string(&mut contents)
+	reader
+		.read_to_string(&mut contents)
 		.expect(&format!("Failed to read from file {display}"));
-	
+
 	contents.replace("\r\n", "\n")
 }
 
@@ -29,9 +28,7 @@ fn parse_all_files() {
 	let paths = std::fs::read_dir("./tests/cases").expect("Failed to read directory");
 
 	for path in paths {
-		let path = path
-			.expect("Failed to resolve path")
-			.path();
+		let path = path.expect("Failed to resolve path").path();
 
 		let filename = path
 			.file_name()
@@ -50,7 +47,9 @@ fn parse_all_files() {
 		let parse_result = PestParser::parse(Rule::program, &contents);
 
 		if parse_result.is_err() {
-			let err = parse_result.err().unwrap_or_else(|| unreachable!("Parse result is not an error variant"));
+			let err = parse_result
+				.err()
+				.unwrap_or_else(|| unreachable!("Parse result is not an error variant"));
 
 			eprintln!("Failed to parse file {:?}:", filename);
 			panic!("{}", err);
@@ -72,6 +71,10 @@ fn parse_all_files() {
 		let ast_string = format!("{ast:#?}").replace("\r\n", "\n");
 		let expected_output = read_file(std::path::PathBuf::from(match_filename));
 
-		assert_eq!(ast_string, expected_output, "AST does not match expected output for file {:?}", filename);
+		assert_eq!(
+			ast_string, expected_output,
+			"AST does not match expected output for file {:?}",
+			filename
+		);
 	}
 }

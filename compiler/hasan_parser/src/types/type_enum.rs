@@ -1,5 +1,5 @@
+use super::{FunctionType, RegularType, TupleType};
 use crate::HasanCodegen;
-use super::{RegularType, FunctionType, TupleType};
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum Type {

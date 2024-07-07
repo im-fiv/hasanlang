@@ -1,11 +1,9 @@
-use crate::{
-	Function, GeneralModifiers, DefinitionType,
-	Type, ClassMember, Expression, InterfaceMember
-};
-
-use super::{EnumVariant, ConditionBranch, ModuleItem};
-
 use hasan_macros::VariantName;
+
+use super::{ConditionBranch, EnumVariant, ModuleItem};
+use crate::{
+	ClassMember, DefinitionType, Expression, Function, GeneralModifiers, InterfaceMember, Type
+};
 
 #[derive(Debug, Clone, PartialEq, VariantName)]
 pub enum Statement {
@@ -73,7 +71,7 @@ pub enum Statement {
 		right: Expression,
 		statements: Vec<Statement>
 	},
-	
+
 	Break,
 
 	InterfaceDefinition {

@@ -1,5 +1,6 @@
-use crate::consts::*;
 use std::process::{Command, ExitStatus};
+
+use crate::consts::*;
 
 fn llc() -> ExitStatus {
 	Command::new("llc")

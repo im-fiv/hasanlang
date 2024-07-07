@@ -12,13 +12,13 @@ pub enum IntrinsicInterface {
 
 	/// Unary `-` operator
 	NegOp,
-	
+
 	/// `/` operator
 	DivOp,
 
 	/// `*` operator
 	MulOp,
-	
+
 	/// `%` operator
 	RemOp,
 
@@ -45,7 +45,5 @@ pub enum IntrinsicInterface {
 }
 
 impl IntrinsicInterface {
-	pub fn name(&self) -> String {
-		self.variant_name()
-	}
+	pub fn name(&self) -> String { self.variant_name() }
 }

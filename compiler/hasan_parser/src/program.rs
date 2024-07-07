@@ -1,4 +1,4 @@
-use crate::{HasanCodegen, Statement, vec_transform_str};
+use crate::{vec_transform_str, HasanCodegen, Statement};
 
 #[derive(Debug, Clone)]
 pub struct Program {
@@ -8,11 +8,7 @@ pub struct Program {
 
 impl HasanCodegen for Program {
 	fn codegen(&self) -> String {
-		let statements = vec_transform_str(
-			&self.statements,
-			|statement| statement.codegen(),
-			"\n"
-		);
+		let statements = vec_transform_str(&self.statements, |statement| statement.codegen(), "\n");
 
 		if let Some(info) = self.module_info.clone() {
 			let info = info.codegen();

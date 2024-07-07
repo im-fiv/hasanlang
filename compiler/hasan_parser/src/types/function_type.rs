@@ -1,5 +1,5 @@
-use crate::HasanCodegen;
 use super::{DefinitionType, Type};
+use crate::HasanCodegen;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct FunctionType {

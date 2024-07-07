@@ -1,5 +1,5 @@
-use crate::HasanCodegen;
 use super::Type;
+use crate::HasanCodegen;
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct RegularType {

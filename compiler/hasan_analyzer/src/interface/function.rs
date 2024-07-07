@@ -13,11 +13,7 @@ impl HirDiagnostics for InterfaceFunction {
 	fn info_string(&self) -> String {
 		let modifiers = self.modifiers.to_string();
 		let name = self.name.clone();
-		let arguments = vec_transform_str(
-			&self.argument_types,
-			|kind| kind.info_string(),
-			", "
-		);
+		let arguments = vec_transform_str(&self.argument_types, |kind| kind.info_string(), ", ");
 		let return_type = self.return_type.info_string();
 
 		format!("{modifiers}func {name}({arguments}) -> {return_type}")

@@ -1,11 +1,12 @@
+use hasan_pest_parser::Rule;
 use pest::error::{Error, ErrorVariant};
 use pest::Span;
 
-use hasan_pest_parser::Rule;
-
 pub fn create_error(message: &str, span: Span<'_>) -> Error<Rule> {
 	Error::new_from_span(
-		ErrorVariant::CustomError { message: message.to_owned() },
+		ErrorVariant::CustomError {
+			message: message.to_owned()
+		},
 		span
 	)
 }

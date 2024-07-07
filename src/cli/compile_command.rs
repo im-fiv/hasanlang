@@ -1,5 +1,6 @@
-use crate::consts::DEFAULT_INPUT_FP;
 use clap::Args;
+
+use crate::consts::DEFAULT_INPUT_FP;
 
 #[derive(Debug, Args)]
 pub struct CompileCommand {

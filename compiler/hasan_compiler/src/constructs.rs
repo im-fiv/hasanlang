@@ -1,5 +1,5 @@
-use inkwell::values::{GlobalValue, PointerValue};
 use inkwell::types::BasicTypeEnum;
+use inkwell::values::{GlobalValue, PointerValue};
 
 #[derive(Debug, Clone)]
 pub struct Variable<'ctx> {

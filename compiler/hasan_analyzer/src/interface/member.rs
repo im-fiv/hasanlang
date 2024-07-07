@@ -1,11 +1,7 @@
-use super::{
-	InterfaceVariable,
-	InterfaceFunction,
-	InterfaceAssocType
-};
-
 use hasan_hir::HirDiagnostics;
-use hasan_macros::{VariantName, Conversion};
+use hasan_macros::{Conversion, VariantName};
+
+use super::{InterfaceAssocType, InterfaceFunction, InterfaceVariable};
 
 #[derive(Debug, Clone, VariantName, Conversion)]
 pub enum InterfaceMember {

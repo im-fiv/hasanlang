@@ -1,10 +1,8 @@
-use crate::HasanCodegen;
 use super::Type;
+use crate::HasanCodegen;
 
 #[derive(Debug, Clone, PartialEq)]
-pub struct TupleType(
-	pub Vec<Type>
-);
+pub struct TupleType(pub Vec<Type>);
 
 impl HasanCodegen for TupleType {
 	fn codegen(&self) -> String {

@@ -1,12 +1,7 @@
-use crate::{
-	IntType, FloatType, Type,
-	DefinitionType, FunctionArgument,
-	Statement
-};
-
-use super::{UnaryOperator, BinaryOperator};
-
 use strum_macros::Display;
+
+use super::{BinaryOperator, UnaryOperator};
+use crate::{DefinitionType, FloatType, FunctionArgument, IntType, Statement, Type};
 
 #[derive(Debug, Clone, PartialEq, Display)]
 pub enum Expression {

@@ -1,4 +1,4 @@
-use hasan_analyzer::{SemanticAnalyzer, Scope};
+use hasan_analyzer::{Scope, SemanticAnalyzer};
 
 pub fn analyze(ast: hasan_parser::Program, debug: bool) -> (hasan_hir::Program, Scope) {
 	if debug {

@@ -1,13 +1,10 @@
-use crate::{
-	HasanCodegen, GeneralModifiers, Type,
-	Expression, cond_vec_transform,
-	ClassFunctionAttributes, FunctionPrototype,
-	Statement, Function, NUM_SPACES,
-	vec_transform_str
-};
-
-use indent::indent_all_by;
 use hasan_macros::VariantName;
+use indent::indent_all_by;
+
+use crate::{
+	cond_vec_transform, vec_transform_str, ClassFunctionAttributes, Expression, Function,
+	FunctionPrototype, GeneralModifiers, HasanCodegen, Statement, Type, NUM_SPACES
+};
 
 #[derive(Debug, Clone, PartialEq, VariantName)]
 pub enum ClassMember {
@@ -76,9 +73,15 @@ impl ClassFunction {
 	pub fn from_statement(statement: Statement, attributes: ClassFunctionAttributes) -> Self {
 		if let Statement::FunctionDefinition(function) = statement {
 			let Function { prototype, body } = function;
-			let body = body.unwrap_or_else(|| panic!("Failed to convert a function declaration into a class definition function"));
+			let body = body.unwrap_or_else(|| {
+				panic!("Failed to convert a function declaration into a class definition function")
+			});
 
-			ClassFunction { attributes, prototype, body }
+			ClassFunction {
+				attributes,
+				prototype,
+				body
+			}
 		} else {
 			panic!("Failed to convert invalid statement into a class definition function");
 		}
@@ -87,12 +90,13 @@ impl ClassFunction {
 
 impl HasanCodegen for ClassFunction {
 	fn codegen(&self) -> String {
-		let attributes = cond_vec_transform!(&self.attributes, |value| value.to_string(), ", ", "#[{}]\n");
+		let attributes =
+			cond_vec_transform!(&self.attributes, |value| value.to_string(), ", ", "#[{}]\n");
 		let statements = indent_all_by(
 			NUM_SPACES,
 			vec_transform_str(&self.body, |value| value.codegen(), "\n")
 		);
-		
+
 		let prototype = self.prototype.codegen();
 		format!("{attributes}{prototype} do\n{statements}\nend")
 	}

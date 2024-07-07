@@ -1,7 +1,7 @@
-use crate::{DimType, HirCodegen, HirDiagnostics, ClassMember};
-use hasan_parser::{HasanCodegen, GeneralModifiers};
-
 use anyhow::bail;
+use hasan_parser::{GeneralModifiers, HasanCodegen};
+
+use crate::{ClassMember, DimType, HirCodegen, HirDiagnostics};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct ClassVariable {
@@ -12,16 +12,13 @@ pub struct ClassVariable {
 }
 
 impl ClassVariable {
-	pub fn name(&self) -> String {
-		self.name.clone()
-	}
+	pub fn name(&self) -> String { self.name.clone() }
 }
 
 impl HirDiagnostics for ClassVariable {
 	fn info_string(&self) -> String {
 		format!(
 			"{}var {}: {}",
-			
 			self.modifiers.to_string(),
 			self.name,
 			self.kind.info_string()
@@ -32,22 +29,24 @@ impl HirDiagnostics for ClassVariable {
 impl HirCodegen for ClassVariable {
 	fn codegen(&self) -> String {
 		match self.default_value.clone() {
-			Some(default_value) => format!(
-				"{}var {}: {} = {};",
+			Some(default_value) => {
+				format!(
+					"{}var {}: {} = {};",
+					self.modifiers.to_string(),
+					self.name,
+					self.kind.codegen(),
+					default_value.codegen()
+				)
+			}
 
-				self.modifiers.to_string(),
-				self.name,
-				self.kind.codegen(),
-				default_value.codegen()
-			),
-
-			None => format!(
-				"{}var {}: {};",
-
-				self.modifiers.to_string(),
-				self.name,
-				self.kind.codegen()
-			)
+			None => {
+				format!(
+					"{}var {}: {};",
+					self.modifiers.to_string(),
+					self.name,
+					self.kind.codegen()
+				)
+			}
 		}
 	}
 }

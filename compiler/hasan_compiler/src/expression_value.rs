@@ -1,10 +1,11 @@
-use inkwell::values::{IntValue, FloatValue, GlobalValue, PointerValue, BasicValue, BasicValueEnum, FunctionValue, AnyValueEnum, AnyValue};
-use inkwell::builder::Builder;
-
-use anyhow::{Result, bail};
-
-use hasan_parser as p;
+use anyhow::{bail, Result};
 use hasan_macros::VariantName;
+use hasan_parser as p;
+use inkwell::builder::Builder;
+use inkwell::values::{
+	AnyValue, AnyValueEnum, BasicValue, BasicValueEnum, FloatValue, FunctionValue, GlobalValue,
+	IntValue, PointerValue
+};
 
 #[derive(Debug, Clone, VariantName)]
 pub enum ExpressionValue<'ctx> {
@@ -36,7 +37,7 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 		macro_rules! v {
 			($value:ident) => {
 				Ok($value.as_basic_value_enum())
-			}
+			};
 		}
 
 		match self {
@@ -46,7 +47,12 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 			Self::Boolean(value) => v!(value),
 			Self::Pointer(value) => v!(value),
 
-			_ => bail!("Cannot unwrap LLVM value of type `{}` as a basic value", self.variant_name())
+			_ => {
+				bail!(
+					"Cannot unwrap LLVM value of type `{}` as a basic value",
+					self.variant_name()
+				)
+			}
 		}
 	}
 
@@ -56,7 +62,7 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 		macro_rules! v {
 			($value:ident) => {
 				Ok($value.as_any_value_enum())
-			}
+			};
 		}
 
 		match self {
@@ -76,7 +82,13 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 			Self::Int(value) => Ok(Self::Int(value.const_neg())),
 			Self::Float(value) => Ok(Self::Float(value.const_neg())),
 
-			_ => bail!("Cannot perform unary operation `{}` on a value of type `{}`", "-", self.variant_name())
+			_ => {
+				bail!(
+					"Cannot perform unary operation `{}` on a value of type `{}`",
+					"-",
+					self.variant_name()
+				)
+			}
 		}
 	}
 
@@ -85,7 +97,13 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 	pub fn apply_unary_not(&self) -> Result<Self> {
 		match self {
 			Self::Boolean(value) => Ok(Self::Boolean(value.const_not())),
-			_ => bail!("Cannot perform unary operation `{}` on a value of type `{}`", "not", self.variant_name())
+			_ => {
+				bail!(
+					"Cannot perform unary operation `{}` on a value of type `{}`",
+					"not",
+					self.variant_name()
+				)
+			}
 		}
 	}
 
@@ -96,26 +114,37 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 	/// Errors if the operation is performed on incompatible types
 	pub fn compile_add(&self, other: &Self, builder: &'a Builder<'ctx>) -> Result<Self> {
 		use BasicValueEnum as B;
-		
+
 		let self_unwrap = self.unwrap_basic_value()?;
 		let other_unwrap = other.unwrap_basic_value()?;
 
 		match (self_unwrap, other_unwrap) {
-			(B::IntValue(a), B::IntValue(b)) => Ok(Self::Int(builder.build_int_add(a, b, "temp.add"))),
+			(B::IntValue(a), B::IntValue(b)) => {
+				Ok(Self::Int(builder.build_int_add(a, b, "temp.add")))
+			}
 
 			(B::IntValue(a), B::FloatValue(b)) => {
 				let cast = builder.build_signed_int_to_float(a, b.get_type(), "temp.convert");
 				Ok(Self::Float(builder.build_float_add(cast, b, "temp.add")))
-			},
+			}
 
 			(B::FloatValue(a), B::IntValue(b)) => {
 				let cast = builder.build_signed_int_to_float(b, a.get_type(), "temp.convert");
 				Ok(Self::Float(builder.build_float_add(a, cast, "temp.add")))
-			},
+			}
 
-			(B::FloatValue(a), B::FloatValue(b)) => Ok(Self::Float(builder.build_float_add(a, b, "temp.add"))),
+			(B::FloatValue(a), B::FloatValue(b)) => {
+				Ok(Self::Float(builder.build_float_add(a, b, "temp.add")))
+			}
 
-			(a, b) => bail!("Cannot compile binary operation `{}` on `{}` and `{}`", p::BinaryOperator::Plus.to_string(), a, b)
+			(a, b) => {
+				bail!(
+					"Cannot compile binary operation `{}` on `{}` and `{}`",
+					p::BinaryOperator::Plus.to_string(),
+					a,
+					b
+				)
+			}
 		}
 	}
 
@@ -123,26 +152,45 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 	/// Errors if the operation is performed on incompatible types
 	pub fn compile_subtract(&self, other: &Self, builder: &'a Builder<'ctx>) -> Result<Self> {
 		use BasicValueEnum as B;
-		
+
 		let self_unwrap = self.unwrap_basic_value()?;
 		let other_unwrap = other.unwrap_basic_value()?;
 
 		match (self_unwrap, other_unwrap) {
-			(B::IntValue(a), B::IntValue(b)) => Ok(Self::Int(builder.build_int_sub(a, b, "temp.subtract"))),
+			(B::IntValue(a), B::IntValue(b)) => {
+				Ok(Self::Int(builder.build_int_sub(a, b, "temp.subtract")))
+			}
 
 			(B::IntValue(a), B::FloatValue(b)) => {
 				let cast = builder.build_signed_int_to_float(a, b.get_type(), "temp.convert");
-				Ok(Self::Float(builder.build_float_sub(cast, b, "temp.subtract")))
-			},
+				Ok(Self::Float(builder.build_float_sub(
+					cast,
+					b,
+					"temp.subtract"
+				)))
+			}
 
 			(B::FloatValue(a), B::IntValue(b)) => {
 				let cast = builder.build_signed_int_to_float(b, a.get_type(), "temp.convert");
-				Ok(Self::Float(builder.build_float_add(a, cast, "temp.subtract")))
-			},
+				Ok(Self::Float(builder.build_float_add(
+					a,
+					cast,
+					"temp.subtract"
+				)))
+			}
 
-			(B::FloatValue(a), B::FloatValue(b)) => Ok(Self::Float(builder.build_float_sub(a, b, "temp.subtract"))),
+			(B::FloatValue(a), B::FloatValue(b)) => {
+				Ok(Self::Float(builder.build_float_sub(a, b, "temp.subtract")))
+			}
 
-			(a, b) => bail!("Cannot compile binary operation `{}` on `{}` and `{}`", p::BinaryOperator::Minus.to_string(), a, b)
+			(a, b) => {
+				bail!(
+					"Cannot compile binary operation `{}` on `{}` and `{}`",
+					p::BinaryOperator::Minus.to_string(),
+					a,
+					b
+				)
+			}
 		}
 	}
 
@@ -150,26 +198,37 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 	/// Errors if the operation is performed on incompatible types
 	pub fn compile_divide(&self, other: &Self, builder: &'a Builder<'ctx>) -> Result<Self> {
 		use BasicValueEnum as B;
-		
+
 		let self_unwrap = self.unwrap_basic_value()?;
 		let other_unwrap = other.unwrap_basic_value()?;
 
 		match (self_unwrap, other_unwrap) {
-			(B::IntValue(a), B::IntValue(b)) => Ok(Self::Int(builder.build_int_signed_div(a, b, "temp.divide"))),
+			(B::IntValue(a), B::IntValue(b)) => {
+				Ok(Self::Int(builder.build_int_signed_div(a, b, "temp.divide")))
+			}
 
 			(B::IntValue(a), B::FloatValue(b)) => {
 				let cast = builder.build_signed_int_to_float(a, b.get_type(), "temp.convert");
 				Ok(Self::Float(builder.build_float_div(cast, b, "temp.divide")))
-			},
+			}
 
 			(B::FloatValue(a), B::IntValue(b)) => {
 				let cast = builder.build_signed_int_to_float(b, a.get_type(), "temp.convert");
 				Ok(Self::Float(builder.build_float_div(a, cast, "temp.divide")))
-			},
+			}
 
-			(B::FloatValue(a), B::FloatValue(b)) => Ok(Self::Float(builder.build_float_div(a, b, "temp.divide"))),
+			(B::FloatValue(a), B::FloatValue(b)) => {
+				Ok(Self::Float(builder.build_float_div(a, b, "temp.divide")))
+			}
 
-			(a, b) => bail!("Cannot compile binary operation `{}` on `{}` and `{}`", p::BinaryOperator::Divide.to_string(), a, b)
+			(a, b) => {
+				bail!(
+					"Cannot compile binary operation `{}` on `{}` and `{}`",
+					p::BinaryOperator::Divide.to_string(),
+					a,
+					b
+				)
+			}
 		}
 	}
 
@@ -177,26 +236,45 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 	/// Errors if the operation is performed on incompatible types
 	pub fn compile_multiply(&self, other: &Self, builder: &'a Builder<'ctx>) -> Result<Self> {
 		use BasicValueEnum as B;
-		
+
 		let self_unwrap = self.unwrap_basic_value()?;
 		let other_unwrap = other.unwrap_basic_value()?;
 
 		match (self_unwrap, other_unwrap) {
-			(B::IntValue(a), B::IntValue(b)) => Ok(Self::Int(builder.build_int_mul(a, b, "temp.multiply"))),
+			(B::IntValue(a), B::IntValue(b)) => {
+				Ok(Self::Int(builder.build_int_mul(a, b, "temp.multiply")))
+			}
 
 			(B::IntValue(a), B::FloatValue(b)) => {
 				let cast = builder.build_signed_int_to_float(a, b.get_type(), "temp.convert");
-				Ok(Self::Float(builder.build_float_mul(cast, b, "temp.multiply")))
-			},
+				Ok(Self::Float(builder.build_float_mul(
+					cast,
+					b,
+					"temp.multiply"
+				)))
+			}
 
 			(B::FloatValue(a), B::IntValue(b)) => {
 				let cast = builder.build_signed_int_to_float(b, a.get_type(), "temp.convert");
-				Ok(Self::Float(builder.build_float_mul(a, cast, "temp.multiply")))
-			},
+				Ok(Self::Float(builder.build_float_mul(
+					a,
+					cast,
+					"temp.multiply"
+				)))
+			}
 
-			(B::FloatValue(a), B::FloatValue(b)) => Ok(Self::Float(builder.build_float_mul(a, b, "temp.multiply"))),
+			(B::FloatValue(a), B::FloatValue(b)) => {
+				Ok(Self::Float(builder.build_float_mul(a, b, "temp.multiply")))
+			}
 
-			(a, b) => bail!("Cannot compile binary operation `{}` on `{}` and `{}`", p::BinaryOperator::Times.to_string(), a, b)
+			(a, b) => {
+				bail!(
+					"Cannot compile binary operation `{}` on `{}` and `{}`",
+					p::BinaryOperator::Times.to_string(),
+					a,
+					b
+				)
+			}
 		}
 	}
 
@@ -204,26 +282,37 @@ impl<'ctx, 'a> ExpressionValue<'ctx> {
 	/// Errors if the operation is performed on incompatible types
 	pub fn compile_modulo(&self, other: &Self, builder: &'a Builder<'ctx>) -> Result<Self> {
 		use BasicValueEnum as B;
-		
+
 		let self_unwrap = self.unwrap_basic_value()?;
 		let other_unwrap = other.unwrap_basic_value()?;
 
 		match (self_unwrap, other_unwrap) {
-			(B::IntValue(a), B::IntValue(b)) => Ok(Self::Int(builder.build_int_signed_rem(a, b, "temp.modulo"))),
+			(B::IntValue(a), B::IntValue(b)) => {
+				Ok(Self::Int(builder.build_int_signed_rem(a, b, "temp.modulo")))
+			}
 
 			(B::IntValue(a), B::FloatValue(b)) => {
 				let cast = builder.build_signed_int_to_float(a, b.get_type(), "temp.convert");
 				Ok(Self::Float(builder.build_float_rem(cast, b, "temp.modulo")))
-			},
+			}
 
 			(B::FloatValue(a), B::IntValue(b)) => {
 				let cast = builder.build_signed_int_to_float(b, a.get_type(), "temp.convert");
 				Ok(Self::Float(builder.build_float_rem(a, cast, "temp.modulo")))
-			},
+			}
 
-			(B::FloatValue(a), B::FloatValue(b)) => Ok(Self::Float(builder.build_float_rem(a, b, "temp.modulo"))),
+			(B::FloatValue(a), B::FloatValue(b)) => {
+				Ok(Self::Float(builder.build_float_rem(a, b, "temp.modulo")))
+			}
 
-			(a, b) => bail!("Cannot compile binary operation `{}` on `{}` and `{}`", p::BinaryOperator::Modulo.to_string(), a, b)
+			(a, b) => {
+				bail!(
+					"Cannot compile binary operation `{}` on `{}` and `{}`",
+					p::BinaryOperator::Modulo.to_string(),
+					a,
+					b
+				)
+			}
 		}
 	}
 
@@ -292,8 +381,13 @@ impl<'ctx> TryFrom<BasicValueEnum<'ctx>> for ExpressionValue<'ctx> {
 			BasicValueEnum::IntValue(value) => Self::resolve_from_int(value),
 			BasicValueEnum::FloatValue(value) => Ok(Self::Float(value)),
 			BasicValueEnum::PointerValue(value) => Ok(Self::Pointer(value)),
-			
-			_ => bail!("Failed to convert value `{}` of type `BasicValueEnum` into `ExpressionValue`", value.get_type())
+
+			_ => {
+				bail!(
+					"Failed to convert value `{}` of type `BasicValueEnum` into `ExpressionValue`",
+					value.get_type()
+				)
+			}
 		}
 	}
 }
@@ -308,8 +402,13 @@ impl<'ctx> TryFrom<AnyValueEnum<'ctx>> for ExpressionValue<'ctx> {
 			// Note: No string value here because it is a global value
 			AnyValueEnum::PointerValue(value) => Ok(Self::Pointer(value)),
 			AnyValueEnum::FunctionValue(value) => Ok(Self::Function(value)),
-			
-			_ => bail!("Failed to convert value `{}` of type `BasicValueEnum` into `ExpressionValue`", value.get_type())
+
+			_ => {
+				bail!(
+					"Failed to convert value `{}` of type `BasicValueEnum` into `ExpressionValue`",
+					value.get_type()
+				)
+			}
 		}
 	}
 }

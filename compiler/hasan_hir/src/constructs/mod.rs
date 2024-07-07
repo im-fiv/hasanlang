@@ -7,9 +7,9 @@ pub use classes::*;
 pub use conditionals::*;
 pub use enums::*;
 pub use functions::*;
-
-pub use crate::{Statement, DimType, HirCodegen, HirDiagnostics};
 use hasan_parser::vec_transform_str;
+
+pub use crate::{DimType, HirCodegen, HirDiagnostics, Statement};
 
 #[derive(Debug, Clone, Default)]
 pub struct Program {

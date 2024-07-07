@@ -31,6 +31,7 @@ impl ToString for BinaryOperator {
 			Self::LessThan => "<",
 			Self::GreaterThanEqual => ">=",
 			Self::LessThanEqual => "<="
-		}.to_owned()
+		}
+		.to_owned()
 	}
 }

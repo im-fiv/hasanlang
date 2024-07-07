@@ -1,9 +1,8 @@
-use crate::{ClassMember, HirCodegen, HirDiagnostics};
-
 use hasan_parser::NUM_SPACES;
-
 use indent::indent_all_by;
 use uuid::Uuid;
+
+use crate::{ClassMember, HirCodegen, HirDiagnostics};
 
 /// Every type is essentially a class, even functions.
 /// All functions/closures automatically implement their according intrinsic interface
@@ -18,8 +17,7 @@ pub struct Type {
 
 impl Type {
 	pub fn member_by_name(&self, name: &str) -> Option<ClassMember> {
-		self
-			.members
+		self.members
 			.clone()
 			.into_iter()
 			.find(|member| member.name() == *name)
@@ -27,9 +25,7 @@ impl Type {
 }
 
 impl PartialEq for Type {
-	fn eq(&self, other: &Self) -> bool {
-		self.id == other.id
-	}
+	fn eq(&self, other: &Self) -> bool { self.id == other.id }
 }
 
 impl HirDiagnostics for Type {
@@ -50,10 +46,7 @@ impl HirDiagnostics for Type {
 			.join("\n\n");
 
 		let members = if !members.is_empty() {
-			indent_all_by(
-				NUM_SPACES,
-				format!("{members}\n")
-			)
+			indent_all_by(NUM_SPACES, format!("{members}\n"))
 		} else {
 			String::new()
 		};
@@ -61,10 +54,7 @@ impl HirDiagnostics for Type {
 		let interfaces = self.impls.join(", ");
 
 		if interfaces.is_empty() && members.is_empty() {
-			return format!(
-				"type {name}\n{}\nend",
-				indent_all_by(NUM_SPACES, "<empty>")
-			);
+			return format!("type {name}\n{}\nend", indent_all_by(NUM_SPACES, "<empty>"));
 		}
 
 		if interfaces.is_empty() {
@@ -76,7 +66,5 @@ impl HirDiagnostics for Type {
 }
 
 impl HirCodegen for Type {
-	fn codegen(&self) -> String {
-		self.name.clone()
-	}
+	fn codegen(&self) -> String { self.name.clone() }
 }

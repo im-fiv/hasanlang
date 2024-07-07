@@ -1,11 +1,6 @@
-use syn::{
-	Attribute, Result, MetaNameValue,
-	Error, Variant, FieldsUnnamed,
-	Generics
-};
-
-use proc_macro2::{TokenStream, Ident, Span};
+use proc_macro2::{Ident, Span, TokenStream};
 use quote::quote;
+use syn::{Attribute, Error, FieldsUnnamed, Generics, MetaNameValue, Result, Variant};
 
 macro_rules! create_attrs {
 	($($attr:ident = $default_value:expr),*) => {
@@ -61,9 +56,7 @@ macro_rules! create_attrs {
 	};
 }
 
-create_attrs!(
-	anyhow_results = true
-);
+create_attrs!(anyhow_results = true);
 
 /// Parses meta attributes
 pub(crate) fn parse_attributes(attributes: Vec<Attribute>) -> Result<AttributeData> {
@@ -75,22 +68,21 @@ pub(crate) fn parse_attributes(attributes: Vec<Attribute>) -> Result<AttributeDa
 		}
 
 		let attr: MetaNameValue = attr_group.parse_args()?;
-		
+
 		let attr_ident = match attr.path.segments.first() {
 			Some(segment) => segment.ident.clone(),
 
-			None => return Err(Error::new_spanned(
-				attr,
-				"Attribute `conversion` is an attribute group"
-			))
+			None => {
+				return Err(Error::new_spanned(
+					attr,
+					"Attribute `conversion` is an attribute group"
+				))
+			}
 		};
 
 		let macro_attr = match MacroAttribute::from_string(&attr_ident.to_string()) {
 			Some(attr) => attr,
-			None => return Err(Error::new_spanned(
-				attr_ident,
-				"Unknown attribute"
-			))
+			None => return Err(Error::new_spanned(attr_ident, "Unknown attribute"))
 		};
 
 		let value = match attr.value.clone() {
@@ -98,17 +90,11 @@ pub(crate) fn parse_attributes(attributes: Vec<Attribute>) -> Result<AttributeDa
 				if let syn::Lit::Bool(bool) = expr_lit.lit {
 					bool.value
 				} else {
-					return Err(Error::new_spanned(
-						attr.value,
-						"Expected a boolean"
-					))
+					return Err(Error::new_spanned(attr.value, "Expected a boolean"));
 				}
-			},
+			}
 
-			_ => return Err(Error::new_spanned(
-				attr.value,
-				"Expected a literal"
-			))
+			_ => return Err(Error::new_spanned(attr.value, "Expected a literal"))
 		};
 
 		data.apply_attribute(&macro_attr, value);
@@ -118,30 +104,30 @@ pub(crate) fn parse_attributes(attributes: Vec<Attribute>) -> Result<AttributeDa
 }
 
 /// Expands to the type of a variant's fields.
-/// 
+///
 /// ## Example 1:
 /// ```rust
 /// enum Test {
 ///     A(i32, bool, f32)
 /// }
-/// 
+///
 /// let _ = Test::A(5, true, 3.14);
 /// ```
-/// 
+///
 /// Will format the fields type as follows:
 /// ```rust
 /// type Formatted = (i32, bool, f32);
 /// ```
-/// 
+///
 /// ## Example 2:
 /// ```rust
 /// enum Test {
 ///     A(i32)
 /// }
-/// 
+///
 /// let _ = Test::A(5);
 /// ```
-/// 
+///
 /// Will format the fields type as follows:
 /// ```rust
 /// type Formatted = i32;
@@ -153,7 +139,7 @@ fn expand_fields_type(fields: &FieldsUnnamed, fields_len: usize) -> Result<Token
 		1 => {
 			let temp_type = &fields.unnamed[0].ty;
 			quote!(#temp_type)
-		},
+		}
 
 		_ => {
 			let mut field_types = vec![];
@@ -185,7 +171,11 @@ fn format_fn_names(variant_name: &Ident) -> (Ident, Ident) {
 }
 
 /// Expands to an `Err(...)` call in case the conversion function (`as_$variant`) fails
-fn expand_error_call(attributes: &AttributeData, enum_name: &Ident, variant_name: &Ident) -> TokenStream {
+fn expand_error_call(
+	attributes: &AttributeData,
+	enum_name: &Ident,
+	variant_name: &Ident
+) -> TokenStream {
 	let call_args = quote! {
 		"Cannot convert variant `{}` of enum `{}` into variant `{}`",
 		self.variant_name(),
@@ -194,18 +184,25 @@ fn expand_error_call(attributes: &AttributeData, enum_name: &Ident, variant_name
 	};
 
 	match attributes.anyhow_results {
-		true => quote! {
-			::anyhow::bail!(#call_args)
-		},
+		true => {
+			quote! {
+				::anyhow::bail!(#call_args)
+			}
+		}
 
-		false => quote! {
-			::std::result::Result::Err(format!(#call_args))
+		false => {
+			quote! {
+				::std::result::Result::Err(format!(#call_args))
+			}
 		}
 	}
 }
 
 /// Expands to a target return type of a conversion function (`as_$variant`)
-fn expand_conversion_result_type(variant_fields: &TokenStream, attributes: &AttributeData) -> TokenStream {
+fn expand_conversion_result_type(
+	variant_fields: &TokenStream,
+	attributes: &AttributeData
+) -> TokenStream {
 	match attributes.anyhow_results {
 		true => quote! { ::anyhow::Result<#variant_fields> },
 		false => quote! { ::std::result::Result<#variant_fields, String> }
@@ -220,10 +217,7 @@ fn expand_destructure_pattern(fields_len: usize) -> TokenStream {
 		let mut value_names = vec![];
 
 		for index in 0..fields_len {
-			value_names.push(Ident::new(
-				&format!("value{}", index),
-				Span::call_site()
-			));
+			value_names.push(Ident::new(&format!("value{}", index), Span::call_site()));
 		}
 
 		quote! { (#(#value_names),*) }
@@ -273,11 +267,7 @@ pub(crate) fn expand_variant(
 	let ok_value_pattern = expand_ok_value_pattern(variant.fields.len());
 
 	// Splitting generics data
-	let (
-		impl_generics,
-		type_generics,
-		where_clause
-	) = generics.split_for_impl();
+	let (impl_generics, type_generics, where_clause) = generics.split_for_impl();
 
 	Ok(quote! {
 		impl #impl_generics #enum_name #type_generics #where_clause {

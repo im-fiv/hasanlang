@@ -4,20 +4,15 @@ mod scope_context;
 mod scope;
 mod symbol;
 
-pub use interface::*;
+use anyhow::{bail, Result};
 pub use generic_table::*;
-pub use scope_context::*;
-pub use scope::*;
-pub use symbol::*;
-
-use anyhow::{Result, bail};
-use uuid::Uuid;
-
-use hasan_parser as p;
-use hasan_hir as hir;
-use hasan_intrinsics as intr;
-
 use hir::HirCodegen;
+pub use interface::*;
+pub use scope::*;
+pub use scope_context::*;
+pub use symbol::*;
+use uuid::Uuid;
+use {hasan_hir as hir, hasan_intrinsics as intr, hasan_parser as p};
 
 /// As the name suggests, converts a given function into a type (class)
 fn function_into_type(function: hir::Function) -> hir::Type {
@@ -35,9 +30,7 @@ fn function_into_type(function: hir::Function) -> hir::Type {
 	};
 
 	let class_function = hir::ClassFunction {
-		modifiers: p::GeneralModifiers::from(vec![
-			p::GeneralModifier::Static
-		]),
+		modifiers: p::GeneralModifiers::from(vec![p::GeneralModifier::Static]),
 
 		attributes: vec![],
 		function: inner_function
@@ -48,16 +41,14 @@ fn function_into_type(function: hir::Function) -> hir::Type {
 	hir::Type {
 		name: function.prototype.name,
 		members: vec![wrapped_function],
-		impls: vec![
-			intr::interfaces::IntrinsicInterface::Function.name()
-		],
+		impls: vec![intr::interfaces::IntrinsicInterface::Function.name()],
 
 		id: Uuid::new_v4()
 	}
 }
 
 /// Converts a class function into a type (function)
-/// 
+///
 /// Note: class function attributes are stripped during this process
 fn class_function_into_type(class_function: hir::ClassFunction) -> hir::Type {
 	function_into_type(class_function.function)
@@ -68,9 +59,9 @@ fn bin_op_intr_member(operator: &p::BinaryOperator) -> usize {
 	use p::BinaryOperator::*;
 
 	macro_rules! to_num {
-		($enum:ident::$variant:ident) => (
+		($enum:ident:: $variant:ident) => {
 			intr::interfaces::members::$enum::$variant as usize
-		);
+		};
 	}
 
 	match operator {
@@ -103,9 +94,8 @@ fn linked_uuid(uuid: Uuid) -> Uuid {
 fn instance_from_type(kind: &hir::Type) -> hir::Type {
 	let mut kind = kind.clone();
 
-	kind.impls.push(
-		intr::interfaces::IntrinsicInterface::Instance.name()
-	);
+	kind.impls
+		.push(intr::interfaces::IntrinsicInterface::Instance.name());
 
 	kind.id = linked_uuid(kind.id);
 
@@ -139,16 +129,23 @@ impl SemanticAnalyzer {
 
 	fn analyze_statement(&mut self, statement: p::Statement) -> Result<hir::Statement> {
 		use p::Statement::*;
-		
-		match statement {
-			VariableDefinition { modifiers, name, kind, value } =>
-				self.analyze_variable_definition(modifiers, name, kind, value),
-			
-			FunctionDefinition(_) |
-			FunctionDeclaration(_) => self.analyze_function_stmt(statement),
 
-			ClassDefinition { modifiers, name, generics, members } =>
-				self.analyze_class_definition(modifiers, name, generics, members),
+		match statement {
+			VariableDefinition {
+				modifiers,
+				name,
+				kind,
+				value
+			} => self.analyze_variable_definition(modifiers, name, kind, value),
+
+			FunctionDefinition(_) | FunctionDeclaration(_) => self.analyze_function_stmt(statement),
+
+			ClassDefinition {
+				modifiers,
+				name,
+				generics,
+				members
+			} => self.analyze_class_definition(modifiers, name, generics, members),
 
 			Return(value) => self.analyze_return(value),
 
@@ -165,9 +162,22 @@ impl SemanticAnalyzer {
 				class_name,
 				class_generics,
 				members
-			} => self.analyze_interface_impl(interface_name, interface_generics, class_name, class_generics, members),
+			} => {
+				self.analyze_interface_impl(
+					interface_name,
+					interface_generics,
+					class_name,
+					class_generics,
+					members
+				)
+			}
 
-			_ => bail!("Encountered unsupported statement `{}`", statement.variant_name())
+			_ => {
+				bail!(
+					"Encountered unsupported statement `{}`",
+					statement.variant_name()
+				)
+			}
 		}
 	}
 
@@ -187,7 +197,7 @@ impl SemanticAnalyzer {
 		def_builtin!(t_float, Float);
 		def_builtin!(t_string, String);
 		def_builtin!(t_bool, Boolean);
-		
+
 		match expression {
 			Integer(_) => Ok(hir::DimType::from(t_int)),
 			Float(_) => Ok(hir::DimType::from(t_float)),
@@ -197,8 +207,8 @@ impl SemanticAnalyzer {
 			Unary { operator, operand } => {
 				let expression_type = self.type_from_expression(operand)?;
 
-				use p::UnaryOperator::*;
 				use intr::interfaces::IntrinsicInterface::*;
+				use p::UnaryOperator::*;
 
 				let intrinsic_interface = match operator {
 					Minus => NegOp,
@@ -208,7 +218,10 @@ impl SemanticAnalyzer {
 				let interface = self.scope.get_symbol(&intrinsic_interface.name())?;
 
 				if !interface.is_interface() {
-					bail!("Intrinsic interface `{}` is not an interface in the symbol table", intrinsic_interface.name());
+					bail!(
+						"Intrinsic interface `{}` is not an interface in the symbol table",
+						intrinsic_interface.name()
+					);
 				}
 
 				let interface = interface.as_interface()?;
@@ -219,18 +232,22 @@ impl SemanticAnalyzer {
 				// The type should be checked with account for array dimensions
 				// rather than the underlying type
 				if !expression_type.0.impls.contains(&interface.unique_name()) {
-					bail!("Type `{}` does not implement interface `{}`", expression_type.codegen(), interface.unique_name());
+					bail!(
+						"Type `{}` does not implement interface `{}`",
+						expression_type.codegen(),
+						interface.unique_name()
+					);
 				}
 
 				Ok(expression_type)
-			},
+			}
 
 			Binary { lhs, operator, rhs } => {
 				let lhs_type = self.type_from_expression(lhs)?;
 				let rhs_type = self.type_from_expression(rhs)?;
 
-				use p::BinaryOperator::*;
 				use intr::interfaces::IntrinsicInterface::*;
+				use p::BinaryOperator::*;
 
 				let _rhs_string = rhs_type.codegen();
 
@@ -257,7 +274,11 @@ impl SemanticAnalyzer {
 				// The type should be checked with account for array dimensions
 				// rather than the underlying type
 				if !lhs_type.0.impls.contains(&interface.unique_name()) {
-					bail!("Type `{}` does not implement interface `{}`", lhs_type.codegen(), interface.unique_name());
+					bail!(
+						"Type `{}` does not implement interface `{}`",
+						lhs_type.codegen(),
+						interface.unique_name()
+					);
 				}
 
 				let interface_member_index = bin_op_intr_member(operator);
@@ -265,28 +286,50 @@ impl SemanticAnalyzer {
 				let interface_member = interface
 					.members
 					.get(interface_member_index)
-					.ok_or_else(|| anyhow::format_err!("Interface `{}` has not member #{}", interface.unique_name(), interface_member_index))?
+					.ok_or_else(|| {
+						anyhow::format_err!(
+							"Interface `{}` has not member #{}",
+							interface.unique_name(),
+							interface_member_index
+						)
+					})?
 					.to_owned();
 
 				let class_member = lhs_type
 					.0
 					.member_by_name(&interface_member.name())
-					.unwrap_or_else(|| unreachable!("Type `{}` has no member named `{}`", lhs_type.codegen(), interface_member.name()));
+					.unwrap_or_else(|| {
+						unreachable!(
+							"Type `{}` has no member named `{}`",
+							lhs_type.codegen(),
+							interface_member.name()
+						)
+					});
 
 				let class_function = hir::ClassFunction::try_from(class_member)?;
 				let return_type = class_function.function.prototype.return_type;
 
 				Ok(return_type)
-			},
+			}
 
-			FunctionCall { callee, generics, arguments } => {
+			FunctionCall {
+				callee,
+				generics,
+				arguments
+			} => {
 				let callee_type = self.type_from_expression(callee)?;
 
-				let function_interface = self.scope.get_symbol(
-					&intr::interfaces::IntrinsicInterface::Function.name()
-				)?.as_interface()?;
+				let function_interface = self
+					.scope
+					.get_symbol(&intr::interfaces::IntrinsicInterface::Function.name())?
+					.as_interface()?;
 
-				if !callee_type.0.impls.contains(&function_interface.unique_name()) || (callee_type.1 > 0) {
+				if !callee_type
+					.0
+					.impls
+					.contains(&function_interface.unique_name())
+					|| (callee_type.1 > 0)
+				{
 					bail!(
 						"Type `{}` does not implement interface `{}`",
 						callee_type.codegen(),
@@ -295,7 +338,7 @@ impl SemanticAnalyzer {
 				}
 
 				let callee_type = callee_type.0;
-				
+
 				// TODO: Generics
 				if !generics.is_empty() {
 					bail!("Generics are not yet supported");
@@ -306,14 +349,13 @@ impl SemanticAnalyzer {
 						.members
 						.get(0)
 						.unwrap_or_else(|| {
-							let interfaces = callee_type
-								.impls
-								.join(", ");
+							let interfaces = callee_type.impls.join(", ");
 
 							unreachable!("Type `impl<{}>` is empty", interfaces)
 						})
 						.to_owned()
-				)?.function;
+				)?
+				.function;
 
 				let prototype = function.prototype;
 
@@ -324,7 +366,6 @@ impl SemanticAnalyzer {
 				if len_expected != len_got {
 					bail!(
 						"Incorrect amount of arguments for function `{}`: expected {} argument(s), got {}",
-						
 						prototype.name,
 						len_expected,
 						len_got
@@ -337,7 +378,9 @@ impl SemanticAnalyzer {
 					let expected = prototype
 						.arguments
 						.get(index)
-						.unwrap_or_else(|| unreachable!("Failed to get function argument #{}", index))
+						.unwrap_or_else(|| {
+							unreachable!("Failed to get function argument #{}", index)
+						})
 						.kind
 						.clone();
 
@@ -354,13 +397,21 @@ impl SemanticAnalyzer {
 				}
 
 				Ok(prototype.return_type)
-			},
+			}
 
-			DotAccess { expression, accessor } => {
+			DotAccess {
+				expression,
+				accessor
+			} => {
 				let expression = *expression.to_owned();
 				let accessor = match *accessor.to_owned() {
 					Identifier(ident) => ident,
-					_ => bail!("Expected an identifier as a field access index, got `{}`", accessor.to_string())
+					_ => {
+						bail!(
+							"Expected an identifier as a field access index, got `{}`",
+							accessor.to_string()
+						)
+					}
 				};
 
 				let expression_type = self.type_from_expression(&expression)?;
@@ -368,40 +419,49 @@ impl SemanticAnalyzer {
 				// TODO: This is incorrect
 				// The type should be checked with account for array dimensions
 				// rather than the underlying type
-				let member = expression_type
-					.0
-					.member_by_name(&accessor)
-					.ok_or_else(|| anyhow::format_err!(
+				let member = expression_type.0.member_by_name(&accessor).ok_or_else(|| {
+					anyhow::format_err!(
 						"Type `{}` does not have a member with name `{}`",
 						expression_type.codegen(),
 						accessor
-					))?;
+					)
+				})?;
 
 				let modifiers = member.modifiers();
-				
+
 				if !modifiers.contains(&p::GeneralModifier::Public) {
-					bail!("Member `{}` of type `{}` is private", member.name(), expression_type.codegen());
+					bail!(
+						"Member `{}` of type `{}` is private",
+						member.name(),
+						expression_type.codegen()
+					);
 				}
 
 				if modifiers.contains(&p::GeneralModifier::Static) {
-					bail!("Member `{}` of type `{}` is static", member.name(), expression_type.codegen());
+					bail!(
+						"Member `{}` of type `{}` is static",
+						member.name(),
+						expression_type.codegen()
+					);
 				}
 
 				Ok(match member {
 					hir::ClassMember::Variable(variable) => variable.kind,
 
 					// TODO: Check the correctness of this when class functions are implemented in the analyzer
-					hir::ClassMember::Function(function) => hir::DimType::from(
-						class_function_into_type(function)
-					),
+					hir::ClassMember::Function(function) => {
+						hir::DimType::from(class_function_into_type(function))
+					}
 
-					hir::ClassMember::AssocType(_) => bail!(
-						"Member `{}` of type `{}` is an associated type",
-						member.name(),
-						expression_type.codegen()
-					)
+					hir::ClassMember::AssocType(_) => {
+						bail!(
+							"Member `{}` of type `{}` is an associated type",
+							member.name(),
+							expression_type.codegen()
+						)
+					}
 				})
-			},
+			}
 
 			Identifier(identifier) => {
 				let symbol = self.scope.get_symbol(identifier)?;
@@ -410,18 +470,29 @@ impl SemanticAnalyzer {
 					Symbol::Class(class) => hir::DimType::from(class),
 
 					// Type has to be re-fetched to be kept up to date
-					Symbol::Variable(variable) => hir::DimType::new(
-						self.scope.get_symbol(&variable.kind.0.name)?.as_class()?,
-						variable.kind.1
-					),
+					Symbol::Variable(variable) => {
+						hir::DimType::new(
+							self.scope.get_symbol(&variable.kind.0.name)?.as_class()?,
+							variable.kind.1
+						)
+					}
 
-					_ => bail!("Cannot use symbol of type `{}` as a value", symbol.variant_name())
+					_ => {
+						bail!(
+							"Cannot use symbol of type `{}` as a value",
+							symbol.variant_name()
+						)
+					}
 				})
-			},
+			}
 
 			// TODO: Exhaustive expression type resolving
-
-			_ => bail!("Encountered unsupported expression `{}`", expression.to_string())
+			_ => {
+				bail!(
+					"Encountered unsupported expression `{}`",
+					expression.to_string()
+				)
+			}
 		}
 	}
 
@@ -450,20 +521,16 @@ impl SemanticAnalyzer {
 				let class = symbol.as_class()?;
 
 				Ok(hir::DimType(class, dimensions))
-			},
+			}
 
 			p::Type::Function(_) => todo!("function type converting"), // TODO
-			p::Type::Tuple(_) => todo!("tuple type converting") // TODO
+			p::Type::Tuple(_) => todo!("tuple type converting")        // TODO
 		}
 	}
 
 	/// Converts a parser type into a HIR type reference
 	/// with account for `this` markers
-	fn convert_type_marker(
-		&mut self,
-		kind: &p::Type,
-		resolves_to: String
-	) -> Result<hir::DimType> {
+	fn convert_type_marker(&mut self, kind: &p::Type, resolves_to: String) -> Result<hir::DimType> {
 		match kind.to_owned() {
 			p::Type::Regular(mut kind) => {
 				if kind.path.is_empty() && (kind.name == *"this") {
@@ -472,10 +539,10 @@ impl SemanticAnalyzer {
 
 				let wrapped = p::Type::Regular(kind);
 				self.convert_type(&wrapped)
-			},
+			}
 
 			p::Type::Function(_) => todo!("function type converting"), // TODO
-			p::Type::Tuple(_) => todo!("tuple type converting") // TODO
+			p::Type::Tuple(_) => todo!("tuple type converting")        // TODO
 		}
 	}
 
@@ -487,7 +554,7 @@ impl SemanticAnalyzer {
 		value: p::Expression
 	) -> Result<hir::Statement> {
 		use p::GeneralModifier::*;
-		
+
 		let m_public = modifiers.contains(&Public);
 		let m_const = modifiers.contains(&Constant);
 		let m_static = modifiers.contains(&Static);
@@ -510,7 +577,12 @@ impl SemanticAnalyzer {
 			let kind_given = self.convert_type(&kind_given)?;
 
 			if kind_given != kind_resolved {
-				bail!("Mismatched types for variable `{}`: expected `{}` but `{}` was provided", name, kind_resolved.codegen(), kind_given.codegen());
+				bail!(
+					"Mismatched types for variable `{}`: expected `{}` but `{}` was provided",
+					name,
+					kind_resolved.codegen(),
+					kind_given.codegen()
+				);
 			}
 		}
 
@@ -522,12 +594,16 @@ impl SemanticAnalyzer {
 			value
 		};
 
-		self.scope.insert_symbol(name, Symbol::Variable(variable.clone()))?;
+		self.scope
+			.insert_symbol(name, Symbol::Variable(variable.clone()))?;
 
 		Ok(hir::Statement::VariableDefinition(variable))
 	}
 
-	fn convert_function_argument(&mut self, argument: p::FunctionArgument) -> Result<hir::FunctionArgument> {
+	fn convert_function_argument(
+		&mut self,
+		argument: p::FunctionArgument
+	) -> Result<hir::FunctionArgument> {
 		let resolved_type = self.convert_type(&argument.kind)?;
 
 		Ok(hir::FunctionArgument {
@@ -536,9 +612,12 @@ impl SemanticAnalyzer {
 		})
 	}
 
-	fn analyze_function_prototype(&mut self, prototype: p::FunctionPrototype) -> Result<hir::FunctionPrototype> {
+	fn analyze_function_prototype(
+		&mut self,
+		prototype: p::FunctionPrototype
+	) -> Result<hir::FunctionPrototype> {
 		use p::GeneralModifier::*;
-		
+
 		// Unwrapping the function prototype
 		let p::FunctionPrototype {
 			modifiers,
@@ -590,7 +669,7 @@ impl SemanticAnalyzer {
 			arguments,
 			return_type
 		};
-		
+
 		Ok(prototype)
 	}
 
@@ -599,11 +678,7 @@ impl SemanticAnalyzer {
 
 		self.scope.insert_symbol(
 			prototype.name.clone(),
-			Symbol::Class(
-				function_into_type(
-					hir::Function::from(prototype.clone())
-				)
-			)
+			Symbol::Class(function_into_type(hir::Function::from(prototype.clone())))
 		)?;
 
 		let body: Option<Vec<hir::Statement>> = if let Some(func_body) = function.body {
@@ -632,9 +707,7 @@ impl SemanticAnalyzer {
 
 		self.scope.update_symbol(
 			prototype.name.clone(),
-			Symbol::Class(
-				function_into_type(function.clone())
-			)
+			Symbol::Class(function_into_type(function.clone()))
 		)?;
 
 		Ok(function)
@@ -642,13 +715,15 @@ impl SemanticAnalyzer {
 
 	fn analyze_function_stmt(&mut self, statement: p::Statement) -> Result<hir::Statement> {
 		let function = match statement {
-			p::Statement::FunctionDefinition(function) |
-			p::Statement::FunctionDeclaration(function) => function,
+			p::Statement::FunctionDefinition(function)
+			| p::Statement::FunctionDeclaration(function) => function,
 
-			_ => bail!(
+			_ => {
+				bail!(
 				"Got an unexpected statement `{}` when expecting a function definition/declaration statement",
 				statement.variant_name()
 			)
+			}
 		};
 
 		let function = self.analyze_function(function)?;
@@ -699,7 +774,7 @@ impl SemanticAnalyzer {
 		// Constructing and returning
 		let variable = hir::ClassVariable {
 			modifiers,
-			
+
 			name,
 			kind: converted_kind,
 			default_value
@@ -709,8 +784,8 @@ impl SemanticAnalyzer {
 	}
 
 	fn analyze_class_function(&mut self, function: p::ClassFunction) -> Result<hir::ClassFunction> {
-		use p::GeneralModifier::*;
 		use p::ClassFunctionAttribute::*;
+		use p::GeneralModifier::*;
 
 		// Unwrapping the function
 		let p::ClassFunction {
@@ -794,14 +869,17 @@ impl SemanticAnalyzer {
 
 	fn analyze_class_member(&mut self, member: p::ClassMember) -> Result<hir::ClassMember> {
 		Ok(match member {
-			p::ClassMember::Variable(variable) =>
-				hir::ClassMember::Variable(self.analyze_class_variable(variable)?),
+			p::ClassMember::Variable(variable) => {
+				hir::ClassMember::Variable(self.analyze_class_variable(variable)?)
+			}
 
-			p::ClassMember::Function(function) => 
-				hir::ClassMember::Function(self.analyze_class_function(function)?),
+			p::ClassMember::Function(function) => {
+				hir::ClassMember::Function(self.analyze_class_function(function)?)
+			}
 
-			p::ClassMember::AssocType(kind) =>
-				hir::ClassMember::AssocType(self.analyze_class_assoc_type(kind)?),
+			p::ClassMember::AssocType(kind) => {
+				hir::ClassMember::AssocType(self.analyze_class_assoc_type(kind)?)
+			}
 		})
 	}
 
@@ -821,10 +899,8 @@ impl SemanticAnalyzer {
 			id: Uuid::new_v4()
 		};
 
-		self.scope.insert_symbol(
-			name.clone(),
-			Symbol::Class(class.clone())
-		)?;
+		self.scope
+			.insert_symbol(name.clone(), Symbol::Class(class.clone()))?;
 
 		let old_scope = self.scope.clone();
 
@@ -832,10 +908,8 @@ impl SemanticAnalyzer {
 		new_scope.context.class_name = Some(name.clone());
 
 		self.scope = new_scope;
-		self.scope.insert_symbol(
-			String::from("this"),
-			Symbol::Class(class.clone())
-		)?;
+		self.scope
+			.insert_symbol(String::from("this"), Symbol::Class(class.clone()))?;
 
 		let m_public = modifiers.contains(&Public);
 		let m_const = modifiers.contains(&Constant);
@@ -863,27 +937,25 @@ impl SemanticAnalyzer {
 			let mut met_names: Vec<String> = vec![];
 
 			for member in members {
-				let converted_member = self.analyze_class_member(member)?; 
+				let converted_member = self.analyze_class_member(member)?;
 				let name = converted_member.name();
-				
+
 				if met_names.contains(&name) {
 					bail!("Found multiple definitions of class member `{}`", name);
 				}
-				
+
 				converted_vec.push(converted_member);
 				met_names.push(name);
 			}
-			
+
 			converted_vec
 		};
 
 		class.members = members;
 
 		self.scope = old_scope;
-		self.scope.update_symbol(
-			name,
-			Symbol::Class(class.clone())
-		)?;
+		self.scope
+			.update_symbol(name, Symbol::Class(class.clone()))?;
 
 		Ok(hir::Statement::ClassDefinition(class))
 	}
@@ -940,24 +1012,22 @@ impl SemanticAnalyzer {
 		let this_marker = Symbol::Class(hir::Type {
 			name: String::from("this"),
 			members: vec![],
-			impls: vec![
-				String::from("ThisMarker")
-			],
+			impls: vec![String::from("ThisMarker")],
 			id: Uuid::new_v4()
 		});
 
 		self.scope = interface_scope;
-		
-		self.scope.insert_symbol(String::from("this"), this_marker)?;
-		self.scope.insert_symbol(name.clone(), Symbol::Interface(interface))?;
+
+		self.scope
+			.insert_symbol(String::from("this"), this_marker)?;
+		self.scope
+			.insert_symbol(name.clone(), Symbol::Interface(interface))?;
 
 		for member in members {
 			self.analyze_interface_member(name.clone(), member)?;
 		}
 
-		let updated_interface = self
-			.scope
-			.get_symbol(&name)?;
+		let updated_interface = self.scope.get_symbol(&name)?;
 
 		self.scope = old_scope;
 		self.scope.insert_symbol(name, updated_interface)?;
@@ -965,34 +1035,38 @@ impl SemanticAnalyzer {
 		Ok(hir::Statement::Omitted)
 	}
 
-	fn analyze_interface_member(&mut self, interface_name: String, member: p::InterfaceMember) -> Result<()> {
+	fn analyze_interface_member(
+		&mut self,
+		interface_name: String,
+		member: p::InterfaceMember
+	) -> Result<()> {
 		macro_rules! try_insert {
-			($member:ident) => {
-				{
-					let mut interface = self
-						.scope
-						.get_symbol(&interface_name)?
-						.as_interface()?;
+			($member:ident) => {{
+				let mut interface = self.scope.get_symbol(&interface_name)?.as_interface()?;
 
-					for member in interface.members.clone() {
-						if member.name() == $member.name() {
-							bail!("Cannot redefine a symbol with name `{}`", stringify!($member));
-						}
+				for member in interface.members.clone() {
+					if member.name() == $member.name() {
+						bail!(
+							"Cannot redefine a symbol with name `{}`",
+							stringify!($member)
+						);
 					}
-
-					interface.members.push($member);
-
-					self.scope.update_symbol(
-						interface_name,
-						Symbol::Interface(interface)
-					)?;
 				}
-			};
+
+				interface.members.push($member);
+
+				self.scope
+					.update_symbol(interface_name, Symbol::Interface(interface))?;
+			}};
 		}
 
 		match member {
 			p::InterfaceMember::Variable(variable) => {
-				let p::InterfaceVariable { modifiers, name, kind } = variable;
+				let p::InterfaceVariable {
+					modifiers,
+					name,
+					kind
+				} = variable;
 
 				let m_const = modifiers.contains(&p::GeneralModifier::Constant);
 				let m_static = modifiers.contains(&p::GeneralModifier::Static);
@@ -1010,10 +1084,13 @@ impl SemanticAnalyzer {
 				});
 
 				try_insert!(converted_member);
-			},
+			}
 
 			p::InterfaceMember::Function(function) => {
-				let p::InterfaceFunction { attributes, prototype } = function;
+				let p::InterfaceFunction {
+					attributes,
+					prototype
+				} = function;
 
 				let p::InterfaceFunctionPrototype {
 					modifiers,
@@ -1062,7 +1139,7 @@ impl SemanticAnalyzer {
 				});
 
 				try_insert!(converted_member);
-			},
+			}
 
 			p::InterfaceMember::AssocType(_) => todo!() // TODO
 		};
@@ -1080,7 +1157,12 @@ impl SemanticAnalyzer {
 	) -> Result<hir::Statement> {
 		let interface = match self.scope.get_symbol(&interface_name)? {
 			Symbol::Interface(interface) => interface,
-			symbol => bail!("Expected a symbol of type `Interface`, got `{}`", symbol.variant_name())
+			symbol => {
+				bail!(
+					"Expected a symbol of type `Interface`, got `{}`",
+					symbol.variant_name()
+				)
+			}
 		};
 
 		// TODO: Generics
@@ -1090,7 +1172,12 @@ impl SemanticAnalyzer {
 
 		let mut class = match self.scope.get_symbol(&class_name)? {
 			Symbol::Class(class) => class,
-			symbol => bail!("Expected a symbol of type `Class`, got `{}`", symbol.variant_name())
+			symbol => {
+				bail!(
+					"Expected a symbol of type `Class`, got `{}`",
+					symbol.variant_name()
+				)
+			}
 		};
 
 		// TODO: Generics
@@ -1110,10 +1197,8 @@ impl SemanticAnalyzer {
 		let old_scope = self.scope.clone();
 
 		self.scope = class_scope;
-		self.scope.insert_symbol(
-			String::from("this"),
-			Symbol::Class(class.clone())
-		)?;
+		self.scope
+			.insert_symbol(String::from("this"), Symbol::Class(class.clone()))?;
 
 		for member in members {
 			// Analyze and convert the impl member
@@ -1144,7 +1229,7 @@ impl SemanticAnalyzer {
 			kind,
 			default_value
 		} = variable;
-				
+
 		// Checking modifiers
 		let m_const = modifiers.contains(&Constant);
 		let m_static = modifiers.contains(&Static);
@@ -1217,7 +1302,10 @@ impl SemanticAnalyzer {
 		}
 
 		if a_get && a_set {
-			bail!("Invalid class function attributes for `{}`: `get` cannot be used with `set`", prototype.name);
+			bail!(
+				"Invalid class function attributes for `{}`: `get` cannot be used with `set`",
+				prototype.name
+			);
 		}
 
 		// Unwrapping function prototype
@@ -1242,10 +1330,7 @@ impl SemanticAnalyzer {
 				let p::FunctionArgument { name, kind } = arg;
 
 				// Convert the type
-				let kind = self.convert_type_marker(
-					&kind,
-					class.name.clone()
-				);
+				let kind = self.convert_type_marker(&kind, class.name.clone());
 
 				// Map to a function argument
 				kind.map(|kind| hir::FunctionArgument { name, kind })
@@ -1263,7 +1348,7 @@ impl SemanticAnalyzer {
 		let body = {
 			// Creating a separate scope for the function's body
 			let old_scope = self.scope.clone();
-			
+
 			let mut child_scope = self.scope.new_child();
 			child_scope.context.function_name = Some(name.clone());
 
@@ -1273,22 +1358,22 @@ impl SemanticAnalyzer {
 			let argument_variables = arguments
 				.clone()
 				.into_iter()
-				.map(|argument| hir::Variable {
-					modifiers: vec![].into(),
+				.map(|argument| {
+					hir::Variable {
+						modifiers: vec![].into(),
 
-					name: argument.name,
-					kind: argument.kind,
-					//* Note: this is likely the only place where `Expression::Empty` should be used
-					value: p::Expression::Empty
+						name: argument.name,
+						kind: argument.kind,
+						//* Note: this is likely the only place where `Expression::Empty` should be used
+						value: p::Expression::Empty
+					}
 				})
 				.collect::<Vec<_>>();
 
 			// Inserting function arguments into scope as variables
 			for variable in argument_variables {
-				self.scope.insert_symbol(
-					variable.name.clone(),
-					Symbol::Variable(variable)
-				)?;
+				self.scope
+					.insert_symbol(variable.name.clone(), Symbol::Variable(variable))?;
 			}
 
 			// Parsing the body
@@ -1330,10 +1415,9 @@ impl SemanticAnalyzer {
 				(kind.0.name == *"this") || kind.0.impls.contains(&String::from("ThisMarker"))
 			}
 
-			let mut interface_function =
-				interface_member
-					.as_function()
-					.unwrap_or_else(|_| unreachable!("Interface member is guaranteed to be of type function"));
+			let mut interface_function = interface_member.as_function().unwrap_or_else(|_| {
+				unreachable!("Interface member is guaranteed to be of type function")
+			});
 
 			// Replacing `this` markers for the interface function
 			// with the according class type
@@ -1358,7 +1442,7 @@ impl SemanticAnalyzer {
 			if is_this_marker(&interface_function.return_type) {
 				interface_function.return_type.0 = class.clone();
 			}
-			
+
 			// Checking argument types
 			let len_expected = interface_function.argument_types.len();
 			let len_got = prototype.arguments.len();
@@ -1376,7 +1460,12 @@ impl SemanticAnalyzer {
 				let interface_argument = interface_function
 					.argument_types
 					.get(index)
-					.unwrap_or_else(|| unreachable!("Interface function is guaranteed to have at least {} arguments", index))
+					.unwrap_or_else(|| {
+						unreachable!(
+							"Interface function is guaranteed to have at least {} arguments",
+							index
+						)
+					})
 					.to_owned();
 
 				if argument.kind != interface_argument {
@@ -1427,37 +1516,48 @@ impl SemanticAnalyzer {
 		let interface_member = interface
 			.members
 			.iter()
-			.find(
-				|search_member| search_member.name() == member.name()
-			)
-			.ok_or(
-				anyhow::format_err!("Interface `{}` has no member named `{}`", interface.unique_name(), member.name())
-			)?
+			.find(|search_member| search_member.name() == member.name())
+			.ok_or(anyhow::format_err!(
+				"Interface `{}` has no member named `{}`",
+				interface.unique_name(),
+				member.name()
+			))?
 			.to_owned();
 
 		// Comparing member types
 		match (&interface_member, &member) {
-			(InterfaceMember::Variable(_), p::ClassMember::Variable(_)) |
-			(InterfaceMember::Function(_), p::ClassMember::Function(_)) |
-			(InterfaceMember::AssocType(_), p::ClassMember::AssocType(_)) => (),
+			(InterfaceMember::Variable(_), p::ClassMember::Variable(_))
+			| (InterfaceMember::Function(_), p::ClassMember::Function(_))
+			| (InterfaceMember::AssocType(_), p::ClassMember::AssocType(_)) => (),
 
-			_ => bail!(
-				"Mismatched implementation signature for member `{}`. Expected `{}`, got `{}`",
-				interface_member.name(),
-				interface_member.variant_name(),
-				member.variant_name()
-			)
+			_ => {
+				bail!(
+					"Mismatched implementation signature for member `{}`. Expected `{}`, got `{}`",
+					interface_member.name(),
+					interface_member.variant_name(),
+					member.variant_name()
+				)
+			}
 		}
 
 		// Performing the conversion
 		Ok(match member {
-			p::ClassMember::Variable(variable) => hir::ClassMember::Variable(
-				self.analyze_interface_impl_variable(class, variable, redef_check)?
-			),
+			p::ClassMember::Variable(variable) => {
+				hir::ClassMember::Variable(self.analyze_interface_impl_variable(
+					class,
+					variable,
+					redef_check
+				)?)
+			}
 
-			p::ClassMember::Function(function) => hir::ClassMember::Function(
-				self.analyze_interface_impl_function(class, function, interface_member, redef_check)?
-			),
+			p::ClassMember::Function(function) => {
+				hir::ClassMember::Function(self.analyze_interface_impl_function(
+					class,
+					function,
+					interface_member,
+					redef_check
+				)?)
+			}
 
 			p::ClassMember::AssocType(_) => todo!() // TODO
 		})

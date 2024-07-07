@@ -1,7 +1,6 @@
 use hasan_pest_parser::{PestParser, Rule};
-
-use pest::Parser;
 use pest::iterators::Pairs;
+use pest::Parser;
 
 pub fn pest_parse(input: &str, debug: bool) -> Pairs<'_, Rule> {
 	if debug {

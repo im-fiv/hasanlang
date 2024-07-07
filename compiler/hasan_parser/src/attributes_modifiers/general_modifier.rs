@@ -1,41 +1,24 @@
 use strum_macros::Display;
 
 #[derive(Debug, Clone, PartialEq, Default)]
-pub struct GeneralModifiers(
-	pub Vec<GeneralModifier>
-);
+pub struct GeneralModifiers(pub Vec<GeneralModifier>);
 
 impl GeneralModifiers {
-	pub fn new() -> Self {
-		Self::default()
-	}
+	pub fn new() -> Self { Self::default() }
 
-	pub fn push(&mut self, element: GeneralModifier) {
-		self.0.push(element)
-	}
+	pub fn push(&mut self, element: GeneralModifier) { self.0.push(element) }
 
-	pub fn contains(&self, element: &GeneralModifier) -> bool {
-		self.0.contains(element)
-	}
+	pub fn contains(&self, element: &GeneralModifier) -> bool { self.0.contains(element) }
 }
 
 impl ToString for GeneralModifiers {
 	fn to_string(&self) -> String {
-		crate::cond_vec_transform!(
-			&self.0,
-			|modifier| modifier.to_string(),
-			" ",
-			"{} "
-		)
+		crate::cond_vec_transform!(&self.0, |modifier| modifier.to_string(), " ", "{} ")
 	}
 }
 
-impl From<
-	Vec<GeneralModifier>
-> for GeneralModifiers {
-	fn from(value: Vec<GeneralModifier>) -> Self {
-		Self(value)
-	}
+impl From<Vec<GeneralModifier>> for GeneralModifiers {
+	fn from(value: Vec<GeneralModifier>) -> Self { Self(value) }
 }
 
 //-----------------------------------------------------------------//

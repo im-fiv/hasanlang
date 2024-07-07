@@ -1,7 +1,6 @@
 use crate::{
-	HasanCodegen, GeneralModifiers, Type,
-	cond_vec_transform, ClassFunctionAttributes,
-	vec_transform_str, DefinitionType
+	cond_vec_transform, vec_transform_str, ClassFunctionAttributes, DefinitionType,
+	GeneralModifiers, HasanCodegen, Type
 };
 
 #[derive(Debug, Clone, PartialEq)]
@@ -35,11 +34,7 @@ impl HasanCodegen for InterfaceVariable {
 	fn codegen(&self) -> String {
 		let modifiers = self.modifiers.to_string();
 
-		format!(
-			"{modifiers}var {}: {};",
-			self.name,
-			self.kind.codegen()
-		)
+		format!("{modifiers}var {}: {};", self.name, self.kind.codegen())
 	}
 }
 
@@ -53,12 +48,8 @@ pub struct InterfaceFunction {
 
 impl HasanCodegen for InterfaceFunction {
 	fn codegen(&self) -> String {
-		let attributes = cond_vec_transform!(
-			&self.attributes,
-			|value| value.to_string(),
-			", ",
-			"#[{}]\n"
-		);
+		let attributes =
+			cond_vec_transform!(&self.attributes, |value| value.to_string(), ", ", "#[{}]\n");
 
 		format!("{attributes}{};", self.prototype.codegen())
 	}

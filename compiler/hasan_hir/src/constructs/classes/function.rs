@@ -1,7 +1,7 @@
-use hasan_parser::vec_transform_str;
-use crate::{Function, HirCodegen, HirDiagnostics, ClassMember};
-
 use anyhow::bail;
+use hasan_parser::vec_transform_str;
+
+use crate::{ClassMember, Function, HirCodegen, HirDiagnostics};
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct ClassFunction {
@@ -21,12 +21,9 @@ impl HirDiagnostics for ClassFunction {
 
 impl HirCodegen for ClassFunction {
 	fn codegen(&self) -> String {
-		let attributes = vec_transform_str(
-			&self.attributes,
-			|attribute| attribute.to_string(),
-			", "
-		);
-		
+		let attributes =
+			vec_transform_str(&self.attributes, |attribute| attribute.to_string(), ", ");
+
 		let attributes = if !attributes.is_empty() {
 			format!("#[{attributes}]\n")
 		} else {

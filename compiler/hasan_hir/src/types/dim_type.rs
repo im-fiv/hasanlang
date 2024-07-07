@@ -1,12 +1,9 @@
-use crate::{HirCodegen, HirDiagnostics};
 use super::Type;
+use crate::{HirCodegen, HirDiagnostics};
 
 /// An owned type with the second parameter being the dimensions of array (if present)
 #[derive(Debug, Clone, PartialEq)]
-pub struct DimType(
-	pub Type,
-	pub usize
-);
+pub struct DimType(pub Type, pub usize);
 
 impl DimType {
 	pub fn display(&self) -> String {
@@ -16,15 +13,11 @@ impl DimType {
 		format!("{name}{suffix}")
 	}
 
-	pub fn new(kind: Type, dimensions: usize) -> Self {
-		Self(kind, dimensions)
-	}
+	pub fn new(kind: Type, dimensions: usize) -> Self { Self(kind, dimensions) }
 }
 
 impl HirDiagnostics for DimType {
-	fn info_string(&self) -> String {
-		self.codegen()
-	}
+	fn info_string(&self) -> String { self.codegen() }
 }
 
 impl HirCodegen for DimType {
@@ -37,7 +30,5 @@ impl HirCodegen for DimType {
 }
 
 impl From<Type> for DimType {
-	fn from(kind: Type) -> Self {
-		Self(kind, 0)
-	}
+	fn from(kind: Type) -> Self { Self(kind, 0) }
 }

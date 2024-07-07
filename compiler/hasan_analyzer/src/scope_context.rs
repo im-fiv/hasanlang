@@ -14,9 +14,7 @@ pub struct ScopeContext {
 }
 
 impl ScopeContext {
-	pub fn new() -> Self {
-		Self::default()
-	}
+	pub fn new() -> Self { Self::default() }
 
 	pub fn as_string_vec(&self) -> Vec<String> {
 		macro_rules! props_str {
@@ -43,17 +41,13 @@ impl ScopeContext {
 		})
 	}
 
-	pub fn info_string(&self) -> String {
-		self.as_string_vec().join(",\n")
-	}
+	pub fn info_string(&self) -> String { self.as_string_vec().join(",\n") }
 }
 
 impl ToString for ScopeContext {
 	fn to_string(&self) -> String {
-		let props = self
-			.as_string_vec()
-			.join(", ");
-		
+		let props = self.as_string_vec().join(", ");
+
 		format!("ScopeFlags({props})")
 	}
 }

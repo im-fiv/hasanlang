@@ -15,15 +15,13 @@ pub use unary_operator::*;
 /// Otherwise, returns an empty owned string.
 #[macro_export]
 macro_rules! cond_vec_transform {
-	($value:expr, $func:expr, $sep:expr, $format:expr) => {
-		{
-			let result = $crate::vec_transform_str($value, $func, $sep);
+	($value:expr, $func:expr, $sep:expr, $format:expr) => {{
+		let result = $crate::vec_transform_str($value, $func, $sep);
 
-			if !result.is_empty() {
-				format!($format, result)
-			} else {
-				String::new()
-			}
+		if !result.is_empty() {
+			format!($format, result)
+		} else {
+			String::new()
 		}
-	};
+	}};
 }
